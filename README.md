@@ -17,7 +17,7 @@ npm run icons         # génère public/icons/ (PNG PWA + favicon)
 npm run icons:optimize
 ```
 
-## Structure (v1.5)
+## Structure (v2)
 
 ```
 src/
@@ -74,11 +74,6 @@ Les scores localStorage conservent les clés `flappy-bird-*` pour ne pas perdre 
 ## GitHub Pages
 
 URL : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
-
-Le dépôt doit publier le dossier **`dist/`** (build Vite), pas les sources. Un workflow `.github/workflows/deploy.yml` build et déploie à chaque push sur `main`.
-
-1. Sur GitHub : **Settings → Pages → Build and deployment → Source** → **GitHub Actions**.
-2. Push sur `main` : le workflow `Deploy GitHub Pages` génère `dist/` avec `base: /Floppy-Bird/` puis déploie.
 
 Test local du build Pages :
 
