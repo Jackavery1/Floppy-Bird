@@ -1,0 +1,55 @@
+import { describe, it, expect } from 'vitest';
+import { GAME_STATE } from '../src/gameState.js';
+import {
+    canChangeDifficulty,
+    canHandlePrimaryAction,
+    canReturnToMenu,
+    canTogglePause,
+    canTriggerDeath,
+    shouldStartGameOnPrimary,
+    shouldUpdateDying,
+    shouldUpdateGameplay,
+    shouldScrollGround,
+} from '../src/gameStateRules.js';
+
+describe('gameStateRules', () => {
+    it('bloque l’action primaire en pause et en mort', () => {
+        expect(canHandlePrimaryAction(GAME_STATE.PAUSED)).toBe(false);
+        expect(canHandlePrimaryAction(GAME_STATE.DYING)).toBe(false);
+        expect(canHandlePrimaryAction(GAME_STATE.PLAYING)).toBe(true);
+    });
+
+    it('autorise le démarrage depuis menu et game over', () => {
+        expect(shouldStartGameOnPrimary(GAME_STATE.MENU)).toBe(true);
+        expect(shouldStartGameOnPrimary(GAME_STATE.GAME_OVER)).toBe(true);
+        expect(shouldStartGameOnPrimary(GAME_STATE.PLAYING)).toBe(false);
+    });
+
+    it('limite le changement de difficulté au menu', () => {
+        expect(canChangeDifficulty(GAME_STATE.MENU)).toBe(true);
+        expect(canChangeDifficulty(GAME_STATE.PLAYING)).toBe(false);
+    });
+
+    it('gère pause et retour menu', () => {
+        expect(canTogglePause(GAME_STATE.PLAYING)).toBe(true);
+        expect(canTogglePause(GAME_STATE.PAUSED)).toBe(true);
+        expect(canTogglePause(GAME_STATE.MENU)).toBe(false);
+        expect(canReturnToMenu(GAME_STATE.PAUSED)).toBe(true);
+        expect(canReturnToMenu(GAME_STATE.GAME_OVER)).toBe(true);
+        expect(canReturnToMenu(GAME_STATE.PLAYING)).toBe(false);
+    });
+
+    it('sépare gameplay, mort et défilement du sol', () => {
+        expect(shouldUpdateGameplay(GAME_STATE.PLAYING)).toBe(true);
+        expect(shouldUpdateGameplay(GAME_STATE.PAUSED)).toBe(false);
+        expect(shouldUpdateDying(GAME_STATE.DYING)).toBe(true);
+        expect(shouldScrollGround(GAME_STATE.PLAYING)).toBe(true);
+        expect(shouldScrollGround(GAME_STATE.PAUSED)).toBe(false);
+    });
+
+    it('empêche un double déclenchement de mort', () => {
+        expect(canTriggerDeath(GAME_STATE.PLAYING)).toBe(true);
+        expect(canTriggerDeath(GAME_STATE.DYING)).toBe(false);
+        expect(canTriggerDeath(GAME_STATE.GAME_OVER)).toBe(false);
+    });
+});

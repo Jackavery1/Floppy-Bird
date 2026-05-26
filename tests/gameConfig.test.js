@@ -1,0 +1,69 @@
+import { describe, it, expect } from 'vitest';
+import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
+
+describe('GAME_CONFIG dimensions', () => {
+    it('expose le centre de l’écran', () => {
+        expect(GAME_CONFIG.centerX).toBe(GAME_CONFIG.width / 2);
+        expect(GAME_CONFIG.centerY).toBe(GAME_CONFIG.height / 2);
+    });
+});
+
+describe('GAME_CONFIG.pipes', () => {
+    it('n’utilise plus spacing (spawn par pipeInterval)', () => {
+        expect(GAME_CONFIG.pipes.spacing).toBeUndefined();
+        expect(GAME_CONFIG.pipes.width).toBe(40);
+    });
+});
+
+describe('GAME_CONFIG.getDifficulty', () => {
+    it('normal hérite de bird pour la gravité', () => {
+        const n = GAME_CONFIG.getDifficulty('normal');
+        expect(n.gravity).toBe(GAME_CONFIG.bird.gravity);
+        expect(n.jumpPower).toBe(GAME_CONFIG.bird.jumpPower);
+        expect(n.speed).toBe(2.7);
+        expect(n.gap).toBe(112);
+        expect(n.pipeInterval).toBe(76);
+    });
+
+    it('easy applique des overrides', () => {
+        const e = GAME_CONFIG.getDifficulty('easy');
+        expect(e.gravity).toBe(0.30);
+        expect(e.gap).toBe(142);
+        expect(e.pipeInterval).toBe(92);
+    });
+
+    it('retombe sur normal pour une clé invalide', () => {
+        const x = GAME_CONFIG.getDifficulty('invalid');
+        expect(x.speed).toBe(2.7);
+    });
+});
+
+describe('GAME_CONFIG.level', () => {
+    it('définit des pipeGaps scriptés', () => {
+        expect(GAME_CONFIG.level.pipeGaps.length).toBeGreaterThan(0);
+        expect(GAME_CONFIG.level.name).toBeTruthy();
+    });
+
+    it('getScriptedPipeGapY borne les valeurs hors écran', () => {
+        const gap = GAME_CONFIG.getDifficulty('normal').gap;
+        const margin = GAME_CONFIG.pipes.spawnMarginY;
+        const maxY = GAME_CONFIG.groundY - gap - margin;
+        expect(getScriptedPipeGapY(0, gap)).toBeGreaterThanOrEqual(margin);
+        expect(getScriptedPipeGapY(0, gap)).toBeLessThanOrEqual(maxY);
+        expect(getScriptedPipeGapY(999, gap)).toBeNull();
+    });
+
+    it('pipeGaps scriptés valides pour chaque difficulté', () => {
+        const margin = GAME_CONFIG.pipes.spawnMarginY;
+        for (const key of ['easy', 'normal', 'hard']) {
+            const gap = GAME_CONFIG.getDifficulty(key).gap;
+            const maxY = GAME_CONFIG.groundY - gap - margin;
+            GAME_CONFIG.level.pipeGaps.forEach((_, index) => {
+                const y = getScriptedPipeGapY(index, gap);
+                expect(y).not.toBeNull();
+                expect(y).toBeGreaterThanOrEqual(margin);
+                expect(y).toBeLessThanOrEqual(maxY);
+            });
+        }
+    });
+});

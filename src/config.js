@@ -1,0 +1,78 @@
+import { Utils } from './utils.js';
+
+export const GAME_CONFIG = {
+    width: 288,
+    height: 512,
+    get centerX() { return this.width / 2; },
+    get centerY() { return this.height / 2; },
+    groundY: 498,
+    debug: typeof location !== 'undefined' && new URLSearchParams(location.search).has('debug'),
+
+    bird: {
+        width: 28,
+        height: 20,
+        startX: 50,
+        gravity: 0.38,
+        jumpPower: -6.1,
+        maxFallSpeed: 10,
+    },
+
+    pipes: {
+        width: 40,
+        bodyWidth: 28,
+        capMargin: 24,
+        spawnMarginY: 48,
+        poolSize: 8,
+    },
+
+    level: {
+        name: 'Ciel débutant',
+        // Centres Y scriptés (8 premiers tuyaux), bornés par getScriptedPipeGapY pour chaque gap (142/112/98)
+        pipeGaps: [150, 190, 230, 170, 210, 130, 250, 185],
+    },
+
+    difficulties: {
+        easy:   { speed: 1.85, gap: 142, gravity: 0.30, jumpPower: -5.7, maxFallSpeed: 10, pipeInterval: 92 },
+        normal: { speed: 2.7, gap: 112, pipeInterval: 76 },
+        hard:   { speed: 3.4, gap: 98, gravity: 0.45, jumpPower: -6.2, maxFallSpeed: 12, pipeInterval: 68 },
+    },
+
+    difficultyLabels: {
+        easy: 'FACILE',
+        normal: 'NORMAL',
+        hard: 'DIFFICILE',
+    },
+
+    difficultyColors: {
+        easy: '#88ff88',
+        normal: '#ffff00',
+        hard: '#ff8888',
+    },
+
+    storage: {
+        highScore: 'flappy-bird-high-score',
+        leaderboard: 'flappy-bird-leaderboard',
+        muted: 'flappy-bird-muted',
+        volume: 'floppy-bird-volume',
+    },
+
+    getDifficulty(key) {
+        const base = this.bird;
+        const overrides = this.difficulties[key] || this.difficulties.normal;
+        return {
+            speed: overrides.speed,
+            gap: overrides.gap,
+            gravity: overrides.gravity ?? base.gravity,
+            jumpPower: overrides.jumpPower ?? base.jumpPower,
+            maxFallSpeed: overrides.maxFallSpeed ?? base.maxFallSpeed,
+            pipeInterval: overrides.pipeInterval ?? 90,
+        };
+    },
+};
+
+export function getScriptedPipeGapY(index, pipeGap) {
+    const gaps = GAME_CONFIG.level.pipeGaps;
+    if (index >= gaps.length) return null;
+    const margin = GAME_CONFIG.pipes.spawnMarginY;
+    return Utils.clamp(gaps[index], margin, GAME_CONFIG.groundY - pipeGap - margin);
+}
