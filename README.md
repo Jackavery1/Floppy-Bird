@@ -70,3 +70,19 @@ Les 8 premières positions sont scriptées puis aléatoires. Chaque valeur est r
 - `npm run test:coverage` — couverture v8 sur la logique métier (`coverage/`). Seuils Vitest : 75 % lignes (hors `ui.js`, `GameScene.js`, `proceduralTextures.js`, `main.js`).
 
 Les scores localStorage conservent les clés `flappy-bird-*` pour ne pas perdre les parties enregistrées avant le renommage du package.
+
+## GitHub Pages
+
+URL : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
+
+Le dépôt doit publier le dossier **`dist/`** (build Vite), pas les sources. Un workflow `.github/workflows/deploy.yml` build et déploie à chaque push sur `main`.
+
+1. Sur GitHub : **Settings → Pages → Build and deployment → Source** → **GitHub Actions**.
+2. Push sur `main` : le workflow `Deploy GitHub Pages` génère `dist/` avec `base: /Floppy-Bird/` puis déploie.
+
+Test local du build Pages :
+
+```bash
+# PowerShell
+$env:BASE_PATH="/Floppy-Bird/"; npm run build; npm run preview
+```
