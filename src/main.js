@@ -1,9 +1,8 @@
 import Phaser from 'phaser';
 import { GAME_CONFIG } from './config.js';
 import { GameScene } from './GameScene.js';
+import { computeLetterboxSize, getViewportDimensions, readSafeAreaInsets } from './viewport.js';
 import '../style.css';
-
-document.documentElement.style.setProperty('--theme-color', '#16213e');
 
 const config = {
     type: Phaser.AUTO,
@@ -23,32 +22,30 @@ const config = {
     },
 };
 
-export const game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
 
 function resizeCanvas() {
     const canvas = game.canvas;
     if (!canvas) return;
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const RATIO = 288 / 512;
+    const { width: windowW, height: windowH } = getViewportDimensions();
+    const insets = readSafeAreaInsets();
+    const { width: targetW, height: targetH } = computeLetterboxSize(
+        windowW,
+        windowH,
+        GAME_CONFIG.width,
+        GAME_CONFIG.height,
+        insets,
+    );
 
-    let targetW, targetH;
-
-    if (W / H > RATIO) {
-        targetH = H;
-        targetW = H * RATIO;
-    } else {
-        targetW = W;
-        targetH = W / RATIO;
-    }
-
-    canvas.width = 288;
-    canvas.height = 512;
-    canvas.style.width = Math.floor(targetW) + 'px';
-    canvas.style.height = Math.floor(targetH) + 'px';
+    canvas.width = GAME_CONFIG.width;
+    canvas.height = GAME_CONFIG.height;
+    canvas.style.width = `${targetW}px`;
+    canvas.style.height = `${targetH}px`;
 }
 
 game.events.once('ready', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
+    window.visualViewport?.addEventListener('resize', resizeCanvas);
+    document.getElementById('loading')?.classList.add('hidden');
 });

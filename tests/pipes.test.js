@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Pipes } from '../src/pipes.js';
+import { Pipes, smoothGapY } from '../src/pipes.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 function createMockScene() {
@@ -12,6 +12,7 @@ function createMockScene() {
                 scored: false,
                 setDisplaySize: vi.fn(),
                 setOrigin: vi.fn(),
+                setDepth: vi.fn(),
                 setTexture: vi.fn(),
                 setActive: vi.fn(function () { return this; }),
                 setVisible: vi.fn(function () { return this; }),
@@ -55,12 +56,23 @@ describe('Pipes', () => {
         it('fait défiler et spawn une paire après pipeInterval', () => {
             pipes.pipeInterval = 2;
             pipes.pipeSpeed = 10;
+            pipes._autoSpawnEnabled = true;
             pipes.topPipes.push({ x: 100, y: 150, scored: false });
             pipes.bottomPipes.push({ x: 100, y: 300, scored: false });
             pipes.update(1);
             expect(pipes.topPipes[0].x).toBe(90);
             pipes.update(1);
             expect(pipes.topPipes.length).toBeGreaterThan(1);
+        });
+
+        it('n’auto-spawn pas avant le premier spawn manuel', () => {
+            pipes.pipeInterval = 2;
+            pipes._autoSpawnEnabled = false;
+            pipes.update(1);
+            pipes.update(1);
+            expect(pipes.topPipes).toHaveLength(0);
+            pipes.spawn();
+            expect(pipes.topPipes).toHaveLength(1);
         });
     });
 
@@ -81,13 +93,23 @@ describe('Pipes', () => {
             expect(pipes.pipeSpeed).toBe(hard.speed);
             expect(pipes.pipeGap).toBe(hard.gap);
         });
+    });
 
-        it('propage la difficulté à l’oiseau de la scène', () => {
-            const applyDifficulty = vi.fn();
-            scene.bird = { applyDifficulty };
-            pipes.setDifficulty('easy');
-            const easy = GAME_CONFIG.getDifficulty('easy');
-            expect(applyDifficulty).toHaveBeenCalledWith(easy);
+    describe('smoothGapY', () => {
+        it('limite l’écart vertical entre gaps consécutifs', () => {
+            expect(smoothGapY(200, 150, 80, 48, 400)).toBe(200);
+            expect(smoothGapY(300, 150, 80, 48, 400)).toBe(230);
+        });
+    });
+
+    describe('applySpeedForScore', () => {
+        it('accélère légèrement tous les 10 points', () => {
+            pipes.setDifficulty('normal');
+            const base = pipes.pipeSpeed;
+            pipes.applySpeedForScore(10);
+            expect(pipes.pipeSpeed).toBeGreaterThan(base);
+            pipes.applySpeedForScore(0);
+            expect(pipes.pipeSpeed).toBe(base);
         });
     });
 });

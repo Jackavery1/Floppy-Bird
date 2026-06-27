@@ -105,4 +105,14 @@ describe('Bird', () => {
             expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat', true);
         });
     });
+
+    describe('bufferJump', () => {
+        it('consomme le buffer au prochain update', () => {
+            bird.jumpPower = -8;
+            bird.bufferJump();
+            bird.update(1);
+            expect(bird.velocityY).toBe(-8 + bird.gravity);
+            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat', true);
+        });
+    });
 });

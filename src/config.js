@@ -1,5 +1,24 @@
 import { Utils } from './utils.js';
 
+export const SOUND = Object.freeze({
+    JUMP: 'jump',
+    SCORE: 'score',
+    GAME_OVER: 'gameover',
+    GROUND: 'ground',
+});
+
+export const DIFFICULTY = Object.freeze({
+    EASY: 'easy',
+    NORMAL: 'normal',
+    HARD: 'hard',
+});
+
+export const DIFFICULTY_ORDER = Object.freeze([
+    DIFFICULTY.EASY,
+    DIFFICULTY.NORMAL,
+    DIFFICULTY.HARD,
+]);
+
 export const GAME_CONFIG = {
     width: 288,
     height: 512,
@@ -15,6 +34,7 @@ export const GAME_CONFIG = {
         gravity: 0.38,
         jumpPower: -6.1,
         maxFallSpeed: 10,
+        jumpBufferFrames: 4,
     },
 
     pipes: {
@@ -22,13 +42,24 @@ export const GAME_CONFIG = {
         bodyWidth: 28,
         capMargin: 24,
         spawnMarginY: 48,
-        poolSize: 8,
+        maxGapDelta: 80,
     },
 
     level: {
-        name: 'Ciel débutant',
-        // Centres Y scriptés (8 premiers tuyaux), bornés par getScriptedPipeGapY pour chaque gap (142/112/98)
         pipeGaps: [150, 190, 230, 170, 210, 130, 250, 185],
+    },
+
+    round: {
+        pipeSpawnDelayMs: 1200,
+        spawnInvincibilityMs: 900,
+        speedBoostEvery: 10,
+        speedBoostPercent: 0.03,
+    },
+
+    training: {
+        timeScale: 0.65,
+        ghostAlpha: 0.35,
+        sampleEveryFrames: 3,
     },
 
     difficulties: {
@@ -51,9 +82,22 @@ export const GAME_CONFIG = {
 
     storage: {
         highScore: 'flappy-bird-high-score',
+        highScorePrefix: 'flappy-bird-high-score-',
         leaderboard: 'flappy-bird-leaderboard',
+        leaderboardPrefix: 'flappy-bird-leaderboard-',
         muted: 'flappy-bird-muted',
-        volume: 'floppy-bird-volume',
+        volume: 'flappy-bird-volume',
+        volumeLegacy: 'flappy-bird-sound-level',
+        ghost: 'flappy-bird-ghost',
+        training: 'flappy-bird-training',
+    },
+
+    highScoreKey(difficulty) {
+        return `${this.storage.highScorePrefix}${difficulty}`;
+    },
+
+    leaderboardKey(difficulty) {
+        return `${this.storage.leaderboardPrefix}${difficulty}`;
     },
 
     getDifficulty(key) {

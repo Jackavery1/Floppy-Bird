@@ -1,88 +1,82 @@
 # Floppy Bird
 
-Clone arcade type Flappy — Phaser 3, PWA, un niveau, scores locaux.
+Clone arcade — Phaser 3, Vite, PWA. Résolution interne 288×512, canvas adaptatif (letterbox).
 
-## Démarrage
+## Commandes
 
 ```bash
 npm install
-# Si erreur certificat : npm install --strict-ssl=false
-
-npm run dev           # http://localhost:5173
-npm run build         # dist/ + PWA
-npm start             # preview dist/ :8000
-npm test              # tests unitaires
-npm run test:coverage # tests + rapport de couverture (seuils dans vitest.config.js)
-npm run icons         # génère public/icons/ (PNG PWA + favicon)
-npm run icons:optimize
+npm run dev          # http://localhost:5173
+npm run build        # dist/ + PWA (Phaser via CDN, bundle allégé)
+npm run preview      # preview dist
+npm test             # Vitest
+npm run test:coverage
+npm run test:e2e     # Playwright (viewport + chargement)
+npm run lint         # ESLint
+npm run icons        # public/icons/
 ```
 
-## Structure (v1.5)
+## Problème certificat npm
 
-```
-src/
-├── config.js              # Config 288×512, niveau, difficultés
-├── gameState.js           # États figés (menu, playing, dying…)
-├── gameStateRules.js      # Règles de transition (testables)
-├── gameConstants.js       # SOUND, DIFFICULTY
-├── uiLayout.js            # Grille Y + panneau game over
-├── utils.js
-├── proceduralTextures.js  # Sprites générés (oiseau, tuyaux, fond)
-├── audio.js               # Sons Web Audio + volume + mute
-├── bird.js, pipes.js
-├── ui.js
-├── ScorePopupPool.js, ScoreParticlePool.js
-├── GameScene.js
-└── main.js                # Phaser + resizeCanvas mobile
-public/icons/, offline.html
-tests/                     # unitaires + smoke GameScene + uiLayout
-scripts/
-```
+Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SSL :
 
-Résolution interne **288×512** ; le canvas CSS s’adapte à l’écran (letterbox, sans déformation).
-
-## Modifier le parcours de tuyaux
-
-Édite `src/config.js` :
-
-```javascript
-level: {
-  name: 'Ciel débutant',
-  pipeGaps: [150, 190, 230, 170, 210, 130, 250, 185],
-},
-```
-
-Les 8 premières positions sont scriptées puis aléatoires. Chaque valeur est re-clampée selon le `pipeGap` de la difficulté active (142 facile / 112 normal / 98 difficile).
+1. **Proxy d’entreprise** — demande le certificat racine à ton admin et configure-le :
+   ```bash
+   npm config set cafile "C:\chemin\vers\corp-ca.pem"
+   ```
+2. **Réseau temporairement bloqué** — réessaie sur un autre réseau (partage 4G, VPN personnel).
+3. **Contournement local uniquement** (non recommandé en production) :
+   ```bash
+   npm install --strict-ssl=false
+   ```
+   À n’utiliser que si les options ci-dessus ne sont pas possibles.
 
 ## Contrôles
 
 | Entrée | Action |
 |--------|--------|
-| Espace / tap | Saut (en jeu) ou démarrer / rejouer |
+| Espace / tap | Saut, démarrer ou rejouer |
 | 1 / 2 / 3 | Difficulté (menu) |
+| T | Mode entraînement ON/OFF (menu) |
 | ESC | Pause |
 | M | Menu (pause ou game over) |
-| Tap « SON » (menu) | Cycle volume 100 % → 50 % → 25 % → muet |
+| Tap « SON » | Volume 100 % → 50 % → 25 % → muet |
 
-## Tests
+## Jeu
 
-- `npm test` — suite Vitest (logique, audio, pools, états, layout).
-- `npm run test:coverage` — couverture v8 sur la logique métier (`coverage/`). Seuils Vitest : 75 % lignes (hors `ui.js`, `GameScene.js`, `proceduralTextures.js`, `main.js`).
+- Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
+- 8 premiers gaps scriptés puis aléatoire (`level.pipeGaps` dans `config.js`)
+- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn
+- Buffer de saut 4 frames ; 1er tap = démarrer + sauter
+- **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
+- **Mode entraînement** : ralenti (×0,65), oiseau fantôme (dernier parcours), scores non enregistrés
 
-Les scores localStorage conservent les clés `flappy-bird-*` pour ne pas perdre les parties enregistrées avant le renommage du package.
+### Difficultés
 
-## GitHub Pages
+| | Vitesse | Écart | Intervalle |
+|--|---------|-------|------------|
+| Facile | 1.85 | 142 | 92 |
+| Normal | 2.7 | 112 | 76 |
+| Difficile | 3.4 | 98 | 68 |
 
-URL : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
+## Structure
 
-Le dépôt doit publier le dossier **`dist/`** (build Vite), pas les sources. Un workflow `.github/workflows/deploy.yml` build et déploie à chaque push sur `main`.
-
-1. Sur GitHub : **Settings → Pages → Build and deployment → Source** → **GitHub Actions**.
-2. Push sur `main` : le workflow `Deploy GitHub Pages` génère `dist/` avec `base: /Floppy-Bird/` puis déploie.
-
-Test local du build Pages :
-
-```bash
-# PowerShell
-$env:BASE_PATH="/Floppy-Bird/"; npm run build; npm run preview
 ```
+src/
+  config.js, gameState.js, storage.js, device.js
+  bird.js, pipes.js, audio.js, haptics.js, training.js
+  ui.js, uiLayout.js, uiGameOver.js
+  sceneBackground.js, sceneInput.js, sceneRound.js
+  proceduralTextures.js, scoreEffects.js
+  GameScene.js, main.js, viewport.js, utils.js
+tests/   e2e/   public/icons/   scripts/
+```
+
+## Build & perf
+
+- **Dev** : Phaser bundlé par Vite (HMR rapide).
+- **Production** : Phaser chargé depuis jsDelivr (chunk séparé ~0 Ko dans `dist/`), mis en cache par la PWA.
+
+## Déploiement
+
+GitHub Pages : workflow `deploy.yml` — `npm test`, `npm run lint`, build, déploiement `dist/`.

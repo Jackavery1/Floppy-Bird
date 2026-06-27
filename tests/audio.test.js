@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { SOUND } from '../src/gameConstants.js';
+import { SOUND } from '../src/config.js';
 
 function createMockContext() {
     const oscillators = [];
@@ -83,7 +83,7 @@ describe('audio', () => {
     });
 
     it('ne joue rien lorsque le son est coupé', async () => {
-        const store = { 'flappy-bird-muted': '1', 'floppy-bird-volume': '0' };
+        const store = { 'flappy-bird-muted': '1', 'flappy-bird-volume': '0' };
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
             setItem: (k, v) => { store[k] = v; },
@@ -98,7 +98,7 @@ describe('audio', () => {
     });
 
     it('applique le volume sur les gains', async () => {
-        const store = { 'floppy-bird-volume': '0.5' };
+        const store = { 'flappy-bird-volume': '0.5' };
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
             setItem: (k, v) => { store[k] = v; },
@@ -111,5 +111,43 @@ describe('audio', () => {
         play(SOUND.JUMP);
         const gainNode = mockCtx.createGain.mock.results[0].value;
         expect(gainNode.gain.setValueAtTime).toHaveBeenCalledWith(0.1, 0);
+    });
+
+    it('cycleSoundLevel parcourt les paliers de volume', async () => {
+        const store = { 'flappy-bird-volume': '1' };
+        vi.stubGlobal('localStorage', {
+            getItem: (k) => store[k] ?? null,
+            setItem: (k, v) => { store[k] = v; },
+        });
+        vi.resetModules();
+        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
+        const { cycleSoundLevel, getVolume, isMuted } = await import('../src/audio.js');
+        cycleSoundLevel();
+        expect(getVolume()).toBe(0.5);
+        cycleSoundLevel();
+        expect(getVolume()).toBe(0.25);
+        cycleSoundLevel();
+        expect(isMuted()).toBe(true);
+    });
+
+    it('formatSoundLabel reflète l’état audio', async () => {
+        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
+        const store = { 'flappy-bird-volume': '0.5' };
+        vi.stubGlobal('localStorage', {
+            getItem: (k) => store[k] ?? null,
+            setItem: (k, v) => { store[k] = v; },
+        });
+        vi.resetModules();
+        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
+        const { formatSoundLabel } = await import('../src/audio.js');
+        expect(formatSoundLabel()).toBe('50 %');
+    });
+
+    it('isAudioAvailable détecte l’absence d’AudioContext', async () => {
+        vi.stubGlobal('AudioContext', undefined);
+        vi.stubGlobal('webkitAudioContext', undefined);
+        vi.resetModules();
+        const { isAudioAvailable } = await import('../src/audio.js');
+        expect(isAudioAvailable()).toBe(false);
     });
 });

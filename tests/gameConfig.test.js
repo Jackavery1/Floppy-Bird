@@ -15,6 +15,17 @@ describe('GAME_CONFIG.pipes', () => {
     });
 });
 
+describe('GAME_CONFIG.round', () => {
+    it('retarde le premier tuyau et accorde une invincibilité au spawn', () => {
+        expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThanOrEqual(1000);
+        expect(GAME_CONFIG.round.spawnInvincibilityMs).toBeGreaterThan(0);
+    });
+
+    it('bufferise les sauts sur plusieurs frames', () => {
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBeGreaterThanOrEqual(2);
+    });
+});
+
 describe('GAME_CONFIG.getDifficulty', () => {
     it('normal hérite de bird pour la gravité', () => {
         const n = GAME_CONFIG.getDifficulty('normal');
@@ -41,7 +52,6 @@ describe('GAME_CONFIG.getDifficulty', () => {
 describe('GAME_CONFIG.level', () => {
     it('définit des pipeGaps scriptés', () => {
         expect(GAME_CONFIG.level.pipeGaps.length).toBeGreaterThan(0);
-        expect(GAME_CONFIG.level.name).toBeTruthy();
     });
 
     it('getScriptedPipeGapY borne les valeurs hors écran', () => {

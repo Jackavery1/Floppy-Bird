@@ -1,6 +1,12 @@
 import { GAME_CONFIG, getScriptedPipeGapY } from './config.js';
 import { Utils } from './utils.js';
 
+export function smoothGapY(rawY, lastGapY, maxDelta, minY, maxY) {
+    const clamped = Utils.clamp(rawY, minY, maxY);
+    if (lastGapY == null) return clamped;
+    return Utils.clamp(clamped, lastGapY - maxDelta, lastGapY + maxDelta);
+}
+
 export class Pipes {
     constructor(scene) {
         this.scene = scene;
@@ -16,54 +22,51 @@ export class Pipes {
 
         this.topPipes = [];
         this.bottomPipes = [];
-        this._topPool = [];
-        this._bottomPool = [];
         this._spawnCounter = 0;
         this._gapIndex = 0;
+        this._lastGapY = null;
+        this._autoSpawnEnabled = false;
+        this._baseSpeed = normal.speed;
+    }
+
+    _gapBounds() {
+        const margin = GAME_CONFIG.pipes.spawnMarginY;
+        return {
+            min: margin,
+            max: GAME_CONFIG.groundY - this.pipeGap - margin,
+        };
     }
 
     _randomGapY() {
-        const margin = GAME_CONFIG.pipes.spawnMarginY;
-        return Utils.randomInt(margin, GAME_CONFIG.groundY - this.pipeGap - margin);
+        const { min, max } = this._gapBounds();
+        return Utils.randomInt(min, max);
     }
 
     _resolveGapY() {
         const y = getScriptedPipeGapY(this._gapIndex, this.pipeGap);
         if (y !== null) {
             this._gapIndex++;
+            this._lastGapY = y;
             return y;
         }
-        return this._randomGapY();
-    }
-
-    _acquireFromPool(pool, texture, originY) {
-        let pipe = pool.pop();
-        if (!pipe) {
-            pipe = this.scene.add.sprite(0, 0, texture);
-            pipe.setDisplaySize(this.pipeWidth, this.pipeHeight);
-            pipe.setOrigin(0.5, originY);
-        }
-        pipe.setActive(true).setVisible(true);
-        return pipe;
-    }
-
-    _releaseToPool(pool, pipe) {
-        pipe.setActive(false).setVisible(false);
-        if (pool.length < GAME_CONFIG.pipes.poolSize) {
-            pool.push(pipe);
-        } else {
-            pipe.destroy();
-        }
+        const { min, max } = this._gapBounds();
+        const raw = this._randomGapY();
+        const smoothed = smoothGapY(
+            raw,
+            this._lastGapY,
+            GAME_CONFIG.pipes.maxGapDelta,
+            min,
+            max,
+        );
+        this._lastGapY = smoothed;
+        return smoothed;
     }
 
     _createPipe(texture, originY, y) {
-        const pool = texture === 'pipe-top' ? this._topPool : this._bottomPool;
-        const pipe = this._acquireFromPool(pool, texture, originY);
-        pipe.setTexture(texture);
+        const pipe = this.scene.add.sprite(GAME_CONFIG.width + this.pipeWidth, y, texture);
         pipe.setDisplaySize(this.pipeWidth, this.pipeHeight);
         pipe.setOrigin(0.5, originY);
-        pipe.x = GAME_CONFIG.width + this.pipeWidth;
-        pipe.y = y;
+        pipe.setDepth(5);
         return pipe;
     }
 
@@ -78,27 +81,30 @@ export class Pipes {
 
     spawn() {
         this.spawnPipePair(this._resolveGapY());
+        this._autoSpawnEnabled = true;
+        this._spawnCounter = 0;
     }
 
-    _scrollPipes(array, pool, step) {
+    _scrollPipes(array, step) {
         for (let i = array.length - 1; i >= 0; i--) {
             const pipe = array[i];
             pipe.x -= this.pipeSpeed * step;
             if (pipe.x < -this.pipeWidth) {
-                this._releaseToPool(pool, pipe);
+                pipe.destroy();
                 array.splice(i, 1);
             }
         }
     }
 
     update(step = 1) {
-        this._scrollPipes(this.topPipes, this._topPool, step);
-        this._scrollPipes(this.bottomPipes, this._bottomPool, step);
+        this._scrollPipes(this.topPipes, step);
+        this._scrollPipes(this.bottomPipes, step);
+
+        if (!this._autoSpawnEnabled) return;
 
         this._spawnCounter += step;
         if (this._spawnCounter >= this.pipeInterval) {
             this.spawn();
-            this._spawnCounter = 0;
         }
     }
 
@@ -133,33 +139,31 @@ export class Pipes {
 
     setDifficulty(difficulty = 'normal') {
         const config = GAME_CONFIG.getDifficulty(difficulty);
+        this._baseSpeed = config.speed;
         this.pipeSpeed = config.speed;
         this.pipeGap = config.gap;
         this.pipeInterval = config.pipeInterval;
-        if (this.scene.bird) {
-            this.scene.bird.applyDifficulty(config);
-        }
     }
 
-    _drainActive(array, pool) {
-        for (let i = array.length - 1; i >= 0; i--) {
-            this._releaseToPool(pool, array[i]);
-            array.splice(i, 1);
-        }
+    applySpeedForScore(score) {
+        const { speedBoostEvery, speedBoostPercent } = GAME_CONFIG.round;
+        const boosts = Math.floor(score / speedBoostEvery);
+        this.pipeSpeed = this._baseSpeed * (1 + boosts * speedBoostPercent);
     }
 
     reset() {
-        this._drainActive(this.topPipes, this._topPool);
-        this._drainActive(this.bottomPipes, this._bottomPool);
+        for (const pipe of [...this.topPipes, ...this.bottomPipes]) {
+            pipe.destroy();
+        }
+        this.topPipes.length = 0;
+        this.bottomPipes.length = 0;
         this._spawnCounter = 0;
         this._gapIndex = 0;
+        this._lastGapY = null;
+        this._autoSpawnEnabled = false;
     }
 
     destroy() {
         this.reset();
-        this._topPool.forEach(p => p.destroy());
-        this._bottomPool.forEach(p => p.destroy());
-        this._topPool.length = 0;
-        this._bottomPool.length = 0;
     }
 }
