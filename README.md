@@ -4,9 +4,12 @@ Clone arcade — Phaser 3, Vite, PWA. Résolution interne 288×512, canvas adapt
 
 ## Commandes
 
+> **Ne pas utiliser Live Server** (port 5500) : il ne bundle pas Vite/Phaser — écran bloqué sur « Chargement… ».  
+> Lance toujours **`npm run dev`** → http://localhost:5173
+
 ```bash
 npm install
-npm run dev          # http://localhost:5173
+npm run dev          # http://localhost:5173  ← développement local
 npm run build        # dist/ + PWA (Phaser via CDN, bundle allégé)
 npm run preview      # preview dist
 npm test             # Vitest
@@ -45,11 +48,13 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 ## Jeu
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
-- 8 premiers gaps scriptés puis aléatoire (`level.pipeGaps` dans `config.js`)
+- 8 premiers gaps scriptés puis aléatoire lissé (`level.pipeGaps` dans `config.js`)
 - Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn
 - Buffer de saut 4 frames ; 1er tap = démarrer + sauter
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
-- **Mode entraînement** : ralenti (×0,65), oiseau fantôme (dernier parcours), scores non enregistrés
+- **Records et TOP 5** par difficulté (facile / normal / difficile)
+- **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours), scores non enregistrés
+- Escalade : +3 % vitesse tous les 10 points
 
 ### Difficultés
 
@@ -63,12 +68,13 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 
 ```
 src/
-  config.js, gameState.js, storage.js, device.js
+  config.js, gameState.js, storage.js, device.js, viewport.js
   bird.js, pipes.js, audio.js, haptics.js, training.js
   ui.js, uiLayout.js, uiGameOver.js
+  sceneSetup.js, sceneFlow.js, sceneDeath.js, sceneJumpBuffer.js, sceneBootstrap.js
   sceneBackground.js, sceneInput.js, sceneRound.js
-  proceduralTextures.js, scoreEffects.js
-  GameScene.js, main.js, viewport.js, utils.js
+  proceduralTextures.js, textures/, scoreEffects.js
+  GameScene.js, main.js, utils.js
 tests/   e2e/   public/icons/   scripts/
 ```
 
@@ -80,3 +86,14 @@ tests/   e2e/   public/icons/   scripts/
 ## Déploiement
 
 GitHub Pages : workflow `deploy.yml` — `npm test`, `npm run lint`, build, déploiement `dist/`.
+
+URL : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
+
+Test local du build Pages :
+
+```bash
+# PowerShell
+$env:BASE_PATH="/Floppy-Bird/"; npm run build; npm run preview
+```
+
+Les scores `localStorage` conservent les clés `flappy-bird-*` (migration automatique depuis l’ancien format).
