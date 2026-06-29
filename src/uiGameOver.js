@@ -1,3 +1,4 @@
+import { sceneTween } from './motion.js';
 import { GAME_CONFIG } from './config.js';
 import { restartHint, menuHint } from './device.js';
 import { Utils } from './utils.js';
@@ -121,7 +122,7 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
 
     if (fadeIn) {
         elements.forEach(e => e.setAlpha(0));
-        scene.tweens.add({
+        sceneTween(scene, {
             targets: elements,
             alpha: 1,
             duration: 500,

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/copy-phaser.mjs && vite build",
     "preview": "vite preview --port 8000",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",

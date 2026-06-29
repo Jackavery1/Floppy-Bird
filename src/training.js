@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
+import { STORAGE_KEYS } from './storageKeys.js';
 
-const STORAGE_KEY = GAME_CONFIG.storage.ghost;
+const STORAGE_KEY = STORAGE_KEYS.ghost;
 
 export function loadGhostData() {
     try {
@@ -23,10 +24,6 @@ export function loadGhostData() {
     }
 }
 
-export function loadGhostPath() {
-    return loadGhostData().path;
-}
-
 export function saveGhostData(score, path) {
     if (!path?.length) return;
     try {
@@ -35,10 +32,6 @@ export function saveGhostData(score, path) {
             path: path.slice(0, 600),
         }));
     } catch { /* quota */ }
-}
-
-export function saveGhostPath(path) {
-    saveGhostData(0, path);
 }
 
 export function interpolateGhostY(path, elapsedMs) {

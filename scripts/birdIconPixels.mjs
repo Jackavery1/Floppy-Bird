@@ -1,5 +1,5 @@
 /**
- * Frame milieu de l'oiseau (proceduralTextures.js, ox=38, pos='mid')
+ * Frame milieu de l'oiseau (birdTextures.js, ox=38, pos='mid')
  * Coordonnées relatives au cadre 34×28.
  */
 

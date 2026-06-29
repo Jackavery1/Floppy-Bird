@@ -61,9 +61,8 @@ export class Bird {
         hapticLight();
     }
 
-    // Hitbox réduite (mx=5, my=4) — plus permissive que le sprite visible
     getBounds() {
-        const mx = 5, my = 4;
+        const mx = 3, my = 2;
         return {
             x: this.x - this.width / 2 + mx,
             y: this.y - this.height / 2 + my,

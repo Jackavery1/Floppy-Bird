@@ -1,3 +1,6 @@
+import { FONT } from './uiLayout.js';
+import { sceneTween } from './motion.js';
+
 const PARTICLE_DIRS = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
 
 export class ScoreEffects {
@@ -10,7 +13,7 @@ export class ScoreEffects {
             const text = scene.add.text(0, 0, '+1', {
                 fontSize: '22px',
                 fill: '#ffff00',
-                fontFamily: 'Arial',
+                fontFamily: FONT,
                 fontStyle: 'bold',
             });
             text.setDepth(150).setVisible(false).setActive(false);
@@ -33,7 +36,7 @@ export class ScoreEffects {
         const popup = this._popups.find(t => !t.active) ?? this._popups[0];
         popup.setPosition(x, y).setAlpha(1).setVisible(true).setActive(true);
 
-        this.scene.tweens.add({
+        sceneTween(this.scene, {
             targets: popup,
             y: y - 45,
             alpha: { from: 1, to: 0 },
@@ -47,7 +50,7 @@ export class ScoreEffects {
             const star = this._stars.find(s => !s.active) ?? this._stars[0];
             star.setPosition(x, y).setAlpha(1).setScale(1).setVisible(true).setActive(true);
 
-            this.scene.tweens.add({
+            sceneTween(this.scene, {
                 targets: star,
                 x: x + dx * 40,
                 y: y + dy * 40,

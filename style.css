@@ -28,6 +28,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right)
+    env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: #1a1a2e;
   color: #90caf9;
   font-family: Arial, sans-serif;
@@ -35,7 +37,8 @@ body {
   letter-spacing: 0.04em;
 }
 
-#loading.hidden {
+#loading.hidden,
+html.game-ready #loading {
   display: none;
 }
 
@@ -46,7 +49,10 @@ body {
   z-index: 9998;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: max(24px, env(safe-area-inset-top))
+    max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom))
+    max(24px, env(safe-area-inset-left));
   background: rgba(26, 26, 46, 0.96);
   color: #ffffff;
   font-family: Arial, sans-serif;
@@ -55,7 +61,8 @@ body {
   pointer-events: none;
 }
 
-@media (orientation: landscape) and (max-height: 520px) and (pointer: coarse) {
+@media (orientation: landscape) and (max-height: 520px) and (pointer: coarse),
+       (orientation: landscape) and (max-height: 520px) and (max-width: 900px) {
   #landscape-hint {
     display: flex;
   }

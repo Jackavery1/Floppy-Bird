@@ -3,10 +3,13 @@ import { GAME_STATE } from './gameState.js';
 import { playSound } from './audio.js';
 import { hapticLight } from './haptics.js';
 
+/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
 export function shouldNotifyRecord(score, roundHighScore, recordNotified) {
     return !recordNotified && roundHighScore > 0 && score > roundHighScore;
 }
 
+/** @param {SceneContext} scene */
 export function cancelPipeSpawnTimer(scene) {
     if (scene._pipeSpawnTimer) {
         scene._pipeSpawnTimer.remove(false);
@@ -14,6 +17,7 @@ export function cancelPipeSpawnTimer(scene) {
     }
 }
 
+/** @param {SceneContext} scene */
 export function scheduleFirstPipe(scene) {
     cancelPipeSpawnTimer(scene);
     scene._pipeSpawnTimer = scene.time.delayedCall(GAME_CONFIG.round.pipeSpawnDelayMs, () => {
@@ -24,6 +28,7 @@ export function scheduleFirstPipe(scene) {
     });
 }
 
+/** @param {SceneContext} scene */
 export function clearSpawnInvincibility(scene) {
     if (scene._spawnInvincibleTimer) {
         scene._spawnInvincibleTimer.remove(false);
@@ -32,6 +37,7 @@ export function clearSpawnInvincibility(scene) {
     scene._spawnInvincible = false;
 }
 
+/** @param {SceneContext} scene */
 export function startSpawnInvincibility(scene) {
     clearSpawnInvincibility(scene);
     scene._spawnInvincible = true;
@@ -44,6 +50,7 @@ export function startSpawnInvincibility(scene) {
     );
 }
 
+/** @param {SceneContext} scene */
 export function checkScorePipes(scene) {
     const birdX = scene.bird.x;
     scene.pipes.topPipes.forEach(pipe => {

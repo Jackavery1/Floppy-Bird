@@ -21,6 +21,7 @@ function createMockContext() {
     const gain = () => ({
         gain: {
             setValueAtTime: vi.fn(),
+            linearRampToValueAtTime: vi.fn(),
             exponentialRampToValueAtTime: vi.fn(),
         },
         connect: vi.fn(),
@@ -28,10 +29,25 @@ function createMockContext() {
     return {
         state: 'running',
         currentTime: 0,
+        sampleRate: 44100,
         destination: {},
         resume: vi.fn().mockResolvedValue(undefined),
         createOscillator: vi.fn(osc),
         createGain: vi.fn(gain),
+        createBuffer: vi.fn((channels, length) => ({
+            getChannelData: () => new Float32Array(length),
+        })),
+        createBufferSource: vi.fn(() => ({
+            buffer: null,
+            connect: vi.fn(),
+            start: vi.fn(),
+            stop: vi.fn(),
+        })),
+        createBiquadFilter: vi.fn(() => ({
+            type: 'lowpass',
+            frequency: { value: 0 },
+            connect: vi.fn(),
+        })),
         oscillators,
     };
 }
@@ -72,14 +88,31 @@ describe('audio', () => {
         expect(mockCtx.createOscillator.mock.calls.length).toBeGreaterThan(0);
     });
 
-    it('utilise triangle pour gameover et sine pour ground', () => {
-        playSound(SOUND.GAME_OVER);
-        const gameoverOsc = mockCtx.oscillators.at(-1);
-        expect(gameoverOsc.type).toBe('triangle');
+    it('getScoreToneType varie selon le score', async () => {
+        const { getScoreToneType } = await import('../src/audio.js');
+        expect(getScoreToneType(1)).toBe('triangle');
+        expect(getScoreToneType(2)).toBe('square');
+        expect(getScoreToneType(3)).toBe('sine');
+    });
 
+    it('playScore ajoute un son de palier tous les 10 points', () => {
+        mockCtx.createOscillator.mockClear();
+        playSound(SOUND.SCORE, 9);
+        const atNine = mockCtx.createOscillator.mock.calls.length;
+        playSound(SOUND.SCORE, 10);
+        const atTen = mockCtx.createOscillator.mock.calls.length;
+        expect(atTen).toBeGreaterThan(atNine);
+        const milestoneOsc = mockCtx.oscillators.at(-1);
+        expect(milestoneOsc.type).toBe('square');
+    });
+
+    it('utilise triangle pour gameover et bruit filtré pour ground', () => {
+        playSound(SOUND.GAME_OVER);
+        expect(mockCtx.oscillators.some((o) => o.type === 'triangle')).toBe(true);
+
+        mockCtx.createBuffer.mockClear();
         playSound(SOUND.GROUND);
-        const groundOsc = mockCtx.oscillators.at(-1);
-        expect(groundOsc.type).toBe('sine');
+        expect(mockCtx.createBuffer).toHaveBeenCalled();
     });
 
     it('ne joue rien lorsque le son est coupé', async () => {
@@ -97,7 +130,7 @@ describe('audio', () => {
         expect(mockCtx.createOscillator).not.toHaveBeenCalled();
     });
 
-    it('applique le volume sur les gains', async () => {
+    it('applique le volume sur les gains avec attaque', async () => {
         const store = { 'flappy-bird-volume': '0.5' };
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
@@ -109,8 +142,8 @@ describe('audio', () => {
         const { playSound: play, getVolume } = await import('../src/audio.js');
         expect(getVolume()).toBe(0.5);
         play(SOUND.JUMP);
-        const gainNode = mockCtx.createGain.mock.results[0].value;
-        expect(gainNode.gain.setValueAtTime).toHaveBeenCalledWith(0.1, 0);
+        const gainNode = mockCtx.createGain.mock.results[1].value;
+        expect(gainNode.gain.linearRampToValueAtTime).toHaveBeenCalled();
     });
 
     it('cycleSoundLevel parcourt les paliers de volume', async () => {

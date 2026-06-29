@@ -2,6 +2,9 @@ import { DIFFICULTY } from './config.js';
 import { canReturnToMenu, canTogglePause } from './gameState.js';
 import { resumeAudio } from './audio.js';
 
+/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {SceneContext} scene */
 export function setupSceneInput(scene) {
     scene.input.keyboard.on('keydown-SPACE', () => scene.handlePrimaryAction());
 
@@ -24,4 +27,5 @@ export function setupSceneInput(scene) {
     scene.input.keyboard.on('keydown-TWO',   () => scene.changeDifficulty(DIFFICULTY.NORMAL));
     scene.input.keyboard.on('keydown-THREE', () => scene.changeDifficulty(DIFFICULTY.HARD));
     scene.input.keyboard.on('keydown-T', () => scene.toggleTraining());
+    scene.input.keyboard.on('keydown-H', () => scene.toggleHardcore());
 }

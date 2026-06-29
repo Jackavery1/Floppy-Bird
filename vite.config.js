@@ -3,8 +3,12 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const base = process.env.BASE_PATH || './';
-const PHASER_VERSION = '3.80.1';
-const PHASER_CDN = `https://cdn.jsdelivr.net/npm/phaser@${PHASER_VERSION}/dist/phaser.min.js`;
+const THEME_COLOR = '#1a1a2e';
+
+function phaserScriptSrc(basePath) {
+    const normalized = basePath.endsWith('/') ? basePath : `${basePath}/`;
+    return `${normalized}vendor/phaser.min.js`;
+}
 
 export default defineConfig(({ mode }) => {
     const phaserFromCdn = mode === 'production';
@@ -29,14 +33,14 @@ export default defineConfig(({ mode }) => {
                         if (!phaserFromCdn) return html;
                         return html.replace(
                             /(\s*<script type="module")/,
-                            `\n    <script src="${PHASER_CDN}" crossorigin="anonymous"></script>$1`,
+                            `\n    <script src="${phaserScriptSrc(base)}" crossorigin="anonymous"></script>$1`,
                         );
                     },
                 },
             },
             VitePWA({
                 registerType: 'autoUpdate',
-                includeAssets: ['icons/*.png'],
+                includeAssets: ['icons/*.png', 'vendor/*.js'],
                 manifest: {
                     name: 'Floppy Bird',
                     short_name: 'Floppy',
@@ -45,8 +49,8 @@ export default defineConfig(({ mode }) => {
                     scope: './',
                     display: 'standalone',
                     orientation: 'portrait',
-                    background_color: '#1a1a2e',
-                    theme_color: '#16213e',
+                    background_color: THEME_COLOR,
+                    theme_color: THEME_COLOR,
                     lang: 'fr',
                     icons: [
                         { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
@@ -56,17 +60,8 @@ export default defineConfig(({ mode }) => {
                 },
                 workbox: {
                     globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg}'],
-                    navigateFallback: 'offline.html',
-                    runtimeCaching: [
-                        {
-                            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/npm\/phaser@/,
-                            handler: 'CacheFirst',
-                            options: {
-                                cacheName: 'phaser-cdn',
-                                expiration: { maxEntries: 1, maxAgeSeconds: 60 * 60 * 24 * 30 },
-                            },
-                        },
-                    ],
+                    navigateFallback: 'index.html',
+                    navigateFallbackDenylist: [/^\/offline\.html$/],
                 },
             }),
         ],
@@ -76,7 +71,6 @@ export default defineConfig(({ mode }) => {
             coverage: {
                 provider: 'v8',
                 include: ['src/**/*.js'],
-                exclude: ['src/main.js'],
                 reporter: ['text', 'html', 'lcov'],
                 thresholds: { lines: 75, functions: 70, branches: 70, statements: 75 },
             },

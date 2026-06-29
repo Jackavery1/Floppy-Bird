@@ -9,15 +9,17 @@ export const UI_LAYOUT = {
     menu: {
         title: 120,
         best: 148,
-        training: 178,
-        difficulty: 204,
-        start: 264,
+        daily: 158,
+        training: 172,
+        hardcore: 192,
+        difficulty: 216,
+        start: 276,
         hint1: 460,
         hint2: 475,
         mute: 442,
     },
     pause: { title: 210, resumeBtn: 250, menuBtn: 298 },
-    playing: { trainingBadgeY: 22, pauseBtnX: 264, pauseBtnY: 28 },
+    playing: { trainingBadgeY: 22, hardcoreBadgeY: 36, pauseBtnX: 264, pauseBtnY: 28 },
     diffBtn: { width: 68, height: 26, gap: 10, radius: 6, x: [32, 110, 188] },
     menuBtn: { width: 100, height: 36, radius: 8 },
 };
@@ -32,6 +34,45 @@ export const DIFF_BTN_HOVER = { color: 0xffffff, alpha: 0.38 };
 export const TITLE_MAX_WIDTH = 260;
 export const GAME_TITLE = 'FLOPPY BIRD';
 export const FONT = 'Arial';
+
+export function modesAccordionLabel(expanded, trainingMode, hardcoreMode) {
+    const chevron = expanded ? '▾' : '▸';
+    const ent = trainingMode ? 'ON' : 'OFF';
+    const hard = hardcoreMode ? 'ON' : 'OFF';
+    return `${chevron} MODES · Entr.${ent} · Hard.${hard}`;
+}
+
+export function computeMenuLayout(compact, modesExpanded) {
+    if (!compact) {
+        return { ...UI_LAYOUT.menu, compact: false, modesExpanded: true, modesHeader: null };
+    }
+    let y = 168;
+    const layout = {
+        compact: true,
+        modesExpanded,
+        title: UI_LAYOUT.menu.title,
+        best: UI_LAYOUT.menu.best,
+        daily: UI_LAYOUT.menu.daily,
+        modesHeader: y,
+    };
+    if (modesExpanded) {
+        y += 20;
+        layout.training = y;
+        y += 20;
+        layout.hardcore = y;
+        y += 14;
+    } else {
+        layout.training = null;
+        layout.hardcore = null;
+        y += 22;
+    }
+    layout.difficulty = y;
+    layout.start = layout.difficulty + 60;
+    layout.mute = layout.start + 166;
+    layout.hint1 = layout.mute + 18;
+    layout.hint2 = layout.hint1 + 15;
+    return layout;
+}
 
 export function diffButtonCenter(index) {
     const { diffBtn } = UI_LAYOUT;

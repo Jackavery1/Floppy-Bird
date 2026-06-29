@@ -1,7 +1,10 @@
 import { GAME_CONFIG } from './config.js';
 import { shouldScrollGround } from './gameState.js';
-import { GROUND_BLADE_H, GROUND_TILE_H } from './proceduralTextures.js';
+import { GROUND_BLADE_H, GROUND_TILE_H } from './textures/index.js';
 
+/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {SceneContext} scene */
 export function initClouds(scene) {
     const clouds = [];
     for (let i = 0; i < 5; i++) {
@@ -26,6 +29,7 @@ export function updateClouds(clouds) {
     }
 }
 
+/** @param {SceneContext} scene */
 export function createGround(scene) {
     const gY = GAME_CONFIG.groundY;
     const centerY = gY - GROUND_BLADE_H + GROUND_TILE_H / 2;

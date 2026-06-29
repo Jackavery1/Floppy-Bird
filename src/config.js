@@ -80,26 +80,6 @@ export const GAME_CONFIG = {
         hard: '#ff8888',
     },
 
-    storage: {
-        highScore: 'flappy-bird-high-score',
-        highScorePrefix: 'flappy-bird-high-score-',
-        leaderboard: 'flappy-bird-leaderboard',
-        leaderboardPrefix: 'flappy-bird-leaderboard-',
-        muted: 'flappy-bird-muted',
-        volume: 'flappy-bird-volume',
-        volumeLegacy: 'flappy-bird-sound-level',
-        ghost: 'flappy-bird-ghost',
-        training: 'flappy-bird-training',
-    },
-
-    highScoreKey(difficulty) {
-        return `${this.storage.highScorePrefix}${difficulty}`;
-    },
-
-    leaderboardKey(difficulty) {
-        return `${this.storage.leaderboardPrefix}${difficulty}`;
-    },
-
     getDifficulty(key) {
         const base = this.bird;
         const overrides = this.difficulties[key] || this.difficulties.normal;

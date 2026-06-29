@@ -1,8 +1,8 @@
-import { GAME_CONFIG } from './config.js';
+import { STORAGE_KEYS } from './storageKeys.js';
 
 export function loadTrainingEnabled() {
     try {
-        return localStorage.getItem(GAME_CONFIG.storage.training) === '1';
+        return localStorage.getItem(STORAGE_KEYS.training) === '1';
     } catch {
         return false;
     }
@@ -10,6 +10,6 @@ export function loadTrainingEnabled() {
 
 export function saveTrainingEnabled(enabled) {
     try {
-        localStorage.setItem(GAME_CONFIG.storage.training, enabled ? '1' : '0');
+        localStorage.setItem(STORAGE_KEYS.training, enabled ? '1' : '0');
     } catch { /* quota */ }
 }

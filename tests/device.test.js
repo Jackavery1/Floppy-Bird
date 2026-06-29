@@ -52,4 +52,24 @@ describe('device', () => {
         const { menuHint: fine } = await loadDevice(false);
         expect(fine()).toBe('M : menu');
     });
+
+    it('trainingHint adapte le libellé', async () => {
+        const { trainingHint } = await loadDevice(true);
+        expect(trainingHint()).toBe('Tap : entraînement');
+        const { trainingHint: fine } = await loadDevice(false);
+        expect(fine()).toBe('T : entraînement');
+    });
+
+    it('hardcoreHint adapte le libellé', async () => {
+        const { hardcoreHint } = await loadDevice(true);
+        expect(hardcoreHint()).toBe('Tap : hardcore');
+        const { hardcoreHint: fine } = await loadDevice(false);
+        expect(fine()).toBe('H : hardcore');
+    });
+
+    it('modesHintLine compacte sur tactile', async () => {
+        const { modesHintLine } = await loadDevice(true);
+        expect(modesHintLine()).toContain('MODES');
+        expect(modesHintLine()).toContain('exclusifs');
+    });
 });

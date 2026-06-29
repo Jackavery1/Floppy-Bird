@@ -19,20 +19,7 @@ npm run lint         # ESLint
 npm run icons        # public/icons/
 ```
 
-## Problème certificat npm
-
-Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SSL :
-
-1. **Proxy d’entreprise** — demande le certificat racine à ton admin et configure-le :
-   ```bash
-   npm config set cafile "C:\chemin\vers\corp-ca.pem"
-   ```
-2. **Réseau temporairement bloqué** — réessaie sur un autre réseau (partage 4G, VPN personnel).
-3. **Contournement local uniquement** (non recommandé en production) :
-   ```bash
-   npm install --strict-ssl=false
-   ```
-   À n’utiliser que si les options ci-dessus ne sont pas possibles.
+Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Contrôles
 
@@ -41,6 +28,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 | Espace / tap | Saut, démarrer ou rejouer |
 | 1 / 2 / 3 | Difficulté (menu) |
 | T | Mode entraînement ON/OFF (menu) |
+| H | Mode hardcore ON/OFF (menu, sans invincibilité au spawn) |
 | ESC | Pause |
 | M | Menu (pause ou game over) |
 | Tap « SON » | Volume 100 % → 50 % → 25 % → muet |
@@ -49,31 +37,29 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
 - 8 premiers gaps scriptés puis aléatoire lissé (`level.pipeGaps` dans `config.js`)
-- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn
+- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (sauf mode hardcore)
+- Tutoriel « sauter » à la première partie
+- Son de palier distinct tous les 10 points
 - Buffer de saut 4 frames ; 1er tap = démarrer + sauter
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours), scores non enregistrés
+- **Mode hardcore** : pas d’invincibilité au spawn
 - Escalade : +3 % vitesse tous les 10 points
+- **Défi du jour** : code quotidien affiché au menu (rejouabilité légère)
 
-### Difficultés
-
-| | Vitesse | Écart | Intervalle |
-|--|---------|-------|------------|
-| Facile | 1.85 | 142 | 92 |
-| Normal | 2.7 | 112 | 76 |
-| Difficile | 3.4 | 98 | 68 |
+Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/config.js`](src/config.js).
 
 ## Structure
 
 ```
 src/
-  config.js, gameState.js, storage.js, device.js, viewport.js
+  config.js, storageKeys.js, gameState.js, storage.js, device.js, viewport.js
   bird.js, pipes.js, audio.js, haptics.js, training.js
-  ui.js, uiLayout.js, uiGameOver.js
+  ui.js, uiLayout.js, uiMenu.js, uiHud.js, uiPause.js, uiGameOver.js
   sceneSetup.js, sceneFlow.js, sceneDeath.js, sceneJumpBuffer.js, sceneBootstrap.js
   sceneBackground.js, sceneInput.js, sceneRound.js
-  proceduralTextures.js, textures/, scoreEffects.js
+  textures/, scoreEffects.js
   GameScene.js, main.js, utils.js
 tests/   e2e/   public/icons/   scripts/
 ```
@@ -81,19 +67,10 @@ tests/   e2e/   public/icons/   scripts/
 ## Build & perf
 
 - **Dev** : Phaser bundlé par Vite (HMR rapide).
-- **Production** : Phaser chargé depuis jsDelivr (chunk séparé ~0 Ko dans `dist/`), mis en cache par la PWA.
+- **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 
 ## Déploiement
 
-GitHub Pages : workflow `deploy.yml` — `npm test`, `npm run lint`, build, déploiement `dist/`.
-
-URL : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
-
-Test local du build Pages :
-
-```bash
-# PowerShell
-$env:BASE_PATH="/Floppy-Bird/"; npm run build; npm run preview
-```
+GitHub Pages : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
 
 Les scores `localStorage` conservent les clés `flappy-bird-*` (migration automatique depuis l’ancien format).

@@ -18,6 +18,7 @@ export default [
         rules: {
             ...js.configs.recommended.rules,
             'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+            'max-lines': ['warn', { max: 300, skipBlankLines: true, skipComments: true }],
         },
     },
 ];

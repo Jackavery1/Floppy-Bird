@@ -10,6 +10,9 @@ import { warnFileProtocol, primeAudio, applyTrainingTimeScale } from './sceneBoo
 import { showMenu } from './sceneFlow.js';
 import { resumeAudio } from './audio.js';
 
+/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {SceneContext} scene */
 export function setupSceneWorld(scene) {
     warnFileProtocol();
     primeAudio(scene, resumeAudio);

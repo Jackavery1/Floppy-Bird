@@ -9,10 +9,19 @@ import {
     handlePrimaryAction,
     changeDifficulty,
     toggleTraining,
+    toggleHardcore,
 } from '../src/sceneFlow.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
+}));
+
+vi.mock('../src/hardcoreStorage.js', () => ({
+    saveHardcoreEnabled: vi.fn(),
+}));
+
+vi.mock('../src/tutorialStorage.js', () => ({
+    loadTutorialSeen: vi.fn(() => true),
 }));
 
 describe('sceneFlow', () => {
@@ -22,6 +31,7 @@ describe('sceneFlow', () => {
             score: 0,
             difficulty: DIFFICULTY.NORMAL,
             trainingMode: false,
+            hardcoreMode: false,
             menuElements: [],
             gameOverElements: [],
             _pauseElements: [],
@@ -44,10 +54,15 @@ describe('sceneFlow', () => {
                 highScore: 0,
                 updateDifficultyButtons: vi.fn(),
                 updateTrainingLabel: vi.fn(),
+                updateHardcoreLabel: vi.fn(),
+                showJumpTutorial: vi.fn(),
                 showPause: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
             },
-            togglePause: vi.fn(function toggle() {
-                togglePause(this);
+            toggleTraining: vi.fn(function toggle() {
+                toggleTraining(this);
+            }),
+            toggleHardcore: vi.fn(function toggle() {
+                toggleHardcore(this);
             }),
         };
     }
@@ -93,6 +108,39 @@ describe('sceneFlow', () => {
         const scene = makeScene(GAME_STATE.MENU);
         toggleTraining(scene);
         expect(scene.trainingMode).toBe(true);
+    });
+
+    it('toggleHardcore bascule le mode hardcore au menu', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        toggleHardcore(scene);
+        expect(scene.hardcoreMode).toBe(true);
+    });
+
+    it('toggleTraining désactive le hardcore (exclusifs)', async () => {
+        const { saveHardcoreEnabled } = await import('../src/hardcoreStorage.js');
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.hardcoreMode = true;
+        toggleTraining(scene);
+        expect(scene.trainingMode).toBe(true);
+        expect(scene.hardcoreMode).toBe(false);
+        expect(saveHardcoreEnabled).toHaveBeenCalledWith(false);
+    });
+
+    it('toggleHardcore désactive l’entraînement (exclusifs)', async () => {
+        const { saveTrainingEnabled } = await import('../src/trainingStorage.js');
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.trainingMode = true;
+        toggleHardcore(scene);
+        expect(scene.hardcoreMode).toBe(true);
+        expect(scene.trainingMode).toBe(false);
+        expect(saveTrainingEnabled).toHaveBeenCalledWith(false);
+    });
+
+    it('beginRound sans invincibilité en mode hardcore', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.hardcoreMode = true;
+        beginRound(scene);
+        expect(scene._spawnInvincible).toBe(false);
     });
 
     it('handlePrimaryAction démarre la partie depuis le menu', () => {

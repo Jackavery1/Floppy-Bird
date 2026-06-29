@@ -4,6 +4,9 @@ import { playSound } from './audio.js';
 import { hapticMedium } from './haptics.js';
 import { frameStep } from './sceneBootstrap.js';
 
+/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {SceneContext} scene */
 export function triggerDeath(scene) {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
@@ -33,6 +36,7 @@ export function triggerDeath(scene) {
     });
 }
 
+/** @param {SceneContext} scene */
 export function updateDying(scene) {
     if (!scene._dyingFalling || scene._dyingGrounded) return;
 

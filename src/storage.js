@@ -1,4 +1,5 @@
-import { GAME_CONFIG, DIFFICULTY } from './config.js';
+import { DIFFICULTY } from './config.js';
+import { STORAGE_KEYS, highScoreKey, leaderboardKey } from './storageKeys.js';
 
 function parseScore(raw) {
     const n = Number.parseInt(raw ?? '', 10);
@@ -8,10 +9,10 @@ function parseScore(raw) {
 function migrateLegacyHighScore(difficulty) {
     if (difficulty !== DIFFICULTY.NORMAL) return 0;
     try {
-        const legacy = localStorage.getItem(GAME_CONFIG.storage.highScore);
+        const legacy = localStorage.getItem(STORAGE_KEYS.highScore);
         const n = parseScore(legacy);
         if (n !== null && n > 0) {
-            localStorage.setItem(GAME_CONFIG.highScoreKey(difficulty), String(n));
+            localStorage.setItem(highScoreKey(difficulty), String(n));
         }
         return n ?? 0;
     } catch {
@@ -22,11 +23,11 @@ function migrateLegacyHighScore(difficulty) {
 function migrateLegacyLeaderboard(difficulty) {
     if (difficulty !== DIFFICULTY.NORMAL) return [];
     try {
-        const legacy = localStorage.getItem(GAME_CONFIG.storage.leaderboard);
+        const legacy = localStorage.getItem(STORAGE_KEYS.leaderboard);
         if (!legacy) return [];
         const parsed = JSON.parse(legacy);
         if (!Array.isArray(parsed)) return [];
-        const key = GAME_CONFIG.leaderboardKey(difficulty);
+        const key = leaderboardKey(difficulty);
         localStorage.setItem(key, legacy);
         return loadLeaderboard(difficulty);
     } catch {
@@ -36,7 +37,7 @@ function migrateLegacyLeaderboard(difficulty) {
 
 export function loadHighScore(difficulty = DIFFICULTY.NORMAL) {
     try {
-        const raw = localStorage.getItem(GAME_CONFIG.highScoreKey(difficulty));
+        const raw = localStorage.getItem(highScoreKey(difficulty));
         const n = parseScore(raw);
         if (n !== null) return n;
         return migrateLegacyHighScore(difficulty);
@@ -48,7 +49,7 @@ export function loadHighScore(difficulty = DIFFICULTY.NORMAL) {
 export function saveHighScore(score, difficulty = DIFFICULTY.NORMAL, currentHigh = loadHighScore(difficulty)) {
     if (score > currentHigh) {
         try {
-            localStorage.setItem(GAME_CONFIG.highScoreKey(difficulty), String(score));
+            localStorage.setItem(highScoreKey(difficulty), String(score));
         } catch { /* quota */ }
         return score;
     }
@@ -57,7 +58,7 @@ export function saveHighScore(score, difficulty = DIFFICULTY.NORMAL, currentHigh
 
 export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL) {
     try {
-        const data = localStorage.getItem(GAME_CONFIG.leaderboardKey(difficulty));
+        const data = localStorage.getItem(leaderboardKey(difficulty));
         if (!data) return migrateLegacyLeaderboard(difficulty);
         const parsed = JSON.parse(data);
         if (!Array.isArray(parsed)) return [];
@@ -88,7 +89,7 @@ export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL) {
     entries.sort((a, b) => b.score - a.score);
     try {
         localStorage.setItem(
-            GAME_CONFIG.leaderboardKey(difficulty),
+            leaderboardKey(difficulty),
             JSON.stringify(entries.slice(0, 5)),
         );
     } catch { /* quota */ }

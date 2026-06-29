@@ -34,15 +34,15 @@ describe('Bird', () => {
     });
 
     describe('getBounds', () => {
-        it('retourne une hitbox réduite de 4 px par côté', () => {
+        it('retourne une hitbox légèrement réduite par rapport au sprite', () => {
             bird.x = 100;
             bird.y = 200;
             const b = bird.getBounds();
             expect(b).toEqual({
-                x: 100 - 14 + 5,
-                y: 200 - 10 + 4,
-                width: 18,
-                height: 12,
+                x: 100 - 14 + 3,
+                y: 200 - 10 + 2,
+                width: 22,
+                height: 16,
             });
         });
     });

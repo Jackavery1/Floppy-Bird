@@ -24,6 +24,7 @@ export default defineConfig({
                 browserName: 'chromium',
                 viewport: { width: 390, height: 844 },
                 isMobile: true,
+                hasTouch: true,
             },
         },
         {
@@ -31,6 +32,8 @@ export default defineConfig({
             use: {
                 ...devices['Pixel 5'],
                 viewport: { width: 844, height: 390 },
+                isMobile: true,
+                hasTouch: true,
             },
         },
     ],

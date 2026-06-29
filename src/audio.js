@@ -1,10 +1,13 @@
-import { GAME_CONFIG } from './config.js';
 import { SOUND } from './config.js';
+import { STORAGE_KEYS } from './storageKeys.js';
 
 const VOLUME_STEPS = [1, 0.5, 0.25, 0];
+const MASTER_GAIN = 0.82;
+const ATTACK_SEC = 0.008;
 
 let audioCtx = null;
 let audioUnavailable = false;
+let masterNode = null;
 
 function getAudioContextClass() {
     return globalThis.AudioContext || globalThis.webkitAudioContext;
@@ -20,6 +23,9 @@ function getAudioContext() {
                 return null;
             }
             audioCtx = new AudioCtx();
+            masterNode = audioCtx.createGain();
+            masterNode.gain.value = MASTER_GAIN;
+            masterNode.connect(audioCtx.destination);
         } catch {
             audioUnavailable = true;
             return null;
@@ -28,14 +34,23 @@ function getAudioContext() {
     return audioCtx;
 }
 
+function getMasterNode(ctx) {
+    if (!masterNode || masterNode.context !== ctx) {
+        masterNode = ctx.createGain();
+        masterNode.gain.value = MASTER_GAIN;
+        masterNode.connect(ctx.destination);
+    }
+    return masterNode;
+}
+
 export function isAudioAvailable() {
     return !audioUnavailable && getAudioContextClass() != null;
 }
 
 function readStoredVolume() {
     try {
-        return localStorage.getItem(GAME_CONFIG.storage.volume)
-            ?? localStorage.getItem(GAME_CONFIG.storage.volumeLegacy);
+        return localStorage.getItem(STORAGE_KEYS.volume)
+            ?? localStorage.getItem(STORAGE_KEYS.volumeLegacy);
     } catch {
         return null;
     }
@@ -51,7 +66,7 @@ export function getVolume() {
 
 export function setVolume(level) {
     try {
-        localStorage.setItem(GAME_CONFIG.storage.volume, String(level));
+        localStorage.setItem(STORAGE_KEYS.volume, String(level));
         if (level > 0) setMuted(false);
         else setMuted(true);
     } catch { /* quota */ }
@@ -59,7 +74,7 @@ export function setVolume(level) {
 
 export function isMuted() {
     try {
-        return localStorage.getItem(GAME_CONFIG.storage.muted) === '1';
+        return localStorage.getItem(STORAGE_KEYS.muted) === '1';
     } catch {
         return false;
     }
@@ -67,7 +82,7 @@ export function isMuted() {
 
 export function setMuted(muted) {
     try {
-        localStorage.setItem(GAME_CONFIG.storage.muted, muted ? '1' : '0');
+        localStorage.setItem(STORAGE_KEYS.muted, muted ? '1' : '0');
     } catch { /* quota */ }
 }
 
@@ -75,7 +90,6 @@ function effectiveGain(peak) {
     return peak * getVolume();
 }
 
-/** Cycle 100 % → 50 % → 25 % → muet. */
 export function cycleSoundLevel() {
     if (!isAudioAvailable()) return;
     const current = getVolume();
@@ -125,12 +139,16 @@ export function playSound(soundName, score = 1) {
     }
 }
 
+function connectGain(ctx, gain) {
+    gain.connect(getMasterNode(ctx));
+}
+
 function playTone(ctx, { type = 'sine', duration, peakGain, freqAt, freqRamp, delay = 0 }) {
     const t = ctx.currentTime + delay;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    connectGain(ctx, gain);
     osc.type = type;
     if (freqRamp != null) {
         osc.frequency.setValueAtTime(freqAt, t);
@@ -138,26 +156,84 @@ function playTone(ctx, { type = 'sine', duration, peakGain, freqAt, freqRamp, de
     } else {
         osc.frequency.value = freqAt;
     }
-    gain.gain.setValueAtTime(effectiveGain(peakGain), t);
+    const peak = effectiveGain(peakGain);
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(peak, t + ATTACK_SEC);
     gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
     osc.start(t);
     osc.stop(t + duration);
 }
 
+function playNoise(ctx, { duration, peakGain, filterFreq = 420, delay = 0 }) {
+    const t = ctx.currentTime + delay;
+    const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * duration));
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = filterFreq;
+    const gain = ctx.createGain();
+    src.connect(filter);
+    filter.connect(gain);
+    connectGain(ctx, gain);
+    const peak = effectiveGain(peakGain);
+    gain.gain.setValueAtTime(0.001, t);
+    gain.gain.linearRampToValueAtTime(peak, t + ATTACK_SEC);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + duration);
+    src.start(t);
+    src.stop(t + duration);
+}
+
 function playJump(ctx) {
-    playTone(ctx, { freqAt: 440, freqRamp: 880, duration: 0.08, peakGain: 0.2 });
+    playTone(ctx, { type: 'sine', freqAt: 380, freqRamp: 920, duration: 0.09, peakGain: 0.22 });
+    playTone(ctx, { type: 'triangle', freqAt: 520, freqRamp: 780, duration: 0.05, peakGain: 0.08, delay: 0.02 });
+}
+
+export function isScoreMilestone(score) {
+    return score > 0 && score % 10 === 0;
+}
+
+export function getScoreToneType(score) {
+    const variants = ['sine', 'triangle', 'square'];
+    return variants[score % variants.length];
 }
 
 function playScore(ctx, score = 1) {
     const boost = Math.min(score, 25) * 12;
-    playTone(ctx, { freqAt: 660 + boost, duration: 0.15, peakGain: 0.3 });
-    playTone(ctx, { freqAt: 880 + boost, duration: 0.15, peakGain: 0.3, delay: 0.06 });
+    const primaryType = getScoreToneType(score);
+    const detune = (score % 5) * 8;
+    playTone(ctx, { type: primaryType, freqAt: 660 + boost + detune, duration: 0.15, peakGain: 0.3 });
+    playTone(ctx, {
+        type: score % 2 === 0 ? 'sine' : 'triangle',
+        freqAt: 880 + boost + detune,
+        duration: 0.12,
+        peakGain: 0.26,
+        delay: 0.06,
+    });
+    if (isScoreMilestone(score)) {
+        const tier = Math.floor(score / 10);
+        playTone(ctx, {
+            type: 'square',
+            freqAt: 520 + tier * 35,
+            freqRamp: 1040 + tier * 35,
+            duration: 0.22,
+            peakGain: 0.28,
+            delay: 0.1,
+        });
+    }
 }
 
 function playGameOver(ctx) {
-    playTone(ctx, { type: 'triangle', freqAt: 420, freqRamp: 90, duration: 0.22, peakGain: 0.35 });
+    playTone(ctx, { type: 'triangle', freqAt: 440, freqRamp: 80, duration: 0.28, peakGain: 0.32 });
+    playTone(ctx, { type: 'sine', freqAt: 220, freqRamp: 55, duration: 0.35, peakGain: 0.18, delay: 0.08 });
 }
 
 function playGround(ctx) {
-    playTone(ctx, { freqAt: 95, freqRamp: 45, duration: 0.12, peakGain: 0.5 });
+    playNoise(ctx, { duration: 0.14, peakGain: 0.45, filterFreq: 320 });
+    playTone(ctx, { type: 'sine', freqAt: 110, freqRamp: 55, duration: 0.1, peakGain: 0.22, delay: 0.02 });
 }

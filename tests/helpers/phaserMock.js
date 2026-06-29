@@ -73,11 +73,13 @@ export function createInteractable() {
         setDepth: vi.fn(),
         setInteractive: vi.fn(),
         on: vi.fn(),
-        setAlpha: vi.fn(),
         destroy: vi.fn(),
         setOrigin: vi.fn(),
         setText: vi.fn(),
         setColor: vi.fn(),
+        setVisible: vi.fn().mockReturnThis(),
+        setY: vi.fn().mockReturnThis(),
+        setAlpha: vi.fn().mockReturnThis(),
     };
     for (const fn of Object.values(obj)) {
         if (typeof fn === 'function' && fn.mockReturnValue) {
