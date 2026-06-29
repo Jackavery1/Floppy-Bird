@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { GAME_CONFIG } from './config.js';
 import { GameScene } from './GameScene.js';
 import { computeLetterboxSize, getViewportDimensions, readSafeAreaInsets } from './viewport.js';
-import '../style.css';
 
 const config = {
     type: Phaser.AUTO,

@@ -27,11 +27,23 @@
       href="icons/icon-192.png"
     />
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
     <div id="loading" aria-live="polite">Chargement…</div>
     <div id="landscape-hint" aria-hidden="true">Tourne ton téléphone en portrait pour jouer</div>
     <div id="game-container"></div>
     <script type="module" src="/src/main.js"></script>
+    <script>
+      setTimeout(function () {
+        var el = document.getElementById('loading');
+        if (el && !el.classList.contains('hidden')) {
+          el.innerHTML =
+            'Impossible de charger le jeu.<br><br>' +
+            'Utilise <strong>npm run dev</strong> (Vite), pas Live Server.<br>' +
+            'Live Server ne peut pas résoudre les modules npm (Phaser).';
+        }
+      }, 6000);
+    </script>
   </body>
 </html>
