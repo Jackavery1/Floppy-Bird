@@ -15,6 +15,7 @@ describe('sceneDeath', () => {
             _dyingGrounded: false,
             _roundHighScore: 3,
             trainingMode: false,
+            hardcoreMode: false,
             difficulty: 'normal',
             ui: {
                 hideInGameScore: vi.fn(),
@@ -28,7 +29,8 @@ describe('sceneDeath', () => {
         };
         triggerDeath(scene);
         expect(scene.state).toBe(GAME_STATE.DYING);
-        expect(scene.ui.saveHighScore).toHaveBeenCalledWith(5, 'normal');
+        expect(scene.ui.saveHighScore).toHaveBeenCalledWith(5, 'normal', undefined, false);
+        expect(scene.ui.saveToLeaderboard).toHaveBeenCalledWith(5, 'normal', false);
         expect(scene._isNewRecord).toBe(true);
     });
 

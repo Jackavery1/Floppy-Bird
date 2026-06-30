@@ -16,6 +16,18 @@ export const Utils = {
         return Math.max(min, Math.min(max, value));
     },
 
+    createSeededRandom(seed) {
+        let state = seed >>> 0;
+        return () => {
+            state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+            return state / 4294967296;
+        };
+    },
+
+    seededRandomInt(rng, min, max) {
+        return min + Math.floor(rng() * (max - min + 1));
+    },
+
     clearElements(elements) {
         elements.forEach(elem => elem.destroy());
         elements.length = 0;

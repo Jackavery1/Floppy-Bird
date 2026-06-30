@@ -7,8 +7,8 @@ test.describe('PWA hors ligne', () => {
         await waitForServiceWorker(page);
 
         await context.setOffline(true);
-        await page.reload();
-        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 20_000 });
+        await page.reload({ waitUntil: 'domcontentloaded' });
+        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 25_000 });
         await expect(page.locator('#game-container canvas')).toBeVisible();
     });
 

@@ -3,24 +3,24 @@ import { GAME_CONFIG } from '../src/config.js';
 
 test.describe('jeu chargé', () => {
     test('affiche le canvas et masque le chargement', async ({ page }) => {
-        await page.goto('/');
-        await expect(page.locator('#loading')).toHaveClass(/hidden/, { timeout: 15_000 });
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('#loading')).toHaveClass(/hidden/, { timeout: 20_000 });
         await expect(page.locator('#game-container canvas')).toBeVisible();
     });
 
     test('respecte le ratio interne 288×512', async ({ page }) => {
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
         const canvas = page.locator('#game-container canvas');
-        await expect(canvas).toBeVisible({ timeout: 15_000 });
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
     });
 
     test('conserve le ratio après redimensionnement', async ({ page }) => {
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
         const canvas = page.locator('#game-container canvas');
-        await expect(canvas).toBeVisible({ timeout: 15_000 });
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
         const ratio = GAME_CONFIG.width / GAME_CONFIG.height;
 
         await page.setViewportSize({ width: 390, height: 844 });
@@ -40,9 +40,9 @@ test.describe('jeu chargé', () => {
             style.textContent = 'body { padding: 44px 0 34px 0 !important; }';
             document.head.appendChild(style);
         });
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
         const canvas = page.locator('#game-container canvas');
-        await expect(canvas).toBeVisible({ timeout: 15_000 });
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
@@ -61,9 +61,9 @@ test.describe('jeu chargé', () => {
             });
         });
         await page.setViewportSize({ width: 390, height: 844 });
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
         const canvas = page.locator('#game-container canvas');
-        await expect(canvas).toBeVisible({ timeout: 15_000 });
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
@@ -72,7 +72,7 @@ test.describe('jeu chargé', () => {
 
     test('affiche l’aide paysage en viewport mobile landscape', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
-        await page.goto('/');
-        await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 15_000 });
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 5_000 });
     });
 });

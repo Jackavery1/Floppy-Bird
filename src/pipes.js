@@ -27,6 +27,7 @@ export class Pipes {
         this._lastGapY = null;
         this._autoSpawnEnabled = false;
         this._baseSpeed = normal.speed;
+        this._dailyRng = null;
     }
 
     _gapBounds() {
@@ -39,10 +40,26 @@ export class Pipes {
 
     _randomGapY() {
         const { min, max } = this._gapBounds();
+        if (this._dailyRng) {
+            return Utils.seededRandomInt(this._dailyRng, min, max);
+        }
         return Utils.randomInt(min, max);
     }
 
     _resolveGapY() {
+        if (this._dailyRng) {
+            const { min, max } = this._gapBounds();
+            const raw = this._randomGapY();
+            const smoothed = smoothGapY(
+                raw,
+                this._lastGapY,
+                GAME_CONFIG.pipes.maxGapDelta,
+                min,
+                max,
+            );
+            this._lastGapY = smoothed;
+            return smoothed;
+        }
         const y = getScriptedPipeGapY(this._gapIndex, this.pipeGap);
         if (y !== null) {
             this._gapIndex++;
@@ -145,6 +162,12 @@ export class Pipes {
         this.pipeInterval = config.pipeInterval;
     }
 
+    setDailySeed(seed) {
+        this._dailyRng = seed != null ? Utils.createSeededRandom(seed) : null;
+        this._gapIndex = 0;
+        this._lastGapY = null;
+    }
+
     applySpeedForScore(score) {
         const { speedBoostEvery, speedBoostPercent } = GAME_CONFIG.round;
         const boosts = Math.floor(score / speedBoostEvery);
@@ -161,6 +184,7 @@ export class Pipes {
         this._gapIndex = 0;
         this._lastGapY = null;
         this._autoSpawnEnabled = false;
+        this._dailyRng = null;
     }
 
     destroy() {

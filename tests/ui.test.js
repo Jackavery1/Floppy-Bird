@@ -53,6 +53,6 @@ describe('UI', () => {
     it('refreshHighScore charge le record par difficulté', async () => {
         const { loadHighScore } = await import('../src/storage.js');
         ui.refreshHighScore(DIFFICULTY.HARD);
-        expect(loadHighScore).toHaveBeenCalledWith(DIFFICULTY.HARD);
+        expect(loadHighScore).toHaveBeenCalledWith(DIFFICULTY.HARD, false);
     });
 });

@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { installTestSeam } from './testSeam.js';
 import { computeLetterboxSize, getViewportDimensions, readSafeAreaInsets } from './viewport.js';
 
 export function resizeGameCanvas(game) {
@@ -37,5 +38,6 @@ export function attachViewportResize(game, resizeFn = resizeGameCanvas) {
 export function onGameReady(game, { resizeFn = resizeGameCanvas, doc = document } = {}) {
     resizeFn(game);
     attachViewportResize(game, resizeFn);
+    installTestSeam(game);
     hideLoadingScreen(doc);
 }

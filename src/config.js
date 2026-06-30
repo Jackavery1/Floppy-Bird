@@ -62,6 +62,12 @@ export const GAME_CONFIG = {
         sampleEveryFrames: 3,
     },
 
+    hardcore: {
+        gravityMultiplier: 1.12,
+        maxFallSpeedMultiplier: 1.08,
+        speedMultiplier: 1.08,
+    },
+
     difficulties: {
         easy:   { speed: 1.85, gap: 142, gravity: 0.30, jumpPower: -5.7, maxFallSpeed: 10, pipeInterval: 92 },
         normal: { speed: 2.7, gap: 112, pipeInterval: 76 },
@@ -93,6 +99,18 @@ export const GAME_CONFIG = {
         };
     },
 };
+
+export function getDifficultyForRound(difficulty, hardcore = false) {
+    const cfg = GAME_CONFIG.getDifficulty(difficulty);
+    if (!hardcore) return cfg;
+    const hc = GAME_CONFIG.hardcore;
+    return {
+        ...cfg,
+        gravity: cfg.gravity * hc.gravityMultiplier,
+        maxFallSpeed: cfg.maxFallSpeed * hc.maxFallSpeedMultiplier,
+        speed: cfg.speed * hc.speedMultiplier,
+    };
+}
 
 export function getScriptedPipeGapY(index, pipeGap) {
     const gaps = GAME_CONFIG.level.pipeGaps;

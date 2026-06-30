@@ -35,31 +35,41 @@ function migrateLegacyLeaderboard(difficulty) {
     }
 }
 
-export function loadHighScore(difficulty = DIFFICULTY.NORMAL) {
+export function loadHighScore(difficulty = DIFFICULTY.NORMAL, hardcore = false) {
     try {
-        const raw = localStorage.getItem(highScoreKey(difficulty));
+        const raw = localStorage.getItem(highScoreKey(difficulty, hardcore));
         const n = parseScore(raw);
         if (n !== null) return n;
-        return migrateLegacyHighScore(difficulty);
+        if (!hardcore) return migrateLegacyHighScore(difficulty);
+        return 0;
     } catch {
         return 0;
     }
 }
 
-export function saveHighScore(score, difficulty = DIFFICULTY.NORMAL, currentHigh = loadHighScore(difficulty)) {
-    if (score > currentHigh) {
+export function saveHighScore(
+    score,
+    difficulty = DIFFICULTY.NORMAL,
+    currentHigh,
+    hardcore = false,
+) {
+    const high = currentHigh ?? loadHighScore(difficulty, hardcore);
+    if (score > high) {
         try {
-            localStorage.setItem(highScoreKey(difficulty), String(score));
+            localStorage.setItem(highScoreKey(difficulty, hardcore), String(score));
         } catch { /* quota */ }
         return score;
     }
-    return currentHigh;
+    return high;
 }
 
-export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL) {
+export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false) {
     try {
-        const data = localStorage.getItem(leaderboardKey(difficulty));
-        if (!data) return migrateLegacyLeaderboard(difficulty);
+        const data = localStorage.getItem(leaderboardKey(difficulty, hardcore));
+        if (!data) {
+            if (!hardcore) return migrateLegacyLeaderboard(difficulty);
+            return [];
+        }
         const parsed = JSON.parse(data);
         if (!Array.isArray(parsed)) return [];
         return parsed
@@ -79,8 +89,8 @@ export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL) {
     }
 }
 
-export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL) {
-    const entries = loadLeaderboard(difficulty);
+export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL, hardcore = false) {
+    const entries = loadLeaderboard(difficulty, hardcore);
     if (score <= 0) {
         return { entries, highlightId: null };
     }
@@ -89,7 +99,7 @@ export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL) {
     entries.sort((a, b) => b.score - a.score);
     try {
         localStorage.setItem(
-            leaderboardKey(difficulty),
+            leaderboardKey(difficulty, hardcore),
             JSON.stringify(entries.slice(0, 5)),
         );
     } catch { /* quota */ }

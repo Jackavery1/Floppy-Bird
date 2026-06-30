@@ -22,8 +22,12 @@ export function triggerDeath(scene) {
 
     if (!scene.trainingMode) {
         scene._isNewRecord = scene.score > 0 && scene.score > scene._roundHighScore;
-        scene.ui.saveHighScore(scene.score, scene.difficulty);
-        scene._leaderboardData = scene.ui.saveToLeaderboard(scene.score, scene.difficulty);
+        scene.ui.saveHighScore(scene.score, scene.difficulty, undefined, scene.hardcoreMode);
+        scene._leaderboardData = scene.ui.saveToLeaderboard(
+            scene.score,
+            scene.difficulty,
+            scene.hardcoreMode,
+        );
     } else {
         scene._isNewRecord = false;
         scene._leaderboardData = { entries: [], highlightId: null };
@@ -59,6 +63,7 @@ function finishDying(scene) {
         scene._leaderboardData,
         true,
         scene._isNewRecord,
+        scene.hardcoreMode,
     );
     scene.gameOverElements.push(...elements);
 }

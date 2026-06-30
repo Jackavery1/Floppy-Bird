@@ -12,7 +12,7 @@ import {
     UI_LAYOUT,
 } from './uiLayout.js';
 
-export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, isNewRecord) {
+export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode = false) {
     ui.hideInGameScore();
 
     const { entries, highlightId } = leaderboardData;
@@ -61,16 +61,19 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
         fontSize: '22px', fill: isNewRecord ? '#FDD835' : '#ffffff', fontStyle: 'bold',
     }, 52);
 
-    const highLbl = addCenteredText(scene, cx, y(125), `MEILLEUR (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`, {
-        fontSize: '9px', fill: '#FDD835',
-    }, 52);
+    const highLbl = addCenteredText(scene, cx, y(125),
+        hardcoreMode
+            ? `MEILLEUR HC (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`
+            : `MEILLEUR (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`, {
+            fontSize: '9px', fill: '#FDD835',
+        }, 52);
 
     const highScoreText = addCenteredText(scene, cx, y(143), String(ui.highScore), {
         fontSize: '16px', fill: '#FDD835', fontStyle: 'bold',
     }, 52);
 
     const leaderboardElements = [
-        addCenteredText(scene, cx, y(168), '— TOP 5 —', {
+        addCenteredText(scene, cx, y(168), hardcoreMode ? '— TOP 5 HARDCORE —' : '— TOP 5 —', {
             fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
         }, 52),
     ];

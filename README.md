@@ -44,9 +44,9 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours), scores non enregistrés
-- **Mode hardcore** : pas d’invincibilité au spawn
 - Escalade : +3 % vitesse tous les 10 points
-- **Défi du jour** : code quotidien affiché au menu (rejouabilité légère)
+- **Défi du jour** : code quotidien + **séquence de tuyaux partagée** (seed du jour, identique pour tous)
+- **Mode hardcore** : pas d’invincibilité au spawn, gravité/vitesse renforcées, **TOP 5 hardcore** séparé
 
 Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/config.js`](src/config.js).
 
@@ -56,7 +56,8 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 src/
   config.js, storageKeys.js, gameState.js, storage.js, device.js, viewport.js
   bird.js, pipes.js, audio.js, haptics.js, training.js
-  ui.js, uiLayout.js, uiMenu.js, uiHud.js, uiPause.js, uiGameOver.js
+  ui.js, uiLayout.js, uiMenu.js, uiMenuLayout.js, uiHud.js, uiPause.js, uiGameOver.js
+  dailyChallenge.js, appBootstrap.js, phaserBootstrap.js, motion.js, sceneTypes.js
   sceneSetup.js, sceneFlow.js, sceneDeath.js, sceneJumpBuffer.js, sceneBootstrap.js
   sceneBackground.js, sceneInput.js, sceneRound.js
   textures/, scoreEffects.js
@@ -68,6 +69,7 @@ tests/   e2e/   public/icons/   scripts/
 
 - **Dev** : Phaser bundlé par Vite (HMR rapide).
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
+- **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
 
 ## Déploiement
 

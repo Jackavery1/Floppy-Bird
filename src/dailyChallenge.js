@@ -7,6 +7,16 @@ export function getDailyChallengeCode(date = new Date()) {
     return String(hash).padStart(4, '0');
 }
 
+export function getDailyChallengeSeed(date = new Date()) {
+    const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    let hash = 2166136261;
+    for (let i = 0; i < key.length; i++) {
+        hash ^= key.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+}
+
 export function getDailyChallengeLabel(date = new Date()) {
-    return `Défi du jour #${getDailyChallengeCode(date)}`;
+    return `Défi du jour #${getDailyChallengeCode(date)} · séquence partagée`;
 }

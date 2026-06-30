@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getDailyChallengeCode, getDailyChallengeLabel } from '../src/dailyChallenge.js';
+import { getDailyChallengeCode, getDailyChallengeLabel, getDailyChallengeSeed } from '../src/dailyChallenge.js';
 
 describe('dailyChallenge', () => {
     it('getDailyChallengeCode est stable pour une date', () => {
@@ -7,8 +7,13 @@ describe('dailyChallenge', () => {
         expect(getDailyChallengeCode(date)).toBe(getDailyChallengeCode(date));
     });
 
+    it('getDailyChallengeSeed est stable pour une date', () => {
+        const date = new Date(2026, 5, 29);
+        expect(getDailyChallengeSeed(date)).toBe(getDailyChallengeSeed(date));
+    });
+
     it('getDailyChallengeLabel formate le défi', () => {
         const label = getDailyChallengeLabel(new Date(2026, 0, 1));
-        expect(label).toMatch(/^Défi du jour #\d{4}$/);
+        expect(label).toMatch(/^Défi du jour #\d{4} · séquence partagée$/);
     });
 });

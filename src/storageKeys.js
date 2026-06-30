@@ -12,10 +12,12 @@ export const STORAGE_KEYS = Object.freeze({
     tutorialSeen: 'flappy-bird-tutorial-seen',
 });
 
-export function highScoreKey(difficulty) {
+export function highScoreKey(difficulty, hardcore = false) {
+    if (hardcore) return `${STORAGE_KEYS.highScorePrefix}hardcore-${difficulty}`;
     return `${STORAGE_KEYS.highScorePrefix}${difficulty}`;
 }
 
-export function leaderboardKey(difficulty) {
+export function leaderboardKey(difficulty, hardcore = false) {
+    if (hardcore) return `${STORAGE_KEYS.leaderboardPrefix}hardcore-${difficulty}`;
     return `${STORAGE_KEYS.leaderboardPrefix}${difficulty}`;
 }

@@ -14,4 +14,9 @@ describe('storageKeys', () => {
     it('leaderboardKey suffixe la difficulté', () => {
         expect(leaderboardKey('hard')).toBe('flappy-bird-leaderboard-hard');
     });
+
+    it('clés hardcore séparées', () => {
+        expect(highScoreKey('normal', true)).toBe('flappy-bird-high-score-hardcore-normal');
+        expect(leaderboardKey('hard', true)).toBe('flappy-bird-leaderboard-hardcore-hard');
+    });
 });

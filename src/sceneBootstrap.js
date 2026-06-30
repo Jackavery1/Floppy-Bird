@@ -4,7 +4,11 @@ import { GAME_CONFIG } from './config.js';
 
 /** @param {SceneContext} scene */
 export function frameStep(scene) {
-    return (scene.game.loop.delta / 1000) * 60;
+    const base = (scene.game.loop.delta / 1000) * 60;
+    if (scene.trainingMode) {
+        return base * GAME_CONFIG.training.timeScale;
+    }
+    return base;
 }
 
 export function warnFileProtocol() {

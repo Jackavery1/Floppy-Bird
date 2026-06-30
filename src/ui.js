@@ -66,7 +66,9 @@ export class UI {
     showJumpTutorial() { showJumpTutorial(this); }
     dismissJumpTutorial() { return dismissJumpTutorial(this); }
     updateDifficultyButtons(difficulty) { updateDifficultyButtons(this, difficulty); }
-    refreshHighScore(difficulty) { refreshHighScore(this, difficulty); }
+    refreshHighScore(difficulty, hardcoreMode = false) {
+        refreshHighScore(this, difficulty, hardcoreMode);
+    }
     showPause(opts) { return showPause(this, opts); }
     showFlash() { showFlash(this); }
 
@@ -85,16 +87,16 @@ export class UI {
         );
     }
 
-    showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false) {
-        return buildGameOverUI(this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord);
+    showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false, hardcoreMode = false) {
+        return buildGameOverUI(this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode);
     }
 
-    saveHighScore(score, difficulty = this._currentDifficulty) {
-        this.highScore = persistHighScore(score, difficulty, this.highScore);
+    saveHighScore(score, difficulty = this._currentDifficulty, hardcore = false) {
+        this.highScore = persistHighScore(score, difficulty, this.highScore, hardcore);
     }
 
-    saveToLeaderboard(score, difficulty = this._currentDifficulty) {
-        return saveToLeaderboard(score, difficulty);
+    saveToLeaderboard(score, difficulty = this._currentDifficulty, hardcore = false) {
+        return saveToLeaderboard(score, difficulty, hardcore);
     }
 
     destroy() {

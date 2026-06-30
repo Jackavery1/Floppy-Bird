@@ -1,32 +1,79 @@
 import { describe, it, expect, vi } from 'vitest';
 import { setupSceneInput } from '../src/sceneInput.js';
 import { DIFFICULTY } from '../src/config.js';
+import { GAME_STATE } from '../src/gameState.js';
 
 vi.mock('../src/audio.js', () => ({ resumeAudio: vi.fn() }));
 
 describe('sceneInput', () => {
-    it('branche clavier et pointer', () => {
+    function makeScene(state = GAME_STATE.MENU) {
         const handlers = {};
-        const scene = {
+        const pointerHandlers = [];
+        return {
+            state,
             handlePrimaryAction: vi.fn(),
             changeDifficulty: vi.fn(),
             toggleTraining: vi.fn(),
+            toggleHardcore: vi.fn(),
             togglePause: vi.fn(),
             returnToMenu: vi.fn(),
             input: {
                 keyboard: {
                     on: vi.fn((key, fn) => { handlers[key] = fn; }),
                 },
-                on: vi.fn(),
+                on: vi.fn((_event, fn) => { pointerHandlers.push(fn); }),
+                hitTestPointer: vi.fn(() => []),
             },
+            _handlers: handlers,
+            _pointerHandlers: pointerHandlers,
         };
+    }
+
+    it('branche clavier et pointer', () => {
+        const scene = makeScene();
         setupSceneInput(scene);
         expect(scene.input.keyboard.on).toHaveBeenCalledWith('keydown-SPACE', expect.any(Function));
-        handlers['keydown-SPACE']();
+        scene._handlers['keydown-SPACE']();
         expect(scene.handlePrimaryAction).toHaveBeenCalled();
-        handlers['keydown-TWO']();
+        scene._handlers['keydown-TWO']();
         expect(scene.changeDifficulty).toHaveBeenCalledWith(DIFFICULTY.NORMAL);
-        handlers['keydown-T']();
+        scene._handlers['keydown-T']();
         expect(scene.toggleTraining).toHaveBeenCalled();
+    });
+
+    it('ESC bascule la pause en jeu', () => {
+        const scene = makeScene(GAME_STATE.PLAYING);
+        setupSceneInput(scene);
+        scene._handlers['keydown-ESC']();
+        expect(scene.togglePause).toHaveBeenCalled();
+    });
+
+    it('M retourne au menu depuis la pause', () => {
+        const scene = makeScene(GAME_STATE.PAUSED);
+        setupSceneInput(scene);
+        scene._handlers['keydown-M']();
+        expect(scene.returnToMenu).toHaveBeenCalled();
+    });
+
+    it('pointerdown ignore les clics UI et déclenche sinon', async () => {
+        const { resumeAudio } = await import('../src/audio.js');
+        const scene = makeScene(GAME_STATE.PLAYING);
+        setupSceneInput(scene);
+        const pointer = {};
+        scene._pointerHandlers[0](pointer);
+        expect(resumeAudio).toHaveBeenCalled();
+        expect(scene.handlePrimaryAction).toHaveBeenCalled();
+
+        scene.handlePrimaryAction.mockClear();
+        scene.input.hitTestPointer.mockReturnValue([{ input: { enabled: true } }]);
+        scene._pointerHandlers[0](pointer);
+        expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
+    });
+
+    it('H bascule le hardcore', () => {
+        const scene = makeScene();
+        setupSceneInput(scene);
+        scene._handlers['keydown-H']();
+        expect(scene.toggleHardcore).toHaveBeenCalled();
     });
 });

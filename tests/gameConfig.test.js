@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
+import { GAME_CONFIG, getDifficultyForRound, getScriptedPipeGapY } from '../src/config.js';
 
 describe('GAME_CONFIG dimensions', () => {
     it('expose le centre de l’écran', () => {
@@ -46,6 +46,19 @@ describe('GAME_CONFIG.getDifficulty', () => {
     it('retombe sur normal pour une clé invalide', () => {
         const x = GAME_CONFIG.getDifficulty('invalid');
         expect(x.speed).toBe(2.7);
+    });
+});
+
+describe('getDifficultyForRound', () => {
+    it('renforce gravité et vitesse en hardcore', () => {
+        const normal = GAME_CONFIG.getDifficulty('normal');
+        const hardcore = getDifficultyForRound('normal', true);
+        expect(hardcore.gravity).toBeGreaterThan(normal.gravity);
+        expect(hardcore.speed).toBeGreaterThan(normal.speed);
+    });
+
+    it('identique au mode normal sans hardcore', () => {
+        expect(getDifficultyForRound('normal', false)).toEqual(GAME_CONFIG.getDifficulty('normal'));
     });
 });
 

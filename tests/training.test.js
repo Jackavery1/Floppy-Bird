@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { interpolateGhostY, loadGhostData, saveGhostData } from '../src/training.js';
+import { GhostReplay, interpolateGhostY, loadGhostData, saveGhostData } from '../src/training.js';
+import { GAME_CONFIG } from '../src/config.js';
 
 describe('training', () => {
     let store;
@@ -34,5 +35,30 @@ describe('training', () => {
         store['flappy-bird-ghost'] = JSON.stringify([{ t: 0, y: 200 }]);
         expect(loadGhostData().path).toHaveLength(1);
         expect(loadGhostData().score).toBe(0);
+    });
+
+    it('GhostReplay enregistre et sauvegarde un meilleur run', () => {
+        const scene = {
+            trainingMode: true,
+            time: { now: 0 },
+            bird: { y: 250 },
+            add: {
+                sprite: vi.fn(() => ({
+                    setDisplaySize: vi.fn(),
+                    setAlpha: vi.fn(),
+                    setDepth: vi.fn(),
+                    setTint: vi.fn(),
+                    setPosition: vi.fn(),
+                    destroy: vi.fn(),
+                })),
+            },
+        };
+        const ghost = new GhostReplay(scene);
+        ghost.beginRound();
+        scene.time.now = 100;
+        ghost.update(GAME_CONFIG.training.sampleEveryFrames);
+        ghost.finishRound(5);
+        expect(loadGhostData().score).toBe(5);
+        expect(loadGhostData().path.length).toBeGreaterThan(0);
     });
 });

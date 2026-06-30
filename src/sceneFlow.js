@@ -1,4 +1,5 @@
-import { GAME_CONFIG } from './config.js';
+import { GAME_CONFIG, getDifficultyForRound } from './config.js';
+import { getDailyChallengeSeed } from './dailyChallenge.js';
 import {
     GAME_STATE,
     canChangeDifficulty,
@@ -56,9 +57,14 @@ export function beginRound(scene, { resetBird = false } = {}) {
     }
 
     scene.pipes.reset();
-    scene.pipes.setDifficulty(scene.difficulty);
-    scene.bird.applyDifficulty(GAME_CONFIG.getDifficulty(scene.difficulty));
-    scene.ui.refreshHighScore(scene.difficulty);
+    scene.pipes.setDailySeed(getDailyChallengeSeed());
+    const roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
+    scene.pipes.pipeGap = roundDiff.gap;
+    scene.pipes.pipeInterval = roundDiff.pipeInterval;
+    scene.pipes._baseSpeed = roundDiff.speed;
+    scene.pipes.pipeSpeed = roundDiff.speed;
+    scene.bird.applyDifficulty(roundDiff);
+    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
     scene._roundHighScore = scene.ui.highScore;
     scene.ui.createScoreDisplay();
     scene.ui.createInGameControls({
@@ -159,6 +165,7 @@ export function toggleTraining(scene) {
     saveTrainingEnabled(scene.trainingMode);
     applyTrainingTimeScale(scene);
     scene.ui.updateTrainingLabel(scene.trainingMode);
+    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
 }
 
 /** @param {SceneContext} scene */

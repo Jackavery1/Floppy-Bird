@@ -112,4 +112,20 @@ describe('Pipes', () => {
             expect(pipes.pipeSpeed).toBe(base);
         });
     });
+
+    describe('setDailySeed', () => {
+        it('produit la même séquence de gaps', () => {
+            pipes.setDailySeed(424242);
+            pipes.pipeGap = 112;
+            const gap1 = pipes._resolveGapY();
+            const gap2 = pipes._resolveGapY();
+
+            const other = new Pipes(scene);
+            other.pipeGap = 112;
+            other.setDailySeed(424242);
+            expect(other._resolveGapY()).toBe(gap1);
+            expect(other._resolveGapY()).toBe(gap2);
+            expect(gap1).not.toBe(gap2);
+        });
+    });
 });

@@ -44,7 +44,14 @@ describe('sceneFlow', () => {
             _spawnInvincibleTimer: null,
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
             bird: { reset: vi.fn(), applyDifficulty: vi.fn() },
-            pipes: { reset: vi.fn(), setDifficulty: vi.fn() },
+            pipes: {
+                reset: vi.fn(),
+                setDailySeed: vi.fn(),
+                pipeGap: 112,
+                pipeInterval: 76,
+                _baseSpeed: 2.7,
+                pipeSpeed: 2.7,
+            },
             ghost: { beginRound: vi.fn(), finishRound: vi.fn() },
             ui: {
                 showMenu: vi.fn(() => []),

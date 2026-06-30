@@ -15,9 +15,6 @@ import {
     computeMenuLayout,
     diffButtonCenter,
     diffLabelColor,
-    DIFF_BTN_ACTIVE,
-    DIFF_BTN_HOVER,
-    DIFF_BTN_IDLE,
     fitTitleFontSize,
     GAME_TITLE,
     MIN_TOUCH,
@@ -25,75 +22,15 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
+import { applyMenuLayout, bestScoreLabel, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from './uiHud.js';
 
-function drawDiffButtons(ui, difficulty, layout) {
-    if (!ui._diffBtnGraphics) return;
-    const g = ui._diffBtnGraphics;
-    g.clear();
-
-    const { diffBtn } = UI_LAYOUT;
-    const diffY = layout.difficulty;
-
-    DIFFICULTY_ORDER.forEach((diff, i) => {
-        const bx = diffBtn.x[i];
-        const by = diffY - diffBtn.height / 2;
-        if (difficulty === diff) {
-            g.fillStyle(DIFF_BTN_ACTIVE, 1);
-        } else if (ui._hoveredDifficulty === diff) {
-            g.fillStyle(DIFF_BTN_HOVER.color, DIFF_BTN_HOVER.alpha);
-        } else {
-            g.fillStyle(DIFF_BTN_IDLE.color, DIFF_BTN_IDLE.alpha);
-        }
-        g.fillRoundedRect(bx, by, diffBtn.width, diffBtn.height, diffBtn.radius);
-    });
-}
-
-function applyMenuLayout(ui, difficulty, trainingMode, hardcoreMode) {
-    const layout = computeMenuLayout(isCoarsePointer(), ui._modesExpanded);
-    ui._menuLayout = layout;
-
-    if (ui._modesHeader) {
-        ui._modesHeader.setVisible(layout.compact);
-        ui._modesHeader.setY(layout.modesHeader);
-        ui._modesHeader.setText(modesAccordionLabel(layout.modesExpanded, trainingMode, hardcoreMode));
+export function refreshBestScore(ui, difficulty, hardcoreMode) {
+    ui._currentDifficulty = difficulty;
+    ui.highScore = loadHighScore(difficulty, hardcoreMode);
+    if (ui._bestText) {
+        ui._bestText.setText(`${bestScoreLabel(difficulty, hardcoreMode)} : ${ui.highScore}`);
     }
-    if (ui._modesHeaderHit) {
-        ui._modesHeaderHit.setVisible(layout.compact);
-        ui._modesHeaderHit.setY(layout.modesHeader);
-    }
-
-    const showModes = !layout.compact || layout.modesExpanded;
-    if (ui._trainingLabel) {
-        ui._trainingLabel.setVisible(showModes);
-        if (showModes && layout.training != null) ui._trainingLabel.setY(layout.training);
-    }
-    if (ui._trainingHit) {
-        ui._trainingHit.setVisible(showModes);
-        if (showModes && layout.training != null) ui._trainingHit.setY(layout.training);
-    }
-    if (ui._hardcoreLabel) {
-        ui._hardcoreLabel.setVisible(showModes);
-        if (showModes && layout.hardcore != null) ui._hardcoreLabel.setY(layout.hardcore);
-    }
-    if (ui._hardcoreHit) {
-        ui._hardcoreHit.setVisible(showModes);
-        if (showModes && layout.hardcore != null) ui._hardcoreHit.setY(layout.hardcore);
-    }
-
-    drawDiffButtons(ui, difficulty, layout);
-    ui._diffBtnLabels?.forEach(({ label, diff, hitZone }, i) => {
-        label.setY(layout.difficulty);
-        label.setColor(diffLabelColor(ui._currentDifficulty, diff));
-        hitZone.setY(layout.difficulty);
-        hitZone.x = diffButtonCenter(i);
-    });
-
-    ui._startText?.setY(layout.start);
-    ui._hint1?.setY(layout.hint1);
-    ui._hint2?.setY(layout.hint2);
-    ui._muteText?.setY(layout.mute);
-    ui._muteHit?.setY(layout.mute);
 }
 
 export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
@@ -105,7 +42,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
 
     ui._currentDifficulty = difficulty;
     ui._modesExpanded = !isCoarsePointer();
-    ui.highScore = loadHighScore(difficulty);
+    ui.highScore = loadHighScore(difficulty, hardcoreMode);
     const elements = [];
     const layout = computeMenuLayout(isCoarsePointer(), ui._modesExpanded);
     ui._menuLayout = layout;
@@ -124,10 +61,10 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     }, 51);
     elements.push(title);
 
-    const bestText = addCenteredText(ui.scene, GAME_CONFIG.centerX, layout.best,
-        `MEILLEUR (${GAME_CONFIG.difficultyLabels[difficulty]}) : ${ui.highScore}`,
+    ui._bestText = addCenteredText(ui.scene, GAME_CONFIG.centerX, layout.best,
+        `${bestScoreLabel(difficulty, hardcoreMode)} : ${ui.highScore}`,
         { fontSize: '14px', fill: '#ffffff' }, 51);
-    elements.push(bestText);
+    elements.push(ui._bestText);
 
     const dailyText = addCenteredText(ui.scene, GAME_CONFIG.centerX, layout.daily,
         getDailyChallengeLabel(), { fontSize: '9px', fill: '#aaaaaa' }, 51);
@@ -269,9 +206,9 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
 
     applyMenuLayout(ui, difficulty, trainingMode, hardcoreMode);
 
-    [title, bestText, ui._trainingLabel, ui._hardcoreLabel, ui._startText].forEach(el => el.setAlpha(0));
+    [title, ui._bestText, ui._trainingLabel, ui._hardcoreLabel, ui._startText].forEach(el => el.setAlpha(0));
     sceneTween(ui.scene, {
-        targets: [title, bestText, ui._trainingLabel, ui._hardcoreLabel, ui._startText],
+        targets: [title, ui._bestText, ui._trainingLabel, ui._hardcoreLabel, ui._startText],
         alpha: 1,
         duration: 400,
         stagger: 80,
@@ -307,11 +244,12 @@ export function updateHardcoreLabel(ui, hardcoreMode) {
             hardcoreMode,
         ));
     }
+    refreshBestScore(ui, ui._currentDifficulty, hardcoreMode);
 }
 
 export function updateDifficultyButtons(ui, difficulty) {
     ui._currentDifficulty = difficulty;
-    ui.highScore = loadHighScore(difficulty);
+    refreshBestScore(ui, difficulty, ui.scene?.hardcoreMode ?? false);
     ui._hoveredDifficulty = null;
     drawDiffButtons(ui, difficulty, ui._menuLayout ?? UI_LAYOUT.menu);
 
@@ -320,7 +258,6 @@ export function updateDifficultyButtons(ui, difficulty) {
     });
 }
 
-export function refreshHighScore(ui, difficulty) {
-    ui._currentDifficulty = difficulty;
-    ui.highScore = loadHighScore(difficulty);
+export function refreshHighScore(ui, difficulty, hardcoreMode = false) {
+    refreshBestScore(ui, difficulty, hardcoreMode);
 }

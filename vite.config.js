@@ -1,7 +1,10 @@
 /// <reference types="vitest/config" />
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
+const root = path.dirname(fileURLToPath(import.meta.url));
 const base = process.env.BASE_PATH || './';
 const THEME_COLOR = '#1a1a2e';
 
@@ -15,11 +18,14 @@ export default defineConfig(({ mode }) => {
 
     return {
         base,
+        resolve: {
+            alias: phaserFromCdn
+                ? { phaser: path.join(root, 'src/phaser-shim.js') }
+                : {},
+        },
         build: {
             rollupOptions: {
-                external: phaserFromCdn ? ['phaser'] : [],
                 output: {
-                    globals: { phaser: 'Phaser' },
                     manualChunks: phaserFromCdn ? undefined : { phaser: ['phaser'] },
                 },
             },

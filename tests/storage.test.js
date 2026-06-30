@@ -60,6 +60,20 @@ describe('storage', () => {
         expect(loadLeaderboard(DIFFICULTY.HARD)[0].score).toBe(20);
     });
 
+    it('records hardcore séparés du mode normal', () => {
+        expect(saveHighScore(9, DIFFICULTY.NORMAL, undefined, true)).toBe(9);
+        expect(saveHighScore(4, DIFFICULTY.NORMAL)).toBe(4);
+        expect(loadHighScore(DIFFICULTY.NORMAL, true)).toBe(9);
+        expect(loadHighScore(DIFFICULTY.NORMAL)).toBe(4);
+    });
+
+    it('leaderboards hardcore séparés', () => {
+        saveToLeaderboard(11, DIFFICULTY.NORMAL, true);
+        saveToLeaderboard(7, DIFFICULTY.NORMAL, false);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, true)[0].score).toBe(11);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL)[0].score).toBe(7);
+    });
+
     it('loadLeaderboard gère le format legacy numérique', () => {
         store['flappy-bird-leaderboard'] = JSON.stringify([8, 15]);
         const entries = loadLeaderboard();
