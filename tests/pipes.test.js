@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Pipes, smoothGapY } from '../src/pipes.js';
-import { GAME_CONFIG } from '../src/config.js';
+import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
 
 function createMockScene() {
     const scene = {
@@ -52,6 +52,15 @@ describe('Pipes', () => {
         });
     });
 
+    describe('isBirdInGap', () => {
+        it('détecte l’oiseau dans le gap vertical', () => {
+            pipes.topPipes.push({ x: 200, y: 120 });
+            pipes.bottomPipes.push({ x: 200, y: 232 });
+            expect(pipes.isBirdInGap(200, 180)).toBe(true);
+            expect(pipes.isBirdInGap(200, 100)).toBe(false);
+        });
+    });
+
     describe('update', () => {
         it('fait défiler et spawn une paire après pipeInterval', () => {
             pipes.pipeInterval = 2;
@@ -95,6 +104,17 @@ describe('Pipes', () => {
         });
     });
 
+    describe('applyRoundDifficulty', () => {
+        it('applique vitesse, gap et intervalle d’une config de manche', () => {
+            pipes.applyRoundDifficulty({ speed: 3.1, gap: 100, pipeInterval: 70 });
+            expect(pipes.pipeSpeed).toBe(3.1);
+            expect(pipes.pipeGap).toBe(100);
+            expect(pipes.pipeInterval).toBe(70);
+            pipes.applySpeedForScore(10);
+            expect(pipes.pipeSpeed).toBeGreaterThan(3.1);
+        });
+    });
+
     describe('smoothGapY', () => {
         it('limite l’écart vertical entre gaps consécutifs', () => {
             expect(smoothGapY(200, 150, 80, 48, 400)).toBe(200);
@@ -111,18 +131,38 @@ describe('Pipes', () => {
             pipes.applySpeedForScore(0);
             expect(pipes.pipeSpeed).toBe(base);
         });
+
+        it('resserre le lissage des gaps après 20 points', () => {
+            pipes.applySpeedForScore(19);
+            expect(pipes._maxGapDelta()).toBe(GAME_CONFIG.pipes.maxGapDelta);
+            pipes.applySpeedForScore(30);
+            expect(pipes._maxGapDelta()).toBe(GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep);
+        });
     });
 
     describe('setDailySeed', () => {
-        it('produit la même séquence de gaps', () => {
+        it('utilise les gaps scriptés avant le RNG daily', () => {
             pipes.setDailySeed(424242);
             pipes.pipeGap = 112;
+            expect(pipes._resolveGapY()).toBe(getScriptedPipeGapY(0, 112));
+            expect(pipes._resolveGapY()).toBe(getScriptedPipeGapY(1, 112));
+        });
+
+        it('produit la même séquence RNG daily après les gaps scriptés', () => {
+            pipes.setDailySeed(424242);
+            pipes.pipeGap = 112;
+            for (let i = 0; i < GAME_CONFIG.level.pipeGaps.length; i++) {
+                pipes._resolveGapY();
+            }
             const gap1 = pipes._resolveGapY();
             const gap2 = pipes._resolveGapY();
 
             const other = new Pipes(scene);
             other.pipeGap = 112;
             other.setDailySeed(424242);
+            for (let i = 0; i < GAME_CONFIG.level.pipeGaps.length; i++) {
+                other._resolveGapY();
+            }
             expect(other._resolveGapY()).toBe(gap1);
             expect(other._resolveGapY()).toBe(gap2);
             expect(gap1).not.toBe(gap2);

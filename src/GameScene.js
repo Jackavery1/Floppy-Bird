@@ -17,6 +17,7 @@ import { loadTrainingEnabled } from './trainingStorage.js';
 import { loadHardcoreEnabled, saveHardcoreEnabled } from './hardcoreStorage.js';
 import { frameStep, checkCollisions } from './sceneBootstrap.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
+import { updateCoyoteTime } from './sceneCoyote.js';
 import { triggerDeath, updateDying } from './sceneDeath.js';
 import {
     showMenu,
@@ -30,6 +31,7 @@ import {
     toggleHardcore,
 } from './sceneFlow.js';
 import { setupSceneWorld } from './sceneSetup.js';
+import { createRoundState } from './roundState.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
@@ -41,8 +43,8 @@ export class GameScene extends Phaser.Scene {
         this.scoreEffects = null;
         this.ghost = null;
 
+        this.round = createRoundState();
         this.state = GAME_STATE.MENU;
-        this.score = 0;
         this.difficulty = DIFFICULTY.NORMAL;
         this.trainingMode = loadTrainingEnabled();
         this.hardcoreMode = loadHardcoreEnabled();
@@ -51,22 +53,8 @@ export class GameScene extends Phaser.Scene {
             saveHardcoreEnabled(false);
         }
 
-        this.menuElements = [];
-        this.gameOverElements = [];
-        this._pauseElements = [];
-
         this._clouds = [];
         this._groundSprite = null;
-        this._dyingFalling = false;
-        this._dyingGrounded = false;
-        this._leaderboardData = null;
-        this._pipeSpawnTimer = null;
-        this._jumpBufferFrames = 0;
-        this._spawnInvincible = false;
-        this._spawnInvincibleTimer = null;
-        this._roundHighScore = 0;
-        this._recordNotified = false;
-        this._isNewRecord = false;
 
         this.fps = null;
     }
@@ -98,9 +86,9 @@ export class GameScene extends Phaser.Scene {
             this.ghost.update(step);
             checkCollisions(this);
             checkScorePipes(this);
+            updateCoyoteTime(this, step);
 
-            if ((!this._spawnInvincible && this.bird.isOutOfBounds())
-                || (!this._spawnInvincible && this.bird.isHittingGround())) {
+            if (this.bird.isOutOfBounds() || this.bird.isHittingGround()) {
                 this.triggerDeath();
             }
         } else if (shouldUpdateDying(this.state)) {

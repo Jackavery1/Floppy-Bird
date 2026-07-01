@@ -7,10 +7,8 @@ import {
     canReturnToMenu,
     shouldStartGameOnPrimary,
 } from './gameState.js';
-import { Utils } from './utils.js';
-import { saveTrainingEnabled } from './trainingStorage.js';
-import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import { loadTutorialSeen } from './tutorialStorage.js';
+import { toggleTrainingMode, toggleHardcoreMode } from './sceneModeSettings.js';
 import {
     cancelPipeSpawnTimer,
     scheduleFirstPipe,
@@ -18,54 +16,49 @@ import {
     startSpawnInvincibility,
 } from './sceneRound.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
+import { resetCoyoteTime } from './sceneCoyote.js';
+import { loadSelectedSkin } from './metaStorage.js';
 import { requestJump } from './sceneJumpBuffer.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
-export function clearPauseElements(scene) {
-    if (scene._pauseElements?.length) {
-        scene._pauseElements.forEach(e => e?.destroy());
-        scene._pauseElements = [];
-    }
+function clearPauseOverlay(scene) {
+    scene.ui.clearOverlay('pause');
 }
 
 /** @param {SceneContext} scene */
 export function showMenu(scene) {
-    clearPauseElements(scene);
+    clearPauseOverlay(scene);
     scene.state = GAME_STATE.MENU;
-    scene.score = 0;
-    Utils.clearElements(scene.menuElements);
+    scene.round.score = 0;
+    scene.ui.clearOverlay('menu');
 
     const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
-    scene.menuElements.push(...elements);
+    scene.ui.setOverlay('menu', elements);
 }
 
 /** @param {SceneContext} scene */
 export function beginRound(scene, { resetBird = false } = {}) {
-    clearPauseElements(scene);
+    clearPauseOverlay(scene);
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
-    scene._jumpBufferFrames = 0;
-    scene._recordNotified = false;
-    scene._isNewRecord = false;
+    scene.round.resetForRound();
+    resetCoyoteTime(scene);
     scene.state = GAME_STATE.PLAYING;
-    scene.score = 0;
 
     if (resetBird) {
         scene.bird.reset(GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
+        scene.bird.setSkin(loadSelectedSkin());
     }
 
     scene.pipes.reset();
     scene.pipes.setDailySeed(getDailyChallengeSeed());
     const roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
-    scene.pipes.pipeGap = roundDiff.gap;
-    scene.pipes.pipeInterval = roundDiff.pipeInterval;
-    scene.pipes._baseSpeed = roundDiff.speed;
-    scene.pipes.pipeSpeed = roundDiff.speed;
+    scene.pipes.applyRoundDifficulty(roundDiff);
     scene.bird.applyDifficulty(roundDiff);
     scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
-    scene._roundHighScore = scene.ui.highScore;
+    scene.round.roundHighScore = scene.ui.highScore;
     scene.ui.createScoreDisplay();
     scene.ui.createInGameControls({
         trainingMode: scene.trainingMode,
@@ -74,6 +67,8 @@ export function beginRound(scene, { resetBird = false } = {}) {
     });
     if (!scene.hardcoreMode) {
         startSpawnInvincibility(scene);
+    } else {
+        startSpawnInvincibility(scene, GAME_CONFIG.round.hardcoreSpawnInvincibilityMs);
     }
     scheduleFirstPipe(scene);
     applyTrainingTimeScale(scene);
@@ -88,10 +83,10 @@ export function beginRound(scene, { resetBird = false } = {}) {
 /** @param {SceneContext} scene */
 export function startGame(scene) {
     if (scene.state === GAME_STATE.MENU) {
-        Utils.clearElements(scene.menuElements);
+        scene.ui.clearOverlay('menu');
         beginRound(scene, { resetBird: true });
     } else if (scene.state === GAME_STATE.GAME_OVER) {
-        Utils.clearElements(scene.gameOverElements);
+        scene.ui.clearOverlay('gameOver');
         beginRound(scene, { resetBird: true });
     }
 }
@@ -101,11 +96,12 @@ export function returnToMenu(scene) {
     if (!canReturnToMenu(scene.state)) return;
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
-    scene._jumpBufferFrames = 0;
-    clearPauseElements(scene);
-    scene.ghost.finishRound(scene.score);
+    scene.round.jumpBufferFrames = 0;
+    resetCoyoteTime(scene);
+    clearPauseOverlay(scene);
+    scene.ghost.finishRound(scene.round.score);
     if (scene.state === GAME_STATE.GAME_OVER) {
-        Utils.clearElements(scene.gameOverElements);
+        scene.ui.clearOverlay('gameOver');
     }
     scene.bird.reset(GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
     scene.pipes.reset();
@@ -122,10 +118,10 @@ export function togglePause(scene) {
             },
             onMenu: () => returnToMenu(scene),
         });
-        scene._pauseElements = pauseUI.elements;
+        scene.ui.setOverlay('pause', pauseUI.elements);
     } else if (scene.state === GAME_STATE.PAUSED) {
         scene.state = GAME_STATE.PLAYING;
-        clearPauseElements(scene);
+        clearPauseOverlay(scene);
     }
 }
 
@@ -156,28 +152,11 @@ export function changeDifficulty(scene, difficulty) {
 /** @param {SceneContext} scene */
 export function toggleTraining(scene) {
     if (scene.state !== GAME_STATE.MENU) return;
-    scene.trainingMode = !scene.trainingMode;
-    if (scene.trainingMode && scene.hardcoreMode) {
-        scene.hardcoreMode = false;
-        saveHardcoreEnabled(false);
-        scene.ui.updateHardcoreLabel(false);
-    }
-    saveTrainingEnabled(scene.trainingMode);
-    applyTrainingTimeScale(scene);
-    scene.ui.updateTrainingLabel(scene.trainingMode);
-    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
+    toggleTrainingMode(scene);
 }
 
 /** @param {SceneContext} scene */
 export function toggleHardcore(scene) {
     if (scene.state !== GAME_STATE.MENU) return;
-    scene.hardcoreMode = !scene.hardcoreMode;
-    if (scene.hardcoreMode && scene.trainingMode) {
-        scene.trainingMode = false;
-        saveTrainingEnabled(false);
-        scene.ui.updateTrainingLabel(false);
-        applyTrainingTimeScale(scene);
-    }
-    saveHardcoreEnabled(scene.hardcoreMode);
-    scene.ui.updateHardcoreLabel(scene.hardcoreMode);
+    toggleHardcoreMode(scene);
 }

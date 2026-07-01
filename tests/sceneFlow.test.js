@@ -11,6 +11,7 @@ import {
     toggleTraining,
     toggleHardcore,
 } from '../src/sceneFlow.js';
+import { createRoundState } from '../src/roundState.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
@@ -24,37 +25,30 @@ vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialSeen: vi.fn(() => true),
 }));
 
+vi.mock('../src/metaStorage.js', () => ({
+    loadSelectedSkin: vi.fn(() => 'classic'),
+}));
+
 describe('sceneFlow', () => {
     function makeScene(state = GAME_STATE.MENU) {
         return {
             state,
-            score: 0,
+            round: createRoundState(),
             difficulty: DIFFICULTY.NORMAL,
             trainingMode: false,
             hardcoreMode: false,
-            menuElements: [],
-            gameOverElements: [],
-            _pauseElements: [],
-            _jumpBufferFrames: 0,
-            _recordNotified: false,
-            _isNewRecord: false,
-            _roundHighScore: 0,
-            _pipeSpawnTimer: null,
-            _spawnInvincible: false,
-            _spawnInvincibleTimer: null,
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
-            bird: { reset: vi.fn(), applyDifficulty: vi.fn() },
+            bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn() },
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
-                pipeGap: 112,
-                pipeInterval: 76,
-                _baseSpeed: 2.7,
-                pipeSpeed: 2.7,
+                applyRoundDifficulty: vi.fn(),
             },
             ghost: { beginRound: vi.fn(), finishRound: vi.fn() },
             ui: {
                 showMenu: vi.fn(() => []),
+                clearOverlay: vi.fn(),
+                setOverlay: vi.fn(),
                 createScoreDisplay: vi.fn(),
                 createInGameControls: vi.fn(),
                 refreshHighScore: vi.fn(),
@@ -91,8 +85,8 @@ describe('sceneFlow', () => {
 
     it('startGame depuis le menu lance un round', () => {
         const scene = makeScene(GAME_STATE.MENU);
-        scene.menuElements = [{ destroy: vi.fn() }];
         startGame(scene);
+        expect(scene.ui.clearOverlay).toHaveBeenCalledWith('menu');
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
 
@@ -143,17 +137,17 @@ describe('sceneFlow', () => {
         expect(saveTrainingEnabled).toHaveBeenCalledWith(false);
     });
 
-    it('beginRound sans invincibilité en mode hardcore', () => {
+    it('beginRound avec invincibilité réduite en hardcore', () => {
         const scene = makeScene(GAME_STATE.MENU);
         scene.hardcoreMode = true;
         beginRound(scene);
-        expect(scene._spawnInvincible).toBe(false);
+        expect(scene.round.spawnInvincible).toBe(true);
     });
 
     it('handlePrimaryAction démarre la partie depuis le menu', () => {
         const scene = makeScene(GAME_STATE.MENU);
-        scene.menuElements = [{ destroy: vi.fn() }];
         handlePrimaryAction(scene);
+        expect(scene.ui.clearOverlay).toHaveBeenCalledWith('menu');
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
 });

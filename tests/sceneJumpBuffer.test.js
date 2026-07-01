@@ -1,23 +1,28 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
+import { createRoundState } from '../src/roundState.js';
 
 vi.mock('../src/tutorialStorage.js', () => ({
     markTutorialSeen: vi.fn(),
 }));
 
+vi.mock('../src/sceneJumpFeedback.js', () => ({
+    playJumpFeedback: vi.fn(),
+}));
+
 describe('sceneJumpBuffer', () => {
     it('requestJump remplit le buffer', async () => {
         const { requestJump } = await import('../src/sceneJumpBuffer.js');
-        const scene = { _jumpBufferFrames: 0, bird: { bufferJump: () => {} } };
+        const scene = { round: createRoundState(), bird: { bufferJump: () => {} } };
         requestJump(scene);
-        expect(scene._jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
+        expect(scene.round.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
 
     it('requestJump marque le tutoriel vu quand affiché', async () => {
         const { markTutorialSeen } = await import('../src/tutorialStorage.js');
         const { requestJump } = await import('../src/sceneJumpBuffer.js');
         const scene = {
-            _jumpBufferFrames: 0,
+            round: createRoundState(),
             bird: { bufferJump: () => {} },
             ui: { dismissJumpTutorial: vi.fn(() => true) },
         };
@@ -27,20 +32,26 @@ describe('sceneJumpBuffer', () => {
 
     it('processJumpBuffer consomme le buffer', async () => {
         const { processJumpBuffer } = await import('../src/sceneJumpBuffer.js');
+        const { playJumpFeedback } = await import('../src/sceneJumpFeedback.js');
         let buffered = false;
+        const round = createRoundState();
+        round.jumpBufferFrames = 4;
         const scene = {
-            _jumpBufferFrames: 4,
+            round,
             bird: { bufferJump: () => { buffered = true; } },
         };
         processJumpBuffer(scene);
         expect(buffered).toBe(true);
-        expect(scene._jumpBufferFrames).toBe(0);
+        expect(playJumpFeedback).toHaveBeenCalled();
+        expect(scene.round.jumpBufferFrames).toBe(0);
     });
 
     it('tickJumpBuffer décrémente le buffer', async () => {
         const { tickJumpBuffer } = await import('../src/sceneJumpBuffer.js');
-        const scene = { _jumpBufferFrames: 3 };
+        const round = createRoundState();
+        round.jumpBufferFrames = 3;
+        const scene = { round };
         tickJumpBuffer(scene);
-        expect(scene._jumpBufferFrames).toBe(2);
+        expect(scene.round.jumpBufferFrames).toBe(2);
     });
 });

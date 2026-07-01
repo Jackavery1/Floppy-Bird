@@ -24,6 +24,14 @@ export const UI_LAYOUT = {
     menuBtn: { width: 100, height: 36, radius: 8 },
 };
 
+/** Coordonnées jeu (288×512) pour les tests e2e tactile / pointer. */
+export const TOUCH_TARGETS = Object.freeze({
+    menuStart: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.menu.start },
+    pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
+    pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
+    pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
+});
+
 export const PAUSE_BTN_COLOR = 0x37474F;
 export const PAUSE_BTN_HOVER = 0x546E7A;
 export const MENU_BTN_COLOR = 0x1565C0;

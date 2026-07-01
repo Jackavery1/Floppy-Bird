@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
+import { createRoundState } from '../src/roundState.js';
 
 vi.mock('phaser', () => {
     class Scene {
@@ -59,57 +60,72 @@ vi.mock('../src/sceneRound.js', () => ({
     clearSpawnInvincibility: vi.fn(),
 }));
 
+vi.mock('../src/sceneCoyote.js', () => ({
+    updateCoyoteTime: vi.fn(),
+}));
+
+vi.mock('../src/sceneFlow.js', () => ({
+    showMenu: vi.fn(),
+    beginRound: vi.fn(),
+    startGame: vi.fn(),
+    returnToMenu: vi.fn(),
+    togglePause: vi.fn(),
+    handlePrimaryAction: vi.fn(),
+    changeDifficulty: vi.fn(),
+    toggleTraining: vi.fn(),
+    toggleHardcore: vi.fn(),
+}));
+
+import { GameScene } from '../src/GameScene.js';
+import { preloadTextures } from '../src/textures/index.js';
+import { setupSceneWorld } from '../src/sceneSetup.js';
+import { triggerDeath } from '../src/sceneDeath.js';
+import { processJumpBuffer, tickJumpBuffer } from '../src/sceneJumpBuffer.js';
+import { checkCollisions } from '../src/sceneBootstrap.js';
+import { checkScorePipes } from '../src/sceneRound.js';
+import { updateClouds, updateGround } from '../src/sceneBackground.js';
+
 describe('GameScene', () => {
-    it('démarre en état MENU avec difficulté normal', async () => {
-        const { GameScene } = await import('../src/GameScene.js');
+    it('démarre en état MENU avec difficulté normal', () => {
         const scene = new GameScene();
         expect(scene.state).toBe(GAME_STATE.MENU);
         expect(scene.difficulty).toBe(DIFFICULTY.NORMAL);
+        expect(scene.round.score).toBe(0);
     });
 
-    it('preload charge les textures', async () => {
-        const { preloadTextures } = await import('../src/textures/index.js');
-        const { GameScene } = await import('../src/GameScene.js');
+    it('preload charge les textures', () => {
         const scene = new GameScene();
         scene.preload();
         expect(preloadTextures).toHaveBeenCalledWith(scene);
     });
 
-    it('create initialise le monde', async () => {
-        const { setupSceneWorld } = await import('../src/sceneSetup.js');
-        const { GameScene } = await import('../src/GameScene.js');
+    it('create initialise le monde', () => {
         const scene = new GameScene();
         scene.create();
         expect(setupSceneWorld).toHaveBeenCalledWith(scene);
     });
 
-    it('délègue triggerDeath au module sceneDeath', async () => {
-        const { triggerDeath } = await import('../src/sceneDeath.js');
-        const { GameScene } = await import('../src/GameScene.js');
+    it('délègue triggerDeath au module sceneDeath', () => {
         const scene = new GameScene();
         scene.triggerDeath();
         expect(triggerDeath).toHaveBeenCalledWith(scene);
     });
 
-    it('update délègue la boucle gameplay en état PLAYING', async () => {
-        const { processJumpBuffer, tickJumpBuffer } = await import('../src/sceneJumpBuffer.js');
-        const { checkCollisions } = await import('../src/sceneBootstrap.js');
-        const { checkScorePipes } = await import('../src/sceneRound.js');
-        const { updateClouds, updateGround } = await import('../src/sceneBackground.js');
-        const { GameScene } = await import('../src/GameScene.js');
-
+    it('update délègue la boucle gameplay en état PLAYING', () => {
         const scene = new GameScene();
         scene.state = GAME_STATE.PLAYING;
         scene.game = { loop: { delta: 16.67, actualFps: 60 } };
         scene.bird = {
             update: vi.fn(),
+            x: 50,
+            y: 256,
             isOutOfBounds: vi.fn(() => false),
             isHittingGround: vi.fn(() => false),
         };
-        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7 };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7, isBirdInGap: vi.fn(() => false) };
         scene.ghost = { update: vi.fn() };
+        scene.round = createRoundState();
         scene._clouds = [];
-        scene._spawnInvincible = false;
 
         scene.update();
 
@@ -122,5 +138,26 @@ describe('GameScene', () => {
         expect(updateClouds).toHaveBeenCalled();
         expect(updateGround).toHaveBeenCalled();
         expect(tickJumpBuffer).toHaveBeenCalledWith(scene);
+    });
+
+    it('le sol tue même pendant l’invincibilité spawn', () => {
+        const scene = new GameScene();
+        scene.state = GAME_STATE.PLAYING;
+        scene.game = { loop: { delta: 16.67, actualFps: 60 } };
+        scene.round = createRoundState();
+        scene.round.spawnInvincible = true;
+        scene.bird = {
+            update: vi.fn(),
+            isOutOfBounds: vi.fn(() => false),
+            isHittingGround: vi.fn(() => true),
+        };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7 };
+        scene.ghost = { update: vi.fn() };
+        scene._clouds = [];
+
+        scene.update();
+
+        expect(triggerDeath).toHaveBeenCalledWith(scene);
+        expect(checkCollisions).toHaveBeenCalledWith(scene);
     });
 });

@@ -9,6 +9,8 @@ import { GhostReplay } from './training.js';
 import { warnFileProtocol, primeAudio, applyTrainingTimeScale } from './sceneBootstrap.js';
 import { showMenu } from './sceneFlow.js';
 import { resumeAudio } from './audio.js';
+import { createBirdAnimations } from './textures/index.js';
+import { loadSelectedSkin } from './metaStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -25,19 +27,9 @@ export function setupSceneWorld(scene) {
     scene._clouds = initClouds(scene);
     scene._groundSprite = createGround(scene);
 
-    scene.anims.create({
-        key: 'bird-bat',
-        frames: [
-            { key: 'bird-sheet', frame: 0 },
-            { key: 'bird-sheet', frame: 1 },
-            { key: 'bird-sheet', frame: 2 },
-            { key: 'bird-sheet', frame: 1 },
-        ],
-        frameRate: 10,
-        repeat: 0,
-    });
+    createBirdAnimations(scene);
 
-    scene.bird = new Bird(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
+    scene.bird = new Bird(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY, loadSelectedSkin());
     scene.pipes = new Pipes(scene);
     scene.ui = new UI(scene);
     scene.scoreEffects = new ScoreEffects(scene);

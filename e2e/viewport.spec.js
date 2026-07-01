@@ -1,5 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { GAME_CONFIG } from '../src/config.js';
+import { TOUCH_TARGETS } from '../src/uiLayout.js';
+import {
+    expectGameState,
+    pointerGameCoord,
+    projectUsesTouch,
+    waitForGameReady,
+} from './helpers/gameCoords.mjs';
 
 test.describe('jeu chargé', () => {
     test('affiche le canvas et masque le chargement', async ({ page }) => {
@@ -74,5 +81,21 @@ test.describe('jeu chargé', () => {
         test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
         await page.goto('/', { waitUntil: 'domcontentloaded' });
         await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 5_000 });
+    });
+
+    test('bloque les taps jeu sous le hint paysage', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await expect(page.locator('#landscape-hint')).toBeVisible();
+        const { menuStart } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuStart.x, menuStart.y, usesTouch);
+        await expectGameState(page, 'menu');
+    });
+
+    test('expose le manifest PWA', async ({ page }) => {
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const href = await page.locator('link[rel="manifest"]').getAttribute('href');
+        expect(href).toMatch(/manifest\.webmanifest$/);
     });
 });

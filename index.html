@@ -9,6 +9,7 @@
       content="Floppy Bird — arcade 2D, scores locaux, mode hors-ligne."
     />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Floppy Bird" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
@@ -27,11 +28,12 @@
       href="icons/icon-192.png"
     />
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
     <div id="loading" aria-live="polite">Chargement…</div>
-    <div id="landscape-hint" aria-hidden="true">Tourne ton téléphone en portrait pour jouer</div>
+    <div id="landscape-hint" role="status">Tourne ton téléphone en portrait pour jouer</div>
     <div id="game-container"></div>
     <script type="module" src="/src/main.js"></script>
     <script>

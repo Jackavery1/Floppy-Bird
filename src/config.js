@@ -35,6 +35,7 @@ export const GAME_CONFIG = {
         jumpPower: -6.1,
         maxFallSpeed: 10,
         jumpBufferFrames: 4,
+        coyoteTimeFrames: 5,
     },
 
     pipes: {
@@ -43,6 +44,7 @@ export const GAME_CONFIG = {
         capMargin: 24,
         spawnMarginY: 48,
         maxGapDelta: 80,
+        minGapDelta: 40,
     },
 
     level: {
@@ -52,8 +54,12 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1200,
         spawnInvincibilityMs: 900,
+        hardcoreSpawnInvincibilityMs: 450,
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
+        gapTightenAfterScore: 20,
+        gapTightenEvery: 10,
+        gapTightenStep: 8,
     },
 
     training: {

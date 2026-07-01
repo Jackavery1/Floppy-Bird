@@ -37,28 +37,30 @@ describe('training', () => {
         expect(loadGhostData().score).toBe(0);
     });
 
-    it('GhostReplay enregistre et sauvegarde un meilleur run', () => {
+    it('GhostReplay enregistre les sauts et sauvegarde un meilleur run', () => {
+        const sprite = {
+            setDisplaySize: vi.fn(),
+            setAlpha: vi.fn(),
+            setDepth: vi.fn(),
+            setTint: vi.fn(),
+            setPosition: vi.fn(),
+            setFrame: vi.fn(),
+            destroy: vi.fn(),
+        };
         const scene = {
             trainingMode: true,
             time: { now: 0 },
             bird: { y: 250 },
-            add: {
-                sprite: vi.fn(() => ({
-                    setDisplaySize: vi.fn(),
-                    setAlpha: vi.fn(),
-                    setDepth: vi.fn(),
-                    setTint: vi.fn(),
-                    setPosition: vi.fn(),
-                    destroy: vi.fn(),
-                })),
-            },
+            add: { sprite: vi.fn(() => sprite) },
         };
         const ghost = new GhostReplay(scene);
         ghost.beginRound();
         scene.time.now = 100;
+        ghost.recordJump();
         ghost.update(GAME_CONFIG.training.sampleEveryFrames);
         ghost.finishRound(5);
-        expect(loadGhostData().score).toBe(5);
-        expect(loadGhostData().path.length).toBeGreaterThan(0);
+        const saved = loadGhostData();
+        expect(saved.score).toBe(5);
+        expect(saved.path.some(p => p.j === 1)).toBe(true);
     });
 });

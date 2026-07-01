@@ -8,14 +8,18 @@ import {
     checkScorePipes,
 } from '../src/sceneRound.js';
 import { GAME_STATE } from '../src/gameState.js';
-import { SOUND } from '../src/config.js';
+import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/audio.js', () => ({
-    playSound: vi.fn(),
+vi.mock('../src/sceneRoundFeedback.js', () => ({
+    playScoreFeedback: vi.fn(),
 }));
 
-vi.mock('../src/haptics.js', () => ({
-    hapticLight: vi.fn(),
+vi.mock('../src/metaProgress.js', () => ({
+    processMetaOnScore: vi.fn(() => []),
+}));
+
+vi.mock('../src/uiMeta.js', () => ({
+    showAchievementToasts: vi.fn(),
 }));
 
 describe('sceneRound', () => {
@@ -31,9 +35,7 @@ describe('sceneRound', () => {
 
         beforeEach(() => {
             scene = {
-                _pipeSpawnTimer: null,
-                _spawnInvincible: false,
-                _spawnInvincibleTimer: null,
+                round: createRoundState(),
                 state: GAME_STATE.PLAYING,
                 pipes: { spawn: vi.fn() },
                 time: { delayedCall: vi.fn((_ms, cb) => ({ remove: vi.fn(), cb })) },
@@ -42,10 +44,10 @@ describe('sceneRound', () => {
 
         it('cancelPipeSpawnTimer supprime le timer actif', () => {
             const remove = vi.fn();
-            scene._pipeSpawnTimer = { remove };
+            scene.round.pipeSpawnTimer = { remove };
             cancelPipeSpawnTimer(scene);
             expect(remove).toHaveBeenCalledWith(false);
-            expect(scene._pipeSpawnTimer).toBeNull();
+            expect(scene.round.pipeSpawnTimer).toBeNull();
         });
 
         it('scheduleFirstPipe spawn si toujours en jeu', () => {
@@ -59,44 +61,40 @@ describe('sceneRound', () => {
 
         it('startSpawnInvincibility active puis désactive l’invincibilité', () => {
             scene.time.delayedCall = vi.fn((_ms, cb) => {
-                expect(scene._spawnInvincible).toBe(true);
+                expect(scene.round.spawnInvincible).toBe(true);
                 cb();
                 return { remove: vi.fn() };
             });
             startSpawnInvincibility(scene);
-            expect(scene._spawnInvincible).toBe(false);
+            expect(scene.round.spawnInvincible).toBe(false);
         });
 
         it('clearSpawnInvincibility réinitialise l’état', () => {
             const remove = vi.fn();
-            scene._spawnInvincible = true;
-            scene._spawnInvincibleTimer = { remove };
+            scene.round.spawnInvincible = true;
+            scene.round.spawnInvincibleTimer = { remove };
             clearSpawnInvincibility(scene);
             expect(remove).toHaveBeenCalled();
-            expect(scene._spawnInvincible).toBe(false);
+            expect(scene.round.spawnInvincible).toBe(false);
         });
     });
 
     describe('checkScorePipes', () => {
         it('incrémente le score et déclenche les effets', async () => {
-            const { playSound } = await import('../src/audio.js');
-            const { hapticLight } = await import('../src/haptics.js');
+            const { playScoreFeedback } = await import('../src/sceneRoundFeedback.js');
             const pipe = { x: 100, scored: false };
             const scene = {
                 bird: { x: 130 },
-                score: 0,
-                _roundHighScore: 0,
-                _recordNotified: false,
+                round: createRoundState(),
                 pipes: { topPipes: [pipe], pipeWidth: 40, applySpeedForScore: vi.fn() },
                 ui: { updateScore: vi.fn(), showRecordBroken: vi.fn() },
                 scoreEffects: { show: vi.fn() },
             };
             checkScorePipes(scene);
             expect(pipe.scored).toBe(true);
-            expect(scene.score).toBe(1);
+            expect(scene.round.score).toBe(1);
             expect(scene.pipes.applySpeedForScore).toHaveBeenCalledWith(1);
-            expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 1);
-            expect(hapticLight).toHaveBeenCalled();
+            expect(playScoreFeedback).toHaveBeenCalledWith(1);
         });
     });
 });

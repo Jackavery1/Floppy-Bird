@@ -1,4 +1,5 @@
 import { GAME_CONFIG, getScriptedPipeGapY } from './config.js';
+import { maxGapDeltaForScore } from './gapDifficulty.js';
 import { Utils } from './utils.js';
 
 export function smoothGapY(rawY, lastGapY, maxDelta, minY, maxY) {
@@ -28,6 +29,11 @@ export class Pipes {
         this._autoSpawnEnabled = false;
         this._baseSpeed = normal.speed;
         this._dailyRng = null;
+        this._runScore = 0;
+    }
+
+    _maxGapDelta() {
+        return maxGapDeltaForScore(this._runScore);
     }
 
     _gapBounds() {
@@ -47,31 +53,19 @@ export class Pipes {
     }
 
     _resolveGapY() {
-        if (this._dailyRng) {
-            const { min, max } = this._gapBounds();
-            const raw = this._randomGapY();
-            const smoothed = smoothGapY(
-                raw,
-                this._lastGapY,
-                GAME_CONFIG.pipes.maxGapDelta,
-                min,
-                max,
-            );
-            this._lastGapY = smoothed;
-            return smoothed;
-        }
-        const y = getScriptedPipeGapY(this._gapIndex, this.pipeGap);
-        if (y !== null) {
+        const scriptedY = getScriptedPipeGapY(this._gapIndex, this.pipeGap);
+        if (scriptedY !== null) {
             this._gapIndex++;
-            this._lastGapY = y;
-            return y;
+            this._lastGapY = scriptedY;
+            return scriptedY;
         }
+
         const { min, max } = this._gapBounds();
         const raw = this._randomGapY();
         const smoothed = smoothGapY(
             raw,
             this._lastGapY,
-            GAME_CONFIG.pipes.maxGapDelta,
+            this._maxGapDelta(),
             min,
             max,
         );
@@ -154,12 +148,29 @@ export class Pipes {
         );
     }
 
+    isBirdInGap(birdX, birdY) {
+        for (let i = 0; i < this.topPipes.length; i++) {
+            const top = this.topPipes[i];
+            const bottom = this.bottomPipes[i];
+            if (!bottom) continue;
+            const halfW = this.pipeWidth / 2 + 4;
+            if (birdX < top.x - halfW || birdX > top.x + halfW) continue;
+            const gapTop = top.y;
+            const gapBottom = bottom.y;
+            if (birdY >= gapTop && birdY <= gapBottom) return true;
+        }
+        return false;
+    }
+
     setDifficulty(difficulty = 'normal') {
-        const config = GAME_CONFIG.getDifficulty(difficulty);
-        this._baseSpeed = config.speed;
-        this.pipeSpeed = config.speed;
-        this.pipeGap = config.gap;
-        this.pipeInterval = config.pipeInterval;
+        this.applyRoundDifficulty(GAME_CONFIG.getDifficulty(difficulty));
+    }
+
+    applyRoundDifficulty({ speed, gap, pipeInterval }) {
+        this._baseSpeed = speed;
+        this.pipeSpeed = speed;
+        this.pipeGap = gap;
+        this.pipeInterval = pipeInterval;
     }
 
     setDailySeed(seed) {
@@ -169,6 +180,7 @@ export class Pipes {
     }
 
     applySpeedForScore(score) {
+        this._runScore = score;
         const { speedBoostEvery, speedBoostPercent } = GAME_CONFIG.round;
         const boosts = Math.floor(score / speedBoostEvery);
         this.pipeSpeed = this._baseSpeed * (1 + boosts * speedBoostPercent);
@@ -185,6 +197,7 @@ export class Pipes {
         this._lastGapY = null;
         this._autoSpawnEnabled = false;
         this._dailyRng = null;
+        this._runScore = 0;
     }
 
     destroy() {

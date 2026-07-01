@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Bird } from '../src/bird.js';
 import { GAME_CONFIG } from '../src/config.js';
 
-vi.mock('../src/audio.js', () => ({
-    playSound: vi.fn(),
+vi.mock('../src/metaStorage.js', () => ({
+    loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
 function createMockScene() {
@@ -16,6 +16,7 @@ function createMockScene() {
         stop: vi.fn(),
         setFrame: vi.fn(),
         setAlpha: vi.fn(),
+        setTexture: vi.fn(),
         destroy: vi.fn(),
     };
     return {
@@ -102,7 +103,7 @@ describe('Bird', () => {
             bird.jumpPower = -12;
             bird.jump();
             expect(bird.velocityY).toBe(-12);
-            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat', true);
+            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat-classic', true);
         });
     });
 
@@ -112,7 +113,7 @@ describe('Bird', () => {
             bird.bufferJump();
             bird.update(1);
             expect(bird.velocityY).toBe(-8 + bird.gravity);
-            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat', true);
+            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat-classic', true);
         });
     });
 });

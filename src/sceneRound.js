@@ -1,7 +1,8 @@
-import { GAME_CONFIG, SOUND } from './config.js';
+import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
-import { playSound } from './audio.js';
-import { hapticLight } from './haptics.js';
+import { playScoreFeedback } from './sceneRoundFeedback.js';
+import { processMetaOnScore } from './metaProgress.js';
+import { showAchievementToasts } from './uiMeta.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -11,17 +12,18 @@ export function shouldNotifyRecord(score, roundHighScore, recordNotified) {
 
 /** @param {SceneContext} scene */
 export function cancelPipeSpawnTimer(scene) {
-    if (scene._pipeSpawnTimer) {
-        scene._pipeSpawnTimer.remove(false);
-        scene._pipeSpawnTimer = null;
+    const { round } = scene;
+    if (round.pipeSpawnTimer) {
+        round.pipeSpawnTimer.remove(false);
+        round.pipeSpawnTimer = null;
     }
 }
 
 /** @param {SceneContext} scene */
 export function scheduleFirstPipe(scene) {
     cancelPipeSpawnTimer(scene);
-    scene._pipeSpawnTimer = scene.time.delayedCall(GAME_CONFIG.round.pipeSpawnDelayMs, () => {
-        scene._pipeSpawnTimer = null;
+    scene.round.pipeSpawnTimer = scene.time.delayedCall(GAME_CONFIG.round.pipeSpawnDelayMs, () => {
+        scene.round.pipeSpawnTimer = null;
         if (scene.state === GAME_STATE.PLAYING) {
             scene.pipes.spawn();
         }
@@ -30,42 +32,45 @@ export function scheduleFirstPipe(scene) {
 
 /** @param {SceneContext} scene */
 export function clearSpawnInvincibility(scene) {
-    if (scene._spawnInvincibleTimer) {
-        scene._spawnInvincibleTimer.remove(false);
-        scene._spawnInvincibleTimer = null;
+    const { round } = scene;
+    if (round.spawnInvincibleTimer) {
+        round.spawnInvincibleTimer.remove(false);
+        round.spawnInvincibleTimer = null;
     }
-    scene._spawnInvincible = false;
+    round.spawnInvincible = false;
 }
 
-/** @param {SceneContext} scene */
-export function startSpawnInvincibility(scene) {
+/** @param {SceneContext} scene @param {number} [durationMs] */
+export function startSpawnInvincibility(scene, durationMs = GAME_CONFIG.round.spawnInvincibilityMs) {
+    const { round } = scene;
     clearSpawnInvincibility(scene);
-    scene._spawnInvincible = true;
-    scene._spawnInvincibleTimer = scene.time.delayedCall(
-        GAME_CONFIG.round.spawnInvincibilityMs,
+    round.spawnInvincible = true;
+    round.spawnInvincibleTimer = scene.time.delayedCall(
+        durationMs,
         () => {
-            scene._spawnInvincibleTimer = null;
-            scene._spawnInvincible = false;
+            round.spawnInvincibleTimer = null;
+            round.spawnInvincible = false;
         },
     );
 }
 
 /** @param {SceneContext} scene */
 export function checkScorePipes(scene) {
+    const { round } = scene;
     const birdX = scene.bird.x;
     scene.pipes.topPipes.forEach(pipe => {
         if (!pipe.scored && birdX > pipe.x + scene.pipes.pipeWidth / 2) {
             pipe.scored = true;
-            scene.score++;
-            scene.ui.updateScore(scene.score);
-            scene.pipes.applySpeedForScore(scene.score);
-            playSound(SOUND.SCORE, scene.score);
-            hapticLight();
+            round.score++;
+            scene.ui.updateScore(round.score);
+            scene.pipes.applySpeedForScore(round.score);
+            playScoreFeedback(round.score);
             scene.scoreEffects.show(scene.bird.x, scene.bird.y);
-            if (shouldNotifyRecord(scene.score, scene._roundHighScore, scene._recordNotified)) {
-                scene._recordNotified = true;
+            if (shouldNotifyRecord(round.score, round.roundHighScore, round.recordNotified)) {
+                round.recordNotified = true;
                 scene.ui.showRecordBroken();
             }
+            showAchievementToasts(scene, processMetaOnScore(scene));
         }
     });
 }

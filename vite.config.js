@@ -1,12 +1,15 @@
 /// <reference types="vitest/config" />
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const base = process.env.BASE_PATH || './';
-const THEME_COLOR = '#1a1a2e';
+const pwaManifest = JSON.parse(
+    readFileSync(path.join(root, 'public/manifest.webmanifest'), 'utf8'),
+);
 
 function phaserScriptSrc(basePath) {
     const normalized = basePath.endsWith('/') ? basePath : `${basePath}/`;
@@ -14,29 +17,29 @@ function phaserScriptSrc(basePath) {
 }
 
 export default defineConfig(({ mode }) => {
-    const phaserFromCdn = mode === 'production';
+    const useVendorPhaser = mode === 'production';
 
     return {
         base,
         resolve: {
-            alias: phaserFromCdn
+            alias: useVendorPhaser
                 ? { phaser: path.join(root, 'src/phaser-shim.js') }
                 : {},
         },
         build: {
             rollupOptions: {
                 output: {
-                    manualChunks: phaserFromCdn ? undefined : { phaser: ['phaser'] },
+                    manualChunks: useVendorPhaser ? undefined : { phaser: ['phaser'] },
                 },
             },
         },
         plugins: [
             {
-                name: 'inject-phaser-cdn',
+                name: 'inject-phaser-vendor',
                 transformIndexHtml: {
                     order: 'post',
                     handler(html) {
-                        if (!phaserFromCdn) return html;
+                        if (!useVendorPhaser) return html;
                         return html.replace(
                             /(\s*<script type="module")/,
                             `\n    <script src="${phaserScriptSrc(base)}" crossorigin="anonymous"></script>$1`,
@@ -46,26 +49,15 @@ export default defineConfig(({ mode }) => {
             },
             VitePWA({
                 registerType: 'autoUpdate',
-                includeAssets: ['icons/*.png', 'vendor/*.js'],
-                manifest: {
-                    name: 'Floppy Bird',
-                    short_name: 'Floppy',
-                    description: 'Floppy Bird — évite les tuyaux et bats ton record.',
-                    start_url: './',
-                    scope: './',
-                    display: 'standalone',
-                    orientation: 'portrait',
-                    background_color: THEME_COLOR,
-                    theme_color: THEME_COLOR,
-                    lang: 'fr',
-                    icons: [
-                        { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-                        { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
-                        { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
-                    ],
-                },
+                includeAssets: [
+                    'icons/*.png',
+                    'vendor/*.js',
+                    'manifest.webmanifest',
+                    'offline.html',
+                ],
+                manifest: pwaManifest,
                 workbox: {
-                    globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg}'],
+                    globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg,webmanifest}'],
                     navigateFallback: 'index.html',
                     navigateFallbackDenylist: [/^\/offline\.html$/],
                 },

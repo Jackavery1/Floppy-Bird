@@ -56,6 +56,22 @@ vi.mock('../src/audio.js', () => ({
     resumeAudio: vi.fn(),
 }));
 
+vi.mock('../src/metaStorage.js', () => ({
+    loadSelectedSkin: vi.fn(() => 'classic'),
+}));
+
+vi.mock('../src/textures/index.js', () => ({
+    createBirdAnimations: vi.fn(),
+}));
+
+import { setupSceneWorld } from '../src/sceneSetup.js';
+import { Bird } from '../src/bird.js';
+import { Pipes } from '../src/pipes.js';
+import { UI } from '../src/ui.js';
+import { showMenu } from '../src/sceneFlow.js';
+import { setupSceneInput } from '../src/sceneInput.js';
+import { createBirdAnimations } from '../src/textures/index.js';
+
 describe('setupSceneWorld', () => {
     let scene;
 
@@ -65,27 +81,20 @@ describe('setupSceneWorld', () => {
         scene.shutdown = vi.fn();
         scene.trainingMode = false;
         scene.state = GAME_STATE.MENU;
-        scene.anims = { create: vi.fn() };
+        scene.anims = { create: vi.fn(), exists: vi.fn(() => false) };
     });
 
-    it('compose bird, pipes, ui et affiche le menu', async () => {
-        const { setupSceneWorld } = await import('../src/sceneSetup.js');
-        const { Bird } = await import('../src/bird.js');
-        const { Pipes } = await import('../src/pipes.js');
-        const { UI } = await import('../src/ui.js');
-        const { showMenu } = await import('../src/sceneFlow.js');
-        const { setupSceneInput } = await import('../src/sceneInput.js');
-
+    it('compose bird, pipes, ui et affiche le menu', () => {
         setupSceneWorld(scene);
 
         expect(setupSceneInput).toHaveBeenCalledWith(scene);
-        expect(Bird).toHaveBeenCalledWith(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
+        expect(Bird).toHaveBeenCalledWith(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY, 'classic');
         expect(Pipes).toHaveBeenCalledWith(scene);
         expect(UI).toHaveBeenCalledWith(scene);
         expect(scene.bird).toBeDefined();
         expect(scene.pipes).toBeDefined();
         expect(scene.ui).toBeDefined();
         expect(showMenu).toHaveBeenCalledWith(scene);
-        expect(scene.anims.create).toHaveBeenCalledWith(expect.objectContaining({ key: 'bird-bat' }));
+        expect(createBirdAnimations).toHaveBeenCalledWith(scene);
     });
 });

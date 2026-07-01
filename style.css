@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 body {
   background: #1a1a2e;
   overflow: hidden;
@@ -13,6 +17,10 @@ body {
   align-items: center;
   justify-content: center;
   touch-action: none;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   padding: env(safe-area-inset-top) env(safe-area-inset-right)
     env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
@@ -58,7 +66,9 @@ html.game-ready #loading {
   font-family: Arial, sans-serif;
   font-size: 15px;
   text-align: center;
-  pointer-events: none;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 @media (orientation: landscape) and (max-height: 520px) and (pointer: coarse),

@@ -42,7 +42,9 @@ export function hardcoreHint() {
 
 export function hardcoreToggleLabel(enabled) {
     if (enabled) {
-        return isCoarsePointer() ? 'HARD ON' : 'HARDCORE : ON (gravité + vitesse, sans invinc.)';
+        return isCoarsePointer()
+            ? 'HARD ON'
+            : 'HARDCORE : ON (gravité + vitesse, grace spawn 450 ms)';
     }
     return isCoarsePointer()
         ? 'HARD OFF · tap'

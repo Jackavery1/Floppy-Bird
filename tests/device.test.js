@@ -67,6 +67,11 @@ describe('device', () => {
         expect(fine()).toBe('H : hardcore');
     });
 
+    it('hardcoreToggleLabel mentionne la grace spawn 450 ms', async () => {
+        const { hardcoreToggleLabel } = await loadDevice(false);
+        expect(hardcoreToggleLabel(true)).toContain('450 ms');
+    });
+
     it('modesHintLine compacte sur tactile', async () => {
         const { modesHintLine } = await loadDevice(true);
         expect(modesHintLine()).toContain('MODES');

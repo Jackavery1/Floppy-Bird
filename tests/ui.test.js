@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UI } from '../src/ui.js';
 import { DIFFICULTY } from '../src/config.js';
+import { createRoundState } from '../src/roundState.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/storage.js', () => ({
@@ -20,7 +21,7 @@ describe('UI', () => {
     let ui;
 
     beforeEach(() => {
-        scene = createBaseScene();
+        scene = createBaseScene({ round: createRoundState() });
         ui = new UI(scene);
     });
 

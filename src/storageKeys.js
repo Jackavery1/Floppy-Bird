@@ -10,6 +10,7 @@ export const STORAGE_KEYS = Object.freeze({
     training: 'flappy-bird-training',
     hardcore: 'flappy-bird-hardcore',
     tutorialSeen: 'flappy-bird-tutorial-seen',
+    meta: 'floppy-bird-meta',
 });
 
 export function highScoreKey(difficulty, hardcore = false) {

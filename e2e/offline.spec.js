@@ -17,4 +17,20 @@ test.describe('PWA hors ligne', () => {
         await expect(page.getByRole('heading', { name: 'Hors ligne' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Retour au jeu' })).toBeVisible();
     });
+
+    test('precache vendor/phaser.min.js après visite en ligne', async ({ page, context }) => {
+        await waitForGameReady(page);
+        await waitForServiceWorker(page);
+
+        await context.setOffline(true);
+        const ok = await page.evaluate(async () => {
+            try {
+                const res = await fetch('./vendor/phaser.min.js');
+                return res.ok;
+            } catch {
+                return false;
+            }
+        });
+        expect(ok).toBe(true);
+    });
 });

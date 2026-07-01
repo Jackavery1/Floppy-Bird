@@ -1,9 +1,9 @@
-import { GAME_CONFIG, SOUND } from './config.js';
-import { playSound } from './audio.js';
-import { hapticLight } from './haptics.js';
+import { GAME_CONFIG } from './config.js';
+import { birdAnimKey, birdTextureKey } from './skins.js';
+import { loadSelectedSkin } from './metaStorage.js';
 
 export class Bird {
-    constructor(scene, x, y) {
+    constructor(scene, x, y, skinId = loadSelectedSkin()) {
         this.scene = scene;
         const cfg = GAME_CONFIG.bird;
 
@@ -11,6 +11,7 @@ export class Bird {
         this.y = y;
         this.width = cfg.width;
         this.height = cfg.height;
+        this._skinId = skinId;
 
         this.velocityY = 0;
         this.gravity = cfg.gravity;
@@ -18,7 +19,7 @@ export class Bird {
         this.maxFallSpeed = cfg.maxFallSpeed;
         this._jumpBuffered = false;
 
-        this.sprite = scene.add.sprite(x, y, 'bird-sheet', 1);
+        this.sprite = scene.add.sprite(x, y, birdTextureKey(skinId), 1);
         this.sprite.setDisplaySize(this.width, this.height);
         this.sprite.setDepth(10);
     }
@@ -56,9 +57,14 @@ export class Bird {
 
     jump() {
         this.velocityY = this.jumpPower;
-        this.sprite.play('bird-bat', true);
-        playSound(SOUND.JUMP);
-        hapticLight();
+        this.sprite.play(birdAnimKey(this._skinId), true);
+    }
+
+    setSkin(skinId) {
+        this._skinId = skinId;
+        this.sprite.setTexture(birdTextureKey(skinId), 1);
+        this.sprite.stop();
+        this.sprite.setFrame(1);
     }
 
     getBounds() {

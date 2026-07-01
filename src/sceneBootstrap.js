@@ -32,10 +32,12 @@ export function applyTrainingTimeScale(scene) {
     scene.time.timeScale = scene.trainingMode ? GAME_CONFIG.training.timeScale : 1;
 }
 
+import { hasCoyoteGrace } from './sceneCoyote.js';
+
 /** @param {SceneContext} scene */
 export function checkCollisions(scene) {
-    if (scene._spawnInvincible) return;
-    if (scene.pipes.checkCollisionWithBird(scene.bird.getBounds())) {
-        scene.triggerDeath();
-    }
+    if (scene.round.spawnInvincible) return;
+    if (!scene.pipes.checkCollisionWithBird(scene.bird.getBounds())) return;
+    if (hasCoyoteGrace(scene)) return;
+    scene.triggerDeath();
 }

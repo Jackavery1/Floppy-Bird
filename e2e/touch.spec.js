@@ -1,42 +1,60 @@
 import { test } from '@playwright/test';
-import { GAME_CONFIG } from '../src/config.js';
+import { TOUCH_TARGETS } from '../src/uiLayout.js';
 import {
-    enterPausedFromMenu,
+    enterPausedFromPlaying,
     expectGameState,
-    tapGameCoord,
+    openPauseFromPlaying,
+    pointerGameCoord,
+    projectUsesTouch,
+    startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
 
 test.describe('touch mobile portrait', () => {
+    test('ouvre la pause via tap sur le bouton pause', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await openPauseFromPlaying(page, usesTouch);
+    });
+
     test('pause → reprendre via tap', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        await enterPausedFromMenu(page);
-        await tapGameCoord(page, GAME_CONFIG.centerX, 250);
+        await enterPausedFromPlaying(page, usesTouch);
+        const { pauseResume } = TOUCH_TARGETS;
+        await pointerGameCoord(page, pauseResume.x, pauseResume.y, usesTouch);
         await expectGameState(page, 'playing');
     });
 
     test('pause → menu via tap', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        await enterPausedFromMenu(page);
-        await tapGameCoord(page, GAME_CONFIG.centerX, 298);
+        await enterPausedFromPlaying(page, usesTouch);
+        const { pauseMenu } = TOUCH_TARGETS;
+        await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch);
         await expectGameState(page, 'menu');
     });
 });
 
 test.describe('touch mobile landscape', () => {
-    test('peut atteindre la pause en paysage', async ({ page }, testInfo) => {
+    test('ouvre la pause via tap bouton en paysage', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        await enterPausedFromMenu(page);
+        await enterPausedFromPlaying(page, usesTouch);
     });
-});
 
-test.describe('pointer desktop', () => {
-    test('peut atteindre la pause depuis le jeu', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+    test('pause → reprendre via tap en paysage', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        await enterPausedFromMenu(page);
+        await enterPausedFromPlaying(page, usesTouch);
+        const { pauseResume } = TOUCH_TARGETS;
+        await pointerGameCoord(page, pauseResume.x, pauseResume.y, usesTouch);
+        await expectGameState(page, 'playing');
     });
 });

@@ -1,4 +1,5 @@
 import { GAME_CONFIG, DIFFICULTY } from './config.js';
+import { Utils } from './utils.js';
 import {
     loadHighScore,
     saveHighScore as persistHighScore,
@@ -44,6 +45,18 @@ export class UI {
         this._hardcoreLabel = null;
         this._tutorialHint = null;
         this._inGameControlElements = [];
+        this._overlays = { menu: [], pause: [], gameOver: [] };
+    }
+
+    /** @param {'menu' | 'pause' | 'gameOver'} key */
+    clearOverlay(key) {
+        Utils.clearElements(this._overlays[key]);
+    }
+
+    /** @param {'menu' | 'pause' | 'gameOver'} key @param {import('phaser').GameObjects.GameObject[]} elements */
+    setOverlay(key, elements) {
+        this.clearOverlay(key);
+        this._overlays[key].push(...elements);
     }
 
     createOverlay(alpha = 0.7, depth = 50, color = 0x000000) {
@@ -102,6 +115,9 @@ export class UI {
     destroy() {
         if (this.scoreText) this.scoreText.destroy();
         destroyInGameControls(this);
+        this.clearOverlay('menu');
+        this.clearOverlay('pause');
+        this.clearOverlay('gameOver');
         if (this._diffBtnGraphics) this._diffBtnGraphics.destroy();
         if (this._menuBtnGraphics) this._menuBtnGraphics.destroy();
         this._diffBtnLabels = [];

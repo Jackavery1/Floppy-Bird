@@ -1,4 +1,16 @@
-export function createBirdSpriteSheet(scene) {
+import { getSkin } from '../skins.js';
+
+/** @typedef {import('../skins.js').SkinPalette} SkinPalette */
+
+/**
+ * @param {import('phaser').Scene} scene
+ * @param {string} skinId
+ */
+export function createBirdSpriteSheet(scene, skinId = 'classic') {
+    const { palette } = getSkin(skinId);
+    const texKey = `bird-sheet-${skinId}`;
+    if (scene.textures.exists(texKey)) return;
+
     const g = scene.make.graphics({ x: 0, y: 0, add: false });
 
     const drawOutline = (ox) => {
@@ -9,12 +21,13 @@ export function createBirdSpriteSheet(scene) {
         g.fillRect(ox + 31, 9,  9, 13);
     };
 
-    const drawBody = (ox) => {
-        g.fillStyle(0xFFCC00, 1);
+    /** @param {number} ox @param {SkinPalette} p */
+    const drawBody = (ox, p) => {
+        g.fillStyle(p.body, 1);
         g.fillRect(ox + 6, 3, 22, 22);
         g.fillRect(ox + 3, 6, 28, 16);
         g.fillRect(ox + 2, 8, 32, 12);
-        g.fillStyle(0xFFEE88, 1);
+        g.fillStyle(p.bodyHi, 1);
         g.fillRect(ox + 15, 11, 11, 9);
         g.fillStyle(0xFFFFFF, 1);
         g.fillRect(ox + 22, 4, 9, 11);
@@ -22,14 +35,15 @@ export function createBirdSpriteSheet(scene) {
         g.fillRect(ox + 25, 7, 5, 5);
         g.fillStyle(0xFFFFFF, 1);
         g.fillRect(ox + 26, 7, 2, 2);
-        g.fillStyle(0xFF8800, 1);
+        g.fillStyle(p.beak, 1);
         g.fillRect(ox + 33, 11, 5, 8);
-        g.fillStyle(0xCC5500, 1);
+        g.fillStyle(p.beakDark, 1);
         g.fillRect(ox + 33, 16, 5, 4);
     };
 
-    const drawWing = (ox, pos) => {
-        g.fillStyle(0xFFAA00, 1);
+    /** @param {number} ox @param {'up'|'mid'|'down'} pos @param {SkinPalette} p */
+    const drawWing = (ox, pos, p) => {
+        g.fillStyle(p.wing, 1);
         if (pos === 'up') {
             g.fillRect(ox + 4, 2, 14, 6);
             g.fillRect(ox + 6, 0, 10, 4);
@@ -42,14 +56,14 @@ export function createBirdSpriteSheet(scene) {
         }
     };
 
-    drawOutline(0);   drawBody(0);   drawWing(0,  'up');
-    drawOutline(38);  drawBody(38);  drawWing(38, 'mid');
-    drawOutline(76);  drawBody(76);  drawWing(76, 'down');
+    drawOutline(0);   drawBody(0, palette);   drawWing(0,  'up', palette);
+    drawOutline(38);  drawBody(38, palette);  drawWing(38, 'mid', palette);
+    drawOutline(76);  drawBody(76, palette);  drawWing(76, 'down', palette);
 
-    g.generateTexture('bird-sheet', 114, 28);
+    g.generateTexture(texKey, 114, 28);
     g.destroy();
 
-    const texture = scene.textures.get('bird-sheet');
+    const texture = scene.textures.get(texKey);
     texture.add(0, 0,  0,  0, 38, 28);
     texture.add(1, 0, 38,  0, 38, 28);
     texture.add(2, 0, 76,  0, 38, 28);

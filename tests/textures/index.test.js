@@ -41,12 +41,12 @@ describe('textures', () => {
         resetBackgroundCache();
     });
 
-    it('createBirdSpriteSheet génère bird-sheet', () => {
+    it('createBirdSpriteSheet génère bird-sheet-classic', () => {
         const scene = createTextureScene();
         createBirdSpriteSheet(scene);
         expect(scene.make.graphics).toHaveBeenCalled();
-        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('bird-sheet', 114, 28);
-        expect(scene.textures.get('bird-sheet').add).toHaveBeenCalledTimes(3);
+        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('bird-sheet-classic', 114, 28);
+        expect(scene.textures.get('bird-sheet-classic').add).toHaveBeenCalledTimes(3);
     });
 
     it('createPipeSprites génère pipe-top et pipe-bottom', () => {
@@ -94,7 +94,8 @@ describe('textures', () => {
             g.generateTexture.mock.calls.map(c => c[0]),
         );
         expect(keys).toEqual(expect.arrayContaining([
-            'bird-sheet', 'pipe-top', 'pipe-bottom', 'background', 'cloud', 'star', 'ground',
+            'bird-sheet-classic', 'bird-sheet-ruby', 'bird-sheet-ocean', 'bird-sheet-forest',
+            'pipe-top', 'pipe-bottom', 'background', 'cloud', 'star', 'ground',
         ]));
         resetBackgroundCache();
     });

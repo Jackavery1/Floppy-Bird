@@ -11,6 +11,29 @@ npm run build
 npm run test:e2e
 ```
 
+### Tests e2e (Playwright)
+
+Après `npm install`, installer les navigateurs Playwright une fois :
+
+```bash
+npx playwright install chromium
+```
+
+Puis lancer les tests (build preview automatique via `playwright.config.js`) :
+
+```bash
+npm run build
+npm run test:e2e
+```
+
+#### Échec SSL en local (proxy d’entreprise)
+
+Si `npm run test:e2e` ou `npx playwright install chromium` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur certificat :
+
+1. Configurer npm avec le certificat racine corporate (`npm config set cafile …`) — voir section ci-dessous.
+2. Relancer `npx playwright install chromium`.
+3. Les tests e2e tournent en CI GitHub sans ce problème ; en local, un réseau sans inspection TLS suffit souvent.
+
 Ne pas utiliser Live Server (port 5500) : il ne bundle pas Vite/Phaser.
 
 ## Icônes PWA
@@ -18,8 +41,7 @@ Ne pas utiliser Live Server (port 5500) : il ne bundle pas Vite/Phaser.
 Générées avant chaque build de production :
 
 ```bash
-npm run icons        # public/icons/
-npm run icons:optimize
+npm run icons        # public/icons/ (optionnel : npm run icons:optimize)
 ```
 
 La CI exécute `npm run icons` automatiquement.

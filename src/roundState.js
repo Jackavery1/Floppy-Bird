@@ -1,0 +1,33 @@
+/** État mutable d'une manche (score, timers, mort, persistance locale). */
+export function createRoundState() {
+    return {
+        score: 0,
+        dyingFalling: false,
+        dyingGrounded: false,
+        leaderboardData: null,
+        pipeSpawnTimer: null,
+        jumpBufferFrames: 0,
+        spawnInvincible: false,
+        spawnInvincibleTimer: null,
+        coyoteFrames: 0,
+        roundHighScore: 0,
+        recordNotified: false,
+        isNewRecord: false,
+
+        resetForRound() {
+            this.score = 0;
+            this.jumpBufferFrames = 0;
+            this.recordNotified = false;
+            this.isNewRecord = false;
+            this.coyoteFrames = 0;
+            this.dyingFalling = false;
+            this.dyingGrounded = false;
+            this.leaderboardData = null;
+        },
+
+        resetDeathAnimation() {
+            this.dyingFalling = false;
+            this.dyingGrounded = false;
+        },
+    };
+}

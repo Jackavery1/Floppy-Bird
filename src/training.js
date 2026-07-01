@@ -9,7 +9,10 @@ export function loadGhostData() {
         if (!raw) return { score: 0, path: [] };
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed)) {
-            return { score: 0, path: parsed.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y)) };
+            return {
+                score: 0,
+                path: parsed.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y)),
+            };
         }
         const path = Array.isArray(parsed.path)
             ? parsed.path.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y))
@@ -89,6 +92,17 @@ export class GhostReplay {
         this.createSprite();
     }
 
+    recordJump() {
+        if (!this.scene.trainingMode) return;
+        const elapsed = this.scene.time.now - this._roundStartMs;
+        this._recording.push({ t: elapsed, y: this.scene.bird.y, j: 1 });
+    }
+
+    _replayWingFrame(elapsed) {
+        if (!this.path.some(p => p.j && Math.abs(p.t - elapsed) < 90)) return 1;
+        return 0;
+    }
+
     update(step) {
         if (!this.scene.trainingMode) return;
 
@@ -103,6 +117,7 @@ export class GhostReplay {
             const y = interpolateGhostY(this.path, elapsed);
             if (y !== null) {
                 this.sprite.setPosition(GAME_CONFIG.bird.startX, y);
+                this.sprite.setFrame(this._replayWingFrame(elapsed));
             }
         }
     }

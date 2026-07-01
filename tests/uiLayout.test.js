@@ -12,4 +12,13 @@ describe('uiLayout', () => {
         expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe('#000000');
         expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.HARD)).toBe('#ff8888');
     });
+
+    it('expose les cibles tactiles pour les tests e2e', async () => {
+        const { TOUCH_TARGETS, UI_LAYOUT } = await import('../src/uiLayout.js');
+        expect(TOUCH_TARGETS.pauseButton).toEqual({
+            x: UI_LAYOUT.playing.pauseBtnX,
+            y: UI_LAYOUT.playing.pauseBtnY,
+        });
+        expect(TOUCH_TARGETS.pauseResume.y).toBe(UI_LAYOUT.pause.resumeBtn);
+    });
 });

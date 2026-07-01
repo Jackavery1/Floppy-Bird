@@ -1,8 +1,10 @@
-import { GAME_CONFIG, SOUND } from './config.js';
+import { GAME_CONFIG } from './config.js';
 import { GAME_STATE, canTriggerDeath } from './gameState.js';
-import { playSound } from './audio.js';
-import { hapticMedium } from './haptics.js';
 import { frameStep } from './sceneBootstrap.js';
+import { persistRoundScore } from './roundScore.js';
+import { processMetaOnRoundEnd } from './metaProgress.js';
+import { showAchievementToasts } from './uiMeta.js';
+import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneDeathFeedback.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -10,39 +12,26 @@ import { frameStep } from './sceneBootstrap.js';
 export function triggerDeath(scene) {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
-    scene._dyingFalling = false;
-    scene._dyingGrounded = false;
+    scene.round.resetDeathAnimation();
 
-    playSound(SOUND.GAME_OVER);
-    hapticMedium();
-    scene.ui.hideInGameScore();
-    scene.cameras.main.shake(200, 0.015);
-    scene.ui.showFlash();
-    scene.ghost.finishRound(scene.score);
+    playDeathImpactFeedback(scene);
+    scene.ghost.finishRound(scene.round.score);
 
-    if (!scene.trainingMode) {
-        scene._isNewRecord = scene.score > 0 && scene.score > scene._roundHighScore;
-        scene.ui.saveHighScore(scene.score, scene.difficulty, undefined, scene.hardcoreMode);
-        scene._leaderboardData = scene.ui.saveToLeaderboard(
-            scene.score,
-            scene.difficulty,
-            scene.hardcoreMode,
-        );
-    } else {
-        scene._isNewRecord = false;
-        scene._leaderboardData = { entries: [], highlightId: null };
-    }
+    const { isNewRecord, leaderboardData } = persistRoundScore(scene);
+    scene.round.isNewRecord = isNewRecord;
+    scene.round.leaderboardData = leaderboardData;
 
     scene.time.delayedCall(166, () => {
         if (scene.state === GAME_STATE.DYING) {
-            scene._dyingFalling = true;
+            scene.round.dyingFalling = true;
         }
     });
 }
 
 /** @param {SceneContext} scene */
 export function updateDying(scene) {
-    if (!scene._dyingFalling || scene._dyingGrounded) return;
+    const { round } = scene;
+    if (!round.dyingFalling || round.dyingGrounded) return;
 
     const step = frameStep(scene);
     scene.bird.applyFall(step, 'death');
@@ -50,20 +39,23 @@ export function updateDying(scene) {
     if (scene.bird.y + GAME_CONFIG.bird.height / 2 >= GAME_CONFIG.groundY) {
         scene.bird.y = GAME_CONFIG.groundY - GAME_CONFIG.bird.height / 2;
         scene.bird.sprite.setPosition(scene.bird.x, scene.bird.y);
-        scene._dyingGrounded = true;
+        round.dyingGrounded = true;
         finishDying(scene);
     }
 }
 
 function finishDying(scene) {
-    playSound(SOUND.GROUND);
+    const { round } = scene;
+    playGroundImpactFeedback();
+    showAchievementToasts(scene, processMetaOnRoundEnd(scene));
+    scene.ui.highScore = round.roundHighScore;
     scene.state = GAME_STATE.GAME_OVER;
     const { elements } = scene.ui.showGameOver(
-        scene.score,
-        scene._leaderboardData,
+        round.score,
+        round.leaderboardData,
         true,
-        scene._isNewRecord,
+        round.isNewRecord,
         scene.hardcoreMode,
     );
-    scene.gameOverElements.push(...elements);
+    scene.ui.setOverlay('gameOver', elements);
 }

@@ -1,5 +1,11 @@
 import { test } from '@playwright/test';
-import { expectGameState, waitForGameReady } from './helpers/gameCoords.mjs';
+import {
+    expectGameState,
+    openPauseFromPlaying,
+    projectUsesTouch,
+    startPlayingFromMenu,
+    waitForGameReady,
+} from './helpers/gameCoords.mjs';
 
 test.describe('clavier desktop', () => {
     test('ESPACE démarre puis ESC ouvre la pause', async ({ page }, testInfo) => {
@@ -14,6 +20,14 @@ test.describe('clavier desktop', () => {
         await page.waitForTimeout(300);
         await page.keyboard.press('Escape');
         await expectGameState(page, 'playing', 10_000);
+    });
+
+    test('clic sur le bouton pause ouvre la pause', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await openPauseFromPlaying(page, usesTouch);
     });
 
     test('M retourne au menu depuis la pause', async ({ page }, testInfo) => {
