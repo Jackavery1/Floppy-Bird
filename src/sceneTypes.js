@@ -1,5 +1,6 @@
 /**
  * Contexte partagé passé aux modules `scene*` — champs de {@link GameScene}.
+ * Initialisé par {@link import('./sceneContext.js').initSceneCore} avant `create()`.
  *
  * @typedef {import('./bird.js').Bird} Bird
  * @typedef {import('./pipes.js').Pipes} Pipes
@@ -19,6 +20,8 @@
  * @property {string} difficulty
  * @property {boolean} trainingMode
  * @property {boolean} hardcoreMode
+ * @property {boolean} dailyChallengeMode
+ * @property {(achievements: Array<{ title: string }>) => void} [achievementNotifier]
  * @property {import('phaser').GameObjects.Image[]} _clouds
  * @property {import('phaser').GameObjects.TileSprite | null} _groundSprite
  * @property {import('phaser').GameObjects.Text | null} [fps]

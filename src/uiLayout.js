@@ -1,32 +1,52 @@
 import { GAME_CONFIG } from './config.js';
 
 export const MIN_TOUCH = 44;
+export const PAUSE_BTN_VISUAL = MIN_TOUCH;
+/** Espacement vertical minimal entre centres de lignes tactiles (évite chevauchement 44 px). */
+export const MENU_ROW_GAP = MIN_TOUCH;
 
 export const GAME_OVER_PANEL = { x: 24, y: 80, w: 240, h: 340, radius: 12 };
 
 export const UI_LAYOUT = {
     scoreHud: 48,
     menu: {
-        title: 120,
-        best: 148,
-        daily: 158,
-        training: 172,
-        hardcore: 192,
-        difficulty: 216,
-        start: 276,
-        hint1: 460,
-        hint2: 475,
-        mute: 442,
+        title: 108,
+        best: 136,
+        difficulty: 176,
+        start: 234,
+        optionsBtn: 278,
+        hint1: 314,
     },
-    pause: { title: 210, resumeBtn: 250, menuBtn: 298 },
-    playing: { trainingBadgeY: 22, hardcoreBadgeY: 36, pauseBtnX: 264, pauseBtnY: 28 },
-    diffBtn: { width: 68, height: 26, gap: 10, radius: 6, x: [32, 110, 188] },
-    menuBtn: { width: 100, height: 36, radius: 8 },
+    optionsPanel: {
+        panelTop: 198,
+        panelH: 278,
+        w: 240,
+        daily: 216,
+        training: 256,
+        hardcore: 296,
+        dailyToggle: 336,
+        metaSkin: 376,
+        mute: 416,
+        hint2: 450,
+    },
+    pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
+    playing: { trainingBadgeY: 22, hardcoreBadgeY: 36, pauseBtnX: 258, pauseBtnY: 32 },
+    diffBtn: { width: 68, height: MIN_TOUCH, gap: 10, radius: 6, x: [32, 110, 188] },
+    menuBtn: { width: 100, height: MIN_TOUCH, radius: 8 },
 };
 
 /** Coordonnées jeu (288×512) pour les tests e2e tactile / pointer. */
 export const TOUCH_TARGETS = Object.freeze({
     menuStart: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.menu.start },
+    menuOptions: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.menu.optionsBtn },
+    menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.mute },
+    menuSkin: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.metaSkin },
+    menuTraining: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.training },
+    menuHardcore: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.hardcore },
+    menuDailyToggle: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.dailyToggle },
+    menuDiffEasy: { x: diffButtonCenter(0), y: UI_LAYOUT.menu.difficulty },
+    menuDiffNormal: { x: diffButtonCenter(1), y: UI_LAYOUT.menu.difficulty },
+    menuDiffHard: { x: diffButtonCenter(2), y: UI_LAYOUT.menu.difficulty },
     pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
     pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
     pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
@@ -43,43 +63,8 @@ export const TITLE_MAX_WIDTH = 260;
 export const GAME_TITLE = 'FLOPPY BIRD';
 export const FONT = 'Arial';
 
-export function modesAccordionLabel(expanded, trainingMode, hardcoreMode) {
-    const chevron = expanded ? '▾' : '▸';
-    const ent = trainingMode ? 'ON' : 'OFF';
-    const hard = hardcoreMode ? 'ON' : 'OFF';
-    return `${chevron} MODES · Entr.${ent} · Hard.${hard}`;
-}
-
-export function computeMenuLayout(compact, modesExpanded) {
-    if (!compact) {
-        return { ...UI_LAYOUT.menu, compact: false, modesExpanded: true, modesHeader: null };
-    }
-    let y = 168;
-    const layout = {
-        compact: true,
-        modesExpanded,
-        title: UI_LAYOUT.menu.title,
-        best: UI_LAYOUT.menu.best,
-        daily: UI_LAYOUT.menu.daily,
-        modesHeader: y,
-    };
-    if (modesExpanded) {
-        y += 20;
-        layout.training = y;
-        y += 20;
-        layout.hardcore = y;
-        y += 14;
-    } else {
-        layout.training = null;
-        layout.hardcore = null;
-        y += 22;
-    }
-    layout.difficulty = y;
-    layout.start = layout.difficulty + 60;
-    layout.mute = layout.start + 166;
-    layout.hint1 = layout.mute + 18;
-    layout.hint2 = layout.hint1 + 15;
-    return layout;
+export function computeMenuLayout() {
+    return { ...UI_LAYOUT.menu, compact: false };
 }
 
 export function diffButtonCenter(index) {

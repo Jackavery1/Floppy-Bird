@@ -36,13 +36,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right)
-    env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
   background: #1a1a2e;
   color: #90caf9;
   font-family: Arial, sans-serif;
-  font-size: 16px;
+  font-size: clamp(14px, 4vw, 16px);
+  line-height: 1.5;
   letter-spacing: 0.04em;
+  text-align: center;
+  max-width: 100%;
 }
 
 #loading.hidden,
@@ -64,7 +69,8 @@ html.game-ready #loading {
   background: rgba(26, 26, 46, 0.96);
   color: #ffffff;
   font-family: Arial, sans-serif;
-  font-size: 15px;
+  font-size: clamp(14px, 3.8vw, 15px);
+  line-height: 1.45;
   text-align: center;
   pointer-events: auto;
   user-select: none;
@@ -90,8 +96,10 @@ canvas {
   left: 0;
   right: 0;
   z-index: 9999;
-  padding: 10px 16px;
-  padding-top: calc(10px + env(safe-area-inset-top));
+  padding: max(10px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    10px
+    max(16px, env(safe-area-inset-left));
   background: #ff4444;
   color: #fff;
   font-size: 14px;

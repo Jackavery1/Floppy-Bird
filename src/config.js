@@ -54,7 +54,7 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1200,
         spawnInvincibilityMs: 900,
-        hardcoreSpawnInvincibilityMs: 450,
+        hardcoreSpawnInvincibilitySteps: [700, 625, 550],
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         gapTightenAfterScore: 20,

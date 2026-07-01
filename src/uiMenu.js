@@ -1,25 +1,28 @@
 import { loadHighScore } from './storage.js';
-import { isCoarsePointer } from './device.js';
 import {
     computeMenuLayout,
     diffLabelColor,
-    modesAccordionLabel,
     UI_LAYOUT,
 } from './uiLayout.js';
 import { applyMenuLayout, bestScoreLabel, drawDiffButtons } from './uiMenuLayout.js';
-import { appendMetaMenu } from './uiMeta.js';
 import { destroyInGameControls } from './uiHud.js';
 import {
     buildMenuHeader,
-    buildMenuModes,
     buildMenuDifficulty,
     buildMenuFooter,
     playMenuIntroTween,
 } from './uiMenuBuild.js';
 import {
+    buildMenuOptions,
+    refreshOptionsButtonLabel,
+    toggleMenuOptions,
+} from './uiMenuOptions.js';
+import {
     trainingToggleLabel,
     hardcoreToggleLabel,
+    dailyToggleLabel,
 } from './device.js';
+import { getMenuDailySubtitle } from './dailyChallenge.js';
 
 export function refreshBestScore(ui, difficulty, hardcoreMode) {
     ui._currentDifficulty = difficulty;
@@ -29,7 +32,7 @@ export function refreshBestScore(ui, difficulty, hardcoreMode) {
     }
 }
 
-export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
+export function showMenu(ui, difficulty, trainingMode, hardcoreMode, dailyChallengeMode) {
     if (ui.scoreText) {
         ui.scoreText.destroy();
         ui.scoreText = null;
@@ -37,24 +40,36 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     destroyInGameControls(ui);
 
     ui._currentDifficulty = difficulty;
-    ui._modesExpanded = !isCoarsePointer();
+    ui._optionsOpen = false;
     ui.highScore = loadHighScore(difficulty, hardcoreMode);
     const elements = [];
-    const layout = computeMenuLayout(isCoarsePointer(), ui._modesExpanded);
+    const layout = computeMenuLayout();
     ui._menuLayout = layout;
 
     elements.push(ui.createOverlay(0.22, 50));
 
     const title = buildMenuHeader(ui, elements, layout, difficulty, hardcoreMode);
-    buildMenuModes(ui, elements, layout, trainingMode, hardcoreMode);
     buildMenuDifficulty(ui, elements, layout, difficulty);
     buildMenuFooter(ui, elements, layout);
-    appendMetaMenu(ui, elements, layout);
+    buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMode, dailyChallengeMode);
 
-    applyMenuLayout(ui, difficulty, trainingMode, hardcoreMode);
+    applyMenuLayout(ui, difficulty);
     playMenuIntroTween(ui, title);
 
     return elements;
+}
+
+export function toggleMenuOptionsPanel(ui) {
+    toggleMenuOptions(
+        ui,
+        ui.scene.trainingMode,
+        ui.scene.hardcoreMode,
+        ui.scene.dailyChallengeMode,
+    );
+}
+
+function syncOptionsLabels(ui, trainingMode, hardcoreMode, dailyChallengeMode) {
+    refreshOptionsButtonLabel(ui, trainingMode, hardcoreMode, dailyChallengeMode);
 }
 
 export function updateTrainingLabel(ui, trainingMode) {
@@ -62,13 +77,7 @@ export function updateTrainingLabel(ui, trainingMode) {
         ui._trainingLabel.setText(trainingToggleLabel(trainingMode));
         ui._trainingLabel.setColor(trainingMode ? '#81D4FA' : '#888888');
     }
-    if (ui._modesHeader && ui._menuLayout?.compact) {
-        ui._modesHeader.setText(modesAccordionLabel(
-            ui._modesExpanded,
-            trainingMode,
-            ui.scene.hardcoreMode,
-        ));
-    }
+    syncOptionsLabels(ui, trainingMode, ui.scene.hardcoreMode, ui.scene.dailyChallengeMode);
 }
 
 export function updateHardcoreLabel(ui, hardcoreMode) {
@@ -76,14 +85,19 @@ export function updateHardcoreLabel(ui, hardcoreMode) {
         ui._hardcoreLabel.setText(hardcoreToggleLabel(hardcoreMode));
         ui._hardcoreLabel.setColor(hardcoreMode ? '#FF8A80' : '#888888');
     }
-    if (ui._modesHeader && ui._menuLayout?.compact) {
-        ui._modesHeader.setText(modesAccordionLabel(
-            ui._modesExpanded,
-            ui.scene.trainingMode,
-            hardcoreMode,
-        ));
-    }
     refreshBestScore(ui, ui._currentDifficulty, hardcoreMode);
+    syncOptionsLabels(ui, ui.scene.trainingMode, hardcoreMode, ui.scene.dailyChallengeMode);
+}
+
+export function updateDailyLabel(ui, dailyChallengeMode) {
+    if (ui._dailyLabel) {
+        ui._dailyLabel.setText(dailyToggleLabel(dailyChallengeMode));
+        ui._dailyLabel.setColor(dailyChallengeMode ? '#CE93D8' : '#888888');
+    }
+    if (ui._dailySubtitle) {
+        ui._dailySubtitle.setText(getMenuDailySubtitle(dailyChallengeMode));
+    }
+    syncOptionsLabels(ui, ui.scene.trainingMode, ui.scene.hardcoreMode, dailyChallengeMode);
 }
 
 export function updateDifficultyButtons(ui, difficulty) {

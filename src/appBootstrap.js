@@ -6,7 +6,7 @@ export function resizeGameCanvas(game) {
     const canvas = game?.canvas;
     if (!canvas) return null;
 
-    const { width: windowW, height: windowH } = getViewportDimensions();
+    const { width: windowW, height: windowH, offsetTop, offsetLeft } = getViewportDimensions();
     const insets = readSafeAreaInsets();
     const { width: targetW, height: targetH } = computeLetterboxSize(
         windowW,
@@ -20,7 +20,14 @@ export function resizeGameCanvas(game) {
     canvas.height = GAME_CONFIG.height;
     canvas.style.width = `${targetW}px`;
     canvas.style.height = `${targetH}px`;
-    return { targetW, targetH };
+
+    const container = canvas.parentElement;
+    if (container) {
+        container.style.marginTop = `${offsetTop}px`;
+        container.style.marginLeft = `${offsetLeft}px`;
+    }
+
+    return { targetW, targetH, offsetTop, offsetLeft };
 }
 
 export function hideLoadingScreen(doc = document) {
@@ -31,7 +38,9 @@ export function hideLoadingScreen(doc = document) {
 export function attachViewportResize(game, resizeFn = resizeGameCanvas) {
     const handler = () => resizeFn(game);
     window.addEventListener('resize', handler);
-    window.visualViewport?.addEventListener('resize', handler);
+    const vv = window.visualViewport;
+    vv?.addEventListener('resize', handler);
+    vv?.addEventListener('scroll', handler);
     return handler;
 }
 

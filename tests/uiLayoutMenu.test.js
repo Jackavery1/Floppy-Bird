@@ -1,27 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { computeMenuLayout, modesAccordionLabel } from '../src/uiLayout.js';
+import { computeMenuLayout, UI_LAYOUT } from '../src/uiLayout.js';
+import { GAME_CONFIG } from '../src/config.js';
 
-describe('uiLayout menu accordion', () => {
-    it('modesAccordionLabel résume l’état des modes', () => {
-        expect(modesAccordionLabel(false, false, false)).toContain('▸');
-        expect(modesAccordionLabel(true, true, false)).toContain('▾');
-        expect(modesAccordionLabel(false, true, false)).toContain('Entr.ON');
+describe('uiLayout menu', () => {
+    it('computeMenuLayout expose le menu principal épuré', () => {
+        const layout = computeMenuLayout();
+        expect(layout.title).toBe(UI_LAYOUT.menu.title);
+        expect(layout.difficulty).toBeLessThan(layout.start);
+        expect(layout.optionsBtn).toBeGreaterThan(layout.start);
+        expect(layout.hint1).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
     });
 
-    it('computeMenuLayout replie les modes sur mobile', () => {
-        const collapsed = computeMenuLayout(true, false);
-        expect(collapsed.training).toBeNull();
-        expect(collapsed.modesHeader).toBeTruthy();
-
-        const expanded = computeMenuLayout(true, true);
-        expect(expanded.training).toBeTruthy();
-        expect(expanded.hardcore).toBeTruthy();
-        expect(expanded.start).toBeGreaterThan(expanded.difficulty);
-    });
-
-    it('computeMenuLayout desktop conserve le layout statique', () => {
-        const layout = computeMenuLayout(false, false);
-        expect(layout.compact).toBe(false);
-        expect(layout.training).toBe(172);
+    it('le panneau options tient dans le canvas', () => {
+        const panel = UI_LAYOUT.optionsPanel;
+        expect(panel.hint2).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(panel.training - panel.daily).toBeGreaterThanOrEqual(36);
     });
 });

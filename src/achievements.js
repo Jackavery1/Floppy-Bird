@@ -28,9 +28,6 @@ export const ACHIEVEMENTS = Object.freeze([
         title: 'Collectionneur',
         desc: '3 skins débloqués',
         check: ctx => ctx.unlockedSkinCount >= 3,
+        timing: 'roundEnd',
     },
 ]);
-
-export function getAchievement(id) {
-    return ACHIEVEMENTS.find(a => a.id === id);
-}

@@ -13,12 +13,8 @@ vi.mock('../src/roundScore.js', () => ({
         leaderboardData: { entries: [], highlightId: 'x' },
     })),
 }));
-vi.mock('../src/metaProgress.js', () => ({
-    processMetaOnRoundEnd: vi.fn(() => []),
-}));
-
-vi.mock('../src/uiMeta.js', () => ({
-    showAchievementToasts: vi.fn(),
+vi.mock('../src/metaAchievements.js', () => ({
+    notifyEndOfRoundAchievements: vi.fn(),
 }));
 
 describe('sceneDeath', () => {
@@ -34,6 +30,7 @@ describe('sceneDeath', () => {
             trainingMode: false,
             hardcoreMode: false,
             difficulty: 'normal',
+            bird: { velocityY: 3 },
             ghost: { finishRound: vi.fn() },
             time: { delayedCall: vi.fn() },
         };
@@ -41,11 +38,13 @@ describe('sceneDeath', () => {
         expect(scene.state).toBe(GAME_STATE.DYING);
         expect(playDeathImpactFeedback).toHaveBeenCalledWith(scene);
         expect(persistRoundScore).toHaveBeenCalledWith(scene);
+        expect(scene.bird.velocityY).toBe(0);
         expect(scene.round.isNewRecord).toBe(true);
     });
 
     it('updateDying termine quand l’oiseau touche le sol', async () => {
         const { playGroundImpactFeedback } = await import('../src/sceneDeathFeedback.js');
+        const { notifyEndOfRoundAchievements } = await import('../src/metaAchievements.js');
         const round = createRoundState();
         round.score = 2;
         round.dyingFalling = true;
@@ -59,6 +58,7 @@ describe('sceneDeath', () => {
             bird: {
                 y: 489,
                 x: 50,
+                velocityY: 5,
                 sprite: { setPosition: vi.fn() },
                 applyFall: vi.fn(),
             },
@@ -72,6 +72,7 @@ describe('sceneDeath', () => {
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
         expect(scene.ui.highScore).toBe(7);
         expect(playGroundImpactFeedback).toHaveBeenCalled();
+        expect(notifyEndOfRoundAchievements).toHaveBeenCalledWith(scene);
         expect(scene.ui.setOverlay).toHaveBeenCalledWith('gameOver', expect.any(Array));
     });
 });

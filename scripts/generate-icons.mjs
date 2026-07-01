@@ -88,9 +88,10 @@ fs.mkdirSync(outDir, { recursive: true });
 
 await writePng('icon-512.png', 512);
 await writePng('icon-192.png', 192);
+await writePng('icon-180.png', 180);
 await writePng('favicon-32.png', 32);
 
-for (const f of ['favicon-32.png', 'icon-192.png', 'icon-512.png']) {
+for (const f of ['favicon-32.png', 'icon-180.png', 'icon-192.png', 'icon-512.png']) {
     const kb = (fs.statSync(path.join(outDir, f)).size / 1024).toFixed(1);
     console.log(`✓ ${f}: ${kb} Ko`);
 }

@@ -1,5 +1,6 @@
 import { saveTrainingEnabled } from './trainingStorage.js';
 import { saveHardcoreEnabled } from './hardcoreStorage.js';
+import { saveDailyChallengeEnabled } from './dailyChallengeStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -43,4 +44,16 @@ export function toggleTrainingMode(scene) {
 /** @param {SceneContext} scene */
 export function toggleHardcoreMode(scene) {
     setHardcoreMode(scene, !scene.hardcoreMode);
+}
+
+/** @param {SceneContext} scene @param {boolean} enabled */
+export function setDailyChallengeMode(scene, enabled) {
+    scene.dailyChallengeMode = enabled;
+    saveDailyChallengeEnabled(enabled);
+    scene.ui.updateDailyLabel(enabled);
+}
+
+/** @param {SceneContext} scene */
+export function toggleDailyChallengeMode(scene) {
+    setDailyChallengeMode(scene, !scene.dailyChallengeMode);
 }

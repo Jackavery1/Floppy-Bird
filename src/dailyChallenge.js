@@ -20,3 +20,11 @@ export function getDailyChallengeSeed(date = new Date()) {
 export function getDailyChallengeLabel(date = new Date()) {
     return `Défi du jour #${getDailyChallengeCode(date)} · séquence partagée`;
 }
+
+export function getRandomModeLabel() {
+    return 'Séquence aléatoire · gaps lissés';
+}
+
+export function getMenuDailySubtitle(enabled, date = new Date()) {
+    return enabled ? getDailyChallengeLabel(date) : getRandomModeLabel();
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { GhostReplay, interpolateGhostY, loadGhostData, saveGhostData } from '../src/training.js';
+import { GhostReplay, ghostMatchesMode, interpolateGhostY, loadGhostData, saveGhostData } from '../src/training.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('training', () => {
@@ -24,11 +24,21 @@ describe('training', () => {
         expect(interpolateGhostY(path, 200)).toBe(200);
     });
 
-    it('persiste le parcours fantôme avec le score', () => {
-        saveGhostData(12, [{ t: 0, y: 256 }, { t: 50, y: 240 }]);
+    it('persiste le parcours fantôme avec le score et le mode', () => {
+        saveGhostData(12, [{ t: 0, y: 256 }, { t: 50, y: 240 }], {
+            difficulty: 'hard',
+            hardcore: true,
+        });
         const saved = loadGhostData();
         expect(saved.score).toBe(12);
         expect(saved.path).toHaveLength(2);
+        expect(saved.difficulty).toBe('hard');
+        expect(saved.hardcore).toBe(true);
+    });
+
+    it('ghostMatchesMode ignore les fantômes d’un autre mode', () => {
+        expect(ghostMatchesMode({ difficulty: 'normal', hardcore: false }, 'hard', false)).toBe(false);
+        expect(ghostMatchesMode({ difficulty: null, hardcore: false }, 'hard', false)).toBe(true);
     });
 
     it('loadGhostData migre le format legacy tableau', () => {
@@ -38,6 +48,7 @@ describe('training', () => {
     });
 
     it('GhostReplay enregistre les sauts et sauvegarde un meilleur run', () => {
+        saveGhostData(3, [{ t: 0, y: 256 }], { difficulty: 'normal', hardcore: false });
         const sprite = {
             setDisplaySize: vi.fn(),
             setAlpha: vi.fn(),
@@ -49,12 +60,20 @@ describe('training', () => {
         };
         const scene = {
             trainingMode: true,
+            difficulty: 'normal',
+            hardcoreMode: false,
             time: { now: 0 },
             bird: { y: 250 },
             add: { sprite: vi.fn(() => sprite) },
         };
         const ghost = new GhostReplay(scene);
         ghost.beginRound();
+        expect(scene.add.sprite).toHaveBeenCalledWith(
+            GAME_CONFIG.bird.startX,
+            GAME_CONFIG.centerY,
+            'bird-sheet-classic',
+            1,
+        );
         scene.time.now = 100;
         ghost.recordJump();
         ghost.update(GAME_CONFIG.training.sampleEveryFrames);

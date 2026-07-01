@@ -5,7 +5,7 @@ import { GAME_CONFIG } from './config.js';
 /** @param {SceneContext} scene @param {number} step */
 export function updateCoyoteTime(scene, step) {
     const { round } = scene;
-    const inGap = scene.pipes.isBirdInGap(scene.bird.x, scene.bird.y);
+    const inGap = scene.pipes.isBirdInGap(scene.bird.getBounds());
     if (inGap) {
         round.coyoteFrames = GAME_CONFIG.bird.coyoteTimeFrames;
     } else if (round.coyoteFrames > 0) {

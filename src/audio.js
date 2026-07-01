@@ -154,7 +154,7 @@ function playJump(ctx) {
     playTone(ctx, { type: 'triangle', freqAt: 520, freqRamp: 780, duration: 0.05, peakGain: 0.08, delay: 0.02 });
 }
 
-export function isScoreMilestone(score) {
+function isScoreMilestone(score) {
     return score > 0 && score % 10 === 0;
 }
 

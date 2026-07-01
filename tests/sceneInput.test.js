@@ -15,6 +15,7 @@ describe('sceneInput', () => {
             changeDifficulty: vi.fn(),
             toggleTraining: vi.fn(),
             toggleHardcore: vi.fn(),
+            toggleDailyChallenge: vi.fn(),
             togglePause: vi.fn(),
             returnToMenu: vi.fn(),
             input: {
@@ -75,5 +76,13 @@ describe('sceneInput', () => {
         setupSceneInput(scene);
         scene._handlers['keydown-H']();
         expect(scene.toggleHardcore).toHaveBeenCalled();
+    });
+
+    it('O ouvre les options au menu', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { toggleMenuOptionsPanel: vi.fn() };
+        setupSceneInput(scene);
+        scene._handlers['keydown-O']();
+        expect(scene.ui.toggleMenuOptionsPanel).toHaveBeenCalled();
     });
 });

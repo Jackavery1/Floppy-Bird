@@ -84,7 +84,7 @@ export function showPause(ui, { onResume, onMenu }) {
     });
     elements.push(menuHit);
 
-    elements.push(addCenteredText(ui.scene, GAME_CONFIG.centerX, pause.menuBtn + 36,
+    elements.push(addCenteredText(ui.scene, GAME_CONFIG.centerX, pause.menuBtn + 40,
         pauseResumeHint(), { fontSize: '11px', fill: '#cccccc' }, 91));
 
     return { elements };

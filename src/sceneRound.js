@@ -1,8 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
 import { playScoreFeedback } from './sceneRoundFeedback.js';
-import { processMetaOnScore } from './metaProgress.js';
-import { showAchievementToasts } from './uiMeta.js';
+import { notifyAchievementUnlocks } from './metaAchievements.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -50,8 +49,18 @@ export function startSpawnInvincibility(scene, durationMs = GAME_CONFIG.round.sp
         () => {
             round.spawnInvincibleTimer = null;
             round.spawnInvincible = false;
+            if (scene.bird?.sprite) scene.bird.sprite.setAlpha(1);
         },
     );
+}
+
+/** @param {SceneContext} scene @param {number} pipeCount */
+export function onPipeSpawned(scene, pipeCount) {
+    if (!scene.hardcoreMode) return;
+    const steps = GAME_CONFIG.round.hardcoreSpawnInvincibilitySteps;
+    const idx = pipeCount - 1;
+    if (idx < 0 || idx >= steps.length) return;
+    startSpawnInvincibility(scene, steps[idx]);
 }
 
 /** @param {SceneContext} scene */
@@ -70,7 +79,7 @@ export function checkScorePipes(scene) {
                 round.recordNotified = true;
                 scene.ui.showRecordBroken();
             }
-            showAchievementToasts(scene, processMetaOnScore(scene));
+            notifyAchievementUnlocks(scene);
         }
     });
 }

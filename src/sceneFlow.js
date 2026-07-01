@@ -1,5 +1,4 @@
-import { GAME_CONFIG, getDifficultyForRound } from './config.js';
-import { getDailyChallengeSeed } from './dailyChallenge.js';
+import { GAME_CONFIG } from './config.js';
 import {
     GAME_STATE,
     canChangeDifficulty,
@@ -7,18 +6,14 @@ import {
     canReturnToMenu,
     shouldStartGameOnPrimary,
 } from './gameState.js';
-import { loadTutorialSeen } from './tutorialStorage.js';
-import { toggleTrainingMode, toggleHardcoreMode } from './sceneModeSettings.js';
+import { toggleTrainingMode, toggleHardcoreMode, toggleDailyChallengeMode } from './sceneModeSettings.js';
 import {
     cancelPipeSpawnTimer,
-    scheduleFirstPipe,
     clearSpawnInvincibility,
-    startSpawnInvincibility,
 } from './sceneRound.js';
-import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
-import { loadSelectedSkin } from './metaStorage.js';
 import { requestJump } from './sceneJumpBuffer.js';
+import { beginRound } from './sceneBeginRound.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -34,50 +29,10 @@ export function showMenu(scene) {
     scene.round.score = 0;
     scene.ui.clearOverlay('menu');
 
-    const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
+    const elements = scene.ui.showMenu(
+        scene.difficulty, scene.trainingMode, scene.hardcoreMode, scene.dailyChallengeMode,
+    );
     scene.ui.setOverlay('menu', elements);
-}
-
-/** @param {SceneContext} scene */
-export function beginRound(scene, { resetBird = false } = {}) {
-    clearPauseOverlay(scene);
-    cancelPipeSpawnTimer(scene);
-    clearSpawnInvincibility(scene);
-    scene.round.resetForRound();
-    resetCoyoteTime(scene);
-    scene.state = GAME_STATE.PLAYING;
-
-    if (resetBird) {
-        scene.bird.reset(GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
-        scene.bird.setSkin(loadSelectedSkin());
-    }
-
-    scene.pipes.reset();
-    scene.pipes.setDailySeed(getDailyChallengeSeed());
-    const roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
-    scene.pipes.applyRoundDifficulty(roundDiff);
-    scene.bird.applyDifficulty(roundDiff);
-    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
-    scene.round.roundHighScore = scene.ui.highScore;
-    scene.ui.createScoreDisplay();
-    scene.ui.createInGameControls({
-        trainingMode: scene.trainingMode,
-        hardcoreMode: scene.hardcoreMode,
-        onPause: () => scene.togglePause(),
-    });
-    if (!scene.hardcoreMode) {
-        startSpawnInvincibility(scene);
-    } else {
-        startSpawnInvincibility(scene, GAME_CONFIG.round.hardcoreSpawnInvincibilityMs);
-    }
-    scheduleFirstPipe(scene);
-    applyTrainingTimeScale(scene);
-    if (!loadTutorialSeen()) {
-        scene.ui.showJumpTutorial();
-    }
-    if (scene.trainingMode) {
-        scene.ghost.beginRound();
-    }
 }
 
 /** @param {SceneContext} scene */
@@ -159,4 +114,10 @@ export function toggleTraining(scene) {
 export function toggleHardcore(scene) {
     if (scene.state !== GAME_STATE.MENU) return;
     toggleHardcoreMode(scene);
+}
+
+/** @param {SceneContext} scene */
+export function toggleDailyChallenge(scene) {
+    if (scene.state !== GAME_STATE.MENU) return;
+    toggleDailyChallengeMode(scene);
 }

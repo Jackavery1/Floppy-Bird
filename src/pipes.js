@@ -1,12 +1,13 @@
-import { GAME_CONFIG, getScriptedPipeGapY } from './config.js';
+import { GAME_CONFIG } from './config.js';
 import { maxGapDeltaForScore } from './gapDifficulty.js';
+import { resolveNextGapY } from './pipeGaps.js';
+import {
+    collidesWithPipeGroup,
+    isBirdInPipeGap,
+} from './pipeCollision.js';
 import { Utils } from './utils.js';
 
-export function smoothGapY(rawY, lastGapY, maxDelta, minY, maxY) {
-    const clamped = Utils.clamp(rawY, minY, maxY);
-    if (lastGapY == null) return clamped;
-    return Utils.clamp(clamped, lastGapY - maxDelta, lastGapY + maxDelta);
-}
+export { smoothGapY } from './pipeGaps.js';
 
 export class Pipes {
     constructor(scene) {
@@ -30,47 +31,24 @@ export class Pipes {
         this._baseSpeed = normal.speed;
         this._dailyRng = null;
         this._runScore = 0;
+        this._onSpawn = null;
     }
 
     _maxGapDelta() {
         return maxGapDeltaForScore(this._runScore);
     }
 
-    _gapBounds() {
-        const margin = GAME_CONFIG.pipes.spawnMarginY;
-        return {
-            min: margin,
-            max: GAME_CONFIG.groundY - this.pipeGap - margin,
-        };
-    }
-
-    _randomGapY() {
-        const { min, max } = this._gapBounds();
-        if (this._dailyRng) {
-            return Utils.seededRandomInt(this._dailyRng, min, max);
-        }
-        return Utils.randomInt(min, max);
-    }
-
     _resolveGapY() {
-        const scriptedY = getScriptedPipeGapY(this._gapIndex, this.pipeGap);
-        if (scriptedY !== null) {
-            this._gapIndex++;
-            this._lastGapY = scriptedY;
-            return scriptedY;
-        }
-
-        const { min, max } = this._gapBounds();
-        const raw = this._randomGapY();
-        const smoothed = smoothGapY(
-            raw,
-            this._lastGapY,
-            this._maxGapDelta(),
-            min,
-            max,
-        );
-        this._lastGapY = smoothed;
-        return smoothed;
+        const next = resolveNextGapY({
+            gapIndex: this._gapIndex,
+            lastGapY: this._lastGapY,
+            dailyRng: this._dailyRng,
+            pipeGap: this.pipeGap,
+            runScore: this._runScore,
+        });
+        this._gapIndex = next.gapIndex;
+        this._lastGapY = next.lastGapY;
+        return next.gapY;
     }
 
     _createPipe(texture, originY, y) {
@@ -94,6 +72,7 @@ export class Pipes {
         this.spawnPipePair(this._resolveGapY());
         this._autoSpawnEnabled = true;
         this._spawnCounter = 0;
+        if (this._onSpawn) this._onSpawn(this.topPipes.length);
     }
 
     _scrollPipes(array, step) {
@@ -119,47 +98,15 @@ export class Pipes {
         }
     }
 
-    _colliderFor(pipe, type) {
-        const colW = this.pipeBodyWidth;
-        if (type === 'top') {
-            return { x: pipe.x - colW / 2, y: 0, width: colW, height: pipe.y };
-        }
-        return {
-            x: pipe.x - colW / 2,
-            y: pipe.y,
-            width: colW,
-            height: GAME_CONFIG.height - pipe.y,
-        };
-    }
-
-    _checkPipeGroup(pipes, type, birdBounds) {
-        for (const pipe of pipes) {
-            if (Utils.checkCollision(birdBounds, this._colliderFor(pipe, type))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     checkCollisionWithBird(birdBounds) {
         return (
-            this._checkPipeGroup(this.topPipes, 'top', birdBounds) ||
-            this._checkPipeGroup(this.bottomPipes, 'bottom', birdBounds)
+            collidesWithPipeGroup(this.topPipes, 'top', birdBounds, this.pipeBodyWidth) ||
+            collidesWithPipeGroup(this.bottomPipes, 'bottom', birdBounds, this.pipeBodyWidth)
         );
     }
 
-    isBirdInGap(birdX, birdY) {
-        for (let i = 0; i < this.topPipes.length; i++) {
-            const top = this.topPipes[i];
-            const bottom = this.bottomPipes[i];
-            if (!bottom) continue;
-            const halfW = this.pipeWidth / 2 + 4;
-            if (birdX < top.x - halfW || birdX > top.x + halfW) continue;
-            const gapTop = top.y;
-            const gapBottom = bottom.y;
-            if (birdY >= gapTop && birdY <= gapBottom) return true;
-        }
-        return false;
+    isBirdInGap(birdBounds) {
+        return isBirdInPipeGap(birdBounds, this.topPipes, this.bottomPipes, this.pipeWidth);
     }
 
     setDifficulty(difficulty = 'normal') {
@@ -177,6 +124,10 @@ export class Pipes {
         this._dailyRng = seed != null ? Utils.createSeededRandom(seed) : null;
         this._gapIndex = 0;
         this._lastGapY = null;
+    }
+
+    setSpawnHandler(handler) {
+        this._onSpawn = typeof handler === 'function' ? handler : null;
     }
 
     applySpeedForScore(score) {

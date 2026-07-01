@@ -29,47 +29,39 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 | 1 / 2 / 3 | Difficulté (menu) |
 | T | Mode entraînement ON/OFF (menu) |
 | H | Mode hardcore ON/OFF (menu) |
+| D | Défi du jour ON/OFF (menu options) |
+| O | Options (menu) |
 | ESC | Pause |
 | M | Menu (pause ou game over) |
-| Tap « SON » | Volume 100 % → 50 % → 25 % → muet |
+| Tap « OPTIONS » | Modes, apparence, son |
 
 ## Jeu
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
 - 8 premiers gaps scriptés à chaque manche, puis séquence daily / aléatoire lissé
-- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (450 ms en hardcore, tuyaux seulement)
-- Coyote time 5 frames dans les gaps ; buffer de saut 4 frames
+- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (700→625→550 ms en hardcore sur les 3 premiers tuyaux, tuyaux seulement)
+- Coyote time 5 frames dans les gaps — hitbox entière dans le gap (pas plafond/sol) ; buffer de saut 4 frames
 - Tutoriel « sauter » à la première partie
 - Son de palier distinct tous les 10 points
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
-- **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours), scores non enregistrés
+- **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours par difficulté/hardcore), scores non enregistrés
 - Escalade : +3 % vitesse tous les 10 points ; gaps resserrés après score 20
-- **Défi du jour** : code quotidien + séquence de tuyaux partagée (seed du jour)
-- **Mode hardcore** : gravité/vitesse renforcées, grace spawn 450 ms, **TOP 5 hardcore** séparé
-- **Meta** : 4 skins, 5 trophées (`metaStorage`, `metaProgress`, `uiMeta`)
+- **Défi du jour** : toggle menu (D) — séquence partagée du jour ou aléatoire libre
+- **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→625→550 ms sur les 3 premiers tuyaux, **TOP 5 hardcore** séparé
+- **Meta** : 4 skins et 5 trophées déblocables
 
 Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/config.js`](src/config.js).
 
 ## Structure
 
-```
-src/
-  config.js, gameState.js, storage.js, storageKeys.js, device.js, viewport.js
-  bird.js, pipes.js, gapDifficulty.js, training.js, dailyChallenge.js
-  roundState.js, roundScore.js
-  audio.js, audioVolume.js, haptics.js, scoreEffects.js
-  ui.js, uiLayout.js, uiMenu.js, uiMenuBuild.js, uiMenuLayout.js
-  uiHud.js, uiPause.js, uiGameOver.js, uiMeta.js
-  metaContext.js, metaProgress.js, metaStorage.js, achievements.js, skins.js
-  sceneSetup.js, sceneFlow.js, sceneDeath.js, sceneDeathFeedback.js
-  sceneRound.js, sceneRoundFeedback.js, sceneJumpBuffer.js, sceneJumpFeedback.js
-  sceneCoyote.js, sceneBootstrap.js, sceneBackground.js, sceneInput.js
-  sceneModeSettings.js, sceneTypes.js, motion.js
-  appBootstrap.js, phaserBootstrap.js, phaser-shim.js, testSeam.js
-  textures/, GameScene.js, main.js, utils.js
-tests/   e2e/   public/   scripts/
-```
+| Dossier | Rôle |
+|---------|------|
+| `src/` | gameplay (`bird`, `pipes`, `scene*`), UI (`ui*`), meta, textures |
+| `tests/` | Vitest (miroir des modules métier) |
+| `e2e/` | Playwright (desktop + mobile portrait/paysage) |
+| `public/` | manifest PWA, `offline.html` |
+| `scripts/` | build (icônes, copie Phaser vendor) |
 
 ## Build & perf
 
@@ -77,6 +69,16 @@ tests/   e2e/   public/   scripts/
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
 - **Mobile paysage** : overlay « tourne en portrait » bloque les taps sur le jeu.
+
+## Installer la PWA
+
+| Plateforme | Procédure |
+|------------|-----------|
+| **Android (Chrome)** | Menu ⋮ → « Installer l’application » ou bannière d’installation |
+| **iPhone / iPad (Safari)** | Partager ↑ → « Sur l’écran d’accueil » (icône 192 px déjà fournie) |
+| **Desktop (Chrome / Edge)** | Icône ⊕ dans la barre d’adresse → Installer |
+
+Après installation, le jeu s’ouvre en plein écran portrait (`display: standalone`). Une visite en ligne est requise avant le mode hors ligne.
 
 ## Déploiement
 

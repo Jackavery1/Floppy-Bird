@@ -1,6 +1,8 @@
 export function isCoarsePointer() {
     if (typeof matchMedia === 'undefined') return false;
-    return matchMedia('(pointer: coarse)').matches;
+    if (matchMedia('(hover: none) and (pointer: coarse)').matches) return true;
+    return matchMedia('(any-pointer: coarse)').matches
+        && !matchMedia('(pointer: fine)').matches;
 }
 
 export function jumpHint() {
@@ -44,16 +46,39 @@ export function hardcoreToggleLabel(enabled) {
     if (enabled) {
         return isCoarsePointer()
             ? 'HARD ON'
-            : 'HARDCORE : ON (gravité + vitesse, grace spawn 450 ms)';
+            : 'HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
     }
     return isCoarsePointer()
         ? 'HARD OFF · tap'
         : 'HARDCORE : OFF (H pour activer)';
 }
 
+export function dailyToggleLabel(enabled) {
+    if (enabled) {
+        return isCoarsePointer()
+            ? 'DÉFI ON · tap'
+            : 'DÉFI DU JOUR : ON (D pour aléatoire libre)';
+    }
+    return isCoarsePointer()
+        ? 'DÉFI OFF · tap'
+        : 'DÉFI DU JOUR : OFF (D pour séquence partagée)';
+}
+
 export function modesHintLine() {
-    if (isCoarsePointer()) return `${difficultyHint()} · tap MODES (exclusifs)`;
-    return `${difficultyHint()} · ${trainingHint()} · ${hardcoreHint()} (exclusifs)`;
+    if (isCoarsePointer()) return `${difficultyHint()} · tap OPTIONS`;
+    return `${trainingHint()} · ${hardcoreHint()} · D : défi · O : options`;
+}
+
+export function optionsButtonLabel(open, trainingMode, hardcoreMode, dailyChallengeMode = true) {
+    const chevron = open ? '▾' : '▸';
+    const ent = trainingMode ? 'Entr.ON' : 'Entr.OFF';
+    const hard = hardcoreMode ? 'Hard.ON' : 'Hard.OFF';
+    const daily = dailyChallengeMode ? 'Défi.ON' : 'Défi.OFF';
+    return `${chevron} OPTIONS · ${ent} · ${hard} · ${daily}`;
+}
+
+export function optionsHint() {
+    return isCoarsePointer() ? 'Tap OPTIONS' : 'O : options';
 }
 
 export function jumpTutorialText() {

@@ -11,6 +11,7 @@ import { showMenu } from './sceneFlow.js';
 import { resumeAudio } from './audio.js';
 import { createBirdAnimations } from './textures/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
+import { wireSceneBindings } from './sceneBindings.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -32,6 +33,7 @@ export function setupSceneWorld(scene) {
     scene.bird = new Bird(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY, loadSelectedSkin());
     scene.pipes = new Pipes(scene);
     scene.ui = new UI(scene);
+    wireSceneBindings(scene);
     scene.scoreEffects = new ScoreEffects(scene);
     scene.ghost = new GhostReplay(scene);
 

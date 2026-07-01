@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import {
     expectGameState,
     openPauseFromPlaying,
@@ -39,5 +39,24 @@ test.describe('clavier desktop', () => {
 
         await page.keyboard.press('KeyM');
         await expectGameState(page, 'menu');
+    });
+
+    test('D bascule le défi du jour au menu', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        const before = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
+        await page.keyboard.press('KeyD');
+        const after = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
+        expect(after).toBe(!before);
+        await expectGameState(page, 'menu');
+    });
+
+    test('ESPACE rejoue depuis le game over', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.evaluate(() => window.__FLOPPY_TEST__?.forceGameOver?.());
+        await expectGameState(page, 'gameover');
+        await page.keyboard.press('Space');
+        await expectGameState(page, 'playing');
     });
 });

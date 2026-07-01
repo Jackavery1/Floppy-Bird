@@ -69,6 +69,14 @@ export function projectUsesTouch(testInfo) {
     return testInfo.project.use.hasTouch ?? false;
 }
 
+export async function hideLandscapeHint(page) {
+    await page.addInitScript(() => {
+        const style = document.createElement('style');
+        style.textContent = '#landscape-hint { display: none !important; }';
+        document.head.appendChild(style);
+    });
+}
+
 export async function waitForServiceWorker(page) {
     await page.evaluate(async () => {
         if (!('serviceWorker' in navigator)) return;

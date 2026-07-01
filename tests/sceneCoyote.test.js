@@ -7,7 +7,11 @@ describe('sceneCoyote', () => {
     function makeScene(inGap) {
         return {
             round: createRoundState(),
-            bird: { x: 100, y: 180 },
+            bird: {
+                x: 100,
+                y: 180,
+                getBounds: () => ({ x: 86, y: 170, width: 28, height: 20 }),
+            },
             pipes: { isBirdInGap: vi.fn(() => inGap) },
         };
     }
@@ -22,6 +26,7 @@ describe('sceneCoyote', () => {
     it('updateCoyoteTime recharge dans un gap', () => {
         const scene = makeScene(true);
         updateCoyoteTime(scene, 1);
+        expect(scene.pipes.isBirdInGap).toHaveBeenCalledWith(scene.bird.getBounds());
         expect(scene.round.coyoteFrames).toBe(GAME_CONFIG.bird.coyoteTimeFrames);
     });
 

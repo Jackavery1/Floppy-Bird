@@ -1,6 +1,6 @@
 import { SOUND } from './config.js';
 import { playSound } from './audio.js';
-import { hapticMedium } from './haptics.js';
+import { hapticMedium, hapticLight } from './haptics.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -15,4 +15,5 @@ export function playDeathImpactFeedback(scene) {
 
 export function playGroundImpactFeedback() {
     playSound(SOUND.GROUND);
+    hapticLight();
 }

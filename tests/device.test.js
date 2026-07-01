@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
 async function loadDevice(coarse) {
-    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: coarse })));
+    vi.stubGlobal('matchMedia', vi.fn((query) => ({
+        matches: coarse && (
+            query.includes('pointer: coarse')
+            || query.includes('any-pointer: coarse')
+        ),
+    })));
     vi.resetModules();
     return import('../src/device.js');
 }
@@ -67,14 +72,13 @@ describe('device', () => {
         expect(fine()).toBe('H : hardcore');
     });
 
-    it('hardcoreToggleLabel mentionne la grace spawn 450 ms', async () => {
+    it('hardcoreToggleLabel mentionne la grace progressive', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toContain('450 ms');
+        expect(hardcoreToggleLabel(true)).toContain('700→550 ms');
     });
 
-    it('modesHintLine compacte sur tactile', async () => {
-        const { modesHintLine } = await loadDevice(true);
-        expect(modesHintLine()).toContain('MODES');
-        expect(modesHintLine()).toContain('exclusifs');
+    it('modesHintLine renvoie vers OPTIONS', async () => {
+        const { modesHintLine } = await loadDevice(false);
+        expect(modesHintLine().toLowerCase()).toContain('options');
     });
 });

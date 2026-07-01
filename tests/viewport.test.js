@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { computeLetterboxSize, readSafeAreaInsets } from '../src/viewport.js';
+import { describe, it, expect, vi } from 'vitest';
+import { computeLetterboxSize, readSafeAreaInsets, getViewportDimensions } from '../src/viewport.js';
 
 describe('viewport', () => {
     it('letterbox portrait mobile', () => {
@@ -24,5 +24,18 @@ describe('viewport', () => {
 
     it('readSafeAreaInsets retourne des zéros sans document', () => {
         expect(readSafeAreaInsets()).toEqual({ top: 0, right: 0, bottom: 0, left: 0 });
+    });
+
+    it('getViewportDimensions expose visualViewport offsets', () => {
+        vi.stubGlobal('window', {
+            visualViewport: { width: 390, height: 400, offsetTop: 12, offsetLeft: 4 },
+        });
+        expect(getViewportDimensions()).toEqual({
+            width: 390,
+            height: 400,
+            offsetTop: 12,
+            offsetLeft: 4,
+        });
+        vi.unstubAllGlobals();
     });
 });

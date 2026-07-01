@@ -14,11 +14,14 @@ describe('uiLayout', () => {
     });
 
     it('expose les cibles tactiles pour les tests e2e', async () => {
-        const { TOUCH_TARGETS, UI_LAYOUT } = await import('../src/uiLayout.js');
+        const { TOUCH_TARGETS, UI_LAYOUT, MIN_TOUCH, PAUSE_BTN_VISUAL } = await import('../src/uiLayout.js');
         expect(TOUCH_TARGETS.pauseButton).toEqual({
             x: UI_LAYOUT.playing.pauseBtnX,
             y: UI_LAYOUT.playing.pauseBtnY,
         });
         expect(TOUCH_TARGETS.pauseResume.y).toBe(UI_LAYOUT.pause.resumeBtn);
+        expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
+        expect(UI_LAYOUT.menuBtn.height).toBe(MIN_TOUCH);
+        expect(UI_LAYOUT.diffBtn.height).toBe(MIN_TOUCH);
     });
 });

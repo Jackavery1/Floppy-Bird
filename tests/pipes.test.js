@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Pipes, smoothGapY } from '../src/pipes.js';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
+import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
 
 function createMockScene() {
     const scene = {
@@ -53,11 +54,13 @@ describe('Pipes', () => {
     });
 
     describe('isBirdInGap', () => {
+        const gapBounds = { x: 178, y: 130, width: 28, height: 20 };
+
         it('détecte l’oiseau dans le gap vertical', () => {
             pipes.topPipes.push({ x: 200, y: 120 });
             pipes.bottomPipes.push({ x: 200, y: 232 });
-            expect(pipes.isBirdInGap(200, 180)).toBe(true);
-            expect(pipes.isBirdInGap(200, 100)).toBe(false);
+            expect(pipes.isBirdInGap(gapBounds)).toBe(true);
+            expect(pipes.isBirdInGap({ ...gapBounds, y: 100 })).toBe(false);
         });
     });
 
@@ -134,9 +137,9 @@ describe('Pipes', () => {
 
         it('resserre le lissage des gaps après 20 points', () => {
             pipes.applySpeedForScore(19);
-            expect(pipes._maxGapDelta()).toBe(GAME_CONFIG.pipes.maxGapDelta);
+            expect(maxGapDeltaForScore(19)).toBe(GAME_CONFIG.pipes.maxGapDelta);
             pipes.applySpeedForScore(30);
-            expect(pipes._maxGapDelta()).toBe(GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep);
+            expect(maxGapDeltaForScore(30)).toBe(GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep);
         });
     });
 

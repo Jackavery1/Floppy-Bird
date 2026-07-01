@@ -1,5 +1,5 @@
 import { DIFFICULTY } from './config.js';
-import { canReturnToMenu, canTogglePause } from './gameState.js';
+import { GAME_STATE, canReturnToMenu, canTogglePause } from './gameState.js';
 import { resumeAudio } from './audio.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -28,4 +28,8 @@ export function setupSceneInput(scene) {
     scene.input.keyboard.on('keydown-THREE', () => scene.changeDifficulty(DIFFICULTY.HARD));
     scene.input.keyboard.on('keydown-T', () => scene.toggleTraining());
     scene.input.keyboard.on('keydown-H', () => scene.toggleHardcore());
+    scene.input.keyboard.on('keydown-D', () => scene.toggleDailyChallenge());
+    scene.input.keyboard.on('keydown-O', () => {
+        if (scene.state === GAME_STATE.MENU) scene.ui.toggleMenuOptionsPanel();
+    });
 }

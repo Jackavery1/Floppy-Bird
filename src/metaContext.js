@@ -1,5 +1,4 @@
 import { DIFFICULTY_ORDER } from './config.js';
-import { getDailyChallengeSeed } from './dailyChallenge.js';
 import { loadHighScore } from './storage.js';
 import { listUnlockedSkins } from './skins.js';
 
@@ -26,7 +25,7 @@ export function buildMetaContext(scene) {
     const ctx = {
         score: scene.round.score,
         hardcore: scene.hardcoreMode,
-        dailyChallenge: getDailyChallengeSeed() != null,
+        dailyChallenge: scene.dailyChallengeMode === true,
         bestScoreAny,
         bestHardcoreScore,
         unlockedSkinCount: 0,

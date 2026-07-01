@@ -2,9 +2,10 @@
 
 ## Développement local
 
+Voir les commandes essentielles dans [README.md](README.md). Détails ci-dessous :
+
 ```bash
 npm install
-npm run dev          # http://localhost:5173
 npm test
 npm run lint
 npm run build
@@ -34,7 +35,7 @@ Si `npm run test:e2e` ou `npx playwright install chromium` échoue avec `UNABLE_
 2. Relancer `npx playwright install chromium`.
 3. Les tests e2e tournent en CI GitHub sans ce problème ; en local, un réseau sans inspection TLS suffit souvent.
 
-Ne pas utiliser Live Server (port 5500) : il ne bundle pas Vite/Phaser.
+Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 
 ## Icônes PWA
 

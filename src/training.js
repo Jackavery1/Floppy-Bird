@@ -1,40 +1,56 @@
 import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS } from './storageKeys.js';
+import { birdTextureKey } from './skins.js';
+import { loadSelectedSkin } from './metaStorage.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
+
+function normalizeGhostPayload(parsed) {
+    if (Array.isArray(parsed)) {
+        return {
+            score: 0,
+            path: parsed.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y)),
+            difficulty: null,
+            hardcore: false,
+        };
+    }
+    const path = Array.isArray(parsed.path)
+        ? parsed.path.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y))
+        : [];
+    const score = Number(parsed.score);
+    return {
+        score: Number.isFinite(score) && score >= 0 ? score : 0,
+        path,
+        difficulty: typeof parsed.difficulty === 'string' ? parsed.difficulty : null,
+        hardcore: parsed.hardcore === true,
+    };
+}
 
 export function loadGhostData() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return { score: 0, path: [] };
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-            return {
-                score: 0,
-                path: parsed.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y)),
-            };
-        }
-        const path = Array.isArray(parsed.path)
-            ? parsed.path.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y))
-            : [];
-        const score = Number(parsed.score);
-        return {
-            score: Number.isFinite(score) && score >= 0 ? score : 0,
-            path,
-        };
+        if (!raw) return { score: 0, path: [], difficulty: null, hardcore: false };
+        return normalizeGhostPayload(JSON.parse(raw));
     } catch {
-        return { score: 0, path: [] };
+        return { score: 0, path: [], difficulty: null, hardcore: false };
     }
 }
 
-export function saveGhostData(score, path) {
+export function saveGhostData(score, path, { difficulty, hardcore } = {}) {
     if (!path?.length) return;
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             score,
             path: path.slice(0, 600),
+            difficulty,
+            hardcore: hardcore === true,
         }));
     } catch { /* quota */ }
+}
+
+export function ghostMatchesMode(saved, difficulty, hardcoreMode) {
+    if (saved.difficulty == null) return true;
+    return saved.difficulty === difficulty && saved.hardcore === !!hardcoreMode;
 }
 
 export function interpolateGhostY(path, elapsedMs) {
@@ -58,13 +74,23 @@ export function interpolateGhostY(path, elapsedMs) {
 export class GhostReplay {
     constructor(scene) {
         this.scene = scene;
-        const saved = loadGhostData();
-        this.path = saved.path;
-        this._savedScore = saved.score;
+        this._saved = loadGhostData();
+        this.path = ghostMatchesMode(this._saved, scene.difficulty, scene.hardcoreMode)
+            ? this._saved.path
+            : [];
+        this._savedScore = this._saved.score;
         this.sprite = null;
         this._recording = [];
         this._roundStartMs = 0;
         this._sampleAcc = 0;
+    }
+
+    _refreshPathForMode() {
+        const saved = loadGhostData();
+        this.path = ghostMatchesMode(saved, this.scene.difficulty, this.scene.hardcoreMode)
+            ? saved.path
+            : [];
+        this._savedScore = saved.score;
     }
 
     createSprite() {
@@ -73,10 +99,11 @@ export class GhostReplay {
             this.sprite = null;
             return;
         }
+        const skinId = loadSelectedSkin();
         this.sprite = this.scene.add.sprite(
             GAME_CONFIG.bird.startX,
             GAME_CONFIG.centerY,
-            'bird-sheet',
+            birdTextureKey(skinId),
             1,
         );
         this.sprite.setDisplaySize(GAME_CONFIG.bird.width, GAME_CONFIG.bird.height);
@@ -86,6 +113,7 @@ export class GhostReplay {
     }
 
     beginRound() {
+        this._refreshPathForMode();
         this._recording = [];
         this._roundStartMs = this.scene.time.now;
         this._sampleAcc = 0;
@@ -126,7 +154,10 @@ export class GhostReplay {
         if (score > this._savedScore && this._recording.length > 0) {
             this.path = [...this._recording];
             this._savedScore = score;
-            saveGhostData(score, this.path);
+            saveGhostData(score, this.path, {
+                difficulty: this.scene.difficulty,
+                hardcore: this.scene.hardcoreMode,
+            });
         }
         if (this.sprite) {
             this.sprite.destroy();

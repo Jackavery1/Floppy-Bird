@@ -3,13 +3,13 @@ import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
 import {
     showMenu,
-    beginRound,
     startGame,
     togglePause,
     handlePrimaryAction,
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
+    toggleDailyChallenge,
 } from '../src/sceneFlow.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -19,6 +19,10 @@ vi.mock('../src/trainingStorage.js', () => ({
 
 vi.mock('../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
+}));
+
+vi.mock('../src/dailyChallengeStorage.js', () => ({
+    saveDailyChallengeEnabled: vi.fn(),
 }));
 
 vi.mock('../src/tutorialStorage.js', () => ({
@@ -37,11 +41,13 @@ describe('sceneFlow', () => {
             difficulty: DIFFICULTY.NORMAL,
             trainingMode: false,
             hardcoreMode: false,
+            dailyChallengeMode: true,
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
-            bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn() },
+            bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn(), sprite: { setAlpha: vi.fn() } },
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
+                setSpawnHandler: vi.fn(),
                 applyRoundDifficulty: vi.fn(),
             },
             ghost: { beginRound: vi.fn(), finishRound: vi.fn() },
@@ -56,6 +62,7 @@ describe('sceneFlow', () => {
                 updateDifficultyButtons: vi.fn(),
                 updateTrainingLabel: vi.fn(),
                 updateHardcoreLabel: vi.fn(),
+                updateDailyLabel: vi.fn(),
                 showJumpTutorial: vi.fn(),
                 showPause: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
             },
@@ -65,6 +72,9 @@ describe('sceneFlow', () => {
             toggleHardcore: vi.fn(function toggle() {
                 toggleHardcore(this);
             }),
+            toggleDailyChallenge: vi.fn(function toggle() {
+                toggleDailyChallenge(this);
+            }),
         };
     }
 
@@ -73,14 +83,6 @@ describe('sceneFlow', () => {
         showMenu(scene);
         expect(scene.state).toBe(GAME_STATE.MENU);
         expect(scene.ui.showMenu).toHaveBeenCalled();
-    });
-
-    it('beginRound démarre une partie', () => {
-        const scene = makeScene(GAME_STATE.MENU);
-        beginRound(scene, { resetBird: true });
-        expect(scene.state).toBe(GAME_STATE.PLAYING);
-        expect(scene.bird.reset).toHaveBeenCalled();
-        expect(scene.ui.createInGameControls).toHaveBeenCalled();
     });
 
     it('startGame depuis le menu lance un round', () => {
@@ -117,6 +119,14 @@ describe('sceneFlow', () => {
         expect(scene.hardcoreMode).toBe(true);
     });
 
+    it('toggleDailyChallenge bascule le défi du jour au menu', async () => {
+        const { saveDailyChallengeEnabled } = await import('../src/dailyChallengeStorage.js');
+        const scene = makeScene(GAME_STATE.MENU);
+        toggleDailyChallenge(scene);
+        expect(scene.dailyChallengeMode).toBe(false);
+        expect(saveDailyChallengeEnabled).toHaveBeenCalledWith(false);
+    });
+
     it('toggleTraining désactive le hardcore (exclusifs)', async () => {
         const { saveHardcoreEnabled } = await import('../src/hardcoreStorage.js');
         const scene = makeScene(GAME_STATE.MENU);
@@ -135,13 +145,6 @@ describe('sceneFlow', () => {
         expect(scene.hardcoreMode).toBe(true);
         expect(scene.trainingMode).toBe(false);
         expect(saveTrainingEnabled).toHaveBeenCalledWith(false);
-    });
-
-    it('beginRound avec invincibilité réduite en hardcore', () => {
-        const scene = makeScene(GAME_STATE.MENU);
-        scene.hardcoreMode = true;
-        beginRound(scene);
-        expect(scene.round.spawnInvincible).toBe(true);
     });
 
     it('handlePrimaryAction démarre la partie depuis le menu', () => {

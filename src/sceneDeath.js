@@ -2,8 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { GAME_STATE, canTriggerDeath } from './gameState.js';
 import { frameStep } from './sceneBootstrap.js';
 import { persistRoundScore } from './roundScore.js';
-import { processMetaOnRoundEnd } from './metaProgress.js';
-import { showAchievementToasts } from './uiMeta.js';
+import { notifyEndOfRoundAchievements } from './metaAchievements.js';
 import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneDeathFeedback.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -15,6 +14,7 @@ export function triggerDeath(scene) {
     scene.round.resetDeathAnimation();
 
     playDeathImpactFeedback(scene);
+    scene.bird.velocityY = 0;
     scene.ghost.finishRound(scene.round.score);
 
     const { isNewRecord, leaderboardData } = persistRoundScore(scene);
@@ -47,7 +47,7 @@ export function updateDying(scene) {
 function finishDying(scene) {
     const { round } = scene;
     playGroundImpactFeedback();
-    showAchievementToasts(scene, processMetaOnRoundEnd(scene));
+    notifyEndOfRoundAchievements(scene);
     scene.ui.highScore = round.roundHighScore;
     scene.state = GAME_STATE.GAME_OVER;
     const { elements } = scene.ui.showGameOver(

@@ -13,11 +13,21 @@ describe('metaContext', () => {
         const ctx = buildMetaContext({
             round,
             hardcoreMode: true,
+            dailyChallengeMode: true,
         });
         expect(ctx.score).toBe(3);
         expect(ctx.hardcore).toBe(true);
         expect(ctx.dailyChallenge).toBe(true);
         expect(ctx.bestScoreAny).toBe(12);
         expect(ctx.unlockedSkinCount).toBeGreaterThan(0);
+    });
+
+    it('dailyChallenge false en mode aléatoire', () => {
+        const ctx = buildMetaContext({
+            round: createRoundState(),
+            hardcoreMode: false,
+            dailyChallengeMode: false,
+        });
+        expect(ctx.dailyChallenge).toBe(false);
     });
 });

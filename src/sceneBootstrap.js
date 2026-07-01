@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { hasCoyoteGrace } from './sceneCoyote.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -31,8 +32,6 @@ export function primeAudio(scene, resumeAudio) {
 export function applyTrainingTimeScale(scene) {
     scene.time.timeScale = scene.trainingMode ? GAME_CONFIG.training.timeScale : 1;
 }
-
-import { hasCoyoteGrace } from './sceneCoyote.js';
 
 /** @param {SceneContext} scene */
 export function checkCollisions(scene) {

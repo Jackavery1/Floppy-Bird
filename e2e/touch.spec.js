@@ -3,6 +3,7 @@ import { TOUCH_TARGETS } from '../src/uiLayout.js';
 import {
     enterPausedFromPlaying,
     expectGameState,
+    hideLandscapeHint,
     openPauseFromPlaying,
     pointerGameCoord,
     projectUsesTouch,
@@ -41,6 +42,10 @@ test.describe('touch mobile portrait', () => {
 });
 
 test.describe('touch mobile landscape', () => {
+    test.beforeEach(async ({ page }) => {
+        await hideLandscapeHint(page);
+    });
+
     test('ouvre la pause via tap bouton en paysage', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
         const usesTouch = projectUsesTouch(testInfo);
@@ -56,5 +61,15 @@ test.describe('touch mobile landscape', () => {
         const { pauseResume } = TOUCH_TARGETS;
         await pointerGameCoord(page, pauseResume.x, pauseResume.y, usesTouch);
         await expectGameState(page, 'playing');
+    });
+
+    test('pause → menu via tap en paysage', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await enterPausedFromPlaying(page, usesTouch);
+        const { pauseMenu } = TOUCH_TARGETS;
+        await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch);
+        await expectGameState(page, 'menu');
     });
 });

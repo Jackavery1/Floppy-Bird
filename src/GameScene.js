@@ -1,7 +1,6 @@
 import Phaser from 'phaser';
-import { GAME_CONFIG, DIFFICULTY } from './config.js';
+import { GAME_CONFIG } from './config.js';
 import {
-    GAME_STATE,
     shouldUpdateDying,
     shouldUpdateGameplay,
     shouldAnimateBackground,
@@ -13,15 +12,13 @@ import {
     cancelPipeSpawnTimer,
     clearSpawnInvincibility,
 } from './sceneRound.js';
-import { loadTrainingEnabled } from './trainingStorage.js';
-import { loadHardcoreEnabled, saveHardcoreEnabled } from './hardcoreStorage.js';
 import { frameStep, checkCollisions } from './sceneBootstrap.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
 import { updateCoyoteTime } from './sceneCoyote.js';
 import { triggerDeath, updateDying } from './sceneDeath.js';
+import { updateSpawnInvincibilityVisual } from './sceneSpawnFeedback.js';
 import {
     showMenu,
-    beginRound,
     startGame,
     returnToMenu,
     togglePause,
@@ -29,34 +26,16 @@ import {
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
+    toggleDailyChallenge,
 } from './sceneFlow.js';
+import { beginRound } from './sceneBeginRound.js';
+import { initSceneCore } from './sceneContext.js';
 import { setupSceneWorld } from './sceneSetup.js';
-import { createRoundState } from './roundState.js';
 
 export class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
-
-        this.bird = null;
-        this.pipes = null;
-        this.ui = null;
-        this.scoreEffects = null;
-        this.ghost = null;
-
-        this.round = createRoundState();
-        this.state = GAME_STATE.MENU;
-        this.difficulty = DIFFICULTY.NORMAL;
-        this.trainingMode = loadTrainingEnabled();
-        this.hardcoreMode = loadHardcoreEnabled();
-        if (this.trainingMode && this.hardcoreMode) {
-            this.hardcoreMode = false;
-            saveHardcoreEnabled(false);
-        }
-
-        this._clouds = [];
-        this._groundSprite = null;
-
-        this.fps = null;
+        initSceneCore(this);
     }
 
     preload() {
@@ -84,18 +63,19 @@ export class GameScene extends Phaser.Scene {
             this.bird.update(step);
             this.pipes.update(step);
             this.ghost.update(step);
+            updateCoyoteTime(this, step);
             checkCollisions(this);
             checkScorePipes(this);
-            updateCoyoteTime(this, step);
+            updateSpawnInvincibilityVisual(this);
 
             if (this.bird.isOutOfBounds() || this.bird.isHittingGround()) {
                 this.triggerDeath();
             }
+
+            tickJumpBuffer(this);
         } else if (shouldUpdateDying(this.state)) {
             updateDying(this);
         }
-
-        tickJumpBuffer(this);
     }
 
     triggerDeath() { triggerDeath(this); }
@@ -103,6 +83,7 @@ export class GameScene extends Phaser.Scene {
     changeDifficulty(d) { changeDifficulty(this, d); }
     toggleTraining() { toggleTraining(this); }
     toggleHardcore() { toggleHardcore(this); }
+    toggleDailyChallenge() { toggleDailyChallenge(this); }
     showMenu() { showMenu(this); }
     beginRound(opts) { beginRound(this, opts); }
     startGame() { startGame(this); }

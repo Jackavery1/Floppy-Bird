@@ -11,12 +11,12 @@ import {
     UI_LAYOUT,
 } from './uiLayout.js';
 
-function metaRowY(layout) {
-    return (layout.mute ?? UI_LAYOUT.menu.mute) - 22;
+function metaSkinY(layout) {
+    return layout.metaSkin ?? UI_LAYOUT.optionsPanel.metaSkin;
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
-export function cycleSelectedSkin(scene) {
+function cycleSelectedSkin(scene) {
     const ctx = buildMetaContext(scene);
     const current = loadSelectedSkin();
     const next = nextUnlockedSkin(current, ctx);
@@ -30,7 +30,7 @@ export function appendMetaMenu(ui, elements, layout) {
     const scene = ui.scene;
     const ctx = buildMetaContext(scene);
     const skin = getSkin(loadSelectedSkin());
-    const rowY = metaRowY(layout);
+    const rowY = metaSkinY(layout);
 
     ui._skinLabel = addCenteredText(
         scene,
@@ -68,7 +68,7 @@ export function appendMetaMenu(ui, elements, layout) {
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {{ title: string }} achievement */
-export function showAchievementToast(scene, achievement) {
+function showAchievementToast(scene, achievement) {
     const toast = addCenteredText(
         scene,
         GAME_CONFIG.centerX,

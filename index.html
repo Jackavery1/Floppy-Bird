@@ -8,7 +8,11 @@
       name="description"
       content="Floppy Bird — arcade 2D, scores locaux, mode hors-ligne."
     />
+    <meta property="og:title" content="Floppy Bird" />
+    <meta property="og:description" content="Évite les tuyaux et bats ton record — PWA jouable hors ligne." />
+    <meta property="og:type" content="website" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Floppy Bird" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
@@ -27,6 +31,7 @@
       sizes="192x192"
       href="icons/icon-192.png"
     />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
     <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="/style.css" />
@@ -43,7 +48,8 @@
           el.innerHTML =
             'Impossible de charger le jeu.<br><br>' +
             'Utilise <strong>npm run dev</strong> (Vite), pas Live Server.<br>' +
-            'Live Server ne peut pas résoudre les modules npm (Phaser).';
+            'Live Server ne peut pas résoudre les modules npm (Phaser).<br>' +
+            'Après build : <strong>npm run preview</strong>.';
         }
       }, 6000);
     </script>

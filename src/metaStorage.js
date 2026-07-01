@@ -8,14 +8,14 @@ const DEFAULT = Object.freeze({
 function readMeta() {
     try {
         const raw = localStorage.getItem(STORAGE_KEYS.meta);
-        if (!raw) return { ...DEFAULT, achievements: [] };
+        if (!raw) return { ...DEFAULT };
         const parsed = JSON.parse(raw);
         return {
             achievements: Array.isArray(parsed.achievements) ? parsed.achievements : [],
             selectedSkin: typeof parsed.selectedSkin === 'string' ? parsed.selectedSkin : 'classic',
         };
     } catch {
-        return { ...DEFAULT, achievements: [] };
+        return { ...DEFAULT };
     }
 }
 

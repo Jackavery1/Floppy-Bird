@@ -1,10 +1,6 @@
 import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
-import {
-    loadHighScore,
-    saveHighScore as persistHighScore,
-    saveToLeaderboard,
-} from './storage.js';
+import { loadHighScore } from './storage.js';
 import { buildGameOverUI } from './uiGameOver.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import {
@@ -22,8 +18,10 @@ import {
     showMenu,
     updateTrainingLabel,
     updateHardcoreLabel,
+    updateDailyLabel,
     updateDifficultyButtons,
     refreshHighScore,
+    toggleMenuOptionsPanel,
 } from './uiMenu.js';
 import { showPause } from './uiPause.js';
 
@@ -71,17 +69,19 @@ export class UI {
     createInGameControls(opts) { return createInGameControls(this, opts); }
     updateScore(newScore) { updateScore(this, newScore); }
     showRecordBroken() { showRecordBroken(this); }
-    showMenu(difficulty, trainingMode, hardcoreMode) {
-        return showMenu(this, difficulty, trainingMode, hardcoreMode);
+    showMenu(difficulty, trainingMode, hardcoreMode, dailyChallengeMode) {
+        return showMenu(this, difficulty, trainingMode, hardcoreMode, dailyChallengeMode);
     }
     updateTrainingLabel(trainingMode) { updateTrainingLabel(this, trainingMode); }
     updateHardcoreLabel(hardcoreMode) { updateHardcoreLabel(this, hardcoreMode); }
+    updateDailyLabel(dailyChallengeMode) { updateDailyLabel(this, dailyChallengeMode); }
     showJumpTutorial() { showJumpTutorial(this); }
     dismissJumpTutorial() { return dismissJumpTutorial(this); }
     updateDifficultyButtons(difficulty) { updateDifficultyButtons(this, difficulty); }
     refreshHighScore(difficulty, hardcoreMode = false) {
         refreshHighScore(this, difficulty, hardcoreMode);
     }
+    toggleMenuOptionsPanel() { toggleMenuOptionsPanel(this); }
     showPause(opts) { return showPause(this, opts); }
     showFlash() { showFlash(this); }
 
@@ -102,14 +102,6 @@ export class UI {
 
     showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false, hardcoreMode = false) {
         return buildGameOverUI(this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode);
-    }
-
-    saveHighScore(score, difficulty = this._currentDifficulty, hardcore = false) {
-        this.highScore = persistHighScore(score, difficulty, this.highScore, hardcore);
-    }
-
-    saveToLeaderboard(score, difficulty = this._currentDifficulty, hardcore = false) {
-        return saveToLeaderboard(score, difficulty, hardcore);
     }
 
     destroy() {

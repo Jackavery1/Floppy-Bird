@@ -6,6 +6,7 @@ import {
     clearSpawnInvincibility,
     startSpawnInvincibility,
     checkScorePipes,
+    onPipeSpawned,
 } from '../src/sceneRound.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createRoundState } from '../src/roundState.js';
@@ -14,12 +15,8 @@ vi.mock('../src/sceneRoundFeedback.js', () => ({
     playScoreFeedback: vi.fn(),
 }));
 
-vi.mock('../src/metaProgress.js', () => ({
-    processMetaOnScore: vi.fn(() => []),
-}));
-
-vi.mock('../src/uiMeta.js', () => ({
-    showAchievementToasts: vi.fn(),
+vi.mock('../src/metaAchievements.js', () => ({
+    notifyAchievementUnlocks: vi.fn(),
 }));
 
 describe('sceneRound', () => {
@@ -96,5 +93,26 @@ describe('sceneRound', () => {
             expect(scene.pipes.applySpeedForScore).toHaveBeenCalledWith(1);
             expect(playScoreFeedback).toHaveBeenCalledWith(1);
         });
+    });
+
+    it('onPipeSpawned rafraîchit la grace hardcore par paliers', () => {
+        const scene = {
+            hardcoreMode: true,
+            round: createRoundState(),
+            time: { delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
+            bird: { sprite: { setAlpha: vi.fn() } },
+        };
+        onPipeSpawned(scene, 2);
+        expect(scene.round.spawnInvincible).toBe(true);
+    });
+
+    it('onPipeSpawned ignore le mode normal', () => {
+        const scene = {
+            hardcoreMode: false,
+            round: createRoundState(),
+            time: { delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
+        };
+        onPipeSpawned(scene, 1);
+        expect(scene.round.spawnInvincible).toBe(false);
     });
 });
