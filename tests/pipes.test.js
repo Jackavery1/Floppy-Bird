@@ -6,7 +6,23 @@ import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
 function createMockScene() {
     const scene = {
         bird: null,
+        textures: {
+            exists: vi.fn(() => true),
+            get: vi.fn(() => ({ source: [{ width: 64, height: 500 }] })),
+            remove: vi.fn(),
+            createCanvas: vi.fn(() => ({
+                context: { clearRect: vi.fn(), fillRect: vi.fn(), fillStyle: '' },
+                refresh: vi.fn(),
+            })),
+        },
         add: {
+            graphics: vi.fn(() => ({
+                fillStyle: vi.fn().mockReturnThis(),
+                fillRect: vi.fn().mockReturnThis(),
+                generateTexture: vi.fn(),
+                setVisible: vi.fn().mockReturnThis(),
+                destroy: vi.fn(),
+            })),
             sprite: vi.fn(() => ({
                 x: 0,
                 y: 0,
@@ -17,6 +33,7 @@ function createMockScene() {
                 setTexture: vi.fn(),
                 setActive: vi.fn(function () { return this; }),
                 setVisible: vi.fn(function () { return this; }),
+                setActive: vi.fn(function () { return this; }),
                 destroy: vi.fn(),
             })),
         },

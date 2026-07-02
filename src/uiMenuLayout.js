@@ -45,8 +45,29 @@ export function applyMenuLayout(ui, difficulty) {
 
     ui._startText?.setY(layout.start);
     ui._hint1?.setY(layout.hint1);
-    ui._optionsBtnLabel?.setY(layout.optionsBtn);
-    ui._optionsBtnHit?.setY(layout.optionsBtn);
+    ui._dailyBtnLabel?.setY(layout.dailyBtn);
+    ui._dailyBtnBg?.setY(layout.dailyBtn);
+    ui._dailyBtnHit?.setY(layout.dailyBtn);
+    ui._dailyMenuSubtitle?.setY(layout.dailySubtitle);
+    const rowY = layout.menuRow;
+    ui._scoresBtnLabel?.setY(rowY);
+    ui._scoresBtnHit?.setY(rowY);
+    ui._scoresBtnBg?.setY(rowY);
+    ui._optionsBtnLabel?.setY(rowY);
+    ui._optionsBtnHit?.setY(rowY);
+    ui._optionsBtnBg?.setY(rowY);
+    ui._skinsBtnLabel?.setY(rowY);
+    ui._skinsBtnHit?.setY(rowY);
+    ui._skinsBtnBg?.setY(rowY);
+    ui._scoresBtnBg.x = layout.scoresBtn;
+    ui._scoresBtnLabel?.setX?.(layout.scoresBtn);
+    ui._scoresBtnHit.x = layout.scoresBtn;
+    ui._optionsBtnBg.x = layout.optionsBtn;
+    ui._optionsBtnLabel?.setX?.(layout.optionsBtn);
+    ui._optionsBtnHit.x = layout.optionsBtn;
+    ui._skinsBtnBg.x = layout.skinsBtn;
+    ui._skinsBtnLabel?.setX?.(layout.skinsBtn);
+    ui._skinsBtnHit.x = layout.skinsBtn;
 }
 
 export function bestScoreLabel(difficulty, hardcoreMode) {

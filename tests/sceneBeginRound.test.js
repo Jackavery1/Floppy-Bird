@@ -8,6 +8,10 @@ vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialSeen: vi.fn(() => true),
 }));
 
+vi.mock('../src/textures/pipeTextures.js', () => ({
+    ensurePipeTextures: vi.fn(),
+}));
+
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
@@ -46,6 +50,8 @@ describe('sceneBeginRound', () => {
         const scene = makeScene();
         beginRound(scene, { resetBird: true });
         expect(scene.state).toBe(GAME_STATE.PLAYING);
+        expect(scene.ui.clearOverlay).toHaveBeenCalledWith('menu');
+        expect(scene.ui.clearOverlay).toHaveBeenCalledWith('pause');
         expect(scene.bird.reset).toHaveBeenCalled();
         expect(scene.ui.createInGameControls).toHaveBeenCalled();
     });

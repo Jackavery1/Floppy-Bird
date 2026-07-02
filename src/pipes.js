@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { maxGapDeltaForScore } from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
 import {
@@ -52,10 +53,13 @@ export class Pipes {
     }
 
     _createPipe(texture, originY, y) {
+        ensurePipeTextures(this.scene);
         const pipe = this.scene.add.sprite(GAME_CONFIG.width + this.pipeWidth, y, texture);
         pipe.setDisplaySize(this.pipeWidth, this.pipeHeight);
         pipe.setOrigin(0.5, originY);
-        pipe.setDepth(5);
+        pipe.setDepth(9);
+        pipe.setVisible(true);
+        pipe.setActive(true);
         return pipe;
     }
 

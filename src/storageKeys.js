@@ -10,6 +10,9 @@ export const STORAGE_KEYS = Object.freeze({
     training: 'flappy-bird-training',
     hardcore: 'flappy-bird-hardcore',
     dailyChallenge: 'flappy-bird-daily-challenge',
+    dailyCompletion: 'flappy-bird-daily-completion',
+    dailyStats: 'flappy-bird-daily-stats',
+    trainingBest: 'flappy-bird-training-best',
     tutorialSeen: 'flappy-bird-tutorial-seen',
     meta: 'floppy-bird-meta',
 });

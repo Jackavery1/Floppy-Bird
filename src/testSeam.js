@@ -6,6 +6,14 @@ export function installTestSeam(game) {
         getState: () => getScene()?.state ?? null,
         ready: () => getScene()?.state != null,
         getDailyChallengeMode: () => getScene()?.dailyChallengeMode ?? null,
+        getPipeCount: () => {
+            const scene = getScene();
+            if (!scene?.pipes) return { top: 0, bottom: 0 };
+            return {
+                top: scene.pipes.topPipes.length,
+                bottom: scene.pipes.bottomPipes.length,
+            };
+        },
         forceGameOver: () => {
             const scene = getScene();
             if (!scene) return;

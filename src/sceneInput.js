@@ -28,8 +28,18 @@ export function setupSceneInput(scene) {
     scene.input.keyboard.on('keydown-THREE', () => scene.changeDifficulty(DIFFICULTY.HARD));
     scene.input.keyboard.on('keydown-T', () => scene.toggleTraining());
     scene.input.keyboard.on('keydown-H', () => scene.toggleHardcore());
-    scene.input.keyboard.on('keydown-D', () => scene.toggleDailyChallenge());
+    scene.input.keyboard.on('keydown-D', () => {
+        if (scene.state === GAME_STATE.MENU || scene.state === GAME_STATE.GAME_OVER) {
+            scene.launchDailyChallenge();
+        }
+    });
     scene.input.keyboard.on('keydown-O', () => {
         if (scene.state === GAME_STATE.MENU) scene.ui.toggleMenuOptionsPanel();
+    });
+    scene.input.keyboard.on('keydown-S', () => {
+        if (scene.state === GAME_STATE.MENU) scene.ui.toggleMenuScoresPanel();
+    });
+    scene.input.keyboard.on('keydown-K', () => {
+        if (scene.state === GAME_STATE.MENU) scene.ui.toggleMenuSkinsPanel();
     });
 }

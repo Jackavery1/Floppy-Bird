@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { loadTrainingEnabled, saveTrainingEnabled } from '../src/trainingStorage.js';
+import { loadTrainingEnabled, saveTrainingEnabled, loadBestTrainingScore, saveBestTrainingScore } from '../src/trainingStorage.js';
 
 describe('trainingStorage', () => {
     let store;
@@ -23,5 +23,15 @@ describe('trainingStorage', () => {
     it('persiste l’état entraînement', () => {
         saveTrainingEnabled(true);
         expect(loadTrainingEnabled()).toBe(true);
+    });
+
+    it('persiste le meilleur score entraînement', () => {
+        expect(loadBestTrainingScore()).toBe(0);
+        saveBestTrainingScore(8);
+        expect(loadBestTrainingScore()).toBe(8);
+        saveBestTrainingScore(6);
+        expect(loadBestTrainingScore()).toBe(8);
+        saveBestTrainingScore(12);
+        expect(loadBestTrainingScore()).toBe(12);
     });
 });

@@ -34,7 +34,7 @@ describe('skins', () => {
 
     it('nextUnlockedSkin cycle les skins débloqués', () => {
         const ctx = { bestScoreAny: 10, bestHardcoreScore: 0, score: 0, hardcore: false, dailyChallenge: true, unlockedSkinCount: 2 };
-        expect(nextUnlockedSkin('classic', ctx)).toBe('ruby');
+        expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
         expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
     });
 });

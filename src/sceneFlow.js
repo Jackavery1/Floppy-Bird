@@ -6,7 +6,9 @@ import {
     canReturnToMenu,
     shouldStartGameOnPrimary,
 } from './gameState.js';
-import { toggleTrainingMode, toggleHardcoreMode, toggleDailyChallengeMode } from './sceneModeSettings.js';
+import { toggleTrainingMode, toggleHardcoreMode } from './sceneModeSettings.js';
+import { saveTrainingEnabled } from './trainingStorage.js';
+import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import {
     cancelPipeSpawnTimer,
     clearSpawnInvincibility,
@@ -26,17 +28,21 @@ function clearPauseOverlay(scene) {
 export function showMenu(scene) {
     clearPauseOverlay(scene);
     scene.state = GAME_STATE.MENU;
+    scene.playMode = 'classic';
+    scene.dailyChallengeMode = false;
     scene.round.score = 0;
     scene.ui.clearOverlay('menu');
 
     const elements = scene.ui.showMenu(
-        scene.difficulty, scene.trainingMode, scene.hardcoreMode, scene.dailyChallengeMode,
+        scene.difficulty, scene.trainingMode, scene.hardcoreMode,
     );
     scene.ui.setOverlay('menu', elements);
 }
 
 /** @param {SceneContext} scene */
 export function startGame(scene) {
+    scene.playMode = 'classic';
+    scene.dailyChallengeMode = false;
     if (scene.state === GAME_STATE.MENU) {
         scene.ui.clearOverlay('menu');
         beginRound(scene, { resetBird: true });
@@ -44,6 +50,23 @@ export function startGame(scene) {
         scene.ui.clearOverlay('gameOver');
         beginRound(scene, { resetBird: true });
     }
+}
+
+/** @param {SceneContext} scene */
+export function startDailyChallenge(scene) {
+    if (scene.state !== GAME_STATE.MENU && scene.state !== GAME_STATE.GAME_OVER) return;
+    scene.playMode = 'daily';
+    scene.dailyChallengeMode = true;
+    scene.trainingMode = false;
+    saveTrainingEnabled(false);
+    scene.hardcoreMode = false;
+    saveHardcoreEnabled(false);
+    if (scene.state === GAME_STATE.MENU) {
+        scene.ui.clearOverlay('menu');
+    } else {
+        scene.ui.clearOverlay('gameOver');
+    }
+    beginRound(scene, { resetBird: true });
 }
 
 /** @param {SceneContext} scene */
@@ -117,7 +140,7 @@ export function toggleHardcore(scene) {
 }
 
 /** @param {SceneContext} scene */
-export function toggleDailyChallenge(scene) {
-    if (scene.state !== GAME_STATE.MENU) return;
-    toggleDailyChallengeMode(scene);
+export function launchDailyChallenge(scene) {
+    if (scene.state !== GAME_STATE.MENU && scene.state !== GAME_STATE.GAME_OVER) return;
+    startDailyChallenge(scene);
 }

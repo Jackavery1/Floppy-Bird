@@ -30,13 +30,13 @@ describe('uiMenuBuild', () => {
         layout = { ...UI_LAYOUT.menu };
     });
 
-    it('buildMenuHeader ajoute titre et record', async () => {
+    it('buildMenuHeader ajoute le titre avec relief', async () => {
         const { buildMenuHeader } = await import('../src/uiMenuBuild.js');
-        const title = buildMenuHeader(ui, elements, layout, DIFFICULTY.NORMAL, false);
+        const title = buildMenuHeader(ui, elements, layout);
         expect(title).toBeTruthy();
+        expect(ui._menuTitleShadow).toBeTruthy();
         expect(elements.length).toBeGreaterThanOrEqual(2);
-        expect(ui._bestText).toBeTruthy();
-        expect(ui._dailySubtitle).toBeUndefined();
+        expect(ui._bestText).toBeUndefined();
     });
 
     it('buildMenuDifficulty crée un bouton par niveau', async () => {
@@ -56,7 +56,7 @@ describe('uiMenuBuild', () => {
 
     it('buildMenuOptions crée le bouton et le panneau repliable', async () => {
         const { buildMenuOptions } = await import('../src/uiMenuOptions.js');
-        buildMenuOptions(ui, elements, layout, false, false, true);
+        buildMenuOptions(ui, elements, layout);
         expect(ui._optionsBtnLabel).toBeTruthy();
         expect(ui._optionsBtnHit).toBeTruthy();
         expect(ui._optionsBackdrop).toBeTruthy();

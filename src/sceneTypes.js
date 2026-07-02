@@ -21,6 +21,9 @@
  * @property {boolean} trainingMode
  * @property {boolean} hardcoreMode
  * @property {boolean} dailyChallengeMode
+ * @property {'classic'|'daily'} playMode
+ * @property {string} activeSkinId
+ * @property {number} dailyGoal
  * @property {(achievements: Array<{ title: string }>) => void} [achievementNotifier]
  * @property {import('phaser').GameObjects.Image[]} _clouds
  * @property {import('phaser').GameObjects.TileSprite | null} _groundSprite

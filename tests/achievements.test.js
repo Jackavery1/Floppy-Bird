@@ -7,7 +7,7 @@ describe('achievements', () => {
     it('expose 5 définitions uniques', () => {
         const ids = ACHIEVEMENTS.map(a => a.id);
         expect(new Set(ids).size).toBe(ACHIEVEMENTS.length);
-        expect(ACHIEVEMENTS.length).toBe(5);
+        expect(ACHIEVEMENTS.length).toBe(6);
     });
 
     it('chaque définition a id, title, desc et check', () => {

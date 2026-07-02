@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
+import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { playScoreFeedback } from './sceneRoundFeedback.js';
 import { notifyAchievementUnlocks } from './metaAchievements.js';
 
@@ -21,12 +22,34 @@ export function cancelPipeSpawnTimer(scene) {
 /** @param {SceneContext} scene */
 export function scheduleFirstPipe(scene) {
     cancelPipeSpawnTimer(scene);
-    scene.round.pipeSpawnTimer = scene.time.delayedCall(GAME_CONFIG.round.pipeSpawnDelayMs, () => {
+    ensurePipeTextures(scene);
+    const spawnWave = () => {
         scene.round.pipeSpawnTimer = null;
-        if (scene.state === GAME_STATE.PLAYING) {
-            scene.pipes.spawn();
-        }
-    });
+        if (scene.state !== GAME_STATE.PLAYING || !scene.pipes) return;
+        scene.pipes.spawn();
+    };
+    scene.round.pipeSpawnTimer = scene.time.delayedCall(
+        GAME_CONFIG.round.pipeSpawnDelayMs,
+        spawnWave,
+    );
+}
+
+/** Spawn immédiat (secours si le timer Phaser ne se déclenche pas). */
+export function spawnPipeWave(scene) {
+    if (scene.state !== GAME_STATE.PLAYING || !scene.pipes) return false;
+    ensurePipeTextures(scene);
+    scene.pipes.spawn();
+    return scene.pipes.topPipes.length > 0;
+}
+
+/** @param {SceneContext} scene @param {number} deltaMs */
+export function tickPipeSpawnFallback(scene, deltaMs) {
+    if (scene.state !== GAME_STATE.PLAYING || !scene.pipes) return;
+    if (scene.pipes._autoSpawnEnabled || scene.pipes.topPipes.length > 0) return;
+    scene.round._pipeSpawnWaitMs = (scene.round._pipeSpawnWaitMs ?? 0) + deltaMs;
+    if (scene.round._pipeSpawnWaitMs >= GAME_CONFIG.round.pipeSpawnDelayMs) {
+        spawnPipeWave(scene);
+    }
 }
 
 /** @param {SceneContext} scene */

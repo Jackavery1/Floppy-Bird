@@ -1,4 +1,5 @@
 import { saveHighScore, saveToLeaderboard } from './storage.js';
+import { saveBestTrainingScore } from './trainingStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -12,6 +13,13 @@ import { saveHighScore, saveToLeaderboard } from './storage.js';
  */
 export function persistRoundScore(scene) {
     if (scene.trainingMode) {
+        saveBestTrainingScore(scene.round.score);
+        return {
+            isNewRecord: false,
+            leaderboardData: { entries: [], highlightId: null },
+        };
+    }
+    if (scene.playMode === 'daily') {
         return {
             isNewRecord: false,
             leaderboardData: { entries: [], highlightId: null },

@@ -62,6 +62,7 @@ vi.mock('../src/metaStorage.js', () => ({
 
 vi.mock('../src/textures/index.js', () => ({
     createBirdAnimations: vi.fn(),
+    ensurePipeTextures: vi.fn(),
 }));
 
 import { setupSceneWorld } from '../src/sceneSetup.js';
@@ -70,7 +71,7 @@ import { Pipes } from '../src/pipes.js';
 import { UI } from '../src/ui.js';
 import { showMenu } from '../src/sceneFlow.js';
 import { setupSceneInput } from '../src/sceneInput.js';
-import { createBirdAnimations } from '../src/textures/index.js';
+import { createBirdAnimations, ensurePipeTextures } from '../src/textures/index.js';
 
 describe('setupSceneWorld', () => {
     let scene;
@@ -95,6 +96,7 @@ describe('setupSceneWorld', () => {
         expect(scene.pipes).toBeDefined();
         expect(scene.ui).toBeDefined();
         expect(showMenu).toHaveBeenCalledWith(scene);
+        expect(ensurePipeTextures).toHaveBeenCalledWith(scene);
         expect(createBirdAnimations).toHaveBeenCalledWith(scene);
     });
 });

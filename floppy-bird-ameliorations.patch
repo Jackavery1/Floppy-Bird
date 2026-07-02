@@ -1,0 +1,919 @@
+diff --git a/src/achievements.js b/src/achievements.js
+index 231ee04..0db3e61 100644
+--- a/src/achievements.js
++++ b/src/achievements.js
+@@ -1,3 +1,5 @@
++import { SKIN_IDS } from './skins.js';
++
+ export const ACHIEVEMENTS = Object.freeze([
+     {
+         id: 'first_flight',
+@@ -30,4 +32,11 @@ export const ACHIEVEMENTS = Object.freeze([
+         check: ctx => ctx.unlockedSkinCount >= 3,
+         timing: 'roundEnd',
+     },
++    {
++        id: 'neon_legend',
++        title: 'Légende néon',
++        desc: `Débloquer les ${SKIN_IDS.length} skins`,
++        check: ctx => ctx.unlockedSkinCount >= SKIN_IDS.length,
++        timing: 'roundEnd',
++    },
+ ]);
+diff --git a/src/device.js b/src/device.js
+index a3fc9e8..5ea141f 100644
+--- a/src/device.js
++++ b/src/device.js
+@@ -31,11 +31,11 @@ export function trainingHint() {
+ 
+ export function trainingToggleLabel(enabled) {
+     if (enabled) {
+-        return isCoarsePointer() ? 'ENTR. ON' : 'ENTRAÎNEMENT : ON (ralenti + fantôme)';
++        return isCoarsePointer() ? '🟦 ENTR. ON' : '🟦 ENTRAÎNEMENT : ON (ralenti + fantôme)';
+     }
+     return isCoarsePointer()
+-        ? 'ENTR. OFF · tap'
+-        : 'ENTRAÎNEMENT : OFF (T pour activer)';
++        ? '⬜ ENTR. OFF · tap'
++        : '⬜ ENTRAÎNEMENT : OFF (T pour activer)';
+ }
+ 
+ export function hardcoreHint() {
+@@ -45,23 +45,23 @@ export function hardcoreHint() {
+ export function hardcoreToggleLabel(enabled) {
+     if (enabled) {
+         return isCoarsePointer()
+-            ? 'HARD ON'
+-            : 'HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
++            ? '🟥 HARD ON'
++            : '🟥 HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
+     }
+     return isCoarsePointer()
+-        ? 'HARD OFF · tap'
+-        : 'HARDCORE : OFF (H pour activer)';
++        ? '⬜ HARD OFF · tap'
++        : '⬜ HARDCORE : OFF (H pour activer)';
+ }
+ 
+ export function dailyToggleLabel(enabled) {
+     if (enabled) {
+         return isCoarsePointer()
+-            ? 'DÉFI ON · tap'
+-            : 'DÉFI DU JOUR : ON (D pour aléatoire libre)';
++            ? '🟪 DÉFI ON · tap'
++            : '🟪 DÉFI DU JOUR : ON (D pour aléatoire libre)';
+     }
+     return isCoarsePointer()
+-        ? 'DÉFI OFF · tap'
+-        : 'DÉFI DU JOUR : OFF (D pour séquence partagée)';
++        ? '⬜ DÉFI OFF · tap'
++        : '⬜ DÉFI DU JOUR : OFF (D pour séquence partagée)';
+ }
+ 
+ export function modesHintLine() {
+diff --git a/src/metaContext.js b/src/metaContext.js
+index 705dc10..d07353d 100644
+--- a/src/metaContext.js
++++ b/src/metaContext.js
+@@ -1,4 +1,4 @@
+-import { DIFFICULTY_ORDER } from './config.js';
++import { DIFFICULTY, DIFFICULTY_ORDER } from './config.js';
+ import { loadHighScore } from './storage.js';
+ import { listUnlockedSkins } from './skins.js';
+ 
+@@ -9,6 +9,9 @@ import { listUnlockedSkins } from './skins.js';
+  * @property {boolean} dailyChallenge
+  * @property {number} bestScoreAny
+  * @property {number} bestHardcoreScore
++ * @property {number} bestEasyScore
++ * @property {number} bestNormalScore
++ * @property {number} bestHardScore
+  * @property {number} unlockedSkinCount
+  */
+ 
+@@ -28,6 +31,9 @@ export function buildMetaContext(scene) {
+         dailyChallenge: scene.dailyChallengeMode === true,
+         bestScoreAny,
+         bestHardcoreScore,
++        bestEasyScore: loadHighScore(DIFFICULTY.EASY, false),
++        bestNormalScore: loadHighScore(DIFFICULTY.NORMAL, false),
++        bestHardScore: loadHighScore(DIFFICULTY.HARD, false),
+         unlockedSkinCount: 0,
+     };
+     ctx.unlockedSkinCount = listUnlockedSkins(ctx).length;
+diff --git a/src/skins.js b/src/skins.js
+index cd069f4..6f20d2c 100644
+--- a/src/skins.js
++++ b/src/skins.js
+@@ -1,12 +1,81 @@
+-export const SKIN_IDS = Object.freeze(['classic', 'ruby', 'ocean', 'forest']);
++export const SKIN_IDS = Object.freeze([
++    'classic', 'ruby', 'ocean', 'forest', 'armure', 'mushu', 'fantome', 'neon',
++]);
+ 
+-/** @typedef {{ body: number, bodyHi: number, wing: number, beak: number, beakDark: number }} SkinPalette */
++/** @typedef {{
++ *   body: number, bodyHi: number, wing: number, beak: number, beakDark: number,
++ *   [extra: string]: number,
++ * }} SkinPalette */
+ 
+-/** @type {Record<string, { id: string, label: string, palette: SkinPalette, unlock: (ctx: import('./metaContext.js').MetaContext) => boolean }>} */
++/**
++ * @typedef {Object} SkinAccessory
++ * @property {number} [height] Hauteur du canvas de la texture (défaut 28, pour laisser de la
++ *   place aux cornes/casques qui dépassent du gabarit de base).
++ * @property {number} [bodyOffsetY] Décalage vertical du corps pour laisser de la place en haut.
++ * @property {number} [alpha] Opacité globale du corps (utilisé pour le fantôme translucide).
++ * @property {(g: import('phaser').GameObjects.Graphics, ox: number, oy: number,
++ *   pos: 'up'|'mid'|'down', palette: SkinPalette) => void} [draw] Dessine des éléments
++ *   par-dessus le corps de base (casque, cornes, viseur, etc.).
++ */
++
++/** Casque de chevalier : visière ouverte, cimier, épaulières. */
++function drawArmureAccessory(g, ox, oy, _pos, p) {
++    g.fillStyle(p.helmet, 1);
++    g.fillRect(ox + 20, oy + 1, 13, 6);
++    g.fillRect(ox + 30, oy + 6, 4, 6);
++    g.fillRect(ox + 2, oy + 5, 5, 5);
++    g.fillStyle(p.helmetHi, 1);
++    g.fillRect(ox + 21, oy + 1, 11, 1);
++    g.fillStyle(p.plume, 1);
++    g.fillRect(ox + 25, oy - 2, 3, 4);
++    g.fillRect(ox + 9, oy + 9, 3, 3);
++}
++
++/** Dragon façon Mushu : petites cornes, crête dorsale, moustaches. */
++function drawMushuAccessory(g, ox, oy, _pos, p) {
++    g.fillStyle(p.horn, 1);
++    g.fillRect(ox + 22, oy - 2, 2, 4);
++    g.fillRect(ox + 28, oy - 2, 2, 4);
++    g.fillStyle(p.ridge, 1);
++    g.fillRect(ox + 8, oy + 1, 3, 3);
++    g.fillRect(ox + 13, oy - 1, 3, 4);
++    g.fillRect(ox + 18, oy + 1, 3, 3);
++    g.fillStyle(p.whisker, 1);
++    g.fillRect(ox + 30, oy + 10, 5, 1);
++    g.fillRect(ox + 30, oy + 18, 5, 1);
++}
++
++/** Fantôme : yeux luminescents + traîne translucide en lambeaux. */
++function drawFantomeAccessory(g, ox, oy, _pos, p) {
++    g.fillStyle(p.glow, 1);
++    g.fillRect(ox + 23, oy + 6, 1, 7);
++    g.fillRect(ox + 31, oy + 6, 1, 7);
++    g.fillStyle(p.wisp, 0.5);
++    g.fillRect(ox + 5, oy + 22, 5, 4);
++    g.fillRect(ox + 21, oy + 22, 5, 4);
++    g.fillStyle(p.wisp, 0.4);
++    g.fillRect(ox + 13, oy + 24, 5, 5);
++    g.fillRect(ox + 28, oy + 19, 4, 4);
++}
++
++/** Cyberpunk néon : viseur, liserés lumineux. */
++function drawNeonAccessory(g, ox, oy, _pos, p) {
++    g.fillStyle(p.visor, 1);
++    g.fillRect(ox + 23, oy + 7, 8, 4);
++    g.fillRect(ox + 9, oy + 13, 2, 2);
++    g.fillStyle(p.trim, 1);
++    g.fillRect(ox + 23, oy + 11, 8, 1);
++    g.fillRect(ox + 6, oy + 3, 22, 1);
++    g.fillRect(ox + 3, oy + 20, 28, 1);
++}
++
++/** @type {Record<string, { id: string, label: string, hint: string, palette: SkinPalette,
++ *   accessory?: SkinAccessory, unlock: (ctx: import('./metaContext.js').MetaContext) => boolean }>} */
+ export const SKINS = Object.freeze({
+     classic: {
+         id: 'classic',
+         label: 'Classique',
++        hint: 'Toujours disponible',
+         palette: {
+             body: 0xFFCC00,
+             bodyHi: 0xFFEE88,
+@@ -19,6 +88,7 @@ export const SKINS = Object.freeze({
+     ruby: {
+         id: 'ruby',
+         label: 'Rubis',
++        hint: 'Meilleur score ≥ 10',
+         palette: {
+             body: 0xE53935,
+             bodyHi: 0xFF8A80,
+@@ -31,6 +101,7 @@ export const SKINS = Object.freeze({
+     ocean: {
+         id: 'ocean',
+         label: 'Océan',
++        hint: 'Meilleur score ≥ 20',
+         palette: {
+             body: 0x29B6F6,
+             bodyHi: 0x81D4FA,
+@@ -43,6 +114,7 @@ export const SKINS = Object.freeze({
+     forest: {
+         id: 'forest',
+         label: 'Forêt',
++        hint: 'Meilleur score hardcore ≥ 5',
+         palette: {
+             body: 0x66BB6A,
+             bodyHi: 0xA5D6A7,
+@@ -52,6 +124,79 @@ export const SKINS = Object.freeze({
+         },
+         unlock: ctx => ctx.bestHardcoreScore >= 5,
+     },
++    armure: {
++        id: 'armure',
++        label: 'Chevalier',
++        hint: 'Meilleur score hardcore ≥ 15',
++        palette: {
++            body: 0x78909C,
++            bodyHi: 0xB0BEC5,
++            wing: 0x546E7A,
++            beak: 0xCFD8DC,
++            beakDark: 0x90A4AE,
++            helmet: 0x455A64,
++            helmetHi: 0x607D8B,
++            plume: 0xC62828,
++        },
++        accessory: { height: 34, bodyOffsetY: 2, draw: drawArmureAccessory },
++        unlock: ctx => ctx.bestHardcoreScore >= 15,
++    },
++    mushu: {
++        id: 'mushu',
++        label: 'Mushu',
++        hint: 'Score ≥ 15 dans les 3 difficultés',
++        palette: {
++            body: 0xE64A19,
++            bodyHi: 0xFFCA28,
++            wing: 0xBF360C,
++            beak: 0xFFD54F,
++            beakDark: 0xFFA000,
++            horn: 0xFFD54F,
++            ridge: 0xFFCA28,
++            whisker: 0xFFECB3,
++        },
++        accessory: { height: 34, bodyOffsetY: 2, draw: drawMushuAccessory },
++        unlock: ctx => ctx.bestEasyScore >= 15 && ctx.bestNormalScore >= 15 && ctx.bestHardScore >= 15,
++    },
++    fantome: {
++        id: 'fantome',
++        label: 'Fantôme',
++        hint: 'Meilleur score ≥ 30',
++        palette: {
++            body: 0xE0F7FA,
++            bodyHi: 0xFFFFFF,
++            wing: 0xB2EBF2,
++            beak: 0xE1F5FE,
++            beakDark: 0xB3E5FC,
++            glow: 0x18FFFF,
++            wisp: 0xE0F7FA,
++        },
++        accessory: { height: 34, bodyOffsetY: 2, alpha: 0.72, draw: drawFantomeAccessory },
++        unlock: ctx => ctx.bestScoreAny >= 30,
++    },
++    neon: {
++        id: 'neon',
++        label: 'Néon',
++        hint: 'Débloquer tous les autres skins',
++        palette: {
++            body: 0x1A1A2E,
++            bodyHi: 0x3D2C5C,
++            wing: 0x00E5FF,
++            beak: 0xFF2BD6,
++            beakDark: 0xC2185B,
++            visor: 0xFF2BD6,
++            trim: 0x00E5FF,
++        },
++        accessory: { draw: drawNeonAccessory },
++        unlock: ctx => (
++            SKINS.ruby.unlock(ctx)
++            && SKINS.ocean.unlock(ctx)
++            && SKINS.forest.unlock(ctx)
++            && SKINS.armure.unlock(ctx)
++            && SKINS.mushu.unlock(ctx)
++            && SKINS.fantome.unlock(ctx)
++        ),
++    },
+ });
+ 
+ export function birdTextureKey(skinId) {
+diff --git a/src/textures/birdTextures.js b/src/textures/birdTextures.js
+index d2b6959..4b48b95 100644
+--- a/src/textures/birdTextures.js
++++ b/src/textures/birdTextures.js
+@@ -2,69 +2,85 @@ import { getSkin } from '../skins.js';
+ 
+ /** @typedef {import('../skins.js').SkinPalette} SkinPalette */
+ 
++const FRAME_W = 38;
++const FRAME_H = 28;
++
++/** @param {import('phaser').GameObjects.Graphics} g */
++function drawOutline(g, ox, oy, alpha) {
++    g.fillStyle(0x000000, alpha);
++    g.fillRect(ox + 4,  oy + 1, 26, 26);
++    g.fillRect(ox + 1,  oy + 4, 32, 20);
++    g.fillRect(ox + 0,  oy + 6, 36, 16);
++    g.fillRect(ox + 31, oy + 9,  9, 13);
++}
++
++/** @param {import('phaser').GameObjects.Graphics} g @param {SkinPalette} p */
++function drawBody(g, ox, oy, p, alpha) {
++    g.fillStyle(p.body, alpha);
++    g.fillRect(ox + 6, oy + 3, 22, 22);
++    g.fillRect(ox + 3, oy + 6, 28, 16);
++    g.fillRect(ox + 2, oy + 8, 32, 12);
++    g.fillStyle(p.bodyHi, alpha);
++    g.fillRect(ox + 15, oy + 11, 11, 9);
++    g.fillStyle(0xFFFFFF, alpha);
++    g.fillRect(ox + 22, oy + 4, 9, 11);
++    g.fillStyle(0x111111, alpha);
++    g.fillRect(ox + 25, oy + 7, 5, 5);
++    g.fillStyle(0xFFFFFF, alpha);
++    g.fillRect(ox + 26, oy + 7, 2, 2);
++    g.fillStyle(p.beak, alpha);
++    g.fillRect(ox + 33, oy + 11, 5, 8);
++    g.fillStyle(p.beakDark, alpha);
++    g.fillRect(ox + 33, oy + 16, 5, 4);
++}
++
++/** @param {import('phaser').GameObjects.Graphics} g @param {'up'|'mid'|'down'} pos @param {SkinPalette} p */
++function drawWing(g, ox, oy, pos, p, alpha) {
++    g.fillStyle(p.wing, alpha);
++    if (pos === 'up') {
++        g.fillRect(ox + 4, oy + 2, 14, 6);
++        g.fillRect(ox + 6, oy + 0, 10, 4);
++    } else if (pos === 'mid') {
++        g.fillRect(ox + 4, oy + 15, 15, 7);
++        g.fillRect(ox + 6, oy + 13, 11, 4);
++    } else {
++        g.fillRect(ox + 4, oy + 21, 14, 6);
++        g.fillRect(ox + 6, oy + 25, 10, 3);
++    }
++}
++
+ /**
+  * @param {import('phaser').Scene} scene
+  * @param {string} skinId
+  */
+ export function createBirdSpriteSheet(scene, skinId = 'classic') {
+-    const { palette } = getSkin(skinId);
++    const skin = getSkin(skinId);
++    const { palette, accessory } = skin;
+     const texKey = `bird-sheet-${skinId}`;
+     if (scene.textures.exists(texKey)) return;
+ 
+-    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+-
+-    const drawOutline = (ox) => {
+-        g.fillStyle(0x000000, 1);
+-        g.fillRect(ox + 4,  1, 26, 26);
+-        g.fillRect(ox + 1,  4, 32, 20);
+-        g.fillRect(ox + 0,  6, 36, 16);
+-        g.fillRect(ox + 31, 9,  9, 13);
+-    };
++    const canvasH = accessory?.height ?? FRAME_H;
++    const oy = accessory?.bodyOffsetY ?? 0;
++    const alpha = accessory?.alpha ?? 1;
+ 
+-    /** @param {number} ox @param {SkinPalette} p */
+-    const drawBody = (ox, p) => {
+-        g.fillStyle(p.body, 1);
+-        g.fillRect(ox + 6, 3, 22, 22);
+-        g.fillRect(ox + 3, 6, 28, 16);
+-        g.fillRect(ox + 2, 8, 32, 12);
+-        g.fillStyle(p.bodyHi, 1);
+-        g.fillRect(ox + 15, 11, 11, 9);
+-        g.fillStyle(0xFFFFFF, 1);
+-        g.fillRect(ox + 22, 4, 9, 11);
+-        g.fillStyle(0x111111, 1);
+-        g.fillRect(ox + 25, 7, 5, 5);
+-        g.fillStyle(0xFFFFFF, 1);
+-        g.fillRect(ox + 26, 7, 2, 2);
+-        g.fillStyle(p.beak, 1);
+-        g.fillRect(ox + 33, 11, 5, 8);
+-        g.fillStyle(p.beakDark, 1);
+-        g.fillRect(ox + 33, 16, 5, 4);
+-    };
++    const g = scene.make.graphics({ x: 0, y: 0, add: false });
+ 
+-    /** @param {number} ox @param {'up'|'mid'|'down'} pos @param {SkinPalette} p */
+-    const drawWing = (ox, pos, p) => {
+-        g.fillStyle(p.wing, 1);
+-        if (pos === 'up') {
+-            g.fillRect(ox + 4, 2, 14, 6);
+-            g.fillRect(ox + 6, 0, 10, 4);
+-        } else if (pos === 'mid') {
+-            g.fillRect(ox + 4, 15, 15, 7);
+-            g.fillRect(ox + 6, 13, 11, 4);
+-        } else {
+-            g.fillRect(ox + 4, 21, 14, 6);
+-            g.fillRect(ox + 6, 25, 10, 3);
+-        }
++    const drawFrame = (ox, pos) => {
++        drawOutline(g, ox, oy, alpha);
++        drawBody(g, ox, oy, palette, alpha);
++        drawWing(g, ox, oy, pos, palette, alpha);
++        accessory?.draw?.(g, ox, oy, pos, palette);
+     };
+ 
+-    drawOutline(0);   drawBody(0, palette);   drawWing(0,  'up', palette);
+-    drawOutline(38);  drawBody(38, palette);  drawWing(38, 'mid', palette);
+-    drawOutline(76);  drawBody(76, palette);  drawWing(76, 'down', palette);
++    drawFrame(0, 'up');
++    drawFrame(FRAME_W, 'mid');
++    drawFrame(FRAME_W * 2, 'down');
+ 
+-    g.generateTexture(texKey, 114, 28);
++    g.generateTexture(texKey, FRAME_W * 3, canvasH);
+     g.destroy();
+ 
+     const texture = scene.textures.get(texKey);
+-    texture.add(0, 0,  0,  0, 38, 28);
+-    texture.add(1, 0, 38,  0, 38, 28);
+-    texture.add(2, 0, 76,  0, 38, 28);
++    texture.add(0, 0, 0, 0, FRAME_W, canvasH);
++    texture.add(1, 0, FRAME_W, 0, FRAME_W, canvasH);
++    texture.add(2, 0, FRAME_W * 2, 0, FRAME_W, canvasH);
+ }
+diff --git a/src/uiGameOver.js b/src/uiGameOver.js
+index a8f73f7..7182fd7 100644
+--- a/src/uiGameOver.js
++++ b/src/uiGameOver.js
+@@ -12,6 +12,60 @@ import {
+     UI_LAYOUT,
+ } from './uiLayout.js';
+ 
++const CONFETTI_COLORS = [0xFFD700, 0xFF6F91, 0x64B5F6, 0x81C784, 0xFFFFFF];
++
++/** Assombrit une couleur hex d'un facteur (0-1). */
++function shade(color, factor) {
++    const r = Math.floor(((color >> 16) & 0xFF) * factor);
++    const g = Math.floor(((color >> 8) & 0xFF) * factor);
++    const b = Math.floor((color & 0xFF) * factor);
++    return (r << 16) | (g << 8) | b;
++}
++
++/** Petits liserés dorés dans les coins du panneau, façon plaque de trophée. */
++function drawPlaqueCorners(g, P) {
++    const inset = 7;
++    const len = 10;
++    const t = 2;
++    g.fillStyle(0xFFD700, 0.55);
++    const corners = [
++        [P.x + inset, P.y + inset, len, t], [P.x + inset, P.y + inset, t, len],
++        [P.x + P.w - inset - len, P.y + inset, len, t], [P.x + P.w - inset - t, P.y + inset, t, len],
++        [P.x + inset, P.y + P.h - inset - t, len, t], [P.x + inset, P.y + P.h - inset - len, t, len],
++        [P.x + P.w - inset - len, P.y + P.h - inset - t, len, t], [P.x + P.w - inset - t, P.y + P.h - inset - len, t, len],
++    ];
++    corners.forEach(([x, y, w, h]) => g.fillRect(x, y, w, h));
++}
++
++/** Fine ligne de séparation entre deux blocs du panneau. */
++function drawDivider(scene, cx, y, width, depth) {
++    const line = scene.add.rectangle(cx, y, width, 1, 0xFFD700, 0.18);
++    line.setDepth(depth);
++    return line;
++}
++
++/** Pluie de confettis courte (nouveau record uniquement). */
++function spawnConfetti(scene, cx, topY, elements) {
++    for (let i = 0; i < 12; i++) {
++        const startX = cx + Utils.randomInt(-95, 95);
++        const size = Utils.randomInt(3, 6);
++        const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
++        const piece = scene.add.rectangle(startX, topY, size, size, color, 0.95);
++        piece.setDepth(58);
++        elements.push(piece);
++        sceneTween(scene, {
++            targets: piece,
++            y: topY + Utils.randomInt(170, 250),
++            x: startX + Utils.randomInt(-30, 30),
++            angle: Utils.randomInt(-180, 180),
++            alpha: 0,
++            duration: Utils.randomInt(900, 1400),
++            delay: Utils.randomInt(0, 220),
++            ease: 'Cubic.easeIn',
++        });
++    }
++}
++
+ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode = false) {
+     ui.hideInGameScore();
+ 
+@@ -27,17 +81,26 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+     panel.fillRoundedRect(P.x, P.y, P.w, P.h, P.radius);
+     panel.lineStyle(2, 0xFFD700, 1);
+     panel.strokeRoundedRect(P.x, P.y, P.w, P.h, P.radius);
++    panel.lineStyle(1, 0xFFD700, 0.25);
++    panel.strokeRoundedRect(P.x + 5, P.y + 5, P.w - 10, P.h - 10, Math.max(P.radius - 4, 2));
++    drawPlaqueCorners(panel, P);
+ 
+     const gameOverText = addCenteredText(scene, cx, y(28), 'GAME OVER', {
+         fontSize: '24px', fill: '#FF1744', fontStyle: 'bold',
+         stroke: '#8B0000', strokeThickness: 2,
+     }, 52);
+ 
++    const titleRule = scene.add.rectangle(cx, y(42), 90, 2, 0xFFD700, 0.8).setDepth(52);
++
+     let medal = null;
++    let recordBanner = null;
+     let recordBadge = null;
+     const medalY = y(58);
+     if (isNewRecord) {
+-        recordBadge = addCenteredText(scene, cx, medalY, 'NOUVEAU RECORD !', {
++        recordBanner = scene.add.graphics().setDepth(51);
++        recordBanner.fillStyle(0xFDD835, 0.16);
++        recordBanner.fillRoundedRect(cx - 78, medalY - 9, 156, 18, 4);
++        recordBadge = addCenteredText(scene, cx, medalY, '★ NOUVEAU RECORD ★', {
+             fontSize: '11px', fill: '#FDD835', fontStyle: 'bold',
+             stroke: '#000000', strokeThickness: 1,
+         }, 52);
+@@ -45,10 +108,14 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+         const medalColor = finalScore > 20 ? 0xFFD700 : finalScore > 10 ? 0x9E9E9E : finalScore > 5 ? 0xCD7F32 : null;
+         if (medalColor !== null) {
+             const mg = scene.add.graphics().setDepth(52);
++            mg.lineStyle(1.5, shade(medalColor, 1.25), 0.7);
++            mg.strokeCircle(cx, medalY, 20);
+             mg.fillStyle(medalColor, 1);
+             mg.fillCircle(cx, medalY, 20);
+-            mg.fillStyle(0xFFFFFF, 0.4);
+-            mg.fillPoints(Utils.makeStarPoints(cx, medalY, 12, 6), true);
++            mg.fillStyle(shade(medalColor, 0.55), 1);
++            mg.fillCircle(cx, medalY, 20 - 15);
++            mg.fillStyle(0xFFFFFF, 0.5);
++            mg.fillPoints(Utils.makeStarPoints(cx, medalY, 12, 5.5), true);
+             medal = mg;
+         }
+     }
+@@ -57,7 +124,7 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+         fontSize: '10px', fill: '#ffffff',
+     }, 52);
+ 
+-    const scoreText = addCenteredText(scene, cx, y(102), String(finalScore), {
++    const scoreText = addCenteredText(scene, cx, y(102), fadeIn ? '0' : String(finalScore), {
+         fontSize: '22px', fill: isNewRecord ? '#FDD835' : '#ffffff', fontStyle: 'bold',
+     }, 52);
+ 
+@@ -72,6 +139,8 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+         fontSize: '16px', fill: '#FDD835', fontStyle: 'bold',
+     }, 52);
+ 
++    const dividerTop = drawDivider(scene, cx, y(156), P.w - 64, 52);
++
+     const leaderboardElements = [
+         addCenteredText(scene, cx, y(168), hardcoreMode ? '— TOP 5 HARDCORE —' : '— TOP 5 —', {
+             fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
+@@ -80,19 +149,28 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+ 
+     entries.forEach((entry, i) => {
+         const isNew = entry.id === highlightId;
++        const rank = i === 0 ? '👑' : `${i + 1}.`;
+         leaderboardElements.push(addCenteredText(scene, cx, y(183 + i * 13),
+-            `${i + 1}. ${entry.score}`, {
++            `${rank} ${entry.score}`, {
+                 fontSize: '11px',
+-                fill: isNew ? '#ffff00' : '#cccccc',
+-                fontStyle: isNew ? 'bold' : 'normal',
++                fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
++                fontStyle: isNew || i === 0 ? 'bold' : 'normal',
+             }, 52));
+     });
+ 
++    const dividerBottom = drawDivider(scene, cx, y(244), P.w - 64, 52);
++
+     const restartText = addCenteredText(scene, cx, y(252), restartHint(), {
+         fontSize: '9px', fill: '#ffffff', fontStyle: 'italic',
+     }, 52);
+ 
+     const menuBtnY = y(285);
++    const menuBtnShadow = scene.add.graphics().setDepth(52);
++    const { menuBtn } = UI_LAYOUT;
++    menuBtnShadow.fillStyle(0x000000, 0.35);
++    menuBtnShadow.fillRoundedRect(
++        cx - menuBtn.width / 2, menuBtnY - menuBtn.height / 2 + 3, menuBtn.width, menuBtn.height, menuBtn.radius,
++    );
+     ui._menuBtnGraphics = scene.add.graphics().setDepth(53);
+     ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_COLOR);
+ 
+@@ -100,7 +178,6 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+         fontSize: '13px', fill: '#ffffff', fontStyle: 'bold',
+     }, 54);
+ 
+-    const { menuBtn } = UI_LAYOUT;
+     const menuHitZone = scene.add.rectangle(
+         cx, menuBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0,
+     );
+@@ -118,9 +195,9 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+     }, 52);
+ 
+     const elements = [
+-        overlay, panel, gameOverText, medal, scoreLbl, scoreText, recordBadge,
+-        highLbl, highScoreText, ...leaderboardElements,
+-        restartText, ui._menuBtnGraphics, menuBtnText, menuHitZone, menuHintText,
++        overlay, panel, gameOverText, titleRule, medal, recordBanner, scoreLbl, scoreText, recordBadge,
++        highLbl, highScoreText, dividerTop, ...leaderboardElements, dividerBottom,
++        restartText, menuBtnShadow, ui._menuBtnGraphics, menuBtnText, menuHitZone, menuHintText,
+     ].filter(Boolean);
+ 
+     if (fadeIn) {
+@@ -131,6 +208,21 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn,
+             duration: 500,
+             ease: 'Power2',
+         });
++
++        const counter = { v: 0 };
++        sceneTween(scene, {
++            targets: counter,
++            v: finalScore,
++            duration: 650,
++            delay: 150,
++            ease: 'Cubic.easeOut',
++            onUpdate: () => scoreText.setText(String(Math.round(counter.v))),
++            onComplete: () => scoreText.setText(String(finalScore)),
++        });
++
++        if (isNewRecord) {
++            spawnConfetti(scene, cx, P.y - 6, elements);
++        }
+     }
+ 
+     return { elements };
+diff --git a/src/uiLayout.js b/src/uiLayout.js
+index fa9be2d..5e2b957 100644
+--- a/src/uiLayout.js
++++ b/src/uiLayout.js
+@@ -19,15 +19,18 @@ export const UI_LAYOUT = {
+     },
+     optionsPanel: {
+         panelTop: 198,
+-        panelH: 278,
++        panelH: 306,
+         w: 240,
+-        daily: 216,
+-        training: 256,
+-        hardcore: 296,
+-        dailyToggle: 336,
+-        metaSkin: 376,
+-        mute: 416,
+-        hint2: 450,
++        headerMode: 214,
++        daily: 230,
++        training: 270,
++        hardcore: 310,
++        dailyToggle: 350,
++        headerAppearance: 374,
++        metaSkin: 390,
++        headerSound: 428,
++        mute: 444,
++        hint2: 478,
+     },
+     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
+     playing: { trainingBadgeY: 22, hardcoreBadgeY: 36, pauseBtnX: 258, pauseBtnY: 32 },
+diff --git a/src/uiMenuOptions.js b/src/uiMenuOptions.js
+index 86ae397..b807a49 100644
+--- a/src/uiMenuOptions.js
++++ b/src/uiMenuOptions.js
+@@ -42,6 +42,27 @@ export function toggleMenuOptions(ui, trainingMode, hardcoreMode, dailyChallenge
+     setMenuOptionsOpen(ui, !ui._optionsOpen, trainingMode, hardcoreMode, dailyChallengeMode);
+ }
+ 
++/** Icône rapide selon le niveau de son courant. */
++function soundIcon(label) {
++    if (label === 'OFF') return '🔇';
++    if (label === 'indisponible') return '🔈';
++    return '🔊';
++}
++
++/** Petit titre de section (façon onglet) + liseré discret sous le texte. */
++function addSectionHeader(scene, elements, panelElements, x, y, text) {
++    const label = addCenteredText(scene, x, y, text, {
++        fontSize: '9px', fill: '#7FB3D5', fontStyle: 'bold',
++    }, 56);
++    panelElements.push(label);
++    elements.push(label);
++
++    const rule = scene.add.rectangle(x, y + 7, 96, 1, 0x7FB3D5, 0.35);
++    rule.setDepth(56);
++    panelElements.push(rule);
++    elements.push(rule);
++}
++
+ /** @param {import('./ui.js').UI} ui @param {import('phaser').GameObjects.GameObject[]} elements */
+ export function buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMode, dailyChallengeMode) {
+     const scene = ui.scene;
+@@ -82,6 +103,8 @@ export function buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMod
+     ui._optionsBackdrop.setVisible(false);
+     elements.push(ui._optionsBackdrop);
+ 
++    addSectionHeader(scene, elements, ui._optionsPanelElements, GAME_CONFIG.centerX, panel.headerMode, '▸ MODE DE JEU');
++
+     ui._dailySubtitle = addCenteredText(
+         scene, GAME_CONFIG.centerX, panel.daily,
+         getMenuDailySubtitle(dailyChallengeMode), { fontSize: '9px', fill: '#aaaaaa' }, 56,
+@@ -158,6 +181,8 @@ export function buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMod
+     ui._optionsPanelElements.push(ui._dailyHit);
+     elements.push(ui._dailyHit);
+ 
++    addSectionHeader(scene, elements, ui._optionsPanelElements, GAME_CONFIG.centerX, panel.headerAppearance, '▸ APPARENCE');
++
+     const metaLayout = { metaSkin: panel.metaSkin, mute: panel.mute };
+     appendMetaMenu(ui, elements, metaLayout);
+     ui._skinLabel?.setDepth(56);
+@@ -165,9 +190,12 @@ export function buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMod
+     ui._skinHit?.setDepth(57);
+     ui._optionsPanelElements.push(ui._skinLabel, ui._achLabel, ui._skinHit);
+ 
++    addSectionHeader(scene, elements, ui._optionsPanelElements, GAME_CONFIG.centerX, panel.headerSound, '▸ SON');
++
+     ui._muteText = addCenteredText(
+         scene, GAME_CONFIG.centerX, panel.mute,
+-        `SON : ${formatSoundLabel(isAudioAvailable())}`, { fontSize: '11px', fill: '#cccccc' }, 56,
++        `${soundIcon(formatSoundLabel(isAudioAvailable()))} SON : ${formatSoundLabel(isAudioAvailable())}`,
++        { fontSize: '11px', fill: '#cccccc' }, 56,
+     );
+     ui._optionsPanelElements.push(ui._muteText);
+     elements.push(ui._muteText);
+@@ -181,7 +209,8 @@ export function buildMenuOptions(ui, elements, layout, trainingMode, hardcoreMod
+         ui._muteHit.on('pointerdown', (_p, _lx, _ly, event) => {
+             stopUiEvent(event);
+             cycleSoundLevel();
+-            ui._muteText.setText(`SON : ${formatSoundLabel(isAudioAvailable())}`);
++            const label = formatSoundLabel(isAudioAvailable());
++            ui._muteText.setText(`${soundIcon(label)} SON : ${label}`);
+         });
+     }
+     ui._optionsPanelElements.push(ui._muteHit);
+diff --git a/src/uiMeta.js b/src/uiMeta.js
+index 9e030d6..72ad8e7 100644
+--- a/src/uiMeta.js
++++ b/src/uiMeta.js
+@@ -2,7 +2,7 @@ import { GAME_CONFIG } from './config.js';
+ import { buildMetaContext } from './metaContext.js';
+ import { loadSelectedSkin, loadUnlockedAchievements, saveSelectedSkin } from './metaStorage.js';
+ import { ACHIEVEMENTS } from './achievements.js';
+-import { getSkin, nextUnlockedSkin } from './skins.js';
++import { getSkin, nextUnlockedSkin, SKIN_IDS } from './skins.js';
+ import { sceneTween } from './motion.js';
+ import {
+     addCenteredText,
+@@ -36,7 +36,7 @@ export function appendMetaMenu(ui, elements, layout) {
+         scene,
+         GAME_CONFIG.centerX,
+         rowY,
+-        `APPARENCE · ${skin.label} (${ctx.unlockedSkinCount}/4)`,
++        `APPARENCE · ${skin.label} (${ctx.unlockedSkinCount}/${SKIN_IDS.length})`,
+         { fontSize: '10px', fill: '#cccccc', fontStyle: 'bold' },
+         52,
+     );
+@@ -51,7 +51,7 @@ export function appendMetaMenu(ui, elements, layout) {
+         stopUiEvent(event);
+         const next = cycleSelectedSkin(scene);
+         const fresh = buildMetaContext(scene);
+-        ui._skinLabel.setText(`APPARENCE · ${getSkin(next).label} (${fresh.unlockedSkinCount}/4)`);
++        ui._skinLabel.setText(`APPARENCE · ${getSkin(next).label} (${fresh.unlockedSkinCount}/${SKIN_IDS.length})`);
+     });
+     elements.push(ui._skinHit);
+ 
+diff --git a/tests/achievements.test.js b/tests/achievements.test.js
+index bcb6659..6ad6ed7 100644
+--- a/tests/achievements.test.js
++++ b/tests/achievements.test.js
+@@ -7,7 +7,7 @@ describe('achievements', () => {
+     it('expose 5 définitions uniques', () => {
+         const ids = ACHIEVEMENTS.map(a => a.id);
+         expect(new Set(ids).size).toBe(ACHIEVEMENTS.length);
+-        expect(ACHIEVEMENTS.length).toBe(5);
++        expect(ACHIEVEMENTS.length).toBe(6);
+     });
+ 
+     it('chaque définition a id, title, desc et check', () => {
+diff --git a/tests/helpers/phaserMock.js b/tests/helpers/phaserMock.js
+index d3f6dfd..cb73126 100644
+--- a/tests/helpers/phaserMock.js
++++ b/tests/helpers/phaserMock.js
+@@ -13,6 +13,7 @@ export function createGraphicsMock() {
+         clear: vi.fn(),
+         lineStyle: vi.fn(),
+         strokeRoundedRect: vi.fn(),
++        strokeCircle: vi.fn(),
+         setDepth: vi.fn(),
+         setAlpha: vi.fn(),
+     };
+diff --git a/tests/skins.test.js b/tests/skins.test.js
+new file mode 100644
+index 0000000..4fbb4cf
+--- /dev/null
++++ b/tests/skins.test.js
+@@ -0,0 +1,77 @@
++import { describe, it, expect } from 'vitest';
++import {
++    SKIN_IDS,
++    SKINS,
++    getSkin,
++    listUnlockedSkins,
++    nextUnlockedSkin,
++} from '../src/skins.js';
++
++function baseCtx(overrides = {}) {
++    return {
++        bestScoreAny: 0,
++        bestHardcoreScore: 0,
++        bestEasyScore: 0,
++        bestNormalScore: 0,
++        bestHardScore: 0,
++        ...overrides,
++    };
++}
++
++describe('skins', () => {
++    it('expose 8 skins uniques, classique toujours débloqué', () => {
++        expect(SKIN_IDS).toHaveLength(8);
++        expect(new Set(SKIN_IDS).size).toBe(8);
++        expect(SKINS.classic.unlock(baseCtx())).toBe(true);
++    });
++
++    it('getSkin retombe sur classique pour un id inconnu', () => {
++        expect(getSkin('does-not-exist').id).toBe('classic');
++        expect(getSkin(undefined).id).toBe('classic');
++    });
++
++    it('ruby/ocean/forest gardent leurs seuils historiques', () => {
++        expect(SKINS.ruby.unlock(baseCtx({ bestScoreAny: 9 }))).toBe(false);
++        expect(SKINS.ruby.unlock(baseCtx({ bestScoreAny: 10 }))).toBe(true);
++        expect(SKINS.ocean.unlock(baseCtx({ bestScoreAny: 20 }))).toBe(true);
++        expect(SKINS.forest.unlock(baseCtx({ bestHardcoreScore: 5 }))).toBe(true);
++    });
++
++    it('armure se débloque à 15 en hardcore (au-delà de forêt)', () => {
++        expect(SKINS.armure.unlock(baseCtx({ bestHardcoreScore: 14 }))).toBe(false);
++        expect(SKINS.armure.unlock(baseCtx({ bestHardcoreScore: 15 }))).toBe(true);
++    });
++
++    it('mushu exige 15+ dans les 3 difficultés', () => {
++        expect(SKINS.mushu.unlock(baseCtx({ bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 10 }))).toBe(false);
++        expect(SKINS.mushu.unlock(baseCtx({ bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 15 }))).toBe(true);
++    });
++
++    it('fantôme se débloque à 30 (au-delà d’océan)', () => {
++        expect(SKINS.fantome.unlock(baseCtx({ bestScoreAny: 29 }))).toBe(false);
++        expect(SKINS.fantome.unlock(baseCtx({ bestScoreAny: 30 }))).toBe(true);
++    });
++
++    it('néon exige que tous les autres skins soient débloqués', () => {
++        const almost = baseCtx({
++            bestScoreAny: 30, bestHardcoreScore: 15,
++            bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 14,
++        });
++        expect(SKINS.neon.unlock(almost)).toBe(false);
++
++        const everything = baseCtx({
++            bestScoreAny: 30, bestHardcoreScore: 15,
++            bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 15,
++        });
++        expect(SKINS.neon.unlock(everything)).toBe(true);
++        expect(listUnlockedSkins(everything)).toHaveLength(8);
++    });
++
++    it('nextUnlockedSkin boucle uniquement sur les skins débloqués', () => {
++        const ctx = baseCtx({ bestScoreAny: 10 }); // classic + ruby
++        expect(listUnlockedSkins(ctx)).toEqual(['classic', 'ruby']);
++        expect(nextUnlockedSkin('classic', ctx)).toBe('ruby');
++        expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
++        expect(nextUnlockedSkin('forest', ctx)).toBe('classic');
++    });
++});
+diff --git a/tests/textures/index.test.js b/tests/textures/index.test.js
+index 84c9630..65cea0e 100644
+--- a/tests/textures/index.test.js
++++ b/tests/textures/index.test.js
+@@ -49,6 +49,24 @@ describe('textures', () => {
+         expect(scene.textures.get('bird-sheet-classic').add).toHaveBeenCalledTimes(3);
+     });
+ 
++    it('createBirdSpriteSheet agrandit le canvas pour un skin à accessoire (casque, cornes...)', () => {
++        const scene = createTextureScene();
++        createBirdSpriteSheet(scene, 'armure');
++        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('bird-sheet-armure', 114, 34);
++        // Le casque doit être dessiné en plus du corps de base (davantage d'appels fillRect).
++        const classicScene = createTextureScene();
++        createBirdSpriteSheet(classicScene, 'classic');
++        expect(scene._graphics.fillRect.mock.calls.length)
++            .toBeGreaterThan(classicScene._graphics.fillRect.mock.calls.length);
++    });
++
++    it('createBirdSpriteSheet applique une opacité réduite pour le fantôme', () => {
++        const scene = createTextureScene();
++        createBirdSpriteSheet(scene, 'fantome');
++        const alphas = scene._graphics.fillStyle.mock.calls.map(c => c[1]);
++        expect(alphas).toContain(0.72);
++    });
++
+     it('createPipeSprites génère pipe-top et pipe-bottom', () => {
+         const scene = sceneWithGraphicsList();
+         createPipeSprites(scene);
+@@ -95,6 +113,7 @@ describe('textures', () => {
+         );
+         expect(keys).toEqual(expect.arrayContaining([
+             'bird-sheet-classic', 'bird-sheet-ruby', 'bird-sheet-ocean', 'bird-sheet-forest',
++            'bird-sheet-armure', 'bird-sheet-mushu', 'bird-sheet-fantome', 'bird-sheet-neon',
+             'pipe-top', 'pipe-bottom', 'background', 'cloud', 'star', 'ground',
+         ]));
+         resetBackgroundCache();

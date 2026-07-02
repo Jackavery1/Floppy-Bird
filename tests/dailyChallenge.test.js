@@ -1,24 +1,43 @@
 import { describe, it, expect } from 'vitest';
-import { getDailyChallengeCode, getDailyChallengeLabel, getDailyChallengeSeed, getMenuDailySubtitle, getRandomModeLabel } from '../src/dailyChallenge.js';
+import {
+    getDailyChallengeCode,
+    getDailyChallengeSeed,
+    getDailyChallengeSkin,
+    getDailyChallengeGoal,
+    formatDailyMenuButtonLabel,
+    formatDailyMenuSubtitle,
+} from '../src/dailyChallenge.js';
+import { DIFFICULTY } from '../src/config.js';
 
 describe('dailyChallenge', () => {
+    const date = new Date(2026, 0, 1);
+
     it('getDailyChallengeCode est stable pour une date', () => {
-        const date = new Date(2026, 5, 29);
         expect(getDailyChallengeCode(date)).toBe(getDailyChallengeCode(date));
     });
 
     it('getDailyChallengeSeed est stable pour une date', () => {
-        const date = new Date(2026, 5, 29);
         expect(getDailyChallengeSeed(date)).toBe(getDailyChallengeSeed(date));
     });
 
-    it('getDailyChallengeLabel formate le défi', () => {
-        const label = getDailyChallengeLabel(new Date(2026, 0, 1));
-        expect(label).toMatch(/^Défi du jour #\d{4} · séquence partagée$/);
+    it('getDailyChallengeSkin est dérivé du seed', () => {
+        expect(getDailyChallengeSkin(date)).toBe(getDailyChallengeSkin(date));
     });
 
-    it('getMenuDailySubtitle bascule selon le mode', () => {
-        expect(getMenuDailySubtitle(true, new Date(2026, 0, 1))).toMatch(/Défi du jour/);
-        expect(getMenuDailySubtitle(false)).toBe(getRandomModeLabel());
+    it('getDailyChallengeGoal varie selon la difficulté', () => {
+        const easy = getDailyChallengeGoal(DIFFICULTY.EASY, date);
+        const hard = getDailyChallengeGoal(DIFFICULTY.HARD, date);
+        expect(hard).toBeGreaterThan(easy);
+    });
+
+    it('formatDailyMenuButtonLabel inclut skin et objectif', () => {
+        const label = formatDailyMenuButtonLabel(DIFFICULTY.NORMAL, date);
+        expect(label).toMatch(/DÉFI #\d{4}/);
+        expect(label).toMatch(/pts/);
+    });
+
+    it('formatDailyMenuSubtitle décrit le pattern', () => {
+        const sub = formatDailyMenuSubtitle(DIFFICULTY.NORMAL, date);
+        expect(sub).toMatch(/objectif \d+ pts/);
     });
 });

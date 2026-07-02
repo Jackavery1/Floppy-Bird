@@ -1,3 +1,5 @@
+import { SKIN_IDS } from './skins.js';
+
 export const ACHIEVEMENTS = Object.freeze([
     {
         id: 'first_flight',
@@ -20,14 +22,21 @@ export const ACHIEVEMENTS = Object.freeze([
     {
         id: 'daily_flyer',
         title: 'Défi du jour',
-        desc: '8 points au défi du jour',
-        check: ctx => ctx.dailyChallenge && ctx.score >= 8,
+        desc: 'Atteindre l\'objectif du défi quotidien',
+        check: ctx => ctx.dailyChallenge && ctx.dailyGoalMet,
     },
     {
         id: 'collector',
         title: 'Collectionneur',
         desc: '3 skins débloqués',
         check: ctx => ctx.unlockedSkinCount >= 3,
+        timing: 'roundEnd',
+    },
+    {
+        id: 'neon_legend',
+        title: 'Légende néon',
+        desc: `Débloquer les ${SKIN_IDS.length} skins`,
+        check: ctx => ctx.unlockedSkinCount >= SKIN_IDS.length,
         timing: 'roundEnd',
     },
 ]);

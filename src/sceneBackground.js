@@ -1,18 +1,20 @@
 import { GAME_CONFIG } from './config.js';
 import { shouldScrollGround } from './gameState.js';
-import { GROUND_BLADE_H, GROUND_TILE_H } from './textures/index.js';
+import { GROUND_BLADE_H, GROUND_TILE_H, getBackgroundPeriod } from './textures/index.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
 export function initClouds(scene) {
+    const isNight = getBackgroundPeriod() === 'night';
     const clouds = [];
     for (let i = 0; i < 5; i++) {
         const x = (i / 5) * GAME_CONFIG.width + Math.random() * 60;
         const y = 60 + Math.random() * 160;
         const cloud = scene.add.sprite(x, y, 'cloud');
         cloud.setDepth(1);
-        cloud.setAlpha(0.88);
+        cloud.setAlpha(isNight ? 0.62 : 0.94);
+        cloud.setTint(isNight ? 0xB0BEC5 : 0xFFFFFF);
         cloud._speed = 0.3 + Math.random() * 0.2;
         clouds.push(cloud);
     }

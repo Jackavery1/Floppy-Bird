@@ -1,7 +1,8 @@
 import { saveTrainingEnabled } from './trainingStorage.js';
 import { saveHardcoreEnabled } from './hardcoreStorage.js';
-import { saveDailyChallengeEnabled } from './dailyChallengeStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
+import { buildMetaContext } from './metaContext.js';
+import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -18,11 +19,17 @@ export function setTrainingMode(scene, enabled) {
 
     applyTrainingTimeScale(scene);
     scene.ui.updateTrainingLabel(enabled);
+    scene.ui.refreshHardcoreLockState();
     scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
 }
 
 /** @param {SceneContext} scene @param {boolean} enabled */
 export function setHardcoreMode(scene, enabled) {
+    const ctx = buildMetaContext(scene);
+    if (enabled && !isHardcoreUnlocked(ctx)) {
+        return;
+    }
+
     scene.hardcoreMode = enabled;
     saveHardcoreEnabled(enabled);
 
@@ -43,17 +50,7 @@ export function toggleTrainingMode(scene) {
 
 /** @param {SceneContext} scene */
 export function toggleHardcoreMode(scene) {
+    const ctx = buildMetaContext(scene);
+    if (!isHardcoreUnlocked(ctx)) return;
     setHardcoreMode(scene, !scene.hardcoreMode);
-}
-
-/** @param {SceneContext} scene @param {boolean} enabled */
-export function setDailyChallengeMode(scene, enabled) {
-    scene.dailyChallengeMode = enabled;
-    saveDailyChallengeEnabled(enabled);
-    scene.ui.updateDailyLabel(enabled);
-}
-
-/** @param {SceneContext} scene */
-export function toggleDailyChallengeMode(scene) {
-    setDailyChallengeMode(scene, !scene.dailyChallengeMode);
 }

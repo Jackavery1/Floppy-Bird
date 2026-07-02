@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { preloadTextures } from '../../src/textures/index.js';
 import { createBirdSpriteSheet } from '../../src/textures/birdTextures.js';
-import { createPipeSprites } from '../../src/textures/pipeTextures.js';
+import { createPipeSprites, ensurePipeTextures } from '../../src/textures/pipeTextures.js';
 import { createCloudTexture } from '../../src/textures/cloudTextures.js';
 import { createStarTexture } from '../../src/textures/starTextures.js';
 import { createGroundTexture, GROUND_BLADE_H, GROUND_TILE_H } from '../../src/textures/groundTextures.js';
@@ -9,18 +9,21 @@ import {
     getBackgroundPeriod,
     resetBackgroundCache,
     createBackgroundSprite,
+    getBackgroundCanvasColor,
 } from '../../src/textures/backgroundTextures.js';
 import { createTextureScene, createGraphicsMock } from '../helpers/phaserMock.js';
 
 function sceneWithGraphicsList() {
     const graphicsList = [];
     const scene = createTextureScene();
-    scene.make.graphics = vi.fn(() => {
+    const makeGraphics = () => {
         const g = createGraphicsMock();
         graphicsList.push(g);
         scene._graphics = g;
         return g;
-    });
+    };
+    scene.make.graphics = vi.fn(makeGraphics);
+    scene.add = { graphics: vi.fn(makeGraphics) };
     scene._graphicsList = graphicsList;
     return scene;
 }
@@ -49,12 +52,46 @@ describe('textures', () => {
         expect(scene.textures.get('bird-sheet-classic').add).toHaveBeenCalledTimes(3);
     });
 
+    it('createBirdSpriteSheet agrandit le canvas pour un skin à accessoire (casque, cornes...)', () => {
+        const scene = createTextureScene();
+        createBirdSpriteSheet(scene, 'armure');
+        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('bird-sheet-armure', 114, 34);
+        // Le casque doit être dessiné en plus du corps de base (davantage d'appels fillRect).
+        const classicScene = createTextureScene();
+        createBirdSpriteSheet(classicScene, 'classic');
+        expect(scene._graphics.fillRect.mock.calls.length)
+            .toBeGreaterThan(classicScene._graphics.fillRect.mock.calls.length);
+    });
+
+    it('createBirdSpriteSheet applique une opacité réduite pour le fantôme', () => {
+        const scene = createTextureScene();
+        createBirdSpriteSheet(scene, 'fantome');
+        const alphas = scene._graphics.fillStyle.mock.calls.map(c => c[1]);
+        expect(alphas).toContain(0.72);
+    });
+
+    it('ensurePipeTextures ne régénère pas si les textures existent déjà', () => {
+        const scene = createTextureScene();
+        scene.textures._register('pipe-top', 64, 500);
+        scene.textures._register('pipe-bottom', 64, 500);
+        ensurePipeTextures(scene);
+        expect(scene.add?.graphics ?? scene.make.graphics).not.toHaveBeenCalled();
+    });
+
     it('createPipeSprites génère pipe-top et pipe-bottom', () => {
-        const scene = sceneWithGraphicsList();
+        const graphicsList = [];
+        const scene = createTextureScene();
+        scene.add = {
+            graphics: vi.fn(() => {
+                const g = createGraphicsMock();
+                graphicsList.push(g);
+                scene._graphics = g;
+                return g;
+            }),
+        };
         createPipeSprites(scene);
-        const keys = scene._graphicsList.flatMap(g =>
-            g.generateTexture.mock.calls.map(c => c[0]),
-        );
+        expect(scene.add.graphics).toHaveBeenCalledTimes(2);
+        const keys = graphicsList.flatMap(g => g.generateTexture.mock.calls.map(c => c[0]));
         expect(keys).toContain('pipe-top');
         expect(keys).toContain('pipe-bottom');
     });
@@ -66,6 +103,36 @@ describe('textures', () => {
         scene._graphics.generateTexture.mockClear();
         createBackgroundSprite(scene);
         expect(scene._graphics.generateTexture).not.toHaveBeenCalled();
+        resetBackgroundCache();
+    });
+
+    it('createBackgroundSprite dessine des étoiles la nuit seulement', () => {
+        vi.useFakeTimers();
+        const scene = createTextureScene();
+
+        vi.setSystemTime(new Date('2026-06-27T22:00:00'));
+        resetBackgroundCache();
+        createBackgroundSprite(scene);
+        const nightStars = scene._graphics.fillCircle.mock.calls.length;
+
+        vi.setSystemTime(new Date('2026-06-27T10:00:00'));
+        resetBackgroundCache();
+        scene.textures.remove('background');
+        createBackgroundSprite(scene);
+        const dayStars = scene._graphics.fillCircle.mock.calls.length - nightStars;
+
+        expect(nightStars).toBeGreaterThan(dayStars);
+        vi.useRealTimers();
+        resetBackgroundCache();
+    });
+
+    it('getBackgroundCanvasColor suit la période', () => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2026-06-27T10:00:00'));
+        expect(getBackgroundCanvasColor()).toBe('#87ceeb');
+        vi.setSystemTime(new Date('2026-06-27T22:00:00'));
+        expect(getBackgroundCanvasColor()).toBe('#1a1a2e');
+        vi.useRealTimers();
         resetBackgroundCache();
     });
 
@@ -94,7 +161,10 @@ describe('textures', () => {
             g.generateTexture.mock.calls.map(c => c[0]),
         );
         expect(keys).toEqual(expect.arrayContaining([
-            'bird-sheet-classic', 'bird-sheet-ruby', 'bird-sheet-ocean', 'bird-sheet-forest',
+            'bird-sheet-classic', 'bird-sheet-lavande', 'bird-sheet-ruby', 'bird-sheet-ambre',
+            'bird-sheet-ocean', 'bird-sheet-corail', 'bird-sheet-forest', 'bird-sheet-minuit',
+            'bird-sheet-armure', 'bird-sheet-mushu', 'bird-sheet-phoenix', 'bird-sheet-fantome',
+            'bird-sheet-glace', 'bird-sheet-tempete', 'bird-sheet-cosmos', 'bird-sheet-neon',
             'pipe-top', 'pipe-bottom', 'background', 'cloud', 'star', 'ground',
         ]));
         resetBackgroundCache();

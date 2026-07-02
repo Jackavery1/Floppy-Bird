@@ -11,6 +11,7 @@ import {
     checkScorePipes,
     cancelPipeSpawnTimer,
     clearSpawnInvincibility,
+    tickPipeSpawnFallback,
 } from './sceneRound.js';
 import { frameStep, checkCollisions } from './sceneBootstrap.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
@@ -26,7 +27,7 @@ import {
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
-    toggleDailyChallenge,
+    launchDailyChallenge,
 } from './sceneFlow.js';
 import { beginRound } from './sceneBeginRound.js';
 import { initSceneCore } from './sceneContext.js';
@@ -38,11 +39,8 @@ export class GameScene extends Phaser.Scene {
         initSceneCore(this);
     }
 
-    preload() {
-        preloadTextures(this);
-    }
-
     create() {
+        preloadTextures(this);
         setupSceneWorld(this);
     }
 
@@ -61,6 +59,7 @@ export class GameScene extends Phaser.Scene {
         if (shouldUpdateGameplay(this.state)) {
             processJumpBuffer(this);
             this.bird.update(step);
+            tickPipeSpawnFallback(this, this.game.loop.delta);
             this.pipes.update(step);
             this.ghost.update(step);
             updateCoyoteTime(this, step);
@@ -83,7 +82,7 @@ export class GameScene extends Phaser.Scene {
     changeDifficulty(d) { changeDifficulty(this, d); }
     toggleTraining() { toggleTraining(this); }
     toggleHardcore() { toggleHardcore(this); }
-    toggleDailyChallenge() { toggleDailyChallenge(this); }
+    launchDailyChallenge() { launchDailyChallenge(this); }
     showMenu() { showMenu(this); }
     beginRound(opts) { beginRound(this, opts); }
     startGame() { startGame(this); }

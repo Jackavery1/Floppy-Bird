@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { getBackgroundCanvasColor } from './textures/index.js';
 import { GameScene } from './GameScene.js';
 
 export function createPhaserGameConfig(Phaser) {
@@ -7,7 +8,7 @@ export function createPhaserGameConfig(Phaser) {
         parent: 'game-container',
         width: GAME_CONFIG.width,
         height: GAME_CONFIG.height,
-        backgroundColor: '#87ceeb',
+        backgroundColor: getBackgroundCanvasColor(),
         scale: {
             mode: Phaser.Scale.NONE,
             autoCenter: Phaser.Scale.NO_CENTER,

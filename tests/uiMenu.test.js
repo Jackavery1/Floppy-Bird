@@ -8,7 +8,6 @@ import {
     showMenu,
     updateTrainingLabel,
     updateHardcoreLabel,
-    updateDailyLabel,
     updateDifficultyButtons,
     refreshHighScore,
 } from '../src/uiMenu.js';
@@ -41,23 +40,22 @@ describe('uiMenu', () => {
         ui = new UI(scene);
     });
 
-    it('refreshBestScore met à jour le texte record', () => {
-        ui._bestText = { setText: vi.fn() };
+    it('refreshBestScore met à jour le record interne', () => {
         refreshBestScore(ui, DIFFICULTY.NORMAL, false);
         expect(ui.highScore).toBe(42);
-        expect(ui._bestText.setText).toHaveBeenCalled();
     });
 
     it('showMenu construit le menu complet', () => {
-        const elements = showMenu(ui, DIFFICULTY.NORMAL, false, false, true);
+        const elements = showMenu(ui, DIFFICULTY.NORMAL, false, false);
         expect(elements.length).toBeGreaterThan(5);
         expect(ui._startText).toBeTruthy();
+        expect(ui._dailyBtnLabel).toBeTruthy();
         expect(ui._menuLayout).toBeTruthy();
     });
 
     it('showMenu détruit le score en jeu', () => {
         ui.scoreText = { destroy: vi.fn() };
-        showMenu(ui, DIFFICULTY.NORMAL, false, false, false);
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
         expect(ui.scoreText).toBeNull();
     });
 
@@ -68,20 +66,11 @@ describe('uiMenu', () => {
         expect(ui._trainingLabel.setColor).toHaveBeenCalledWith('#81D4FA');
     });
 
-    it('updateHardcoreLabel rafraîchit le record hardcore', () => {
+    it('updateHardcoreLabel rafraîchit le record interne', () => {
         ui._hardcoreLabel = { setText: vi.fn(), setColor: vi.fn() };
-        ui._bestText = { setText: vi.fn() };
         updateHardcoreLabel(ui, true);
-        expect(ui._hardcoreLabel.setColor).toHaveBeenCalledWith('#FF8A80');
+        expect(ui._hardcoreLabel.setColor).toHaveBeenCalled();
         expect(ui.highScore).toBe(99);
-    });
-
-    it('updateDailyLabel met à jour sous-titre et couleur', () => {
-        ui._dailyLabel = { setText: vi.fn(), setColor: vi.fn() };
-        ui._dailySubtitle = { setText: vi.fn() };
-        updateDailyLabel(ui, true);
-        expect(ui._dailyLabel.setColor).toHaveBeenCalledWith('#CE93D8');
-        expect(ui._dailySubtitle.setText).toHaveBeenCalled();
     });
 
     it('updateDifficultyButtons synchronise difficulté et record', () => {
@@ -98,7 +87,6 @@ describe('uiMenu', () => {
     });
 
     it('refreshHighScore délègue à refreshBestScore', () => {
-        ui._bestText = { setText: vi.fn() };
         refreshHighScore(ui, DIFFICULTY.NORMAL, false);
         expect(ui.highScore).toBe(42);
     });

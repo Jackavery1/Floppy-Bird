@@ -19,6 +19,10 @@ vi.mock('../src/metaAchievements.js', () => ({
     notifyAchievementUnlocks: vi.fn(),
 }));
 
+vi.mock('../src/textures/pipeTextures.js', () => ({
+    ensurePipeTextures: vi.fn(),
+}));
+
 describe('sceneRound', () => {
     it('shouldNotifyRecord une seule fois au-delà du record', () => {
         expect(shouldNotifyRecord(6, 5, false)).toBe(true);

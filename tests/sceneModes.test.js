@@ -1,10 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { DIFFICULTY } from '../src/config.js';
-import { initSceneModes, createSceneModesState } from '../src/sceneModes.js';
-
-vi.mock('../src/dailyChallengeStorage.js', () => ({
-    loadDailyChallengeEnabled: vi.fn(() => true),
-}));
+import { createSceneModesState } from '../src/sceneModes.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     loadTrainingEnabled: vi.fn(() => false),
@@ -15,27 +11,30 @@ vi.mock('../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
 }));
 
+vi.mock('../src/storage.js', () => ({
+    loadHighScore: vi.fn(() => 0),
+}));
+
 describe('sceneModes', () => {
-    it('initialise difficulté normale et modes depuis le stockage', async () => {
+    it('initialise difficulté normale et playMode classique', async () => {
         const { loadTrainingEnabled } = await import('../src/trainingStorage.js');
-        const { loadHardcoreEnabled } = await import('../src/hardcoreStorage.js');
         vi.mocked(loadTrainingEnabled).mockReturnValueOnce(true);
-        vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(false);
 
-        const scene = {};
-        initSceneModes(scene);
+        const modes = createSceneModesState();
 
-        expect(scene.difficulty).toBe(DIFFICULTY.NORMAL);
-        expect(scene.trainingMode).toBe(true);
-        expect(scene.hardcoreMode).toBe(false);
-        expect(scene.dailyChallengeMode).toBe(true);
+        expect(modes.difficulty).toBe(DIFFICULTY.NORMAL);
+        expect(modes.trainingMode).toBe(true);
+        expect(modes.playMode).toBe('classic');
+        expect(modes.dailyChallengeMode).toBe(false);
     });
 
     it('désactive hardcore si training et hardcore actifs', async () => {
         const { loadTrainingEnabled } = await import('../src/trainingStorage.js');
         const { loadHardcoreEnabled, saveHardcoreEnabled } = await import('../src/hardcoreStorage.js');
+        const { loadHighScore } = await import('../src/storage.js');
         vi.mocked(loadTrainingEnabled).mockReturnValueOnce(true);
         vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(true);
+        vi.mocked(loadHighScore).mockReturnValue(15);
 
         const modes = createSceneModesState();
 
@@ -43,9 +42,15 @@ describe('sceneModes', () => {
         expect(saveHardcoreEnabled).toHaveBeenCalledWith(false);
     });
 
-    it('initSceneModes assigne l’état sur la scène', () => {
-        const scene = {};
-        initSceneModes(scene);
-        expect(scene.difficulty).toBe(DIFFICULTY.NORMAL);
+    it('désactive hardcore si non débloqué', async () => {
+        const { loadHardcoreEnabled, saveHardcoreEnabled } = await import('../src/hardcoreStorage.js');
+        const { loadHighScore } = await import('../src/storage.js');
+        vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(true);
+        vi.mocked(loadHighScore).mockReturnValue(0);
+
+        const modes = createSceneModesState();
+
+        expect(modes.hardcoreMode).toBe(false);
+        expect(saveHardcoreEnabled).toHaveBeenCalledWith(false);
     });
 });

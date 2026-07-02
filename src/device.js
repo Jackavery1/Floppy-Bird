@@ -31,56 +31,69 @@ export function trainingHint() {
 
 export function trainingToggleLabel(enabled) {
     if (enabled) {
-        return isCoarsePointer() ? 'ENTR. ON' : 'ENTRAÎNEMENT : ON (ralenti + fantôme)';
+        return isCoarsePointer() ? '🟦 ENTR. ON' : '🟦 ENTRAÎNEMENT : ON (ralenti + fantôme)';
     }
     return isCoarsePointer()
-        ? 'ENTR. OFF · tap'
-        : 'ENTRAÎNEMENT : OFF (T pour activer)';
+        ? '⬜ ENTR. OFF · tap'
+        : '⬜ ENTRAÎNEMENT : OFF (T pour activer)';
 }
 
 export function hardcoreHint() {
     return isCoarsePointer() ? 'Tap : hardcore' : 'H : hardcore';
 }
 
-export function hardcoreToggleLabel(enabled) {
+export function hardcoreToggleLabel(enabled, unlocked = true) {
+    if (!unlocked) {
+        return isCoarsePointer()
+            ? '🔒 HARD · score ≥ 10'
+            : '🔒 HARDCORE : score ≥ 10 requis';
+    }
     if (enabled) {
         return isCoarsePointer()
-            ? 'HARD ON'
-            : 'HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
+            ? '🟥 HARD ON'
+            : '🟥 HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
     }
     return isCoarsePointer()
-        ? 'HARD OFF · tap'
-        : 'HARDCORE : OFF (H pour activer)';
+        ? '⬜ HARD OFF · tap'
+        : '⬜ HARDCORE : OFF (H pour activer)';
 }
 
-export function dailyToggleLabel(enabled) {
-    if (enabled) {
-        return isCoarsePointer()
-            ? 'DÉFI ON · tap'
-            : 'DÉFI DU JOUR : ON (D pour aléatoire libre)';
-    }
-    return isCoarsePointer()
-        ? 'DÉFI OFF · tap'
-        : 'DÉFI DU JOUR : OFF (D pour séquence partagée)';
+export function dailyChallengeHint() {
+    return isCoarsePointer() ? 'Tap DÉFI DU JOUR' : 'D : défi du jour';
+}
+
+export function menuControlsHint() {
+    if (isCoarsePointer()) return 'Scores · Options · Skins';
+    return `${jumpHint()} · ${dailyChallengeHint()}\n${optionsHint()}`;
 }
 
 export function modesHintLine() {
-    if (isCoarsePointer()) return `${difficultyHint()} · tap OPTIONS`;
-    return `${trainingHint()} · ${hardcoreHint()} · D : défi · O : options`;
+    if (isCoarsePointer()) return `${difficultyHint()}\ntap OPTIONS`;
+    return `${trainingHint()} · ${hardcoreHint()}\n${dailyChallengeHint()} · O : options`;
 }
 
-export function optionsButtonLabel(open, trainingMode, hardcoreMode, dailyChallengeMode = true) {
-    const chevron = open ? '▾' : '▸';
-    const ent = trainingMode ? 'Entr.ON' : 'Entr.OFF';
-    const hard = hardcoreMode ? 'Hard.ON' : 'Hard.OFF';
-    const daily = dailyChallengeMode ? 'Défi.ON' : 'Défi.OFF';
-    return `${chevron} OPTIONS · ${ent} · ${hard} · ${daily}`;
+export function optionsButtonLabel(open) {
+    return open ? '▾ OPTIONS' : '▸ OPTIONS';
+}
+
+export function scoresButtonLabel(open) {
+    return open ? '▾ SCORES' : '▸ SCORES';
+}
+
+export function skinsButtonLabel(open) {
+    return open ? '▾ SKINS' : '▸ SKINS';
 }
 
 export function optionsHint() {
-    return isCoarsePointer() ? 'Tap OPTIONS' : 'O : options';
+    return isCoarsePointer() ? 'Scores · Options · Skins' : 'S scores · O options · K skins';
 }
 
 export function jumpTutorialText() {
     return isCoarsePointer() ? '↑  TAP pour sauter' : '↑  ESPACE pour sauter';
+}
+
+export function classicModeHint() {
+    return isCoarsePointer()
+        ? 'Classique : aléatoire selon difficulté'
+        : 'Classique : gaps aléatoires';
 }

@@ -15,7 +15,7 @@ describe('sceneInput', () => {
             changeDifficulty: vi.fn(),
             toggleTraining: vi.fn(),
             toggleHardcore: vi.fn(),
-            toggleDailyChallenge: vi.fn(),
+            launchDailyChallenge: vi.fn(),
             togglePause: vi.fn(),
             returnToMenu: vi.fn(),
             input: {
@@ -78,11 +78,34 @@ describe('sceneInput', () => {
         expect(scene.toggleHardcore).toHaveBeenCalled();
     });
 
+    it('D lance le défi du jour au menu', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        setupSceneInput(scene);
+        scene._handlers['keydown-D']();
+        expect(scene.launchDailyChallenge).toHaveBeenCalled();
+    });
+
     it('O ouvre les options au menu', () => {
         const scene = makeScene(GAME_STATE.MENU);
         scene.ui = { toggleMenuOptionsPanel: vi.fn() };
         setupSceneInput(scene);
         scene._handlers['keydown-O']();
         expect(scene.ui.toggleMenuOptionsPanel).toHaveBeenCalled();
+    });
+
+    it('S ouvre les scores au menu', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { toggleMenuScoresPanel: vi.fn() };
+        setupSceneInput(scene);
+        scene._handlers['keydown-S']();
+        expect(scene.ui.toggleMenuScoresPanel).toHaveBeenCalled();
+    });
+
+    it('K ouvre les skins au menu', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { toggleMenuSkinsPanel: vi.fn() };
+        setupSceneInput(scene);
+        scene._handlers['keydown-K']();
+        expect(scene.ui.toggleMenuSkinsPanel).toHaveBeenCalled();
     });
 });

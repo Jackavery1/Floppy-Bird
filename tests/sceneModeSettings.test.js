@@ -8,10 +8,16 @@ import {
 
 vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
+    loadTrainingEnabled: vi.fn(() => false),
+    loadBestTrainingScore: vi.fn(() => 0),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
+}));
+
+vi.mock('../src/storage.js', () => ({
+    loadHighScore: vi.fn(() => 15),
 }));
 
 vi.mock('../src/sceneBootstrap.js', () => ({
@@ -24,9 +30,13 @@ describe('sceneModeSettings', () => {
             trainingMode: false,
             hardcoreMode: false,
             difficulty: 'normal',
+            dailyChallengeMode: false,
+            playMode: 'classic',
+            round: { score: 0 },
             ui: {
                 updateTrainingLabel: vi.fn(),
                 updateHardcoreLabel: vi.fn(),
+                refreshHardcoreLockState: vi.fn(),
                 refreshHighScore: vi.fn(),
             },
         };

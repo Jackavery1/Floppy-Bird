@@ -1,23 +1,36 @@
-import { DIFFICULTY } from './config.js';
+import { DIFFICULTY, DIFFICULTY_ORDER } from './config.js';
 import { loadTrainingEnabled } from './trainingStorage.js';
 import { loadHardcoreEnabled, saveHardcoreEnabled } from './hardcoreStorage.js';
-import { loadDailyChallengeEnabled } from './dailyChallengeStorage.js';
+import { loadHighScore } from './storage.js';
+import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 
-/** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+function bootstrapMetaContext() {
+    let bestScoreAny = 0;
+    for (const diff of DIFFICULTY_ORDER) {
+        bestScoreAny = Math.max(bestScoreAny, loadHighScore(diff, false));
+    }
+    return { bestScoreAny };
+}
 
 export function createSceneModesState() {
     const difficulty = DIFFICULTY.NORMAL;
-    let trainingMode = loadTrainingEnabled();
+    const trainingMode = loadTrainingEnabled();
     let hardcoreMode = loadHardcoreEnabled();
-    const dailyChallengeMode = loadDailyChallengeEnabled();
+    if (!isHardcoreUnlocked(bootstrapMetaContext())) {
+        hardcoreMode = false;
+        saveHardcoreEnabled(false);
+    }
     if (trainingMode && hardcoreMode) {
         hardcoreMode = false;
         saveHardcoreEnabled(false);
     }
-    return { difficulty, trainingMode, hardcoreMode, dailyChallengeMode };
-}
-
-/** @param {SceneContext} scene */
-export function initSceneModes(scene) {
-    Object.assign(scene, createSceneModesState());
+    return {
+        difficulty,
+        trainingMode,
+        hardcoreMode,
+        playMode: 'classic',
+        dailyChallengeMode: false,
+        activeSkinId: 'classic',
+        dailyGoal: 0,
+    };
 }

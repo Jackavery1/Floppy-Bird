@@ -4,6 +4,8 @@ import { frameStep } from './sceneBootstrap.js';
 import { persistRoundScore } from './roundScore.js';
 import { notifyEndOfRoundAchievements } from './metaAchievements.js';
 import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneDeathFeedback.js';
+import { saveDailyCompletion } from './dailyChallengeProgress.js';
+import { getDailyChallengeSkin } from './dailyChallenge.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -47,6 +49,14 @@ export function updateDying(scene) {
 function finishDying(scene) {
     const { round } = scene;
     playGroundImpactFeedback();
+    if (scene.playMode === 'daily' && scene.dailyGoal > 0) {
+        saveDailyCompletion({
+            goal: scene.dailyGoal,
+            score: round.score,
+            difficulty: scene.difficulty,
+            skinId: scene.activeSkinId ?? getDailyChallengeSkin(),
+        });
+    }
     notifyEndOfRoundAchievements(scene);
     scene.ui.highScore = round.roundHighScore;
     scene.state = GAME_STATE.GAME_OVER;

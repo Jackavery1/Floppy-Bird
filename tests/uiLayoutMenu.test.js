@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeMenuLayout, UI_LAYOUT } from '../src/uiLayout.js';
+import { computeMenuLayout, UI_LAYOUT, MIN_TOUCH } from '../src/uiLayout.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('uiLayout menu', () => {
@@ -7,13 +7,33 @@ describe('uiLayout menu', () => {
         const layout = computeMenuLayout();
         expect(layout.title).toBe(UI_LAYOUT.menu.title);
         expect(layout.difficulty).toBeLessThan(layout.start);
-        expect(layout.optionsBtn).toBeGreaterThan(layout.start);
-        expect(layout.hint1).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(layout.menuRow).toBeGreaterThan(layout.start);
+        expect(layout.hint1).toBeLessThanOrEqual(GAME_CONFIG.height - 4);
     });
 
-    it('le panneau options tient dans le canvas', () => {
-        const panel = UI_LAYOUT.optionsPanel;
-        expect(panel.hint2).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
-        expect(panel.training - panel.daily).toBeGreaterThanOrEqual(36);
+    it('les panneaux scores, options et skins tiennent dans le canvas', () => {
+        const { optionsPanel, scoresPanel, skinsPanel } = UI_LAYOUT;
+        expect(optionsPanel.hint2).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(skinsPanel.skinsHint).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(optionsPanel.training - optionsPanel.hintLine).toBeGreaterThanOrEqual(32);
+        expect(skinsPanel.panelTop + skinsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+    });
+
+    it('les zones tactiles du menu ne se chevauchent pas', () => {
+        const { menu } = UI_LAYOUT;
+        const diffBottom = menu.difficulty + MIN_TOUCH / 2;
+        const dailyTop = menu.dailyBtn - MIN_TOUCH / 2;
+        expect(dailyTop).toBeGreaterThanOrEqual(diffBottom);
+        const menuRowBottom = menu.menuRow + MIN_TOUCH / 2;
+        const hintTop = menu.hint1 - 16;
+        expect(hintTop).toBeGreaterThanOrEqual(menuRowBottom);
+    });
+
+    it('la rangée SCORES · OPTIONS · SKINS est centrée', () => {
+        const { scoresBtn, optionsBtn, skinsBtn } = UI_LAYOUT.menu;
+        expect(optionsBtn).toBe(GAME_CONFIG.centerX);
+        expect(scoresBtn).toBeLessThan(optionsBtn);
+        expect(skinsBtn).toBeGreaterThan(optionsBtn);
     });
 });

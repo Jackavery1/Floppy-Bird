@@ -18,10 +18,11 @@ import {
     showMenu,
     updateTrainingLabel,
     updateHardcoreLabel,
-    updateDailyLabel,
     updateDifficultyButtons,
     refreshHighScore,
     toggleMenuOptionsPanel,
+    toggleMenuScoresPanel,
+    toggleMenuSkinsPanel,
 } from './uiMenu.js';
 import { showPause } from './uiPause.js';
 
@@ -69,12 +70,11 @@ export class UI {
     createInGameControls(opts) { return createInGameControls(this, opts); }
     updateScore(newScore) { updateScore(this, newScore); }
     showRecordBroken() { showRecordBroken(this); }
-    showMenu(difficulty, trainingMode, hardcoreMode, dailyChallengeMode) {
-        return showMenu(this, difficulty, trainingMode, hardcoreMode, dailyChallengeMode);
+    showMenu(difficulty, trainingMode, hardcoreMode) {
+        return showMenu(this, difficulty, trainingMode, hardcoreMode);
     }
     updateTrainingLabel(trainingMode) { updateTrainingLabel(this, trainingMode); }
     updateHardcoreLabel(hardcoreMode) { updateHardcoreLabel(this, hardcoreMode); }
-    updateDailyLabel(dailyChallengeMode) { updateDailyLabel(this, dailyChallengeMode); }
     showJumpTutorial() { showJumpTutorial(this); }
     dismissJumpTutorial() { return dismissJumpTutorial(this); }
     updateDifficultyButtons(difficulty) { updateDifficultyButtons(this, difficulty); }
@@ -82,6 +82,8 @@ export class UI {
         refreshHighScore(this, difficulty, hardcoreMode);
     }
     toggleMenuOptionsPanel() { toggleMenuOptionsPanel(this); }
+    toggleMenuScoresPanel() { toggleMenuScoresPanel(this); }
+    toggleMenuSkinsPanel() { toggleMenuSkinsPanel(this); }
     showPause(opts) { return showPause(this, opts); }
     showFlash() { showFlash(this); }
 
@@ -106,6 +108,7 @@ export class UI {
 
     destroy() {
         if (this.scoreText) this.scoreText.destroy();
+        if (this._scoreShadow) this._scoreShadow.destroy();
         destroyInGameControls(this);
         this.clearOverlay('menu');
         this.clearOverlay('pause');

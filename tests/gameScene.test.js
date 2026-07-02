@@ -37,6 +37,11 @@ vi.mock('../src/trainingStorage.js', () => ({
 
 vi.mock('../src/hardcoreStorage.js', () => ({
     loadHardcoreEnabled: vi.fn(() => false),
+    saveHardcoreEnabled: vi.fn(),
+}));
+
+vi.mock('../src/storage.js', () => ({
+    loadHighScore: vi.fn(() => 0),
 }));
 
 vi.mock('../src/sceneBackground.js', () => ({
@@ -58,6 +63,7 @@ vi.mock('../src/sceneRound.js', () => ({
     checkScorePipes: vi.fn(),
     cancelPipeSpawnTimer: vi.fn(),
     clearSpawnInvincibility: vi.fn(),
+    tickPipeSpawnFallback: vi.fn(),
 }));
 
 vi.mock('../src/sceneCoyote.js', () => ({
@@ -93,15 +99,10 @@ describe('GameScene', () => {
         expect(scene.round.score).toBe(0);
     });
 
-    it('preload charge les textures', () => {
-        const scene = new GameScene();
-        scene.preload();
-        expect(preloadTextures).toHaveBeenCalledWith(scene);
-    });
-
-    it('create initialise le monde', () => {
+    it('create charge les textures puis initialise le monde', () => {
         const scene = new GameScene();
         scene.create();
+        expect(preloadTextures).toHaveBeenCalledWith(scene);
         expect(setupSceneWorld).toHaveBeenCalledWith(scene);
     });
 

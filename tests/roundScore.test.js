@@ -7,6 +7,10 @@ vi.mock('../src/storage.js', () => ({
     saveToLeaderboard: vi.fn(() => ({ entries: [{ score: 5, id: 'a' }], highlightId: 'a' })),
 }));
 
+vi.mock('../src/trainingStorage.js', () => ({
+    saveBestTrainingScore: vi.fn(),
+}));
+
 describe('roundScore', () => {
     beforeEach(async () => {
         const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
@@ -46,9 +50,11 @@ describe('roundScore', () => {
 
     it('persistRoundScore ignore la persistance en mode entraînement', async () => {
         const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveBestTrainingScore } = await import('../src/trainingStorage.js');
         const scene = makeScene({ trainingMode: true });
         const result = persistRoundScore(scene);
 
+        expect(saveBestTrainingScore).toHaveBeenCalledWith(5);
         expect(saveHighScore).not.toHaveBeenCalled();
         expect(saveToLeaderboard).not.toHaveBeenCalled();
         expect(result.isNewRecord).toBe(false);

@@ -9,12 +9,14 @@ import {
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
-    toggleDailyChallenge,
+    startDailyChallenge,
 } from '../src/sceneFlow.js';
 import { createRoundState } from '../src/roundState.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
+    loadTrainingEnabled: vi.fn(() => false),
+    loadBestTrainingScore: vi.fn(() => 0),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
@@ -25,8 +27,16 @@ vi.mock('../src/dailyChallengeStorage.js', () => ({
     saveDailyChallengeEnabled: vi.fn(),
 }));
 
+vi.mock('../src/textures/pipeTextures.js', () => ({
+    ensurePipeTextures: vi.fn(),
+}));
+
 vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialSeen: vi.fn(() => true),
+}));
+
+vi.mock('../src/storage.js', () => ({
+    loadHighScore: vi.fn(() => 15),
 }));
 
 vi.mock('../src/metaStorage.js', () => ({
@@ -41,7 +51,10 @@ describe('sceneFlow', () => {
             difficulty: DIFFICULTY.NORMAL,
             trainingMode: false,
             hardcoreMode: false,
-            dailyChallengeMode: true,
+            playMode: 'classic',
+            dailyChallengeMode: false,
+            dailyGoal: 0,
+            activeSkinId: 'classic',
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
             bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn(), sprite: { setAlpha: vi.fn() } },
             pipes: {
@@ -62,7 +75,7 @@ describe('sceneFlow', () => {
                 updateDifficultyButtons: vi.fn(),
                 updateTrainingLabel: vi.fn(),
                 updateHardcoreLabel: vi.fn(),
-                updateDailyLabel: vi.fn(),
+                refreshHardcoreLockState: vi.fn(),
                 showJumpTutorial: vi.fn(),
                 showPause: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
             },
@@ -72,8 +85,8 @@ describe('sceneFlow', () => {
             toggleHardcore: vi.fn(function toggle() {
                 toggleHardcore(this);
             }),
-            toggleDailyChallenge: vi.fn(function toggle() {
-                toggleDailyChallenge(this);
+            launchDailyChallenge: vi.fn(function launch() {
+                startDailyChallenge(this);
             }),
         };
     }
@@ -119,12 +132,12 @@ describe('sceneFlow', () => {
         expect(scene.hardcoreMode).toBe(true);
     });
 
-    it('toggleDailyChallenge bascule le défi du jour au menu', async () => {
-        const { saveDailyChallengeEnabled } = await import('../src/dailyChallengeStorage.js');
+    it('startDailyChallenge lance une manche daily', () => {
         const scene = makeScene(GAME_STATE.MENU);
-        toggleDailyChallenge(scene);
-        expect(scene.dailyChallengeMode).toBe(false);
-        expect(saveDailyChallengeEnabled).toHaveBeenCalledWith(false);
+        startDailyChallenge(scene);
+        expect(scene.playMode).toBe('daily');
+        expect(scene.dailyChallengeMode).toBe(true);
+        expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
 
     it('toggleTraining désactive le hardcore (exclusifs)', async () => {

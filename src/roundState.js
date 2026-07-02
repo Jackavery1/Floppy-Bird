@@ -23,6 +23,7 @@ export function createRoundState() {
             this.dyingFalling = false;
             this.dyingGrounded = false;
             this.leaderboardData = null;
+            this._pipeSpawnWaitMs = 0;
         },
 
         resetDeathAnimation() {
