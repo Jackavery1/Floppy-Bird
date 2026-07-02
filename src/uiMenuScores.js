@@ -2,7 +2,7 @@ import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
 import { loadHighScore } from './storage.js';
 import { loadUnlockedAchievements } from './metaStorage.js';
 import { ACHIEVEMENTS } from './achievements.js';
-import { addCenteredText, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 
 /** @typedef {'easy'|'normal'|'hard'} DifficultyId */
 
@@ -21,7 +21,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         'MEILLEURS SCORES', {
             fontSize: '12px', fill: '#90CAF9', fontStyle: 'bold',
             stroke: '#0d1117', strokeThickness: 2,
-        }, 56,
+        }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(title);
     elements.push(title);
@@ -34,7 +34,7 @@ export function buildScoresTab(ui, elements, panelElements) {
             formatScoreLine(diff), {
                 fontSize: '12px', fill: '#ECEFF1',
                 stroke: '#0d1117', strokeThickness: 2,
-            }, 56,
+            }, DEPTH.PANEL_FRAME,
         );
         panelElements.push(label);
         elements.push(label);
@@ -47,7 +47,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         formatHardcoreLine(), {
             fontSize: '12px', fill: '#FFAB91', fontStyle: 'bold',
             stroke: '#0d1117', strokeThickness: 2,
-        }, 56,
+        }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(ui._hardcoreScoreLine);
     elements.push(ui._hardcoreScoreLine);
@@ -58,7 +58,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         formatAchievementsLine(), {
             fontSize: '11px', fill: '#B0BEC5',
             stroke: '#0d1117', strokeThickness: 2,
-        }, 56,
+        }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(ui._achievementsScoreLine);
     elements.push(ui._achievementsScoreLine);

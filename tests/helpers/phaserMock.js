@@ -12,11 +12,15 @@ export function createGraphicsMock() {
         destroy: vi.fn(),
         clear: vi.fn(),
         lineStyle: vi.fn(),
+        strokeRect: vi.fn(),
         strokeRoundedRect: vi.fn(),
         strokeCircle: vi.fn(),
         setDepth: vi.fn(),
         setAlpha: vi.fn(),
         setVisible: vi.fn().mockReturnThis(),
+        setPosition: vi.fn().mockReturnThis(),
+        x: 0,
+        y: 0,
     };
     for (const fn of Object.values(g)) {
         if (typeof fn === 'function' && fn.mockReturnValue) {

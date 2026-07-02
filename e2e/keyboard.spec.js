@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
+    enterPausedFromPlaying,
     expectGameState,
     openPauseFromPlaying,
     projectUsesTouch,
@@ -33,22 +34,18 @@ test.describe('clavier desktop', () => {
     test('M retourne au menu depuis la pause', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
-        await page.keyboard.press('Space');
-        await page.keyboard.press('Escape');
-        await expectGameState(page, 'paused');
-
+        await enterPausedFromPlaying(page, false);
         await page.keyboard.press('KeyM');
         await expectGameState(page, 'menu');
     });
 
-    test('D bascule le défi du jour au menu', async ({ page }, testInfo) => {
+    test('D lance le défi du jour depuis le menu', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
         const before = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
         await page.keyboard.press('KeyD');
-        const after = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
-        expect(after).toBe(!before);
-        await expectGameState(page, 'menu');
+        await expect.poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.())).not.toBe(before);
+        await expectGameState(page, 'playing', 3_000);
     });
 
     test('ESPACE rejoue depuis le game over', async ({ page }, testInfo) => {

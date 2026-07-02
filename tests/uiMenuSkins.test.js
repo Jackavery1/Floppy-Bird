@@ -1,25 +1,42 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildSkinsTab, showAchievementToasts } from '../src/uiMeta.js';
+import { buildSkinsTab, refreshSkinsTab } from '../src/uiMenuSkins.js';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import { SKIN_IDS } from '../src/skins/index.js';
+import { DIFFICULTY } from '../src/config.js';
 
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
 }));
 
+vi.mock('../src/metaContext.js', () => ({
+    buildMetaContext: vi.fn(() => ({
+        unlockedSkinCount: 16,
+    })),
+}));
+
 vi.mock('../src/storage.js', () => ({
-    loadHighScore: vi.fn(() => 0),
+    loadHighScore: vi.fn((difficulty, hardcore, skinId) => {
+        if (skinId === 'cosmos') return 22;
+        return 0;
+    }),
 }));
 
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
     saveSelectedSkin: vi.fn(),
-    loadUnlockedAchievements: vi.fn(() => []),
 }));
 
-describe('uiMeta', () => {
+vi.mock('../src/skins/index.js', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        listUnlockedSkins: vi.fn(() => actual.SKIN_IDS),
+    };
+});
+
+describe('uiMenuSkins', () => {
     let scene;
     let ui;
 
@@ -42,8 +59,14 @@ describe('uiMeta', () => {
         expect(elements.length).toBeGreaterThan(SKIN_IDS.length);
     });
 
-    it('showAchievementToasts affiche un toast par succès', () => {
-        showAchievementToasts(scene, [{ title: 'Premier vol' }]);
-        expect(scene.add.text).toHaveBeenCalled();
+    it('refreshSkinsTab affiche le record des skins spéciaux débloqués', () => {
+        const elements = [];
+        buildSkinsTab(ui, elements, ui._optionsPanelElements);
+        scene.difficulty = DIFFICULTY.NORMAL;
+        scene.hardcoreMode = false;
+        const cosmosCell = ui._skinCells.find(c => c.skinId === 'cosmos');
+        expect(cosmosCell?.recordLabel).toBeTruthy();
+        refreshSkinsTab(ui);
+        expect(cosmosCell.recordLabel.setText).toHaveBeenCalledWith('★ 22');
     });
 });

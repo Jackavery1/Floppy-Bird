@@ -3,21 +3,15 @@ import { jumpTutorialText } from './device.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
 
-export function showRecordBroken(ui) {
-    if (ui._recordBanner) return;
-    const banner = addCenteredText(ui.scene, GAME_CONFIG.centerX, 90, 'NOUVEAU RECORD !', {
-        fontSize: '16px',
-        fill: '#FDD835',
-        fontStyle: 'bold',
-        stroke: '#000000',
-        strokeThickness: 2,
-    }, DEPTH.RECORD_BANNER);
-    ui._recordBanner = banner;
+function showTransientBanner(ui, key, text, y, style, fadeY = y - 18) {
+    if (ui[key]) return;
+    const banner = addCenteredText(ui.scene, GAME_CONFIG.centerX, y, text, style, DEPTH.RECORD_BANNER);
+    ui[key] = banner;
     sceneTween(ui.scene, {
         targets: banner,
-        scaleX: { from: 0.8, to: 1.1 },
-        scaleY: { from: 0.8, to: 1.1 },
-        duration: 200,
+        scaleX: { from: 0.85, to: 1.05 },
+        scaleY: { from: 0.85, to: 1.05 },
+        duration: 180,
         yoyo: true,
         repeat: 1,
         ease: 'Back.easeOut',
@@ -25,14 +19,45 @@ export function showRecordBroken(ui) {
     sceneTween(ui.scene, {
         targets: banner,
         alpha: { from: 1, to: 0 },
-        y: 72,
-        duration: 1400,
-        delay: 600,
+        y: fadeY,
+        duration: 1200,
+        delay: 500,
         ease: 'Power2',
         onComplete: () => {
             banner.destroy();
-            if (ui._recordBanner === banner) ui._recordBanner = null;
+            if (ui[key] === banner) ui[key] = null;
         },
+    });
+}
+
+export function showRecordBroken(ui) {
+    showTransientBanner(ui, '_recordBanner', 'NOUVEAU RECORD !', 90, {
+        fontSize: '16px',
+        fill: '#FDD835',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 2,
+    }, 72);
+}
+
+export function showDifficultyEscalation(ui) {
+    showTransientBanner(ui, '_escalationBanner', 'DIFFICULTÉ ↑', 104, {
+        fontSize: '13px',
+        fill: '#FF8A65',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 2,
+    });
+}
+
+export function showScoreStreak(ui, score) {
+    const label = score >= 15 ? 'EN FEU !' : `SÉRIE ×${score}`;
+    showTransientBanner(ui, '_streakBanner', label, 112, {
+        fontSize: '14px',
+        fill: '#FFAB40',
+        fontStyle: 'bold',
+        stroke: '#000000',
+        strokeThickness: 2,
     });
 }
 

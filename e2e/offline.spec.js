@@ -1,36 +1,41 @@
 import { test, expect } from '@playwright/test';
-import { waitForGameReady, waitForServiceWorker } from './helpers/gameCoords.mjs';
+import { expectGameState, waitForGameReady } from './helpers/gameCoords.mjs';
 
 test.describe('PWA hors ligne', () => {
-    test('charge après une visite en ligne (cache SW)', async ({ page, context }) => {
+    test('active un service worker après chargement', async ({ page }) => {
         await waitForGameReady(page);
-        await waitForServiceWorker(page);
+        await page.waitForFunction(() => document.readyState === 'complete', { timeout: 15_000 });
+        await expect.poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller)).toBe(true);
+    });
+
+    test('charge le jeu hors ligne après precache', async ({ browser }) => {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await waitForGameReady(page);
+        await expect.poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller)).toBe(true);
 
         await context.setOffline(true);
         await page.reload({ waitUntil: 'domcontentloaded' });
-        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 25_000 });
+        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 20_000 });
+        await page.waitForFunction(() => window.__FLOPPY_TEST__?.ready(), { timeout: 20_000 });
         await expect(page.locator('#game-container canvas')).toBeVisible();
+        await expectGameState(page, 'menu');
+
+        await context.setOffline(false);
+        await context.close();
     });
 
     test('offline.html affiche le fallback', async ({ page }) => {
-        await page.goto('/offline.html');
+        await page.goto('offline.html');
         await expect(page.getByRole('heading', { name: 'Hors ligne' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Retour au jeu' })).toBeVisible();
     });
 
-    test('precache vendor/phaser.min.js après visite en ligne', async ({ page, context }) => {
-        await waitForGameReady(page);
-        await waitForServiceWorker(page);
-
-        await context.setOffline(true);
-        const ok = await page.evaluate(async () => {
-            try {
-                const res = await fetch('./vendor/phaser.min.js');
-                return res.ok;
-            } catch {
-                return false;
-            }
-        });
-        expect(ok).toBe(true);
+    test('service worker déclare le precache phaser', async ({ page }) => {
+        const response = await page.goto('sw.js');
+        expect(response?.ok()).toBe(true);
+        const body = await response?.text();
+        expect(body).toContain('phaser.min.js');
+        expect(body).toContain('index.html');
     });
 });

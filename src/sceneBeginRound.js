@@ -1,6 +1,7 @@
 import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
 import { GAME_STATE } from './gameState.js';
+import { loadHighScore } from './storage.js';
 import { loadTutorialSeen } from './tutorialStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
@@ -30,8 +31,6 @@ export function beginRound(scene, { resetBird = false } = {}) {
     clearSpawnInvincibility(scene);
     scene.round.resetForRound();
     resetCoyoteTime(scene);
-    scene.state = GAME_STATE.PLAYING;
-    scene.time.paused = false;
 
     const skinId = resolvePlaySkin(scene);
     scene.activeSkinId = skinId;
@@ -64,8 +63,9 @@ export function beginRound(scene, { resetBird = false } = {}) {
     scene.pipes.applyRoundDifficulty(roundDiff);
     scene.bird.applyDifficulty(roundDiff);
 
-    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode, skinId);
-    scene.round.roundHighScore = scene.ui.highScore;
+    const roundHigh = loadHighScore(scene.difficulty, scene.hardcoreMode, skinId);
+    scene.ui.highScore = roundHigh;
+    scene.round.roundHighScore = roundHigh;
     scene.ui.createScoreDisplay();
     scene.ui.createInGameControls({
         trainingMode: scene.trainingMode,
@@ -92,4 +92,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     if (scene.trainingMode && scene.playMode !== 'daily') {
         scene.ghost.beginRound();
     }
+
+    scene.time.paused = false;
+    scene.state = GAME_STATE.PLAYING;
 }

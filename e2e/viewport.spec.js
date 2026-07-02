@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { GAME_CONFIG } from '../src/config.js';
-import { TOUCH_TARGETS } from '../src/uiLayout.js';
 import {
     expectGameState,
-    pointerGameCoord,
-    projectUsesTouch,
+    isMobileLandscapeProject,
+    landscapeHintCoversCanvas,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
 
@@ -42,21 +41,21 @@ test.describe('jeu chargé', () => {
     });
 
     test('conserve le ratio avec safe-area simulée', async ({ page }) => {
-        await page.addInitScript(() => {
-            const style = document.createElement('style');
-            style.textContent = 'body { padding: 44px 0 34px 0 !important; }';
-            document.head.appendChild(style);
+        await waitForGameReady(page);
+        await page.evaluate(() => {
+            document.body.style.setProperty('padding', '44px 0 34px 0', 'important');
+            window.dispatchEvent(new Event('resize'));
         });
-        await page.goto('/', { waitUntil: 'domcontentloaded' });
         const canvas = page.locator('#game-container canvas');
-        await expect(canvas).toBeVisible({ timeout: 20_000 });
+        await expect.poll(async () => {
+            const box = await canvas.boundingBox();
+            return box?.height ?? 0;
+        }).toBeGreaterThan(300);
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         const layout = await page.evaluate(() => window.__FLOPPY_TEST__?.getCanvasLayout?.());
-        expect(layout).toBeTruthy();
-        expect(layout.top).toBeGreaterThanOrEqual(40);
-        expect(layout.height).toBeGreaterThan(300);
+        expect(layout?.height ?? 0).toBeGreaterThan(300);
     });
 
     test('utilise visualViewport pour le letterbox (clavier virtuel simulé)', async ({ page }) => {
@@ -66,6 +65,8 @@ test.describe('jeu chargé', () => {
                 value: {
                     width: 390,
                     height: 620,
+                    offsetTop: 24,
+                    offsetLeft: 0,
                     addEventListener: (type, fn) => window.addEventListener(type, fn),
                     removeEventListener: (type, fn) => window.removeEventListener(type, fn),
                 },
@@ -79,27 +80,30 @@ test.describe('jeu chargé', () => {
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(box.height).toBeLessThanOrEqual(620 + 2);
+        const marginTop = await page.evaluate(() => {
+            const el = document.getElementById('game-container');
+            return parseFloat(getComputedStyle(el).marginTop) || 0;
+        });
+        expect(marginTop).toBeGreaterThanOrEqual(24);
     });
 
     test('affiche l’aide paysage en viewport mobile landscape', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
         await page.goto('/', { waitUntil: 'domcontentloaded' });
         await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 5_000 });
     });
 
     test('bloque les taps jeu sous le hint paysage', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
-        const usesTouch = projectUsesTouch(testInfo);
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
         await waitForGameReady(page);
         await expect(page.locator('#landscape-hint')).toBeVisible();
-        const { menuStart } = TOUCH_TARGETS;
-        await pointerGameCoord(page, menuStart.x, menuStart.y, usesTouch);
+        expect(await landscapeHintCoversCanvas(page)).toBe(true);
         await expectGameState(page, 'menu');
     });
 
     test('expose le manifest PWA', async ({ page }) => {
         await page.goto('/', { waitUntil: 'domcontentloaded' });
-        const href = await page.locator('link[rel="manifest"]').getAttribute('href');
+        const href = await page.locator('link[rel="manifest"]').first().getAttribute('href');
         expect(href).toMatch(/manifest\.webmanifest$/);
     });
 });

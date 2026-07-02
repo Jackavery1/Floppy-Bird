@@ -25,6 +25,10 @@ vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
+vi.mock('../src/storage.js', () => ({
+    loadHighScore: vi.fn(() => 42),
+}));
+
 describe('sceneBeginRound', () => {
     function makeScene() {
         return {
@@ -63,6 +67,7 @@ describe('sceneBeginRound', () => {
         expect(scene.ui.clearOverlay).toHaveBeenCalledWith('pause');
         expect(scene.bird.reset).toHaveBeenCalled();
         expect(scene.ui.createInGameControls).toHaveBeenCalled();
+        expect(scene.round.roundHighScore).toBe(42);
     });
 
     it('beginRound avec invincibilité réduite en hardcore', () => {

@@ -61,6 +61,10 @@ export default defineConfig(({ mode }) => {
                     navigateFallback: 'index.html',
                     navigateFallbackDenylist: [/^\/offline\.html$/],
                 },
+                devOptions: {
+                    enabled: true,
+                    type: 'module',
+                },
             }),
         ],
         test: {
@@ -69,6 +73,12 @@ export default defineConfig(({ mode }) => {
             coverage: {
                 provider: 'v8',
                 include: ['src/**/*.js'],
+                exclude: [
+                    'src/skins/skinDefinitions.js',
+                    'src/skins/skinTypes.js',
+                    'src/skins/skinIds.js',
+                    'src/phaser-shim.js',
+                ],
                 reporter: ['text', 'html', 'lcov'],
                 thresholds: { lines: 75, functions: 70, branches: 70, statements: 75 },
             },

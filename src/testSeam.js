@@ -57,5 +57,17 @@ export function installTestSeam(game) {
             );
             scene.ui.setOverlay('gameOver', elements);
         },
+        openPause: () => {
+            const scene = getScene();
+            if (!scene || scene.state !== 'playing') return scene?.state ?? null;
+            scene.togglePause();
+            return scene.state;
+        },
+        returnToMenu: () => {
+            const scene = getScene();
+            if (!scene) return null;
+            scene.returnToMenu();
+            return scene.state;
+        },
     };
 }

@@ -2,16 +2,20 @@ import { test, expect } from '@playwright/test';
 import { DEPTH } from '../src/uiDepth.js';
 import { UI_LAYOUT } from '../src/uiLayout.js';
 import {
-    expectGameState,
+    isMobileLandscapeProject,
+    projectUsesTouch,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
 
 test.describe('score HUD', () => {
-    test('affiche 0 visible au démarrage de partie', async ({ page }) => {
+    test('affiche 0 visible au démarrage de partie', async ({ page }, testInfo) => {
+        test.skip(
+            isMobileLandscapeProject(testInfo.project.name),
+            'hint paysage bloque le jeu',
+        );
         await waitForGameReady(page);
-        await page.keyboard.press('Space');
-        await expectGameState(page, 'playing');
+        await startPlayingFromMenu(page, projectUsesTouch(testInfo));
 
         await expect.poll(() => page.evaluate(() => window.__FLOPPY_TEST__.getScoreHud())).toMatchObject({
             visible: true,
@@ -23,9 +27,13 @@ test.describe('score HUD', () => {
         expect(hud.y).toBeGreaterThanOrEqual(UI_LAYOUT.scoreHud - 2);
     });
 
-    test('met à jour le score via test seam', async ({ page }) => {
+    test('met à jour le score via test seam', async ({ page }, testInfo) => {
+        test.skip(
+            isMobileLandscapeProject(testInfo.project.name),
+            'hint paysage bloque le jeu',
+        );
         await waitForGameReady(page);
-        await startPlayingFromMenu(page, false);
+        await startPlayingFromMenu(page, projectUsesTouch(testInfo));
 
         await page.evaluate(() => window.__FLOPPY_TEST__.bumpScore(3));
         await expect.poll(() => page.evaluate(() => window.__FLOPPY_TEST__.getScoreHud()?.text)).toBe('3');

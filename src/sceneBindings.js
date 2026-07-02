@@ -1,4 +1,4 @@
-import { showAchievementToasts } from './uiMeta.js';
+import { showAchievementToasts } from './uiAchievementToast.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function wireSceneBindings(scene) {

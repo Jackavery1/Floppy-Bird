@@ -28,6 +28,12 @@ describe('skinUnlocks', () => {
         expect(unlock(makeCtx({ bestScoreAny: 10 }))).toBe(true);
     });
 
+    it('minuit utilise le score global comme les autres paliers classiques', () => {
+        const unlock = resolveUnlock(SKIN_DEFINITIONS.minuit.unlock, {});
+        expect(unlock(makeCtx({ bestScoreAny: 14, bestHardScore: 20 }))).toBe(false);
+        expect(unlock(makeCtx({ bestScoreAny: 15, bestHardScore: 0 }))).toBe(true);
+    });
+
     it('neonCollection exige tous les autres skins', () => {
         const skins = Object.fromEntries(
             SKIN_IDS.map(id => [id, { unlock: () => id === 'classic' }]),

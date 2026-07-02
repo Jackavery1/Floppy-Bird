@@ -29,27 +29,28 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 | 1 / 2 / 3 | Difficulté (menu) |
 | T | Mode entraînement ON/OFF (menu) |
 | H | Mode hardcore ON/OFF (menu) |
-| D | Défi du jour ON/OFF (menu options) |
+| D | Lancer le défi du jour (menu ou game over) |
+| S | Scores (menu) |
 | O | Options (menu) |
+| K | Skins (menu) |
 | ESC | Pause |
 | M | Menu (pause ou game over) |
-| Tap « OPTIONS » | Modes, apparence, son |
 
 ## Jeu
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
 - 8 premiers gaps scriptés à chaque manche, puis séquence daily / aléatoire lissé
-- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (700→625→550 ms en hardcore sur les 3 premiers tuyaux, tuyaux seulement)
-- Coyote time 5 frames dans les gaps — hitbox entière dans le gap (pas plafond/sol) ; buffer de saut 4 frames
+- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (hardcore : 700→325 ms sur les 6 premiers tuyaux, collisions tuyaux seulement)
+- Coyote time 5 frames : centre de l’oiseau dans le corridor du gap (+ grâce résiduelle hors colonne) ; buffer de saut 4 frames
 - Tutoriel « sauter » à la première partie
 - Son de palier distinct tous les 10 points
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,65), fantôme (meilleur parcours par difficulté/hardcore), scores non enregistrés
-- Escalade : +3 % vitesse tous les 10 points ; gaps resserrés après score 20
-- **Défi du jour** : toggle menu (D) — séquence partagée du jour ou aléatoire libre
-- **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→625→550 ms sur les 3 premiers tuyaux, **TOP 5 hardcore** séparé
-- **Meta** : 4 skins et 5 trophées déblocables
+- Escalade : +3 % vitesse tous les 10 points ; gaps resserrés après score 20 ; bannière « DIFFICULTÉ ↑ » à 20 pts ; séries à 10 et 15 pts
+- **Défi du jour** (D) : séquence partagée du jour, skin et objectif imposés ; rejouable depuis le game over (espace/tap)
+- **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→325 ms sur 6 tuyaux, **TOP 5 hardcore** séparé
+- **Meta** : 16 skins et 6 trophées déblocables
 
 Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/config.js`](src/config.js).
 
@@ -59,7 +60,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 |---------|------|
 | `src/` | gameplay (`bird`, `pipes`, `scene*`), UI (`ui*`), meta, textures |
 | `tests/` | Vitest (miroir des modules métier) |
-| `e2e/` | Playwright (desktop + mobile portrait/paysage) |
+| `e2e/` | Playwright (desktop, mobile portrait/paysage Chromium + WebKit) |
 | `public/` | manifest PWA, `offline.html` |
 | `scripts/` | build (icônes, copie Phaser vendor) |
 

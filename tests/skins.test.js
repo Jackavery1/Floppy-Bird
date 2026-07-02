@@ -52,7 +52,8 @@ describe('skins', () => {
         expect(SKINS.ambre.unlock(baseCtx({ bestScoreAny: 11 }))).toBe(false);
         expect(SKINS.ambre.unlock(baseCtx({ bestScoreAny: 12 }))).toBe(true);
         expect(SKINS.corail.unlock(baseCtx({ bestScoreAny: 25 }))).toBe(true);
-        expect(SKINS.minuit.unlock(baseCtx({ bestHardScore: 15 }))).toBe(true);
+        expect(SKINS.minuit.unlock(baseCtx({ bestScoreAny: 14 }))).toBe(false);
+        expect(SKINS.minuit.unlock(baseCtx({ bestScoreAny: 15 }))).toBe(true);
     });
 
     it('ruby/ocean/fantôme gardent leurs seuils historiques', () => {

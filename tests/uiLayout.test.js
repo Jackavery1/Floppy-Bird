@@ -22,6 +22,7 @@ describe('uiLayout', () => {
         expect(TOUCH_TARGETS.pauseResume.y).toBe(UI_LAYOUT.pause.resumeBtn);
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
         expect(UI_LAYOUT.menuBtn.height).toBe(MIN_TOUCH);
+        expect(UI_LAYOUT.menu.menuBtnW).toBeGreaterThanOrEqual(MIN_TOUCH);
         expect(UI_LAYOUT.diffBtn.height).toBe(MIN_TOUCH);
     });
 });

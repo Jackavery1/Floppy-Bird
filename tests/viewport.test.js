@@ -40,7 +40,11 @@ describe('viewport', () => {
     });
 
     it('getLetterboxViewport utilise le client du body', () => {
-        vi.stubGlobal('window', { visualViewport: { offsetTop: 5, offsetLeft: 2 } });
+        vi.stubGlobal('window', {
+            innerWidth: 350,
+            innerHeight: 700,
+            visualViewport: { width: 350, height: 700, offsetTop: 5, offsetLeft: 2 },
+        });
         vi.stubGlobal('document', {
             body: { clientWidth: 350, clientHeight: 700 },
         });
@@ -49,6 +53,46 @@ describe('viewport', () => {
             height: 700,
             offsetTop: 5,
             offsetLeft: 2,
+        });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport réduit la hauteur quand visualViewport est plus petit (clavier)', () => {
+        vi.stubGlobal('window', {
+            innerWidth: 390,
+            innerHeight: 844,
+            visualViewport: { width: 390, height: 620, offsetTop: 18, offsetLeft: 0 },
+        });
+        vi.stubGlobal('document', {
+            body: { clientWidth: 390, clientHeight: 844 },
+        });
+        expect(getLetterboxViewport()).toEqual({
+            width: 390,
+            height: 620,
+            offsetTop: 18,
+            offsetLeft: 0,
+        });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport retombe sur visualViewport avec safe-area', () => {
+        vi.stubGlobal('window', {
+            visualViewport: { width: 400, height: 800, offsetTop: 10, offsetLeft: 0 },
+        });
+        vi.stubGlobal('document', {
+            body: { clientWidth: 0, clientHeight: 0 },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '20px',
+            paddingRight: '10px',
+            paddingBottom: '20px',
+            paddingLeft: '10px',
+        }));
+        expect(getLetterboxViewport()).toEqual({
+            width: 380,
+            height: 760,
+            offsetTop: 30,
+            offsetLeft: 10,
         });
         vi.unstubAllGlobals();
     });

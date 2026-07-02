@@ -1,8 +1,9 @@
 import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
-import { loadSelectedSkin, saveSelectedSkin } from './metaStorage.js';
-import { getSkin, listUnlockedSkins, SKIN_IDS, birdTextureKey } from './skins/index.js';
-import { sceneTween } from './motion.js';
+import { loadSelectedSkin } from './metaStorage.js';
+import { loadHighScore } from './storage.js';
+import { applySelectedSkin } from './skins/skinSelection.js';
+import { getSkin, listUnlockedSkins, SKIN_IDS, birdTextureKey, isSpecialSkin } from './skins/index.js';
 import {
     addCenteredText,
     DEPTH,
@@ -14,13 +15,6 @@ import {
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
 const SKIN_CELL_H = 56;
-
-/** @param {import('./sceneTypes.js').SceneContext} scene @param {string} skinId */
-function selectSkin(scene, skinId) {
-    saveSelectedSkin(skinId);
-    scene.bird?.setSkin?.(skinId);
-    return skinId;
-}
 
 /**
  * @param {import('./ui.js').UI} ui
@@ -38,7 +32,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         'APPARENCE', {
             fontSize: '12px', fill: '#90CAF9', fontStyle: 'bold',
             stroke: '#0d1117', strokeThickness: 2,
-        }, 56,
+        }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(title);
     elements.push(title);
@@ -46,7 +40,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
 
     ui._skinsCountLine = addCenteredText(
         scene, GAME_CONFIG.centerX, panel.skinsSubtitle,
-        '', { fontSize: '11px', fill: '#B0BEC5', stroke: '#0d1117', strokeThickness: 2 }, 56,
+        '', { fontSize: '11px', fill: '#B0BEC5', stroke: '#0d1117', strokeThickness: 2 }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(ui._skinsCountLine);
     elements.push(ui._skinsCountLine);
@@ -79,11 +73,24 @@ export function buildSkinsTab(ui, elements, panelElements) {
             scene, cx, cy + 24, skin.label, {
                 fontSize: '9px', fill: '#CFD8DC',
                 stroke: '#0d1117', strokeThickness: 2,
-            }, 57,
+            }, DEPTH.PANEL_PREVIEW,
         );
         panelElements.push(nameLabel);
         elements.push(nameLabel);
         ui._skinsTabElements.push(nameLabel);
+
+        let recordLabel = null;
+        if (isSpecialSkin(skinId)) {
+            recordLabel = addCenteredText(
+                scene, cx, cy + 34, '', {
+                    fontSize: '8px', fill: '#FFD54F',
+                    stroke: '#0d1117', strokeThickness: 2,
+                }, DEPTH.PANEL_PREVIEW,
+            );
+            panelElements.push(recordLabel);
+            elements.push(recordLabel);
+            ui._skinsTabElements.push(recordLabel);
+        }
 
         const hit = scene.add.rectangle(cx, cy, MIN_TOUCH, MIN_TOUCH, 0x000000, 0);
         hit.setDepth(DEPTH.PANEL_TOP);
@@ -93,14 +100,14 @@ export function buildSkinsTab(ui, elements, panelElements) {
             const ctx = buildMetaContext(scene);
             const unlocked = listUnlockedSkins(ctx);
             if (!unlocked.includes(skinId)) return;
-            selectSkin(scene, skinId);
+            applySelectedSkin(scene, skinId);
             refreshSkinsTab(ui);
         });
         panelElements.push(hit);
         elements.push(hit);
         ui._skinsTabElements.push(hit);
 
-        ui._skinCells.push({ skinId, frame, preview, nameLabel, hit });
+        ui._skinCells.push({ skinId, frame, preview, nameLabel, recordLabel, hit });
     });
 
     ui._skinHint = addCenteredText(
@@ -108,7 +115,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         'Scores · hardcore · défi du jour · entraînement · néon = collection', {
             fontSize: '10px', fill: '#78909C', fontStyle: 'italic',
             stroke: '#0d1117', strokeThickness: 2,
-        }, 56,
+        }, DEPTH.PANEL_FRAME,
     );
     panelElements.push(ui._skinHint);
     elements.push(ui._skinHint);
@@ -127,7 +134,7 @@ export function refreshSkinsTab(ui) {
 
     ui._skinsCountLine?.setText(`${ctx.unlockedSkinCount}/${SKIN_IDS.length} débloqués`);
 
-    ui._skinCells.forEach(({ skinId, frame, preview, nameLabel }) => {
+    ui._skinCells.forEach(({ skinId, frame, preview, nameLabel, recordLabel }) => {
         const isUnlocked = unlocked.has(skinId);
         const isSelected = skinId === selected;
         preview.setAlpha(isUnlocked ? 1 : 0.28);
@@ -137,37 +144,15 @@ export function refreshSkinsTab(ui) {
         if (!isUnlocked) {
             nameLabel.setText('???');
         }
+        if (recordLabel) {
+            if (isUnlocked) {
+                const best = loadHighScore(scene.difficulty, scene.hardcoreMode, skinId);
+                recordLabel.setVisible(true);
+                recordLabel.setText(best > 0 ? `★ ${best}` : '');
+            } else {
+                recordLabel.setVisible(false);
+                recordLabel.setText('');
+            }
+        }
     });
-}
-
-/** @param {import('./sceneTypes.js').SceneContext} scene @param {{ title: string }} achievement */
-function showAchievementToast(scene, achievement) {
-    const toast = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        118,
-        `🏆 ${achievement.title}`,
-        {
-            fontSize: '14px',
-            fill: '#FDD835',
-            fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
-        DEPTH.ACHIEVEMENT_TOAST,
-    );
-    sceneTween(scene, {
-        targets: toast,
-        alpha: { from: 1, to: 0 },
-        y: 100,
-        duration: 1800,
-        delay: 400,
-        ease: 'Power2',
-        onComplete: () => toast.destroy(),
-    });
-}
-
-/** @param {import('./sceneTypes.js').SceneContext} scene @param {Array<{ title: string }>} achievements */
-export function showAchievementToasts(scene, achievements) {
-    achievements.forEach(a => showAchievementToast(scene, a));
 }

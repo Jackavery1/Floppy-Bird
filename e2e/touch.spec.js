@@ -3,10 +3,11 @@ import { TOUCH_TARGETS } from '../src/uiLayout.js';
 import {
     enterPausedFromPlaying,
     expectGameState,
-    hideLandscapeHint,
+    isMobileLandscapeProject,
     openPauseFromPlaying,
     pointerGameCoord,
     projectUsesTouch,
+    returnToMenuFromPause,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
@@ -35,9 +36,7 @@ test.describe('touch mobile portrait', () => {
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         await enterPausedFromPlaying(page, usesTouch);
-        const { pauseMenu } = TOUCH_TARGETS;
-        await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch);
-        await expectGameState(page, 'menu');
+        await returnToMenuFromPause(page, usesTouch);
     });
 
     test('ouvre le panneau scores via tap', async ({ page }, testInfo) => {
@@ -61,21 +60,17 @@ test.describe('touch mobile portrait', () => {
 });
 
 test.describe('touch mobile landscape', () => {
-    test.beforeEach(async ({ page }) => {
-        await hideLandscapeHint(page);
-    });
-
     test('ouvre la pause via tap bouton en paysage', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
         const usesTouch = projectUsesTouch(testInfo);
-        await waitForGameReady(page);
+        await waitForGameReady(page, { hideLandscapeHint: true });
         await enterPausedFromPlaying(page, usesTouch);
     });
 
     test('pause → reprendre via tap en paysage', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
         const usesTouch = projectUsesTouch(testInfo);
-        await waitForGameReady(page);
+        await waitForGameReady(page, { hideLandscapeHint: true });
         await enterPausedFromPlaying(page, usesTouch);
         const { pauseResume } = TOUCH_TARGETS;
         await pointerGameCoord(page, pauseResume.x, pauseResume.y, usesTouch);
@@ -83,12 +78,10 @@ test.describe('touch mobile landscape', () => {
     });
 
     test('pause → menu via tap en paysage', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-landscape', 'mobile landscape uniquement');
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
         const usesTouch = projectUsesTouch(testInfo);
-        await waitForGameReady(page);
+        await waitForGameReady(page, { hideLandscapeHint: true });
         await enterPausedFromPlaying(page, usesTouch);
-        const { pauseMenu } = TOUCH_TARGETS;
-        await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch);
-        await expectGameState(page, 'menu');
+        await returnToMenuFromPause(page, usesTouch);
     });
 });

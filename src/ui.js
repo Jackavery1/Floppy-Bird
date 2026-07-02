@@ -16,15 +16,19 @@ import {
     showDailyGoalReached,
 } from './uiHud.js';
 import {
+    showDifficultyEscalation,
+    showScoreStreak,
+} from './uiHudFeedback.js';
+import {
     showMenu,
     updateTrainingLabel,
     updateHardcoreLabel,
     updateDifficultyButtons,
     refreshHighScore as refreshMenuHighScore,
-    toggleMenuOptionsPanel,
-    toggleMenuScoresPanel,
-    toggleMenuSkinsPanel,
 } from './uiMenu.js';
+import { toggleMenuOptions } from './uiMenuOptions.js';
+import { toggleMenuScores } from './uiMenuScoresPanel.js';
+import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
 import { showPause } from './uiPause.js';
 import { refreshHardcoreLockState } from './uiMenuOptions.js';
 
@@ -73,6 +77,8 @@ export class UI {
     updateScore(newScore) { updateScore(this, newScore); }
     showRecordBroken() { showRecordBroken(this); }
     showDailyGoalReached() { showDailyGoalReached(this); }
+    showDifficultyEscalation() { showDifficultyEscalation(this); }
+    showScoreStreak(score) { showScoreStreak(this, score); }
     showMenu(difficulty, trainingMode, hardcoreMode) {
         return showMenu(this, difficulty, trainingMode, hardcoreMode);
     }
@@ -84,9 +90,9 @@ export class UI {
     refreshHighScore(difficulty, hardcoreMode = false, skinId = null) {
         refreshMenuHighScore(this, difficulty, hardcoreMode, skinId);
     }
-    toggleMenuOptionsPanel() { toggleMenuOptionsPanel(this); }
-    toggleMenuScoresPanel() { toggleMenuScoresPanel(this); }
-    toggleMenuSkinsPanel() { toggleMenuSkinsPanel(this); }
+    toggleMenuOptionsPanel() { toggleMenuOptions(this); }
+    toggleMenuScoresPanel() { toggleMenuScores(this); }
+    toggleMenuSkinsPanel() { toggleMenuSkins(this); }
     showPause(opts) { return showPause(this, opts); }
     showFlash() { showFlash(this); }
     refreshHardcoreLockState() { refreshHardcoreLockState(this); }

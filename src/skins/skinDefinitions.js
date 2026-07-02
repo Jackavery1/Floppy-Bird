@@ -93,7 +93,7 @@ export const SKIN_DEFINITIONS = Object.freeze({
     },
     minuit: {
         label: 'Minuit',
-        hint: 'Score difficile ≥ 15',
+        hint: 'Meilleur score ≥ 15',
         family: 'classic',
         palette: {
             body: 0x3949AB,
@@ -102,7 +102,7 @@ export const SKIN_DEFINITIONS = Object.freeze({
             beak: 0xB0BEC5,
             beakDark: 0x78909C,
         },
-        unlock: { type: 'hard', min: 15 },
+        unlock: { type: 'scoreAny', min: 15 },
     },
     armure: {
         label: 'Chevalier',

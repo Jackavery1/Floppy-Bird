@@ -17,6 +17,8 @@ export {
     dismissJumpTutorial,
     showFlash,
     showDailyGoalReached,
+    showDifficultyEscalation,
+    showScoreStreak,
 } from './uiHudFeedback.js';
 
 /** @param {import('./ui.js').UI} ui */

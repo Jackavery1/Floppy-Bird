@@ -64,12 +64,21 @@ export function getLetterboxViewport() {
     const offsetTop = vv?.offsetTop ?? 0;
     const offsetLeft = vv?.offsetLeft ?? 0;
     if (body?.clientWidth > 0 && body?.clientHeight > 0) {
+        const vvWidth = vv?.width ?? body.clientWidth;
+        const vvHeight = vv?.height ?? body.clientHeight;
         return {
-            width: body.clientWidth,
-            height: body.clientHeight,
+            width: Math.min(body.clientWidth, vvWidth),
+            height: Math.min(body.clientHeight, vvHeight),
             offsetTop,
             offsetLeft,
         };
     }
-    return getViewportDimensions();
+    const dims = getViewportDimensions();
+    const insets = readSafeAreaInsets();
+    return {
+        width: Math.max(1, dims.width - insets.left - insets.right),
+        height: Math.max(1, dims.height - insets.top - insets.bottom),
+        offsetTop: dims.offsetTop + insets.top,
+        offsetLeft: dims.offsetLeft + insets.left,
+    };
 }

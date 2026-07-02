@@ -57,6 +57,28 @@ describe('appBootstrap', () => {
         expect(result.targetH).toBe(expectedH);
     });
 
+    it('resizeGameCanvas réduit le letterbox quand visualViewport rétrécit (clavier)', async () => {
+        vi.stubGlobal('window', {
+            innerWidth: 390,
+            innerHeight: 844,
+            visualViewport: { width: 390, height: 620, offsetTop: 22, offsetLeft: 0 },
+        });
+        vi.stubGlobal('document', {
+            body: { clientWidth: 390, clientHeight: 844, style: {} },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0', paddingRight: '0', paddingBottom: '0', paddingLeft: '0',
+        }));
+
+        const container = { style: {} };
+        const canvas = { width: 0, height: 0, style: {}, parentElement: container };
+        const { resizeGameCanvas } = await import('../src/appBootstrap.js');
+        const result = resizeGameCanvas({ canvas });
+        const expectedH = computeLetterboxSize(390, 620, GAME_CONFIG.width, GAME_CONFIG.height).height;
+        expect(result.targetH).toBe(expectedH);
+        expect(container.style.marginTop).toBe('22px');
+    });
+
     it('hideLoadingScreen masque le chargement et marque le document', async () => {
         const loading = { classList: { add: vi.fn() } };
         const doc = {

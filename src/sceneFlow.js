@@ -107,6 +107,15 @@ export function togglePause(scene) {
 }
 
 /** @param {SceneContext} scene */
+function restartFromPrimary(scene) {
+    if (scene.state === GAME_STATE.GAME_OVER && scene.playMode === 'daily') {
+        startDailyChallenge(scene);
+        return;
+    }
+    startGame(scene);
+}
+
+/** @param {SceneContext} scene */
 export function handlePrimaryAction(scene) {
     if (scene.state === GAME_STATE.PAUSED) {
         togglePause(scene);
@@ -115,7 +124,7 @@ export function handlePrimaryAction(scene) {
     if (!canHandlePrimaryAction(scene.state)) return;
 
     if (shouldStartGameOnPrimary(scene.state)) {
-        startGame(scene);
+        restartFromPrimary(scene);
         requestJump(scene);
     } else if (scene.state === GAME_STATE.PLAYING) {
         requestJump(scene);

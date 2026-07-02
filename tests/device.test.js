@@ -81,4 +81,11 @@ describe('device', () => {
         const { modesHintLine } = await loadDevice(false);
         expect(modesHintLine().toLowerCase()).toContain('options');
     });
+
+    it('dailyReplayHint et restartHintForMode distinguent le mode daily', async () => {
+        const { dailyReplayHint, restartHintForMode } = await loadDevice(true);
+        expect(dailyReplayHint()).toBe('TAP : rejouer le défi');
+        expect(restartHintForMode(true)).toBe('TAP : rejouer le défi');
+        expect(restartHintForMode(false)).toBe('TAP : rejouer');
+    });
 });

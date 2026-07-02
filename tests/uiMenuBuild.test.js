@@ -31,7 +31,7 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuHeader ajoute le titre avec relief', async () => {
-        const { buildMenuHeader } = await import('../src/uiMenuBuild.js');
+        const { buildMenuHeader } = await import('../src/uiMenuHeader.js');
         const title = buildMenuHeader(ui, elements, layout);
         expect(title).toBeTruthy();
         expect(ui._menuTitleShadow).toBeTruthy();
@@ -40,16 +40,26 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuDifficulty crée un bouton par niveau', async () => {
-        const { buildMenuDifficulty } = await import('../src/uiMenuBuild.js');
+        const { buildMenuDifficulty } = await import('../src/uiMenuHeader.js');
         buildMenuDifficulty(ui, elements, layout, DIFFICULTY.NORMAL);
         expect(ui._diffBtnLabels).toHaveLength(3);
         expect(ui._diffBtnGraphics).toBeTruthy();
     });
 
-    it('buildMenuFooter ajoute start et hint', async () => {
+    it('buildMenuFooter ajoute start, zone tactile 44 px et hint', async () => {
         const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
         const start = buildMenuFooter(ui, elements, layout);
         expect(start).toBe(ui._startText);
+        expect(ui._startHit).toBeTruthy();
+        expect(ui._startHit.setDepth).toHaveBeenCalled();
+        expect(scene.add.rectangle).toHaveBeenCalledWith(
+            expect.any(Number),
+            layout.start,
+            240,
+            MIN_TOUCH,
+            expect.any(Number),
+            expect.any(Number),
+        );
         expect(ui._hint1).toBeTruthy();
         expect(ui._muteHit).toBeUndefined();
     });

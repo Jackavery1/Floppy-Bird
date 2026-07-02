@@ -43,7 +43,7 @@ export const GAME_CONFIG = {
         bodyWidth: 28,
         capMargin: 24,
         spawnMarginY: 48,
-        maxGapDelta: 80,
+        maxGapDelta: 72,
         minGapDelta: 40,
         minPipeGap: 72,
     },
@@ -61,6 +61,7 @@ export const GAME_CONFIG = {
         gapTightenAfterScore: 20,
         gapTightenEvery: 10,
         gapTightenStep: 8,
+        streakMilestones: [10, 15],
     },
 
     training: {

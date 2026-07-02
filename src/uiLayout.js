@@ -23,7 +23,7 @@ export {
     stopUiEvent,
 } from './uiLayoutConstants.js';
 
-export { DEPTH, SCORE_HUD_DEPTH } from './uiDepth.js';
+export { DEPTH } from './uiDepth.js';
 
 export {
     addCenteredText,

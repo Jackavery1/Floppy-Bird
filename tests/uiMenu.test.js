@@ -81,7 +81,6 @@ describe('uiMenu', () => {
         ];
         ui._diffBtnGraphics = { clear: vi.fn(), fillStyle: vi.fn(), fillRoundedRect: vi.fn() };
         ui._menuLayout = { diffBtnW: 80, diffBtnH: 36, diffGap: 8 };
-        ui._bestText = { setText: vi.fn() };
         updateDifficultyButtons(ui, DIFFICULTY.HARD);
         expect(ui._currentDifficulty).toBe(DIFFICULTY.HARD);
     });

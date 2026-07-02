@@ -13,6 +13,15 @@ export function restartHint() {
     return isCoarsePointer() ? 'TAP : rejouer' : 'ESPACE : rejouer';
 }
 
+export function dailyReplayHint() {
+    return isCoarsePointer() ? 'TAP : rejouer le défi' : 'ESPACE : rejouer le défi';
+}
+
+/** @param {boolean} isDaily */
+export function restartHintForMode(isDaily) {
+    return isDaily ? dailyReplayHint() : restartHint();
+}
+
 export function pauseResumeHint() {
     return isCoarsePointer() ? 'TAP : reprendre' : 'ESC : reprendre';
 }

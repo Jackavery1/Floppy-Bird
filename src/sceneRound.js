@@ -3,6 +3,7 @@ import { GAME_STATE } from './gameState.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { playScoreFeedback } from './sceneFeedback.js';
 import { notifyAchievementUnlocks } from './metaAchievements.js';
+import { handleScoreMilestones } from './sceneScoreMilestones.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -111,6 +112,7 @@ export function checkScorePipes(scene) {
             scene.ui.updateScore(round.score);
             scene.pipes.applySpeedForScore(round.score);
             playScoreFeedback(round.score);
+            handleScoreMilestones(scene, round.score);
             scene.scoreEffects.show(scene.bird.x, scene.bird.y);
             maybeCelebrateDailyGoal(scene);
             if (shouldNotifyRecord(round.score, round.roundHighScore, round.recordNotified)) {

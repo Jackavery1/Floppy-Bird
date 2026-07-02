@@ -1,0 +1,67 @@
+import { describe, it, expect } from 'vitest';
+import { GAME_CONFIG } from '../src/config.js';
+import {
+    pipeCollider,
+    collidesWithPipeGroup,
+    isBirdInPipeGap,
+} from '../src/pipeCollision.js';
+
+describe('pipeCollision', () => {
+    describe('pipeCollider', () => {
+        it('définit le collider du tuyau haut', () => {
+            const col = pipeCollider({ x: 200, y: 120 }, 'top', 28);
+            expect(col).toEqual({ x: 186, y: 0, width: 28, height: 120 });
+        });
+
+        it('définit le collider du tuyau bas jusqu’au sol', () => {
+            const col = pipeCollider({ x: 200, y: 350 }, 'bottom', 28);
+            expect(col).toEqual({
+                x: 186,
+                y: 350,
+                width: 28,
+                height: GAME_CONFIG.height - 350,
+            });
+        });
+    });
+
+    describe('collidesWithPipeGroup', () => {
+        const pipes = [{ x: 200, y: 150 }];
+
+        it('détecte un chevauchement', () => {
+            const bird = { x: 186, y: 130, width: 28, height: 20 };
+            expect(collidesWithPipeGroup(pipes, 'top', bird, 28)).toBe(true);
+        });
+
+        it('rejette l’absence de chevauchement', () => {
+            const bird = { x: 186, y: 200, width: 28, height: 20 };
+            expect(collidesWithPipeGroup(pipes, 'top', bird, 28)).toBe(false);
+        });
+    });
+
+    describe('isBirdInPipeGap', () => {
+        const topPipes = [{ x: 200, y: 120 }];
+        const bottomPipes = [{ x: 200, y: 232 }];
+        const inGap = { x: 186, y: 130, width: 28, height: 20 };
+
+        it('valide l’oiseau dont le centre est dans le corridor', () => {
+            expect(isBirdInPipeGap(inGap, topPipes, bottomPipes, 28)).toBe(true);
+        });
+
+        it('accorde le coyote si le centre est dans le gap malgré un frôlement', () => {
+            const clipping = { x: 186, y: 222, width: 28, height: 20 };
+            expect(isBirdInPipeGap(clipping, topPipes, bottomPipes, 28)).toBe(true);
+        });
+
+        it('rejette un oiseau hors du gap vertical', () => {
+            expect(isBirdInPipeGap({ ...inGap, y: 100 }, topPipes, bottomPipes, 28)).toBe(false);
+        });
+
+        it('rejette un oiseau hors de la colonne horizontale', () => {
+            expect(isBirdInPipeGap({ ...inGap, x: 120 }, topPipes, bottomPipes, 28)).toBe(false);
+        });
+
+        it('ignore les paires incomplètes', () => {
+            expect(isBirdInPipeGap(inGap, topPipes, [], 28)).toBe(false);
+        });
+    });
+});

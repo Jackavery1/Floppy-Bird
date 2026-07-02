@@ -69,3 +69,93 @@ export function buildMenuToggleButton(scene, elements, cfg) {
 
     return { bg, label, hit };
 }
+
+/**
+ * @param {import('./ui.js').UI} ui
+ * @param {{
+ *   openKey: string,
+ *   backdropKey: string,
+ *   panelElementsKey: string,
+ *   btnLabelKey: string,
+ *   buttonLabelFn: (open: boolean) => string,
+ *   setContentVisible?: (ui: import('./ui.js').UI, open: boolean) => void,
+ *   onOpen?: (ui: import('./ui.js').UI) => void,
+ * }} cfg
+ */
+export function createMenuPanelController(ui, cfg) {
+    function refreshButtonLabel() {
+        if (!ui[cfg.btnLabelKey]) return;
+        ui[cfg.btnLabelKey].setText(cfg.buttonLabelFn(ui[cfg.openKey]));
+    }
+
+    function setOpen(open) {
+        ui[cfg.openKey] = open;
+        ui[cfg.backdropKey]?.setVisible(open);
+        if (cfg.setContentVisible) {
+            cfg.setContentVisible(ui, open);
+        } else {
+            setMenuPanelVisible(ui[cfg.panelElementsKey], open);
+        }
+        refreshButtonLabel();
+        if (open && cfg.onOpen) cfg.onOpen(ui);
+        syncMenuChromeVisibility(ui);
+    }
+
+    function toggle() {
+        if (ui[cfg.openKey]) {
+            setOpen(false);
+            return;
+        }
+        ui._closeAllMenuPanels?.();
+        setOpen(true);
+    }
+
+    return { refreshButtonLabel, setOpen, toggle };
+}
+
+/**
+ * @param {import('./ui.js').UI} ui
+ * @param {import('phaser').GameObjects.GameObject[]} elements
+ * @param {{ refreshButtonLabel: () => void, setOpen: (open: boolean) => void, toggle: () => void }} controller
+ * @param {{
+ *   openKey: string,
+ *   backdropKey: string,
+ *   panelElementsKey: string,
+ *   btnBgKey: string,
+ *   btnLabelKey: string,
+ *   btnHitKey: string,
+ *   buttonLabelFn: (open: boolean) => string,
+ *   btnLayout: { cx: number, cy: number, width: number },
+ *   panelLayout: { panelTop: number, panelH: number, w: number },
+ *   btnColor: number,
+ *   btnStroke: number,
+ *   labelStroke: string,
+ *   buildContent: (ui: import('./ui.js').UI, elements: import('phaser').GameObjects.GameObject[], panelElements: import('phaser').GameObjects.GameObject[]) => void,
+ * }} cfg
+ */
+export function buildMenuPanelShell(ui, elements, controller, cfg) {
+    const scene = ui.scene;
+    ui[cfg.openKey] = false;
+    ui[cfg.panelElementsKey] = [];
+
+    const btn = buildMenuToggleButton(scene, elements, {
+        cx: cfg.btnLayout.cx,
+        cy: cfg.btnLayout.cy,
+        width: cfg.btnLayout.width,
+        depth: DEPTH.MENU_ROW_BTN,
+        color: cfg.btnColor,
+        stroke: cfg.btnStroke,
+        labelText: cfg.buttonLabelFn(false),
+        labelStroke: cfg.labelStroke,
+        onToggle: () => controller.toggle(),
+    });
+    ui[cfg.btnBgKey] = btn.bg;
+    ui[cfg.btnLabelKey] = btn.label;
+    ui[cfg.btnHitKey] = btn.hit;
+
+    ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout);
+    elements.push(ui[cfg.backdropKey]);
+
+    cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
+    controller.setOpen(false);
+}

@@ -7,19 +7,19 @@ import {
 import { applyMenuLayout, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from './uiHud.js';
 import {
-    buildMenuHeader,
-    buildMenuDifficulty,
     buildMenuFooter,
-    buildMenuDailyChallenge,
-    refreshDailyChallengeButton,
     playMenuIntroTween,
 } from './uiMenuBuild.js';
+import { buildMenuHeader, buildMenuDifficulty } from './uiMenuHeader.js';
+import {
+    buildMenuDailyChallenge,
+    refreshDailyChallengeButton,
+} from './uiMenuDailyChallenge.js';
 import {
     buildMenuOptions,
     refreshOptionsButtonLabel,
     refreshHardcoreLockState,
     setMenuOptionsOpen,
-    toggleMenuOptions,
     applyTrainingLabel,
     applyHardcoreLabel,
 } from './uiMenuOptions.js';
@@ -27,17 +27,16 @@ import {
     buildMenuScoresPanel,
     refreshScoresButtonLabel,
     setMenuScoresOpen,
-    toggleMenuScores,
 } from './uiMenuScoresPanel.js';
 import {
     buildMenuSkinsPanel,
     setMenuSkinsOpen,
-    toggleMenuSkins,
 } from './uiMenuSkinsPanel.js';
 import { refreshScoresTab } from './uiMenuScores.js';
 import { syncMenuChromeVisibility } from './uiMenuPanel.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
+import { DEPTH } from './uiLayout.js';
 
 /** @param {import('./ui.js').UI} ui */
 export function closeAllMenuPanels(ui) {
@@ -72,7 +71,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     ui._menuLayout = layout;
     ui._closeAllMenuPanels = () => closeAllMenuPanels(ui);
 
-    elements.push(ui.createOverlay(0.22, 50));
+    elements.push(ui.createOverlay(0.22, DEPTH.OVERLAY_DIM));
 
     const title = buildMenuHeader(ui, elements, layout);
     buildMenuDifficulty(ui, elements, layout, difficulty);
@@ -81,6 +80,10 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     buildMenuScoresPanel(ui, elements, layout);
     buildMenuOptions(ui, elements, layout);
     buildMenuSkinsPanel(ui, elements, layout);
+
+    const unlocked = isHardcoreUnlocked(buildMetaContext(ui.scene));
+    applyTrainingLabel(ui, trainingMode);
+    applyHardcoreLabel(ui, hardcoreMode, unlocked);
 
     applyMenuLayout(ui, difficulty);
     ui._menuChromeElements = [
@@ -93,24 +96,13 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._dailyMenuSubtitle,
         ui._dailyBtnHit,
         ui._startText,
+        ui._startHit,
         ui._hint1,
     ].filter(Boolean);
     syncMenuChromeVisibility(ui);
     playMenuIntroTween(ui, title);
 
     return elements;
-}
-
-export function toggleMenuOptionsPanel(ui) {
-    toggleMenuOptions(ui);
-}
-
-export function toggleMenuScoresPanel(ui) {
-    toggleMenuScores(ui);
-}
-
-export function toggleMenuSkinsPanel(ui) {
-    toggleMenuSkins(ui);
 }
 
 export function updateTrainingLabel(ui, trainingMode) {

@@ -173,4 +173,14 @@ describe('sceneFlow', () => {
         expect(scene.ui.clearOverlay).toHaveBeenCalledWith('menu');
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
+
+    it('handlePrimaryAction rejoue le défi daily depuis le game over', () => {
+        const scene = makeScene(GAME_STATE.GAME_OVER);
+        scene.playMode = 'daily';
+        scene.dailyChallengeMode = true;
+        handlePrimaryAction(scene);
+        expect(scene.ui.clearOverlay).toHaveBeenCalledWith('gameOver');
+        expect(scene.playMode).toBe('daily');
+        expect(scene.state).toBe(GAME_STATE.PLAYING);
+    });
 });

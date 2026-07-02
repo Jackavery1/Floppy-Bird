@@ -25,15 +25,14 @@ export function collidesWithPipeGroup(pipes, type, birdBounds, pipeBodyWidth) {
 
 export function isBirdInPipeGap(birdBounds, topPipes, bottomPipes, pipeBodyWidth) {
     const birdCx = birdBounds.x + birdBounds.width / 2;
-    const topEdge = birdBounds.y;
-    const bottomEdge = birdBounds.y + birdBounds.height;
+    const birdCy = birdBounds.y + birdBounds.height / 2;
     const halfW = pipeBodyWidth / 2;
     for (let i = 0; i < topPipes.length; i++) {
         const top = topPipes[i];
         const bottom = bottomPipes[i];
         if (!bottom) continue;
         if (birdCx < top.x - halfW || birdCx > top.x + halfW) continue;
-        if (topEdge >= top.y && bottomEdge <= bottom.y) return true;
+        if (birdCy >= top.y && birdCy <= bottom.y) return true;
     }
     return false;
 }

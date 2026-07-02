@@ -69,6 +69,7 @@ vi.mock('../src/sceneRound.js', () => ({
 
 vi.mock('../src/sceneCoyote.js', () => ({
     updateCoyoteTime: vi.fn(),
+    hasCoyoteGrace: vi.fn(() => false),
 }));
 
 vi.mock('../src/sceneFlow.js', () => ({
@@ -91,6 +92,7 @@ import { processJumpBuffer, tickJumpBuffer } from '../src/sceneJumpBuffer.js';
 import { checkCollisions } from '../src/sceneBootstrap.js';
 import { checkScorePipes } from '../src/sceneRound.js';
 import { updateClouds, updateGround } from '../src/sceneBackground.js';
+import { hasCoyoteGrace } from '../src/sceneCoyote.js';
 
 describe('GameScene', () => {
     beforeEach(() => {
@@ -165,5 +167,25 @@ describe('GameScene', () => {
 
         expect(triggerDeath).not.toHaveBeenCalled();
         expect(checkCollisions).toHaveBeenCalledWith(scene);
+    });
+
+    it('le coyote time protège aussi plafond et sol', () => {
+        const scene = new GameScene();
+        scene.state = GAME_STATE.PLAYING;
+        scene.game = { loop: { delta: 16.67, actualFps: 60 } };
+        scene.round = createRoundState();
+        scene.bird = {
+            update: vi.fn(),
+            isOutOfBounds: vi.fn(() => true),
+            isHittingGround: vi.fn(() => false),
+        };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7 };
+        scene.ghost = { update: vi.fn() };
+        scene._clouds = [];
+        vi.mocked(hasCoyoteGrace).mockReturnValue(true);
+
+        scene.update();
+
+        expect(triggerDeath).not.toHaveBeenCalled();
     });
 });
