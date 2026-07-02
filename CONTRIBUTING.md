@@ -67,6 +67,6 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Workflow : `.github/workflows/deploy.yml` — lint, test, build, push de `dist/` sur la branche **`gh-pages`**.
+Workflow : `.github/workflows/deploy.yml` — lint, test, build, push de `dist/` dans **`docs/`** sur `main`.
 
-**Pages** : Settings → Pages → source = **Deploy from a branch** → branche **`gh-pages`**, dossier **`/ (root)`**. Publier depuis `main` sert l’index dev (non bundlé) → écran « Chargement… » infini. Les e2e restent dans le workflow CI.
+**Pages** : Settings → Pages → source = **Deploy from a branch** → branche **`main`**, dossier **`/docs`**. La racine du dépôt sert l’index dev → « Chargement… » infini. Les e2e restent dans le workflow CI.
