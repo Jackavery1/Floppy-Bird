@@ -28,11 +28,9 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /Floppy-Bird/
-      - uses: JamesIves/github-pages-deploy-action@v4
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          folder: dist
-          branch: main
-          target-folder: docs
-          clean: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "deploy: ${{ github.sha }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true

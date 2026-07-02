@@ -85,7 +85,7 @@ Après installation, le jeu s’ouvre en plein écran portrait (`display: standa
 
 GitHub Pages : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
 
-**Réglage obligatoire** (Settings → Pages → Build and deployment) : source **Deploy from a branch**, branche **`main`**, dossier **`/docs`**. Ne pas utiliser `/ (root)` : la racine contient l’index dev Vite (`./src/main.js`).
+**Réglage obligatoire** (Settings → Pages) : source **Deploy from a branch** → branche **`gh-pages`**, dossier **`/ (root)`**. Ne pas utiliser `main` (index dev) ni `main/docs` (dossier absent si le push CI est bloqué).
 
 Après un déploiement, vider le cache PWA si besoin : Safari → effacer historique du site, ou réinstaller la PWA.
 

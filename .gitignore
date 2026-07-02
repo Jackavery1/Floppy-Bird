@@ -10,6 +10,5 @@ Desktop.ini
 coverage/
 test-results/
 playwright-report/
-docs/
 public/vendor/
 public/icons/
