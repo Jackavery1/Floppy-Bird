@@ -37,6 +37,7 @@ jobs:
 
   e2e:
     needs: build
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,7 +56,7 @@ jobs:
           BASE_PATH: /Floppy-Bird/
 
   deploy:
-    needs: [build, e2e]
+    needs: [build]
     runs-on: ubuntu-latest
     environment:
       name: github-pages

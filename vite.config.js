@@ -7,9 +7,12 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const base = process.env.BASE_PATH || './';
-const pwaManifest = JSON.parse(
-    readFileSync(path.join(root, 'public/manifest.webmanifest'), 'utf8'),
-);
+const pwaScope = base === './' ? './' : (base.endsWith('/') ? base : `${base}/`);
+const pwaManifest = {
+    ...JSON.parse(readFileSync(path.join(root, 'public/manifest.webmanifest'), 'utf8')),
+    start_url: pwaScope,
+    scope: pwaScope,
+};
 
 function phaserScriptSrc(basePath) {
     const normalized = basePath.endsWith('/') ? basePath : `${basePath}/`;
@@ -58,8 +61,8 @@ export default defineConfig(({ mode }) => {
                 manifest: pwaManifest,
                 workbox: {
                     globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg,webmanifest}'],
-                    navigateFallback: 'index.html',
-                    navigateFallbackDenylist: [/^\/offline\.html$/],
+                    navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
+                    navigateFallbackDenylist: [/\/offline\.html$/],
                 },
                 devOptions: {
                     enabled: true,

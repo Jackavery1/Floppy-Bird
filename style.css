@@ -81,7 +81,7 @@ html.game-ready #loading {
   -webkit-user-select: none;
 }
 
-@media (orientation: landscape) and (pointer: coarse),
+@media (orientation: landscape) and (pointer: coarse) and (max-width: 767px),
        (orientation: landscape) and (max-height: 520px) and (max-width: 900px) {
   #landscape-hint {
     display: flex;
