@@ -85,7 +85,7 @@ Après installation, le jeu s’ouvre en plein écran portrait (`display: standa
 
 GitHub Pages : [https://jackavery1.github.io/Floppy-Bird/](https://jackavery1.github.io/Floppy-Bird/)
 
-**Réglage obligatoire** (Settings → Pages → Build and deployment) : source **GitHub Actions**, pas « Deploy from branch ». Sinon le site sert les sources Vite (`/src/main.js`) et le jeu reste bloqué sur « Chargement… » (surtout sur mobile).
+**Réglage obligatoire** (Settings → Pages → Build and deployment) : source **Deploy from a branch**, branche **`gh-pages`**, dossier **`/ (root)`**. Ne pas publier depuis `main` (sources Vite non bundlées → « Chargement… » infini).
 
 Après un déploiement, vider le cache PWA si besoin : Safari → effacer historique du site, ou réinstaller la PWA.
 
