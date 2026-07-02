@@ -13,7 +13,7 @@ import {
     clearSpawnInvincibility,
     tickPipeSpawnFallback,
 } from './sceneRound.js';
-import { frameStep, checkCollisions } from './sceneBootstrap.js';
+import { frameStep, splitPhysicsSteps, checkCollisions } from './sceneBootstrap.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
 import { updateCoyoteTime } from './sceneCoyote.js';
 import { triggerDeath, updateDying } from './sceneDeath.js';
@@ -58,19 +58,25 @@ export class GameScene extends Phaser.Scene {
 
         if (shouldUpdateGameplay(this.state)) {
             processJumpBuffer(this);
-            this.bird.update(step);
             tickPipeSpawnFallback(this, this.game.loop.delta);
-            this.pipes.update(step);
-            this.ghost.update(step);
-            updateCoyoteTime(this, step);
-            checkCollisions(this);
-            checkScorePipes(this);
-            updateSpawnInvincibilityVisual(this);
+            const physicsSteps = splitPhysicsSteps(step);
+            for (const subStep of physicsSteps) {
+                this.bird.update(subStep);
+                this.pipes.update(subStep);
+                this.ghost.update(subStep);
+                updateCoyoteTime(this, subStep);
+                checkCollisions(this);
+                checkScorePipes(this);
 
-            if (this.bird.isOutOfBounds() || this.bird.isHittingGround()) {
-                this.triggerDeath();
+                if (
+                    !this.round.spawnInvincible
+                    && (this.bird.isOutOfBounds() || this.bird.isHittingGround())
+                ) {
+                    this.triggerDeath();
+                    break;
+                }
             }
-
+            updateSpawnInvincibilityVisual(this);
             tickJumpBuffer(this);
         } else if (shouldUpdateDying(this.state)) {
             updateDying(this);

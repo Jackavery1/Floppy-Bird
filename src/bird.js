@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
-import { birdAnimKey, birdTextureKey } from './skins.js';
+import { birdAnimKey, birdTextureKey } from './skins/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
+import { DEPTH } from './uiDepth.js';
 
 export class Bird {
     constructor(scene, x, y, skinId = loadSelectedSkin()) {
@@ -21,7 +22,7 @@ export class Bird {
 
         this.sprite = scene.add.sprite(x, y, birdTextureKey(skinId), 1);
         this.sprite.setDisplaySize(this.width, this.height);
-        this.sprite.setDepth(10);
+        this.sprite.setDepth(DEPTH.BIRD);
     }
 
     applyDifficulty(diffConfig) {

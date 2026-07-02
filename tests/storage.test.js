@@ -80,4 +80,28 @@ describe('storage', () => {
         expect(entries).toHaveLength(2);
         expect(entries[0].score).toBe(8);
     });
+
+    it('un skin classique partage le classement commun (clé inchangée)', () => {
+        saveToLeaderboard(9, DIFFICULTY.NORMAL, false, 'ruby');
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false)[0].score).toBe(9);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false)[0].skinId).toBe('ruby');
+        expect(store['flappy-bird-leaderboard-normal']).toBeTruthy();
+    });
+
+    it('un skin spécial a son propre classement, séparé du commun', () => {
+        saveToLeaderboard(9, DIFFICULTY.NORMAL, false, 'classic');
+        saveToLeaderboard(40, DIFFICULTY.NORMAL, false, 'cosmos');
+
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false, 'classic')[0].score).toBe(9);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false, 'cosmos')[0].score).toBe(40);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false).some(e => e.score === 40)).toBe(false);
+    });
+
+    it('deux skins spéciaux différents ont chacun leur propre record', () => {
+        expect(saveHighScore(28, DIFFICULTY.HARD, undefined, true, 'cosmos')).toBe(28);
+        expect(saveHighScore(20, DIFFICULTY.HARD, undefined, true, 'phoenix')).toBe(20);
+        expect(loadHighScore(DIFFICULTY.HARD, true, 'cosmos')).toBe(28);
+        expect(loadHighScore(DIFFICULTY.HARD, true, 'phoenix')).toBe(20);
+        expect(loadHighScore(DIFFICULTY.HARD, true)).toBe(0);
+    });
 });

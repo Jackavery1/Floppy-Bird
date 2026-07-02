@@ -1,4 +1,4 @@
-import { SKIN_IDS } from './skins.js';
+import { SKIN_IDS } from './skins/index.js';
 
 export const ACHIEVEMENTS = Object.freeze([
     {
@@ -24,6 +24,7 @@ export const ACHIEVEMENTS = Object.freeze([
         title: 'Défi du jour',
         desc: 'Atteindre l\'objectif du défi quotidien',
         check: ctx => ctx.dailyChallenge && ctx.dailyGoalMet,
+        timing: 'roundEnd',
     },
     {
         id: 'collector',

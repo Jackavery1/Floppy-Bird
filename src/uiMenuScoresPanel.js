@@ -42,7 +42,7 @@ export function buildMenuScoresPanel(ui, elements, layout) {
         cx: layout.scoresBtn,
         cy: layout.menuRow,
         width: layout.menuBtnW,
-        depth: 53,
+        depth: 60,
         color: MENU_BTN_COLOR,
         stroke: SCORES_BTN_STROKE,
         labelText: scoresButtonLabel(false),

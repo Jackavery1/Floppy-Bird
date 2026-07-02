@@ -1,7 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS } from './storageKeys.js';
-import { birdTextureKey } from './skins.js';
-import { loadSelectedSkin } from './metaStorage.js';
+import { birdTextureKey } from './skins/index.js';
+import { DEPTH } from './uiDepth.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
 
@@ -99,7 +99,7 @@ export class GhostReplay {
             this.sprite = null;
             return;
         }
-        const skinId = loadSelectedSkin();
+        const skinId = 'fantome';
         this.sprite = this.scene.add.sprite(
             GAME_CONFIG.bird.startX,
             GAME_CONFIG.centerY,
@@ -108,7 +108,7 @@ export class GhostReplay {
         );
         this.sprite.setDisplaySize(GAME_CONFIG.bird.width, GAME_CONFIG.bird.height);
         this.sprite.setAlpha(GAME_CONFIG.training.ghostAlpha);
-        this.sprite.setDepth(9);
+        this.sprite.setDepth(DEPTH.GHOST);
         this.sprite.setTint(0xaaddff);
     }
 

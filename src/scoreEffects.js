@@ -1,4 +1,4 @@
-import { FONT } from './uiLayout.js';
+import { FONT, DEPTH } from './uiLayout.js';
 import { sceneTween } from './motion.js';
 
 const PARTICLE_DIRS = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
@@ -16,13 +16,13 @@ export class ScoreEffects {
                 fontFamily: FONT,
                 fontStyle: 'bold',
             });
-            text.setDepth(150).setVisible(false).setActive(false);
+            text.setDepth(DEPTH.SCORE_EFFECT_TEXT).setVisible(false).setActive(false);
             this._popups.push(text);
         }
 
         for (let i = 0; i < 12; i++) {
             const star = scene.add.sprite(0, 0, 'star');
-            star.setDepth(130).setVisible(false).setActive(false);
+            star.setDepth(DEPTH.SCORE_EFFECT_STAR).setVisible(false).setActive(false);
             this._stars.push(star);
         }
     }

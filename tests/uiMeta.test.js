@@ -3,7 +3,7 @@ import { buildSkinsTab, showAchievementToasts } from '../src/uiMeta.js';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import { SKIN_IDS } from '../src/skins.js';
+import { SKIN_IDS } from '../src/skins/index.js';
 
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),

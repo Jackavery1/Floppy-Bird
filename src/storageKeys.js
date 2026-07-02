@@ -9,7 +9,6 @@ export const STORAGE_KEYS = Object.freeze({
     ghost: 'flappy-bird-ghost',
     training: 'flappy-bird-training',
     hardcore: 'flappy-bird-hardcore',
-    dailyChallenge: 'flappy-bird-daily-challenge',
     dailyCompletion: 'flappy-bird-daily-completion',
     dailyStats: 'flappy-bird-daily-stats',
     trainingBest: 'flappy-bird-training-best',
@@ -17,12 +16,20 @@ export const STORAGE_KEYS = Object.freeze({
     meta: 'floppy-bird-meta',
 });
 
-export function highScoreKey(difficulty, hardcore = false) {
-    if (hardcore) return `${STORAGE_KEYS.highScorePrefix}hardcore-${difficulty}`;
-    return `${STORAGE_KEYS.highScorePrefix}${difficulty}`;
+export function highScoreKey(difficulty, hardcore = false, skinId = null) {
+    const base = hardcore
+        ? `${STORAGE_KEYS.highScorePrefix}hardcore-${difficulty}`
+        : `${STORAGE_KEYS.highScorePrefix}${difficulty}`;
+    return skinId ? `${base}-skin-${skinId}` : base;
 }
 
-export function leaderboardKey(difficulty, hardcore = false) {
-    if (hardcore) return `${STORAGE_KEYS.leaderboardPrefix}hardcore-${difficulty}`;
-    return `${STORAGE_KEYS.leaderboardPrefix}${difficulty}`;
+export function leaderboardKey(difficulty, hardcore = false, skinId = null) {
+    const base = hardcore
+        ? `${STORAGE_KEYS.leaderboardPrefix}hardcore-${difficulty}`
+        : `${STORAGE_KEYS.leaderboardPrefix}${difficulty}`;
+    return skinId ? `${base}-skin-${skinId}` : base;
+}
+
+export function trainingBestKey(skinId = null) {
+    return skinId ? `${STORAGE_KEYS.trainingBest}-skin-${skinId}` : STORAGE_KEYS.trainingBest;
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createRoundState } from '../src/roundState.js';
@@ -51,6 +51,7 @@ vi.mock('../src/sceneBackground.js', () => ({
 
 vi.mock('../src/sceneBootstrap.js', () => ({
     frameStep: vi.fn(() => 1),
+    splitPhysicsSteps: vi.fn((step) => [step]),
     checkCollisions: vi.fn(),
 }));
 
@@ -92,6 +93,10 @@ import { checkScorePipes } from '../src/sceneRound.js';
 import { updateClouds, updateGround } from '../src/sceneBackground.js';
 
 describe('GameScene', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
     it('démarre en état MENU avec difficulté normal', () => {
         const scene = new GameScene();
         expect(scene.state).toBe(GAME_STATE.MENU);
@@ -141,7 +146,7 @@ describe('GameScene', () => {
         expect(tickJumpBuffer).toHaveBeenCalledWith(scene);
     });
 
-    it('le sol tue même pendant l’invincibilité spawn', () => {
+    it('le sol n’écourte pas pendant l’invincibilité spawn', () => {
         const scene = new GameScene();
         scene.state = GAME_STATE.PLAYING;
         scene.game = { loop: { delta: 16.67, actualFps: 60 } };
@@ -152,13 +157,13 @@ describe('GameScene', () => {
             isOutOfBounds: vi.fn(() => false),
             isHittingGround: vi.fn(() => true),
         };
-        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7 };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7, isBirdInGap: vi.fn(() => false) };
         scene.ghost = { update: vi.fn() };
         scene._clouds = [];
 
         scene.update();
 
-        expect(triggerDeath).toHaveBeenCalledWith(scene);
+        expect(triggerDeath).not.toHaveBeenCalled();
         expect(checkCollisions).toHaveBeenCalledWith(scene);
     });
 });

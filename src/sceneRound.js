@@ -1,13 +1,22 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
-import { playScoreFeedback } from './sceneRoundFeedback.js';
+import { playScoreFeedback } from './sceneFeedback.js';
 import { notifyAchievementUnlocks } from './metaAchievements.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
+/** @param {SceneContext} scene */
+function maybeCelebrateDailyGoal(scene) {
+    const { round } = scene;
+    if (scene.playMode !== 'daily' || scene.dailyGoal <= 0) return;
+    if (round.score < scene.dailyGoal || round.dailyGoalCelebrated) return;
+    round.dailyGoalCelebrated = true;
+    scene.ui.showDailyGoalReached?.();
+}
+
 export function shouldNotifyRecord(score, roundHighScore, recordNotified) {
-    return !recordNotified && roundHighScore > 0 && score > roundHighScore;
+    return !recordNotified && score > 0 && score > roundHighScore;
 }
 
 /** @param {SceneContext} scene */
@@ -26,6 +35,7 @@ export function scheduleFirstPipe(scene) {
     const spawnWave = () => {
         scene.round.pipeSpawnTimer = null;
         if (scene.state !== GAME_STATE.PLAYING || !scene.pipes) return;
+        if (scene.pipes.topPipes?.length > 0) return;
         scene.pipes.spawn();
     };
     scene.round.pipeSpawnTimer = scene.time.delayedCall(
@@ -46,9 +56,13 @@ export function spawnPipeWave(scene) {
 export function tickPipeSpawnFallback(scene, deltaMs) {
     if (scene.state !== GAME_STATE.PLAYING || !scene.pipes) return;
     if (scene.pipes._autoSpawnEnabled || scene.pipes.topPipes.length > 0) return;
-    scene.round._pipeSpawnWaitMs = (scene.round._pipeSpawnWaitMs ?? 0) + deltaMs;
+    const scaledDelta = deltaMs * (scene.time?.timeScale ?? 1);
+    scene.round._pipeSpawnWaitMs = (scene.round._pipeSpawnWaitMs ?? 0) + scaledDelta;
     if (scene.round._pipeSpawnWaitMs >= GAME_CONFIG.round.pipeSpawnDelayMs) {
-        spawnPipeWave(scene);
+        if (spawnPipeWave(scene)) {
+            cancelPipeSpawnTimer(scene);
+            scene.round._pipeSpawnWaitMs = 0;
+        }
     }
 }
 
@@ -98,6 +112,7 @@ export function checkScorePipes(scene) {
             scene.pipes.applySpeedForScore(round.score);
             playScoreFeedback(round.score);
             scene.scoreEffects.show(scene.bird.x, scene.bird.y);
+            maybeCelebrateDailyGoal(scene);
             if (shouldNotifyRecord(round.score, round.roundHighScore, round.recordNotified)) {
                 round.recordNotified = true;
                 scene.ui.showRecordBroken();

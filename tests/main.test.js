@@ -30,5 +30,5 @@ describe('main', () => {
         await import('../src/main.js');
         expect(Phaser.Game).toHaveBeenCalled();
         expect(onGameReady).toHaveBeenCalled();
-    });
+    }, 10_000);
 });

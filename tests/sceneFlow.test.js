@@ -23,10 +23,6 @@ vi.mock('../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
 }));
 
-vi.mock('../src/dailyChallengeStorage.js', () => ({
-    saveDailyChallengeEnabled: vi.fn(),
-}));
-
 vi.mock('../src/textures/pipeTextures.js', () => ({
     ensurePipeTextures: vi.fn(),
 }));
@@ -110,8 +106,19 @@ describe('sceneFlow', () => {
         scene.togglePause = function () { togglePause(this); };
         togglePause(scene);
         expect(scene.state).toBe(GAME_STATE.PAUSED);
+        expect(scene.time.paused).toBe(true);
         togglePause(scene);
         expect(scene.state).toBe(GAME_STATE.PLAYING);
+        expect(scene.time.paused).toBe(false);
+    });
+
+    it('handlePrimaryAction reprend la pause sans sauter', () => {
+        const scene = makeScene(GAME_STATE.PAUSED);
+        scene.time.paused = true;
+        scene.togglePause = function () { togglePause(this); };
+        handlePrimaryAction(scene);
+        expect(scene.state).toBe(GAME_STATE.PLAYING);
+        expect(scene.round.jumpBufferFrames).toBe(0);
     });
 
     it('changeDifficulty met à jour la difficulté au menu', () => {

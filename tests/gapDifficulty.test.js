@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
+import { maxGapDeltaForScore, effectivePipeGapForScore } from '../src/gapDifficulty.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('gapDifficulty', () => {
@@ -15,5 +15,12 @@ describe('gapDifficulty', () => {
 
     it('maxGapDeltaForScore ne descend pas sous le minimum', () => {
         expect(maxGapDeltaForScore(999)).toBe(GAME_CONFIG.pipes.minGapDelta);
+    });
+
+    it('effectivePipeGapForScore resserre le gap physique après 20 points', () => {
+        const base = 112;
+        expect(effectivePipeGapForScore(base, 19)).toBe(base);
+        expect(effectivePipeGapForScore(base, 30)).toBe(base - GAME_CONFIG.round.gapTightenStep);
+        expect(effectivePipeGapForScore(base, 999)).toBe(GAME_CONFIG.pipes.minPipeGap);
     });
 });

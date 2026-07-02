@@ -2,7 +2,7 @@ import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
 import { buildGameOverUI } from './uiGameOver.js';
-import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import {
     createScoreDisplay,
     hideInGameScore,
@@ -13,18 +13,20 @@ import {
     destroyInGameControls,
     showJumpTutorial,
     dismissJumpTutorial,
+    showDailyGoalReached,
 } from './uiHud.js';
 import {
     showMenu,
     updateTrainingLabel,
     updateHardcoreLabel,
     updateDifficultyButtons,
-    refreshHighScore,
+    refreshHighScore as refreshMenuHighScore,
     toggleMenuOptionsPanel,
     toggleMenuScoresPanel,
     toggleMenuSkinsPanel,
 } from './uiMenu.js';
 import { showPause } from './uiPause.js';
+import { refreshHardcoreLockState } from './uiMenuOptions.js';
 
 export class UI {
     constructor(scene) {
@@ -58,7 +60,7 @@ export class UI {
         this._overlays[key].push(...elements);
     }
 
-    createOverlay(alpha = 0.7, depth = 50, color = 0x000000) {
+    createOverlay(alpha = 0.7, depth = DEPTH.OVERLAY_DIM, color = 0x000000) {
         return this.scene.add.rectangle(
             GAME_CONFIG.centerX, GAME_CONFIG.centerY,
             GAME_CONFIG.width, GAME_CONFIG.height, color, alpha,
@@ -70,6 +72,7 @@ export class UI {
     createInGameControls(opts) { return createInGameControls(this, opts); }
     updateScore(newScore) { updateScore(this, newScore); }
     showRecordBroken() { showRecordBroken(this); }
+    showDailyGoalReached() { showDailyGoalReached(this); }
     showMenu(difficulty, trainingMode, hardcoreMode) {
         return showMenu(this, difficulty, trainingMode, hardcoreMode);
     }
@@ -78,14 +81,15 @@ export class UI {
     showJumpTutorial() { showJumpTutorial(this); }
     dismissJumpTutorial() { return dismissJumpTutorial(this); }
     updateDifficultyButtons(difficulty) { updateDifficultyButtons(this, difficulty); }
-    refreshHighScore(difficulty, hardcoreMode = false) {
-        refreshHighScore(this, difficulty, hardcoreMode);
+    refreshHighScore(difficulty, hardcoreMode = false, skinId = null) {
+        refreshMenuHighScore(this, difficulty, hardcoreMode, skinId);
     }
     toggleMenuOptionsPanel() { toggleMenuOptionsPanel(this); }
     toggleMenuScoresPanel() { toggleMenuScoresPanel(this); }
     toggleMenuSkinsPanel() { toggleMenuSkinsPanel(this); }
     showPause(opts) { return showPause(this, opts); }
     showFlash() { showFlash(this); }
+    refreshHardcoreLockState() { refreshHardcoreLockState(this); }
 
     drawGameOverMenuButton(menuBtnY, fillColor = MENU_BTN_COLOR) {
         const { menuBtn } = UI_LAYOUT;
@@ -102,8 +106,10 @@ export class UI {
         );
     }
 
-    showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false, hardcoreMode = false) {
-        return buildGameOverUI(this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode);
+    showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false, hardcoreMode = false, dailyGoal = 0, activeSkinId = 'classic') {
+        return buildGameOverUI(
+            this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode, dailyGoal, activeSkinId,
+        );
     }
 
     destroy() {

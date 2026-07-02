@@ -34,4 +34,11 @@ describe('trainingStorage', () => {
         saveBestTrainingScore(12);
         expect(loadBestTrainingScore()).toBe(12);
     });
+
+    it('un skin spécial en entraînement a son propre record, sans polluer le commun', () => {
+        saveBestTrainingScore(10, 'tempete');
+        expect(loadBestTrainingScore('tempete')).toBe(10);
+        expect(loadBestTrainingScore()).toBe(0);
+        expect(loadBestTrainingScore('classic')).toBe(0);
+    });
 });

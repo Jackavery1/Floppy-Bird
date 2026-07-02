@@ -72,6 +72,7 @@ export function startDailyChallenge(scene) {
 /** @param {SceneContext} scene */
 export function returnToMenu(scene) {
     if (!canReturnToMenu(scene.state)) return;
+    scene.time.paused = false;
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
     scene.round.jumpBufferFrames = 0;
@@ -90,6 +91,7 @@ export function returnToMenu(scene) {
 export function togglePause(scene) {
     if (scene.state === GAME_STATE.PLAYING) {
         scene.state = GAME_STATE.PAUSED;
+        scene.time.paused = true;
         const pauseUI = scene.ui.showPause({
             onResume: () => {
                 if (scene.state === GAME_STATE.PAUSED) togglePause(scene);
@@ -99,6 +101,7 @@ export function togglePause(scene) {
         scene.ui.setOverlay('pause', pauseUI.elements);
     } else if (scene.state === GAME_STATE.PAUSED) {
         scene.state = GAME_STATE.PLAYING;
+        scene.time.paused = false;
         clearPauseOverlay(scene);
     }
 }
@@ -107,7 +110,6 @@ export function togglePause(scene) {
 export function handlePrimaryAction(scene) {
     if (scene.state === GAME_STATE.PAUSED) {
         togglePause(scene);
-        requestJump(scene);
         return;
     }
     if (!canHandlePrimaryAction(scene.state)) return;

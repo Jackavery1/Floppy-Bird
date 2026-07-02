@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { frameStep, checkCollisions } from '../src/sceneBootstrap.js';
+import { frameStep, splitPhysicsSteps, checkCollisions } from '../src/sceneBootstrap.js';
 import { createRoundState } from '../src/roundState.js';
 
 describe('sceneBootstrap', () => {
@@ -11,6 +11,12 @@ describe('sceneBootstrap', () => {
     it('frameStep ralentit en mode entraînement', () => {
         const scene = { game: { loop: { delta: 16.67 } }, trainingMode: true };
         expect(frameStep(scene)).toBeCloseTo(0.65, 2);
+    });
+
+    it('splitPhysicsSteps découpe les gros deltas en sous-étapes', () => {
+        expect(splitPhysicsSteps(2.5)).toEqual([1, 1, 0.5]);
+        expect(splitPhysicsSteps(0)).toEqual([]);
+        expect(splitPhysicsSteps(0.8)).toEqual([0.8]);
     });
 
     it('checkCollisions ignore si invincible', () => {

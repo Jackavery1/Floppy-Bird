@@ -7,11 +7,13 @@ import {
     startSpawnInvincibility,
     checkScorePipes,
     onPipeSpawned,
+    tickPipeSpawnFallback,
+    spawnPipeWave,
 } from '../src/sceneRound.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/sceneRoundFeedback.js', () => ({
+vi.mock('../src/sceneFeedback.js', () => ({
     playScoreFeedback: vi.fn(),
 }));
 
@@ -28,7 +30,7 @@ describe('sceneRound', () => {
         expect(shouldNotifyRecord(6, 5, false)).toBe(true);
         expect(shouldNotifyRecord(6, 5, true)).toBe(false);
         expect(shouldNotifyRecord(3, 5, false)).toBe(false);
-        expect(shouldNotifyRecord(1, 0, false)).toBe(false);
+        expect(shouldNotifyRecord(1, 0, false)).toBe(true);
     });
 
     describe('timers', () => {
@@ -38,7 +40,7 @@ describe('sceneRound', () => {
             scene = {
                 round: createRoundState(),
                 state: GAME_STATE.PLAYING,
-                pipes: { spawn: vi.fn() },
+                pipes: { spawn: vi.fn(), topPipes: [] },
                 time: { delayedCall: vi.fn((_ms, cb) => ({ remove: vi.fn(), cb })) },
             };
         });
@@ -58,6 +60,16 @@ describe('sceneRound', () => {
             });
             scheduleFirstPipe(scene);
             expect(scene.pipes.spawn).toHaveBeenCalled();
+        });
+
+        it('scheduleFirstPipe ignore si des tuyaux existent déjà', () => {
+            scene.pipes.topPipes = [{ x: 100 }];
+            scene.time.delayedCall = vi.fn((_ms, cb) => {
+                cb();
+                return { remove: vi.fn() };
+            });
+            scheduleFirstPipe(scene);
+            expect(scene.pipes.spawn).not.toHaveBeenCalled();
         });
 
         it('startSpawnInvincibility active puis désactive l’invincibilité', () => {
@@ -82,7 +94,7 @@ describe('sceneRound', () => {
 
     describe('checkScorePipes', () => {
         it('incrémente le score et déclenche les effets', async () => {
-            const { playScoreFeedback } = await import('../src/sceneRoundFeedback.js');
+            const { playScoreFeedback } = await import('../src/sceneFeedback.js');
             const pipe = { x: 100, scored: false };
             const scene = {
                 bird: { x: 130 },
@@ -97,6 +109,65 @@ describe('sceneRound', () => {
             expect(scene.pipes.applySpeedForScore).toHaveBeenCalledWith(1);
             expect(playScoreFeedback).toHaveBeenCalledWith(1);
         });
+    });
+
+    describe('tickPipeSpawnFallback', () => {
+        it('spawn via fallback après le délai et annule le timer Phaser', () => {
+            const remove = vi.fn();
+            const round = createRoundState();
+            round.pipeSpawnTimer = { remove };
+            const scene = {
+                state: GAME_STATE.PLAYING,
+                time: { timeScale: 1 },
+                round,
+                pipes: {
+                    topPipes: [],
+                    _autoSpawnEnabled: false,
+                    spawn: vi.fn(function () {
+                        this.topPipes.push({ x: 300 });
+                    }),
+                },
+            };
+            tickPipeSpawnFallback(scene, 1300);
+            expect(scene.pipes.spawn).toHaveBeenCalled();
+            expect(remove).toHaveBeenCalledWith(false);
+            expect(scene.round.pipeSpawnTimer).toBeNull();
+        });
+
+        it('respecte le timeScale en mode entraînement', () => {
+            const scene = {
+                state: GAME_STATE.PLAYING,
+                time: { timeScale: 0.65 },
+                round: createRoundState(),
+                pipes: {
+                    topPipes: [],
+                    _autoSpawnEnabled: false,
+                    spawn: vi.fn(),
+                },
+            };
+            tickPipeSpawnFallback(scene, 1000);
+            expect(scene.round._pipeSpawnWaitMs).toBe(650);
+        });
+
+        it('n’agit pas si des tuyaux sont déjà présents', () => {
+            const scene = {
+                state: GAME_STATE.PLAYING,
+                time: { timeScale: 1 },
+                round: createRoundState(),
+                pipes: {
+                    topPipes: [{ x: 100 }],
+                    _autoSpawnEnabled: false,
+                    spawn: vi.fn(),
+                },
+            };
+            tickPipeSpawnFallback(scene, 2000);
+            expect(scene.pipes.spawn).not.toHaveBeenCalled();
+        });
+    });
+
+    it('spawnPipeWave retourne false si hors jeu', () => {
+        const scene = { state: GAME_STATE.MENU, pipes: { spawn: vi.fn() } };
+        expect(spawnPipeWave(scene)).toBe(false);
     });
 
     it('onPipeSpawned rafraîchit la grace hardcore par paliers', () => {

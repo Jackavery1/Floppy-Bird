@@ -19,4 +19,14 @@ describe('storageKeys', () => {
         expect(highScoreKey('normal', true)).toBe('flappy-bird-high-score-hardcore-normal');
         expect(leaderboardKey('hard', true)).toBe('flappy-bird-leaderboard-hardcore-hard');
     });
+
+    it('un skinId ajoute un suffixe dédié (classement/record par skin spécial)', () => {
+        expect(highScoreKey('normal', false, 'cosmos')).toBe('flappy-bird-high-score-normal-skin-cosmos');
+        expect(leaderboardKey('hard', true, 'phoenix')).toBe('flappy-bird-leaderboard-hardcore-hard-skin-phoenix');
+    });
+
+    it('sans skinId, les clés restent identiques à avant (rétro-compatibilité)', () => {
+        expect(highScoreKey('normal', false, null)).toBe(highScoreKey('normal', false));
+        expect(leaderboardKey('hard', true, null)).toBe(leaderboardKey('hard', true));
+    });
 });

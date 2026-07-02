@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
-import { maxGapDeltaForScore } from './gapDifficulty.js';
+import { DEPTH } from './uiDepth.js';
+import { maxGapDeltaForScore, effectivePipeGapForScore } from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
 import {
     collidesWithPipeGroup,
@@ -30,6 +31,7 @@ export class Pipes {
         this._lastGapY = null;
         this._autoSpawnEnabled = false;
         this._baseSpeed = normal.speed;
+        this._baseGap = normal.gap;
         this._dailyRng = null;
         this._runScore = 0;
         this._onSpawn = null;
@@ -57,7 +59,7 @@ export class Pipes {
         const pipe = this.scene.add.sprite(GAME_CONFIG.width + this.pipeWidth, y, texture);
         pipe.setDisplaySize(this.pipeWidth, this.pipeHeight);
         pipe.setOrigin(0.5, originY);
-        pipe.setDepth(9);
+        pipe.setDepth(DEPTH.PIPES);
         pipe.setVisible(true);
         pipe.setActive(true);
         return pipe;
@@ -110,7 +112,7 @@ export class Pipes {
     }
 
     isBirdInGap(birdBounds) {
-        return isBirdInPipeGap(birdBounds, this.topPipes, this.bottomPipes, this.pipeWidth);
+        return isBirdInPipeGap(birdBounds, this.topPipes, this.bottomPipes, this.pipeBodyWidth);
     }
 
     setDifficulty(difficulty = 'normal') {
@@ -119,6 +121,7 @@ export class Pipes {
 
     applyRoundDifficulty({ speed, gap, pipeInterval }) {
         this._baseSpeed = speed;
+        this._baseGap = gap;
         this.pipeSpeed = speed;
         this.pipeGap = gap;
         this.pipeInterval = pipeInterval;
@@ -139,6 +142,7 @@ export class Pipes {
         const { speedBoostEvery, speedBoostPercent } = GAME_CONFIG.round;
         const boosts = Math.floor(score / speedBoostEvery);
         this.pipeSpeed = this._baseSpeed * (1 + boosts * speedBoostPercent);
+        this.pipeGap = effectivePipeGapForScore(this._baseGap, score);
     }
 
     reset() {

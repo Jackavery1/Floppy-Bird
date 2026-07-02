@@ -3,10 +3,6 @@ import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
 import { initSceneCore } from '../src/sceneContext.js';
 
-vi.mock('../src/dailyChallengeStorage.js', () => ({
-    loadDailyChallengeEnabled: vi.fn(() => false),
-}));
-
 vi.mock('../src/trainingStorage.js', () => ({
     loadTrainingEnabled: vi.fn(() => false),
 }));

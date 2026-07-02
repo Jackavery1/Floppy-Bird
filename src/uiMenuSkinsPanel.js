@@ -43,7 +43,7 @@ export function buildMenuSkinsPanel(ui, elements, layout) {
         cx: layout.skinsBtn,
         cy: layout.menuRow,
         width: layout.menuBtnW,
-        depth: 53,
+        depth: 60,
         color: SKINS_BTN_COLOR,
         stroke: SKINS_BTN_STROKE,
         labelText: skinsButtonLabel(false),

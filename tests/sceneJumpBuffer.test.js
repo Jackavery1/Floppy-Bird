@@ -6,7 +6,7 @@ vi.mock('../src/tutorialStorage.js', () => ({
     markTutorialSeen: vi.fn(),
 }));
 
-vi.mock('../src/sceneJumpFeedback.js', () => ({
+vi.mock('../src/sceneFeedback.js', () => ({
     playJumpFeedback: vi.fn(),
 }));
 
@@ -32,7 +32,7 @@ describe('sceneJumpBuffer', () => {
 
     it('processJumpBuffer consomme le buffer', async () => {
         const { processJumpBuffer } = await import('../src/sceneJumpBuffer.js');
-        const { playJumpFeedback } = await import('../src/sceneJumpFeedback.js');
+        const { playJumpFeedback } = await import('../src/sceneFeedback.js');
         let buffered = false;
         const round = createRoundState();
         round.jumpBufferFrames = 4;

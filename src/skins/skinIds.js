@@ -1,0 +1,6 @@
+export const SKIN_IDS = Object.freeze([
+    'classic', 'lavande', 'ruby', 'ambre',
+    'ocean', 'corail', 'forest', 'minuit',
+    'armure', 'mushu', 'phoenix', 'fantome',
+    'glace', 'tempete', 'cosmos', 'neon',
+]);

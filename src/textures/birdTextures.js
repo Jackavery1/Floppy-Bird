@@ -1,6 +1,6 @@
-import { getSkin } from '../skins.js';
+import { getSkin } from '../skins/index.js';
 
-/** @typedef {import('../skins.js').SkinPalette} SkinPalette */
+/** @typedef {import('../skins/skinTypes.js').SkinPalette} SkinPalette */
 
 const FRAME_W = 38;
 const FRAME_H = 28;

@@ -6,7 +6,10 @@ import { resumeAudio } from './audio.js';
 
 /** @param {SceneContext} scene */
 export function setupSceneInput(scene) {
-    scene.input.keyboard.on('keydown-SPACE', () => scene.handlePrimaryAction());
+    scene.input.keyboard.on('keydown-SPACE', (event) => {
+        if (event?.repeat) return;
+        scene.handlePrimaryAction();
+    });
 
     scene.input.on('pointerdown', (pointer) => {
         resumeAudio();

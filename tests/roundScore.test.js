@@ -32,6 +32,7 @@ describe('roundScore', () => {
             difficulty: 'normal',
             hardcoreMode: false,
             trainingMode: false,
+            activeSkinId: 'classic',
             ...rest,
         };
     }
@@ -41,8 +42,8 @@ describe('roundScore', () => {
         const scene = makeScene();
         const result = persistRoundScore(scene);
 
-        expect(saveHighScore).toHaveBeenCalledWith(5, 'normal', 3, false);
-        expect(saveToLeaderboard).toHaveBeenCalledWith(5, 'normal', false);
+        expect(saveHighScore).toHaveBeenCalledWith(5, 'normal', 3, false, 'classic');
+        expect(saveToLeaderboard).toHaveBeenCalledWith(5, 'normal', false, 'classic');
         expect(result.isNewRecord).toBe(true);
         expect(result.leaderboardData.highlightId).toBe('a');
         expect(scene.round.roundHighScore).toBe(5);
@@ -54,7 +55,7 @@ describe('roundScore', () => {
         const scene = makeScene({ trainingMode: true });
         const result = persistRoundScore(scene);
 
-        expect(saveBestTrainingScore).toHaveBeenCalledWith(5);
+        expect(saveBestTrainingScore).toHaveBeenCalledWith(5, 'classic');
         expect(saveHighScore).not.toHaveBeenCalled();
         expect(saveToLeaderboard).not.toHaveBeenCalled();
         expect(result.isNewRecord).toBe(false);
@@ -65,5 +66,40 @@ describe('roundScore', () => {
         const scene = makeScene({ score: 2, _roundHighScore: 5 });
         const result = persistRoundScore(scene);
         expect(result.isNewRecord).toBe(false);
+    });
+
+    it('persistRoundScore resynchronise le record si le classement contient un score plus élevé', async () => {
+        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        vi.mocked(saveHighScore).mockReturnValueOnce(0);
+        vi.mocked(saveToLeaderboard).mockReturnValueOnce({
+            entries: [{ score: 48, id: 'legacy-48' }, { score: 5, id: 'a' }],
+            highlightId: 'a',
+        });
+        vi.mocked(saveHighScore).mockReturnValueOnce(48);
+
+        const scene = makeScene({ score: 5, _roundHighScore: 0 });
+        const result = persistRoundScore(scene);
+
+        expect(scene.round.roundHighScore).toBe(48);
+        expect(saveHighScore).toHaveBeenLastCalledWith(48, 'normal', 0, false, 'classic');
+        expect(result.leaderboardData.entries[0].score).toBe(48);
+    });
+
+    it('persistRoundScore route vers le classement dédié quand un skin spécial est actif', async () => {
+        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const scene = makeScene({ activeSkinId: 'cosmos' });
+        persistRoundScore(scene);
+
+        expect(saveHighScore).toHaveBeenCalledWith(5, 'normal', 3, false, 'cosmos');
+        expect(saveToLeaderboard).toHaveBeenCalledWith(5, 'normal', false, 'cosmos');
+    });
+
+    it('persistRoundScore utilise "classic" par défaut si activeSkinId absent', async () => {
+        const { saveHighScore } = await import('../src/storage.js');
+        const scene = makeScene();
+        delete scene.activeSkinId;
+        persistRoundScore(scene);
+
+        expect(saveHighScore).toHaveBeenCalledWith(5, 'normal', 3, false, 'classic');
     });
 });

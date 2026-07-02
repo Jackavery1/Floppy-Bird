@@ -34,7 +34,9 @@ describe('sceneInput', () => {
         const scene = makeScene();
         setupSceneInput(scene);
         expect(scene.input.keyboard.on).toHaveBeenCalledWith('keydown-SPACE', expect.any(Function));
-        scene._handlers['keydown-SPACE']();
+        scene._handlers['keydown-SPACE']({ repeat: true });
+        expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
+        scene._handlers['keydown-SPACE']({ repeat: false });
         expect(scene.handlePrimaryAction).toHaveBeenCalled();
         scene._handlers['keydown-TWO']();
         expect(scene.changeDifficulty).toHaveBeenCalledWith(DIFFICULTY.NORMAL);

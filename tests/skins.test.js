@@ -3,9 +3,10 @@ import {
     SKIN_IDS,
     SKINS,
     getSkin,
+    isSpecialSkin,
     listUnlockedSkins,
     nextUnlockedSkin,
-} from '../src/skins.js';
+} from '../src/skins/index.js';
 
 function baseCtx(overrides = {}) {
     return {
@@ -48,8 +49,8 @@ describe('skins', () => {
     it('couleurs : paliers score classique et normal', () => {
         expect(SKINS.lavande.unlock(baseCtx({ bestScoreAny: 4 }))).toBe(false);
         expect(SKINS.lavande.unlock(baseCtx({ bestScoreAny: 5 }))).toBe(true);
-        expect(SKINS.ambre.unlock(baseCtx({ bestNormalScore: 11 }))).toBe(false);
-        expect(SKINS.ambre.unlock(baseCtx({ bestNormalScore: 12 }))).toBe(true);
+        expect(SKINS.ambre.unlock(baseCtx({ bestScoreAny: 11 }))).toBe(false);
+        expect(SKINS.ambre.unlock(baseCtx({ bestScoreAny: 12 }))).toBe(true);
         expect(SKINS.corail.unlock(baseCtx({ bestScoreAny: 25 }))).toBe(true);
         expect(SKINS.minuit.unlock(baseCtx({ bestHardScore: 15 }))).toBe(true);
     });
@@ -101,5 +102,20 @@ describe('skins', () => {
         expect(listUnlockedSkins(ctx)).toEqual(['classic', 'lavande', 'ruby']);
         expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
         expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
+    });
+
+    it('8 skins classiques (classement commun) et 8 skins spéciaux (classement dédié)', () => {
+        const classicIds = SKIN_IDS.filter(id => !isSpecialSkin(id));
+        const specialIds = SKIN_IDS.filter(id => isSpecialSkin(id));
+        expect(classicIds).toEqual(['classic', 'lavande', 'ruby', 'ambre', 'ocean', 'corail', 'forest', 'minuit']);
+        expect(specialIds).toEqual(['armure', 'mushu', 'phoenix', 'fantome', 'glace', 'tempete', 'cosmos', 'neon']);
+        expect(classicIds.every(id => getSkin(id).family === 'classic')).toBe(true);
+        expect(specialIds.every(id => getSkin(id).family === 'special')).toBe(true);
+    });
+
+    it('isSpecialSkin retombe sur classique (non spécial) pour un id inconnu', () => {
+        expect(isSpecialSkin('does-not-exist')).toBe(false);
+        expect(isSpecialSkin(undefined)).toBe(false);
+        expect(isSpecialSkin(null)).toBe(false);
     });
 });

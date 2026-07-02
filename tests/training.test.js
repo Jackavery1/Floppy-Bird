@@ -71,7 +71,7 @@ describe('training', () => {
         expect(scene.add.sprite).toHaveBeenCalledWith(
             GAME_CONFIG.bird.startX,
             GAME_CONFIG.centerY,
-            'bird-sheet-classic',
+            'bird-sheet-fantome',
             1,
         );
         scene.time.now = 100;

@@ -1,5 +1,5 @@
 import { createBirdSpriteSheet } from './birdTextures.js';
-import { birdAnimKey, SKIN_IDS } from '../skins.js';
+import { birdAnimKey, SKIN_IDS } from '../skins/index.js';
 import { createPipeSprites, ensurePipeTextures } from './pipeTextures.js';
 import { createBackgroundSprite } from './backgroundTextures.js';
 import { createCloudTexture } from './cloudTextures.js';

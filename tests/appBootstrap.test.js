@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
+import { computeLetterboxSize } from '../src/viewport.js';
 
 describe('appBootstrap', () => {
     afterEach(() => {
@@ -13,7 +14,7 @@ describe('appBootstrap', () => {
             visualViewport: null,
         });
         vi.stubGlobal('document', {
-            body: { style: { paddingTop: '0', paddingRight: '0', paddingBottom: '0', paddingLeft: '0' } },
+            body: { clientWidth: 800, clientHeight: 600, style: {} },
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '0',
@@ -22,7 +23,7 @@ describe('appBootstrap', () => {
             paddingLeft: '0',
         }));
 
-        const canvas = { width: 0, height: 0, style: {} };
+        const canvas = { width: 0, height: 0, style: {}, parentElement: { style: {} } };
         const { resizeGameCanvas } = await import('../src/appBootstrap.js');
         const result = resizeGameCanvas({ canvas });
 
@@ -30,6 +31,30 @@ describe('appBootstrap', () => {
         expect(canvas.height).toBe(GAME_CONFIG.height);
         expect(result.targetW).toBeGreaterThan(0);
         expect(result.targetH).toBeGreaterThan(0);
+    });
+
+    it('resizeGameCanvas letterbox sur le client body', async () => {
+        vi.stubGlobal('window', {
+            innerWidth: 390,
+            innerHeight: 844,
+            visualViewport: { width: 390, height: 844, offsetTop: 0, offsetLeft: 0 },
+        });
+        vi.stubGlobal('document', {
+            body: {
+                clientWidth: 390,
+                clientHeight: 766,
+                style: { paddingTop: '44px', paddingBottom: '34px' },
+            },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '44', paddingRight: '0', paddingBottom: '34', paddingLeft: '0',
+        }));
+
+        const canvas = { width: 0, height: 0, style: {}, parentElement: { style: {} } };
+        const { resizeGameCanvas } = await import('../src/appBootstrap.js');
+        const result = resizeGameCanvas({ canvas });
+        const expectedH = computeLetterboxSize(390, 766, GAME_CONFIG.width, GAME_CONFIG.height).height;
+        expect(result.targetH).toBe(expectedH);
     });
 
     it('hideLoadingScreen masque le chargement et marque le document', async () => {
@@ -57,13 +82,13 @@ describe('appBootstrap', () => {
         vi.stubGlobal('document', {
             getElementById: vi.fn(() => loading),
             documentElement: { classList: { add: vi.fn() } },
-            body: { style: {} },
+            body: { clientWidth: 390, clientHeight: 844, style: {} },
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '0', paddingRight: '0', paddingBottom: '0', paddingLeft: '0',
         }));
 
-        const game = { canvas: { width: 0, height: 0, style: {} } };
+        const game = { canvas: { width: 0, height: 0, style: {}, parentElement: { style: {} } } };
         const { onGameReady } = await import('../src/appBootstrap.js');
         onGameReady(game);
 

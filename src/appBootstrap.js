@@ -1,19 +1,17 @@
 import { GAME_CONFIG } from './config.js';
 import { installTestSeam } from './testSeam.js';
-import { computeLetterboxSize, getViewportDimensions, readSafeAreaInsets } from './viewport.js';
+import { computeLetterboxSize, getLetterboxViewport } from './viewport.js';
 
 export function resizeGameCanvas(game) {
     const canvas = game?.canvas;
     if (!canvas) return null;
 
-    const { width: windowW, height: windowH, offsetTop, offsetLeft } = getViewportDimensions();
-    const insets = readSafeAreaInsets();
+    const { width: windowW, height: windowH, offsetTop, offsetLeft } = getLetterboxViewport();
     const { width: targetW, height: targetH } = computeLetterboxSize(
         windowW,
         windowH,
         GAME_CONFIG.width,
         GAME_CONFIG.height,
-        insets,
     );
 
     canvas.width = GAME_CONFIG.width;

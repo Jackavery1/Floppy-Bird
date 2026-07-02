@@ -1,5 +1,5 @@
 import { DIFFICULTY, GAME_CONFIG } from './config.js';
-import { getSkin, SKIN_IDS } from './skins.js';
+import { getSkin, SKIN_IDS } from './skins/index.js';
 import { getSkinPattern } from './skinPatterns.js';
 import { isDailyCompletedToday } from './dailyChallengeProgress.js';
 

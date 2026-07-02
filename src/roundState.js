@@ -13,12 +13,14 @@ export function createRoundState() {
         roundHighScore: 0,
         recordNotified: false,
         isNewRecord: false,
+        dailyGoalCelebrated: false,
 
         resetForRound() {
             this.score = 0;
             this.jumpBufferFrames = 0;
             this.recordNotified = false;
             this.isNewRecord = false;
+            this.dailyGoalCelebrated = false;
             this.coyoteFrames = 0;
             this.dyingFalling = false;
             this.dyingGrounded = false;

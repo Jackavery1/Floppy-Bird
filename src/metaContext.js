@@ -1,6 +1,6 @@
 import { DIFFICULTY, DIFFICULTY_ORDER } from './config.js';
 import { loadHighScore } from './storage.js';
-import { listUnlockedSkins } from './skins.js';
+import { listUnlockedSkins } from './skins/index.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { loadDailyStats } from './dailyChallengeProgress.js';
 import { loadBestTrainingScore } from './trainingStorage.js';

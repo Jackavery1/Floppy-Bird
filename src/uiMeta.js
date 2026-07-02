@@ -1,10 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin, saveSelectedSkin } from './metaStorage.js';
-import { getSkin, listUnlockedSkins, SKIN_IDS, birdTextureKey } from './skins.js';
+import { getSkin, listUnlockedSkins, SKIN_IDS, birdTextureKey } from './skins/index.js';
 import { sceneTween } from './motion.js';
 import {
     addCenteredText,
+    DEPTH,
     MIN_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
@@ -61,14 +62,14 @@ export function buildSkinsTab(ui, elements, panelElements) {
 
         const frame = scene.add.rectangle(cx, cy, 46, 46, 0x263238, 0.9);
         frame.setStrokeStyle(2, 0x455A64);
-        frame.setDepth(56);
+        frame.setDepth(DEPTH.PANEL_FRAME);
         panelElements.push(frame);
         elements.push(frame);
         ui._skinsTabElements.push(frame);
 
         const preview = scene.add.sprite(cx, cy - 2, birdTextureKey(skinId), 1);
         preview.setScale(1.35);
-        preview.setDepth(57);
+        preview.setDepth(DEPTH.PANEL_PREVIEW);
         panelElements.push(preview);
         elements.push(preview);
         ui._skinsTabElements.push(preview);
@@ -85,7 +86,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         ui._skinsTabElements.push(nameLabel);
 
         const hit = scene.add.rectangle(cx, cy, MIN_TOUCH, MIN_TOUCH, 0x000000, 0);
-        hit.setDepth(58);
+        hit.setDepth(DEPTH.PANEL_TOP);
         hit.setInteractive({ useHandCursor: true });
         hit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
@@ -153,7 +154,7 @@ function showAchievementToast(scene, achievement) {
             stroke: '#000000',
             strokeThickness: 2,
         },
-        120,
+        DEPTH.ACHIEVEMENT_TOAST,
     );
     sceneTween(scene, {
         targets: toast,

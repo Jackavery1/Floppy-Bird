@@ -50,3 +50,26 @@ export function getViewportDimensions() {
         offsetLeft: 0,
     };
 }
+
+/**
+ * Espace utile pour le letterbox : client du body (padding safe-area déjà appliqué en CSS).
+ * Retombe sur visualViewport si le DOM n’est pas prêt.
+ */
+export function getLetterboxViewport() {
+    if (typeof document === 'undefined') {
+        return getViewportDimensions();
+    }
+    const body = document.body;
+    const vv = window.visualViewport;
+    const offsetTop = vv?.offsetTop ?? 0;
+    const offsetLeft = vv?.offsetLeft ?? 0;
+    if (body?.clientWidth > 0 && body?.clientHeight > 0) {
+        return {
+            width: body.clientWidth,
+            height: body.clientHeight,
+            offsetTop,
+            offsetLeft,
+        };
+    }
+    return getViewportDimensions();
+}

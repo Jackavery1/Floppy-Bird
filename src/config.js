@@ -45,6 +45,7 @@ export const GAME_CONFIG = {
         spawnMarginY: 48,
         maxGapDelta: 80,
         minGapDelta: 40,
+        minPipeGap: 72,
     },
 
     level: {
@@ -54,7 +55,7 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1200,
         spawnInvincibilityMs: 900,
-        hardcoreSpawnInvincibilitySteps: [700, 625, 550],
+        hardcoreSpawnInvincibilitySteps: [700, 625, 550, 475, 400, 325],
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         gapTightenAfterScore: 20,

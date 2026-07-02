@@ -46,9 +46,9 @@ export function closeAllMenuPanels(ui) {
     setMenuSkinsOpen(ui, false);
 }
 
-export function refreshBestScore(ui, difficulty, hardcoreMode) {
+export function refreshBestScore(ui, difficulty, hardcoreMode, skinId = null) {
     ui._currentDifficulty = difficulty;
-    ui.highScore = loadHighScore(difficulty, hardcoreMode);
+    ui.highScore = loadHighScore(difficulty, hardcoreMode, skinId);
 }
 
 export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
@@ -140,8 +140,8 @@ export function updateDifficultyButtons(ui, difficulty) {
     });
 }
 
-export function refreshHighScore(ui, difficulty, hardcoreMode = false) {
-    refreshBestScore(ui, difficulty, hardcoreMode);
+export function refreshHighScore(ui, difficulty, hardcoreMode = false, skinId = null) {
+    refreshBestScore(ui, difficulty, hardcoreMode, skinId);
     refreshHardcoreLockState(ui);
     refreshScoresButtonLabel(ui);
 }

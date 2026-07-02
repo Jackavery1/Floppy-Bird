@@ -84,14 +84,37 @@ async function writePng(name, size) {
         .toFile(path.join(outDir, name));
 }
 
+/** Icône maskable : contenu à ~64 % avec zone de sécurité Android. */
+async function writeMaskablePng(name, size) {
+    const inner = Math.round(size * 0.64);
+    const pad = Math.floor((size - inner) / 2);
+    const buf = Buffer.from(iconSvg(inner));
+    await sharp(buf, { density: 144 })
+        .resize(inner, inner, { kernel: sharp.kernel.nearest })
+        .extend({
+            top: pad,
+            bottom: size - inner - pad,
+            left: pad,
+            right: size - inner - pad,
+            background: '#1a1a2e',
+        })
+        .png({ compressionLevel: 9 })
+        .toFile(path.join(outDir, name));
+}
+
 fs.mkdirSync(outDir, { recursive: true });
 
 await writePng('icon-512.png', 512);
 await writePng('icon-192.png', 192);
 await writePng('icon-180.png', 180);
 await writePng('favicon-32.png', 32);
+await writeMaskablePng('icon-maskable-192.png', 192);
+await writeMaskablePng('icon-maskable-512.png', 512);
 
-for (const f of ['favicon-32.png', 'icon-180.png', 'icon-192.png', 'icon-512.png']) {
+for (const f of [
+    'favicon-32.png', 'icon-180.png', 'icon-192.png', 'icon-512.png',
+    'icon-maskable-192.png', 'icon-maskable-512.png',
+]) {
     const kb = (fs.statSync(path.join(outDir, f)).size / 1024).toFixed(1);
     console.log(`✓ ${f}: ${kb} Ko`);
 }

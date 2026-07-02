@@ -12,6 +12,7 @@ import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import {
     addCenteredText,
     applyFittedLabel,
+    DEPTH,
     MIN_TOUCH,
     MENU_BTN_COLOR,
     PANEL_TEXT_MAX_WIDTH,
@@ -130,7 +131,7 @@ function buildOptionsContent(ui, elements) {
     ui._trainingHit = scene.add.rectangle(
         GAME_CONFIG.centerX, panel.training, 220, MIN_TOUCH, 0x000000, 0,
     );
-    ui._trainingHit.setDepth(57);
+    ui._trainingHit.setDepth(DEPTH.PANEL_PREVIEW);
     ui._trainingHit.setInteractive({ useHandCursor: true });
     ui._trainingHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
@@ -155,7 +156,7 @@ function buildOptionsContent(ui, elements) {
     ui._hardcoreHit = scene.add.rectangle(
         GAME_CONFIG.centerX, panel.hardcore, 220, MIN_TOUCH, 0x000000, 0,
     );
-    ui._hardcoreHit.setDepth(57);
+    ui._hardcoreHit.setDepth(DEPTH.PANEL_PREVIEW);
     if (hardcoreUnlocked) {
         ui._hardcoreHit.setInteractive({ useHandCursor: true });
         ui._hardcoreHit.on('pointerdown', (_p, _lx, _ly, event) => {
@@ -177,7 +178,7 @@ function buildOptionsContent(ui, elements) {
     ui._muteHit = scene.add.rectangle(
         GAME_CONFIG.centerX, panel.mute, 160, MIN_TOUCH, 0x000000, 0,
     );
-    ui._muteHit.setDepth(57);
+    ui._muteHit.setDepth(DEPTH.PANEL_PREVIEW);
     if (isAudioAvailable()) {
         ui._muteHit.setInteractive({ useHandCursor: true });
         ui._muteHit.on('pointerdown', (_p, _lx, _ly, event) => {
@@ -212,7 +213,7 @@ export function buildMenuOptions(ui, elements, layout) {
         cx: layout.optionsBtn,
         cy: layout.menuRow,
         width: layout.menuBtnW,
-        depth: 53,
+        depth: 60,
         color: MENU_BTN_COLOR,
         stroke: 0x42A5F5,
         labelText: optionsButtonLabel(false),

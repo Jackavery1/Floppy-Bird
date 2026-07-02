@@ -1,6 +1,6 @@
 import { loadSelectedSkin } from './metaStorage.js';
 import { buildMetaContext } from './metaContext.js';
-import { listUnlockedSkins } from './skins.js';
+import { listUnlockedSkins } from './skins/index.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */

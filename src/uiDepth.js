@@ -1,0 +1,37 @@
+/** Profondeurs d'affichage Phaser (z-order) — monde puis UI. */
+export const DEPTH = Object.freeze({
+    WORLD_BG: 0,
+    CLOUDS: 1,
+    GROUND: 8,
+    PIPES: 9,
+    GHOST: 9,
+    BIRD: 10,
+    OVERLAY_DIM: 50,
+    MENU_PANEL: 51,
+    MENU_RAISED: 52,
+    MENU_BTN_BG: 53,
+    MENU_HIT: 54,
+    PANEL_BACKDROP: 55,
+    PANEL_FRAME: 56,
+    PANEL_PREVIEW: 57,
+    PANEL_HIT: 58,
+    PAUSE_OVERLAY: 90,
+    PAUSE_TITLE: 91,
+    PAUSE_BTN: 92,
+    PAUSE_BTN_LABEL: 93,
+    PAUSE_HIT: 94,
+    HUD_BADGE: 96,
+    HUD_TUTORIAL: 98,
+    FPS: 100,
+    SCORE_HUD: 101,
+    RECORD_BANNER: 101,
+    PAUSE_ICON: 102,
+    PAUSE_ICON_HIT: 103,
+    SCORE_EFFECT_STAR: 130,
+    SCORE_EFFECT_TEXT: 150,
+    ACHIEVEMENT_TOAST: 120,
+    FLASH: 200,
+});
+
+/** @deprecated Préférer DEPTH.SCORE_HUD */
+export const SCORE_HUD_DEPTH = DEPTH.SCORE_HUD;

@@ -1,5 +1,6 @@
 import { DIFFICULTY } from './config.js';
 import { STORAGE_KEYS, highScoreKey, leaderboardKey } from './storageKeys.js';
+import { routedSkinId } from './skinStorageRouting.js';
 
 function parseScore(raw) {
     const n = Number.parseInt(raw ?? '', 10);
@@ -35,12 +36,12 @@ function migrateLegacyLeaderboard(difficulty) {
     }
 }
 
-export function loadHighScore(difficulty = DIFFICULTY.NORMAL, hardcore = false) {
+export function loadHighScore(difficulty = DIFFICULTY.NORMAL, hardcore = false, skinId = null) {
     try {
-        const raw = localStorage.getItem(highScoreKey(difficulty, hardcore));
+        const raw = localStorage.getItem(highScoreKey(difficulty, hardcore, routedSkinId(skinId)));
         const n = parseScore(raw);
         if (n !== null) return n;
-        if (!hardcore) return migrateLegacyHighScore(difficulty);
+        if (!hardcore && !routedSkinId(skinId)) return migrateLegacyHighScore(difficulty);
         return 0;
     } catch {
         return 0;
@@ -52,22 +53,27 @@ export function saveHighScore(
     difficulty = DIFFICULTY.NORMAL,
     currentHigh,
     hardcore = false,
+    skinId = null,
 ) {
-    const high = currentHigh ?? loadHighScore(difficulty, hardcore);
+    const high = currentHigh ?? loadHighScore(difficulty, hardcore, skinId);
     if (score > high) {
         try {
-            localStorage.setItem(highScoreKey(difficulty, hardcore), String(score));
+            localStorage.setItem(
+                highScoreKey(difficulty, hardcore, routedSkinId(skinId)),
+                String(score),
+            );
         } catch { /* quota */ }
         return score;
     }
     return high;
 }
 
-export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false) {
+export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false, skinId = null) {
     try {
-        const data = localStorage.getItem(leaderboardKey(difficulty, hardcore));
+        const routed = routedSkinId(skinId);
+        const data = localStorage.getItem(leaderboardKey(difficulty, hardcore, routed));
         if (!data) {
-            if (!hardcore) return migrateLegacyLeaderboard(difficulty);
+            if (!hardcore && !routed) return migrateLegacyLeaderboard(difficulty);
             return [];
         }
         const parsed = JSON.parse(data);
@@ -75,12 +81,13 @@ export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false
         return parsed
             .map(item => {
                 if (typeof item === 'number') {
-                    return { score: item, id: `legacy-${item}` };
+                    return { score: item, id: `legacy-${item}`, skinId: 'classic' };
                 }
                 const s = Number(item.score);
                 return {
                     score: Number.isFinite(s) && s >= 0 ? s : 0,
                     id: item.id || `legacy-${s}`,
+                    skinId: typeof item.skinId === 'string' ? item.skinId : 'classic',
                 };
             })
             .filter(e => Number.isFinite(e.score) && e.score >= 0);
@@ -89,19 +96,20 @@ export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false
     }
 }
 
-export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL, hardcore = false) {
-    const entries = loadLeaderboard(difficulty, hardcore);
+export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL, hardcore = false, skinId = null) {
+    const entries = loadLeaderboard(difficulty, hardcore, skinId);
     if (score <= 0) {
         return { entries, highlightId: null };
     }
     const highlightId = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    entries.push({ score, id: highlightId });
+    entries.push({ score, id: highlightId, skinId: skinId ?? 'classic' });
     entries.sort((a, b) => b.score - a.score);
+    const top5 = entries.slice(0, 5);
     try {
         localStorage.setItem(
-            leaderboardKey(difficulty, hardcore),
-            JSON.stringify(entries.slice(0, 5)),
+            leaderboardKey(difficulty, hardcore, routedSkinId(skinId)),
+            JSON.stringify(top5),
         );
     } catch { /* quota */ }
-    return { entries: entries.slice(0, 5), highlightId };
+    return { entries: top5, highlightId };
 }

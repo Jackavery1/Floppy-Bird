@@ -12,6 +12,19 @@ export function frameStep(scene) {
     return base;
 }
 
+/** @param {number} totalStep @param {number} [maxStep] */
+export function splitPhysicsSteps(totalStep, maxStep = 1) {
+    if (totalStep <= 0) return [];
+    const steps = [];
+    let remaining = totalStep;
+    while (remaining > 0) {
+        const chunk = Math.min(maxStep, remaining);
+        steps.push(chunk);
+        remaining -= chunk;
+    }
+    return steps;
+}
+
 export function warnFileProtocol() {
     if (typeof location === 'undefined' || location.protocol !== 'file:') return;
     if (document.getElementById('file-protocol-warn')) return;

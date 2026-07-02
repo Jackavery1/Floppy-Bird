@@ -2,8 +2,10 @@ import { sceneTween } from './motion.js';
 import { GAME_CONFIG } from './config.js';
 import { restartHint, menuHint } from './device.js';
 import { Utils } from './utils.js';
+import { getSkin, isSpecialSkin } from './skins/index.js';
 import {
     addCenteredText,
+    DEPTH,
     GAME_OVER_PANEL,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
@@ -51,7 +53,7 @@ function spawnConfetti(scene, cx, topY, elements) {
         const size = Utils.randomInt(3, 6);
         const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
         const piece = scene.add.rectangle(startX, topY, size, size, color, 0.95);
-        piece.setDepth(58);
+        piece.setDepth(DEPTH.PANEL_TOP);
         elements.push(piece);
         sceneTween(scene, {
             targets: piece,
@@ -66,17 +68,30 @@ function spawnConfetti(scene, cx, topY, elements) {
     }
 }
 
-export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode = false) {
+function drawEntrySkinSwatch(scene, x, y, skinId, depth) {
+    const color = getSkin(skinId).palette.body;
+    const swatch = scene.add.rectangle(x, y, 7, 7, color, 1);
+    swatch.setStrokeStyle(1, 0x000000, 0.6);
+    swatch.setDepth(depth);
+    return swatch;
+}
+
+export function buildGameOverUI(
+    scene, ui, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode = false, dailyGoal = 0, activeSkinId = 'classic',
+) {
     ui.hideInGameScore();
 
     const { entries, highlightId } = leaderboardData;
+    const isDaily = dailyGoal > 0;
+    const special = !isDaily && isSpecialSkin(activeSkinId);
+    const activeSkin = getSkin(activeSkinId);
     const P = GAME_OVER_PANEL;
     const cx = P.x + P.w / 2;
     const y = (offset) => P.y + offset;
 
     const overlay = ui.createOverlay(0.75, 50);
 
-    const panel = scene.add.graphics().setDepth(51);
+    const panel = scene.add.graphics().setDepth(DEPTH.MENU_PANEL);
     panel.fillStyle(0x141E30, 0.92);
     panel.fillRoundedRect(P.x, P.y, P.w, P.h, P.radius);
     panel.lineStyle(2, 0xFFD700, 1);
@@ -90,14 +105,14 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
         stroke: '#8B0000', strokeThickness: 2,
     }, 52);
 
-    const titleRule = scene.add.rectangle(cx, y(42), 90, 2, 0xFFD700, 0.8).setDepth(52);
+    const titleRule = scene.add.rectangle(cx, y(42), 90, 2, 0xFFD700, 0.8).setDepth(DEPTH.MENU_RAISED);
 
     let medal = null;
     let recordBanner = null;
     let recordBadge = null;
     const medalY = y(58);
     if (isNewRecord) {
-        recordBanner = scene.add.graphics().setDepth(51);
+        recordBanner = scene.add.graphics().setDepth(DEPTH.MENU_PANEL);
         recordBanner.fillStyle(0xFDD835, 0.16);
         recordBanner.fillRoundedRect(cx - 78, medalY - 9, 156, 18, 4);
         recordBadge = addCenteredText(scene, cx, medalY, '★ NOUVEAU RECORD ★', {
@@ -107,7 +122,7 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
     } else {
         const medalColor = finalScore > 20 ? 0xFFD700 : finalScore > 10 ? 0x9E9E9E : finalScore > 5 ? 0xCD7F32 : null;
         if (medalColor !== null) {
-            const mg = scene.add.graphics().setDepth(52);
+            const mg = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
             mg.lineStyle(1.5, shade(medalColor, 1.25), 0.7);
             mg.strokeCircle(cx, medalY, 20);
             mg.fillStyle(medalColor, 1);
@@ -129,34 +144,66 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
     }, 52);
 
     const highLbl = addCenteredText(scene, cx, y(125),
-        hardcoreMode
-            ? `MEILLEUR HC (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`
-            : `MEILLEUR (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`, {
+        isDaily
+            ? 'OBJECTIF DU JOUR'
+            : special
+                ? `MEILLEUR${hardcoreMode ? ' HC' : ''} · ${activeSkin.label} (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`
+                : (hardcoreMode
+                    ? `MEILLEUR HC (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`
+                    : `MEILLEUR (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`), {
             fontSize: '9px', fill: '#FDD835',
         }, 52);
 
-    const highScoreText = addCenteredText(scene, cx, y(143), String(ui.highScore), {
-        fontSize: '16px', fill: '#FDD835', fontStyle: 'bold',
-    }, 52);
+    const highScoreText = addCenteredText(scene, cx, y(143),
+        isDaily
+            ? (finalScore >= dailyGoal ? '✓ RÉUSSI' : '✗ RATÉ')
+            : String(ui.highScore), {
+            fontSize: isDaily ? '14px' : '16px',
+            fill: isDaily
+                ? (finalScore >= dailyGoal ? '#81C784' : '#FF8A80')
+                : '#FDD835',
+            fontStyle: 'bold',
+        }, 52);
 
     const dividerTop = drawDivider(scene, cx, y(156), P.w - 64, 52);
 
-    const leaderboardElements = [
-        addCenteredText(scene, cx, y(168), hardcoreMode ? '— TOP 5 HARDCORE —' : '— TOP 5 —', {
+    const leaderboardElements = [];
+    if (isDaily) {
+        leaderboardElements.push(addCenteredText(scene, cx, y(168), `— OBJECTIF : ${dailyGoal} —`, {
             fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
-        }, 52),
-    ];
-
-    entries.forEach((entry, i) => {
-        const isNew = entry.id === highlightId;
-        const rank = i === 0 ? '👑' : `${i + 1}.`;
-        leaderboardElements.push(addCenteredText(scene, cx, y(183 + i * 13),
-            `${rank} ${entry.score}`, {
-                fontSize: '11px',
-                fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
-                fontStyle: isNew || i === 0 ? 'bold' : 'normal',
+        }, 52));
+        leaderboardElements.push(addCenteredText(scene, cx, y(183),
+            finalScore >= dailyGoal
+                ? 'Bravo, défi validé pour aujourd\'hui !'
+                : `Encore ${dailyGoal - finalScore} point(s) pour valider le défi.`, {
+                fontSize: '10px',
+                fill: '#cccccc',
             }, 52));
-    });
+    } else {
+        const boardTitle = special
+            ? `— TOP 5 · ${activeSkin.label.toUpperCase()}${hardcoreMode ? ' HC' : ''} —`
+            : (hardcoreMode ? '— TOP 5 HARDCORE —' : '— TOP 5 —');
+        leaderboardElements.push(addCenteredText(scene, cx, y(168), boardTitle, {
+            fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
+        }, 52));
+
+        entries.forEach((entry, i) => {
+            const isNew = entry.id === highlightId;
+            const rank = i === 0 ? '👑' : `${i + 1}.`;
+            const rowY = y(183 + i * 13);
+            if (!special) {
+                leaderboardElements.push(
+                    drawEntrySkinSwatch(scene, cx - 62, rowY, entry.skinId ?? 'classic', 52),
+                );
+            }
+            leaderboardElements.push(addCenteredText(scene, cx, rowY,
+                `${rank} ${entry.score}`, {
+                    fontSize: '11px',
+                    fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
+                    fontStyle: isNew || i === 0 ? 'bold' : 'normal',
+                }, 52));
+        });
+    }
 
     const dividerBottom = drawDivider(scene, cx, y(244), P.w - 64, 52);
 
@@ -165,13 +212,13 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
     }, 52);
 
     const menuBtnY = y(285);
-    const menuBtnShadow = scene.add.graphics().setDepth(52);
+    const menuBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     const { menuBtn } = UI_LAYOUT;
     menuBtnShadow.fillStyle(0x000000, 0.35);
     menuBtnShadow.fillRoundedRect(
         cx - menuBtn.width / 2, menuBtnY - menuBtn.height / 2 + 3, menuBtn.width, menuBtn.height, menuBtn.radius,
     );
-    ui._menuBtnGraphics = scene.add.graphics().setDepth(53);
+    ui._menuBtnGraphics = scene.add.graphics().setDepth(DEPTH.MENU_BTN_BG);
     ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_COLOR);
 
     const menuBtnText = addCenteredText(scene, cx, menuBtnY, 'MENU', {
@@ -181,7 +228,7 @@ export function buildGameOverUI(scene, ui, finalScore, leaderboardData, fadeIn, 
     const menuHitZone = scene.add.rectangle(
         cx, menuBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0,
     );
-    menuHitZone.setDepth(55);
+    menuHitZone.setDepth(DEPTH.PANEL_BACKDROP);
     menuHitZone.setInteractive({ useHandCursor: true });
     menuHitZone.on('pointerover', () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_HOVER));
     menuHitZone.on('pointerout', () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_COLOR));

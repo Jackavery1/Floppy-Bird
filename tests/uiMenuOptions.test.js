@@ -49,4 +49,10 @@ describe('uiMenuOptions', () => {
         toggleMenuOptions(ui);
         expect(ui._optionsOpen).toBe(false);
     });
+
+    it('le bouton OPTIONS reste au-dessus du fond du panneau (pas de bleed-through)', () => {
+        const btnDepth = ui._optionsBtnBg.setDepth.mock.calls.at(-1)?.[0];
+        const backdropDepth = ui._optionsBackdrop.setDepth.mock.calls.at(-1)?.[0];
+        expect(btnDepth).toBeGreaterThan(backdropDepth);
+    });
 });

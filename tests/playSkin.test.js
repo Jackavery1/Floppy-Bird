@@ -12,7 +12,7 @@ vi.mock('../src/metaContext.js', () => ({
     })),
 }));
 
-vi.mock('../src/skins.js', () => ({
+vi.mock('../src/skins/index.js', () => ({
     listUnlockedSkins: vi.fn(() => ['classic']),
 }));
 

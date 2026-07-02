@@ -53,6 +53,10 @@ test.describe('jeu chargé', () => {
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+        const layout = await page.evaluate(() => window.__FLOPPY_TEST__?.getCanvasLayout?.());
+        expect(layout).toBeTruthy();
+        expect(layout.top).toBeGreaterThanOrEqual(40);
+        expect(layout.height).toBeGreaterThan(300);
     });
 
     test('utilise visualViewport pour le letterbox (clavier virtuel simulé)', async ({ page }) => {

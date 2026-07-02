@@ -1,4 +1,5 @@
-import { STORAGE_KEYS } from './storageKeys.js';
+import { STORAGE_KEYS, trainingBestKey } from './storageKeys.js';
+import { routedSkinId } from './skinStorageRouting.js';
 
 export function loadTrainingEnabled() {
     try {
@@ -14,9 +15,9 @@ export function saveTrainingEnabled(enabled) {
     } catch { /* quota */ }
 }
 
-export function loadBestTrainingScore() {
+export function loadBestTrainingScore(skinId = null) {
     try {
-        const raw = localStorage.getItem(STORAGE_KEYS.trainingBest);
+        const raw = localStorage.getItem(trainingBestKey(routedSkinId(skinId)));
         const n = parseInt(raw ?? '0', 10);
         return Number.isFinite(n) && n >= 0 ? n : 0;
     } catch {
@@ -24,12 +25,12 @@ export function loadBestTrainingScore() {
     }
 }
 
-/** @param {number} score */
-export function saveBestTrainingScore(score) {
+/** @param {number} score @param {string|null} [skinId] */
+export function saveBestTrainingScore(score, skinId = null) {
     if (!Number.isFinite(score) || score <= 0) return;
-    const best = loadBestTrainingScore();
+    const best = loadBestTrainingScore(skinId);
     if (score <= best) return;
     try {
-        localStorage.setItem(STORAGE_KEYS.trainingBest, String(score));
+        localStorage.setItem(trainingBestKey(routedSkinId(skinId)), String(score));
     } catch { /* quota */ }
 }

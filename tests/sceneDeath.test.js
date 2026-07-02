@@ -3,7 +3,7 @@ import { GAME_STATE } from '../src/gameState.js';
 import { triggerDeath, updateDying } from '../src/sceneDeath.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/sceneDeathFeedback.js', () => ({
+vi.mock('../src/sceneFeedback.js', () => ({
     playDeathImpactFeedback: vi.fn(),
     playGroundImpactFeedback: vi.fn(),
 }));
@@ -20,7 +20,7 @@ vi.mock('../src/metaAchievements.js', () => ({
 describe('sceneDeath', () => {
     it('triggerDeath passe en DYING et enregistre le score', async () => {
         const { persistRoundScore } = await import('../src/roundScore.js');
-        const { playDeathImpactFeedback } = await import('../src/sceneDeathFeedback.js');
+        const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
         const round = createRoundState();
         round.score = 5;
         round.roundHighScore = 3;
@@ -43,7 +43,7 @@ describe('sceneDeath', () => {
     });
 
     it('updateDying termine quand l’oiseau touche le sol', async () => {
-        const { playGroundImpactFeedback } = await import('../src/sceneDeathFeedback.js');
+        const { playGroundImpactFeedback } = await import('../src/sceneFeedback.js');
         const { notifyEndOfRoundAchievements } = await import('../src/metaAchievements.js');
         const round = createRoundState();
         round.score = 2;

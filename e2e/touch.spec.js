@@ -1,4 +1,4 @@
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { TOUCH_TARGETS } from '../src/uiLayout.js';
 import {
     enterPausedFromPlaying,
@@ -38,6 +38,25 @@ test.describe('touch mobile portrait', () => {
         const { pauseMenu } = TOUCH_TARGETS;
         await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch);
         await expectGameState(page, 'menu');
+    });
+
+    test('ouvre le panneau scores via tap', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        const { menuScores } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuScores.x, menuScores.y, usesTouch);
+        await expect(page.locator('canvas')).toBeVisible();
+    });
+
+    test('change la difficulté via tap', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        const { menuDiffHard } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuDiffHard.x, menuDiffHard.y, usesTouch);
+        await startPlayingFromMenu(page, usesTouch);
+        await expectGameState(page, 'playing');
     });
 });
 

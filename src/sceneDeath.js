@@ -3,7 +3,7 @@ import { GAME_STATE, canTriggerDeath } from './gameState.js';
 import { frameStep } from './sceneBootstrap.js';
 import { persistRoundScore } from './roundScore.js';
 import { notifyEndOfRoundAchievements } from './metaAchievements.js';
-import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneDeathFeedback.js';
+import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneFeedback.js';
 import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 
@@ -66,6 +66,8 @@ function finishDying(scene) {
         true,
         round.isNewRecord,
         scene.hardcoreMode,
+        scene.playMode === 'daily' ? scene.dailyGoal : 0,
+        scene.activeSkinId ?? 'classic',
     );
     scene.ui.setOverlay('gameOver', elements);
 }

@@ -10,6 +10,7 @@ import {
     addReliefText,
     applyFittedLabel,
     DAILY_BTN_TEXT_MAX_WIDTH,
+    DEPTH,
     diffButtonCenter,
     diffLabelColor,
     fitTitleFontSize,
@@ -36,7 +37,7 @@ export function buildMenuHeader(ui, elements, layout) {
         layout.title,
         GAME_TITLE,
         titleStyle,
-        51,
+        DEPTH.MENU_PANEL,
         { dx: 3, dy: 4, fill: '#BF360C', alpha: 0.65 },
     );
     ui._menuTitleShadow = shadow;
@@ -47,7 +48,7 @@ export function buildMenuHeader(ui, elements, layout) {
 
 export function buildMenuDifficulty(ui, elements, layout, difficulty) {
     const { diffBtn } = UI_LAYOUT;
-    ui._diffBtnGraphics = ui.scene.add.graphics().setDepth(52);
+    ui._diffBtnGraphics = ui.scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     elements.push(ui._diffBtnGraphics);
     drawDiffButtons(ui, difficulty, layout);
 
@@ -59,13 +60,13 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
                 fontSize: '9px',
                 fill: diffLabelColor(ui._currentDifficulty, diff),
                 fontStyle: 'bold',
-            }, 53);
+            }, DEPTH.MENU_BTN_BG);
         elements.push(label);
 
         const hitZone = ui.scene.add.rectangle(
             btnCx, layout.difficulty, diffBtn.width, MIN_TOUCH, 0x000000, 0,
         );
-        hitZone.setDepth(54);
+        hitZone.setDepth(DEPTH.MENU_HIT);
         hitZone.setInteractive({ useHandCursor: true });
         hitZone.on('pointerover', () => {
             ui._hoveredDifficulty = diff;
@@ -91,7 +92,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     ui._dailyBtnBg = ui.scene.add.rectangle(
         GAME_CONFIG.centerX, layout.dailyBtn, 228, MIN_TOUCH, DAILY_BTN_COLOR, 0.9,
     );
-    ui._dailyBtnBg.setDepth(53);
+    ui._dailyBtnBg.setDepth(DEPTH.MENU_BTN_BG);
     ui._dailyBtnBg.setStrokeStyle(2, DAILY_BTN_HOVER, 0.7);
     elements.push(ui._dailyBtnBg);
 
@@ -127,7 +128,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
             fill: '#CE93D8',
             stroke: '#0d1117',
             strokeThickness: 2,
-        }, 52,
+        }, DEPTH.MENU_RAISED,
     );
     applyFittedLabel(
         ui.scene,
@@ -146,7 +147,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     ui._dailyBtnHit = ui.scene.add.rectangle(
         GAME_CONFIG.centerX, layout.dailyBtn, 228, MIN_TOUCH, 0x000000, 0,
     );
-    ui._dailyBtnHit.setDepth(55);
+    ui._dailyBtnHit.setDepth(DEPTH.PANEL_BACKDROP);
     ui._dailyBtnHit.setInteractive({ useHandCursor: true });
     ui._dailyBtnHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
@@ -190,7 +191,7 @@ export function refreshDailyChallengeButton(ui, difficulty) {
 
 export function buildMenuFooter(ui, elements, layout) {
     ui._startText = addCenteredText(ui.scene, GAME_CONFIG.centerX, layout.start,
-        'APPUYER POUR JOUER', { fontSize: '14px', fill: '#ffffff' }, 51);
+        'APPUYER POUR JOUER', { fontSize: '14px', fill: '#ffffff' }, DEPTH.MENU_PANEL);
     sceneTween(ui.scene, {
         targets: ui._startText,
         alpha: 0,
@@ -205,7 +206,7 @@ export function buildMenuFooter(ui, elements, layout) {
         menuControlsHint(), {
             fontSize: '10px', fill: '#B0BEC5', stroke: '#0d1117', strokeThickness: 2,
             align: 'center',
-        }, 52);
+        }, DEPTH.MENU_RAISED);
     elements.push(ui._hint1);
 
     return ui._startText;

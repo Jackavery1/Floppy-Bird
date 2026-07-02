@@ -34,7 +34,7 @@ export function randomGapY(dailyRng, pipeGap) {
  * @returns {{ gapY: number, gapIndex: number, lastGapY: number }}
  */
 export function resolveNextGapY({ gapIndex, lastGapY, dailyRng, pipeGap, runScore }) {
-    const scriptedY = getScriptedPipeGapY(gapIndex, pipeGap);
+    const scriptedY = dailyRng ? null : getScriptedPipeGapY(gapIndex, pipeGap);
     if (scriptedY !== null) {
         return { gapY: scriptedY, gapIndex: gapIndex + 1, lastGapY: scriptedY };
     }

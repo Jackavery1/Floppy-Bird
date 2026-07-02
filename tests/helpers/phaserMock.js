@@ -93,7 +93,11 @@ export function createSpriteMock() {
 
 export function createInteractable() {
     const obj = {
-        setDepth: vi.fn(),
+        visible: true,
+        alpha: 1,
+        depth: 0,
+        y: 0,
+        setDepth: vi.fn(function (d) { this.depth = d; return this; }),
         setInteractive: vi.fn(),
         on: vi.fn(),
         destroy: vi.fn(),
@@ -103,18 +107,14 @@ export function createInteractable() {
         setFontSize: vi.fn().mockReturnThis(),
         setStyle: vi.fn().mockReturnThis(),
         setX: vi.fn().mockReturnThis(),
-        setVisible: vi.fn().mockReturnThis(),
-        setY: vi.fn().mockReturnThis(),
-        setAlpha: vi.fn().mockReturnThis(),
+        setVisible: vi.fn(function (v) { this.visible = v; return this; }),
+        setY: vi.fn(function (y) { this.y = y; return this; }),
+        setAlpha: vi.fn(function (a) { this.alpha = a; return this; }),
+        setScale: vi.fn().mockReturnThis(),
         setFillStyle: vi.fn().mockReturnThis(),
         setStrokeStyle: vi.fn().mockReturnThis(),
         disableInteractive: vi.fn().mockReturnThis(),
     };
-    for (const fn of Object.values(obj)) {
-        if (typeof fn === 'function' && fn.mockReturnValue) {
-            fn.mockReturnValue(obj);
-        }
-    }
     return obj;
 }
 

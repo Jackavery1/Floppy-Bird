@@ -12,6 +12,7 @@ import { resumeAudio } from './audio.js';
 import { createBirdAnimations, ensurePipeTextures } from './textures/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { wireSceneBindings } from './sceneBindings.js';
+import { DEPTH } from './uiDepth.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -23,7 +24,7 @@ export function setupSceneWorld(scene) {
 
     const bg = scene.add.sprite(GAME_CONFIG.centerX, GAME_CONFIG.centerY, 'background');
     bg.setDisplaySize(GAME_CONFIG.width, GAME_CONFIG.height);
-    bg.setDepth(0);
+    bg.setDepth(DEPTH.WORLD_BG);
 
     scene._clouds = initClouds(scene);
     scene._groundSprite = createGround(scene);
@@ -45,7 +46,7 @@ export function setupSceneWorld(scene) {
         scene.fps = scene.add.text(10, 10, '', {
             fontSize: '14px', fill: '#fff', fontFamily: 'monospace',
         });
-        scene.fps.setDepth(100);
+        scene.fps.setDepth(DEPTH.FPS);
     }
 
     scene.events.once('shutdown', scene.shutdown, scene);

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { listUnlockedSkins, nextUnlockedSkin, SKINS } from '../src/skins.js';
+import { listUnlockedSkins, nextUnlockedSkin, SKINS } from '../src/skins/index.js';
 import { evaluateAchievements } from '../src/metaProgress.js';
 import { loadMeta, unlockAchievement } from '../src/metaStorage.js';
 import { createRoundState } from '../src/roundState.js';

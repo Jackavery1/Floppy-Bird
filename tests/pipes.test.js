@@ -33,7 +33,6 @@ function createMockScene() {
                 setTexture: vi.fn(),
                 setActive: vi.fn(function () { return this; }),
                 setVisible: vi.fn(function () { return this; }),
-                setActive: vi.fn(function () { return this; }),
                 destroy: vi.fn(),
             })),
         },
@@ -152,37 +151,35 @@ describe('Pipes', () => {
             expect(pipes.pipeSpeed).toBe(base);
         });
 
-        it('resserre le lissage des gaps après 20 points', () => {
+        it('resserre le gap physique après 20 points', () => {
+            pipes.applyRoundDifficulty({ speed: 2.7, gap: 112, pipeInterval: 76 });
             pipes.applySpeedForScore(19);
-            expect(maxGapDeltaForScore(19)).toBe(GAME_CONFIG.pipes.maxGapDelta);
+            expect(pipes.pipeGap).toBe(112);
             pipes.applySpeedForScore(30);
+            expect(pipes.pipeGap).toBe(112 - GAME_CONFIG.round.gapTightenStep);
             expect(maxGapDeltaForScore(30)).toBe(GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep);
         });
     });
 
     describe('setDailySeed', () => {
-        it('utilise les gaps scriptés avant le RNG daily', () => {
+        it('ignore les gaps scriptés en mode daily', () => {
             pipes.setDailySeed(424242);
             pipes.pipeGap = 112;
-            expect(pipes._resolveGapY()).toBe(getScriptedPipeGapY(0, 112));
-            expect(pipes._resolveGapY()).toBe(getScriptedPipeGapY(1, 112));
+            const gap1 = pipes._resolveGapY();
+            const gap2 = pipes._resolveGapY();
+            expect(gap1).not.toBe(getScriptedPipeGapY(0, 112));
+            expect(gap2).not.toBe(getScriptedPipeGapY(1, 112));
         });
 
-        it('produit la même séquence RNG daily après les gaps scriptés', () => {
+        it('produit la même séquence RNG daily', () => {
             pipes.setDailySeed(424242);
             pipes.pipeGap = 112;
-            for (let i = 0; i < GAME_CONFIG.level.pipeGaps.length; i++) {
-                pipes._resolveGapY();
-            }
             const gap1 = pipes._resolveGapY();
             const gap2 = pipes._resolveGapY();
 
             const other = new Pipes(scene);
             other.pipeGap = 112;
             other.setDailySeed(424242);
-            for (let i = 0; i < GAME_CONFIG.level.pipeGaps.length; i++) {
-                other._resolveGapY();
-            }
             expect(other._resolveGapY()).toBe(gap1);
             expect(other._resolveGapY()).toBe(gap2);
             expect(gap1).not.toBe(gap2);

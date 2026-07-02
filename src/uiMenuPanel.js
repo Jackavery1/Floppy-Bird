@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import {
     addCenteredText,
+    DEPTH,
     MIN_TOUCH,
     stopUiEvent,
 } from './uiLayout.js';
@@ -29,7 +30,7 @@ export function buildMenuPanelBackdrop(scene, panel) {
         0x0d1117,
         0.94,
     );
-    backdrop.setDepth(55);
+    backdrop.setDepth(DEPTH.PANEL_BACKDROP);
     backdrop.setStrokeStyle(2, 0x37474F, 0.9);
     backdrop.setVisible(false);
     return backdrop;

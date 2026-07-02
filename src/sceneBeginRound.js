@@ -31,6 +31,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     scene.round.resetForRound();
     resetCoyoteTime(scene);
     scene.state = GAME_STATE.PLAYING;
+    scene.time.paused = false;
 
     const skinId = resolvePlaySkin(scene);
     scene.activeSkinId = skinId;
@@ -57,14 +58,13 @@ export function beginRound(scene, { resetBird = false } = {}) {
     }
 
     let roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
-    roundDiff = applySkinPatternToDifficulty(roundDiff, skinId);
+    if (scene.playMode === 'daily') {
+        roundDiff = applySkinPatternToDifficulty(roundDiff, skinId);
+    }
     scene.pipes.applyRoundDifficulty(roundDiff);
     scene.bird.applyDifficulty(roundDiff);
 
-    ensurePipeTextures(scene);
-    scheduleFirstPipe(scene);
-
-    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
+    scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode, skinId);
     scene.round.roundHighScore = scene.ui.highScore;
     scene.ui.createScoreDisplay();
     scene.ui.createInGameControls({
@@ -75,6 +75,10 @@ export function beginRound(scene, { resetBird = false } = {}) {
         activeSkinId: skinId,
         onPause: () => scene.togglePause(),
     });
+
+    ensurePipeTextures(scene);
+    scheduleFirstPipe(scene);
+
     if (!scene.hardcoreMode) {
         startSpawnInvincibility(scene);
     } else {

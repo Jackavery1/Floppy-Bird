@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { markTutorialSeen } from './tutorialStorage.js';
-import { playJumpFeedback } from './sceneJumpFeedback.js';
+import { playJumpFeedback } from './sceneFeedback.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 

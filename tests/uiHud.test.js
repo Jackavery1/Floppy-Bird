@@ -16,11 +16,32 @@ describe('uiHud', () => {
         ui._inGameControlElements = [];
     });
 
-    it('createScoreDisplay affiche 0', async () => {
+    it('createScoreDisplay affiche 0 visible en haut du HUD', async () => {
         const { createScoreDisplay } = await import('../src/uiHud.js');
+        const { DEPTH, UI_LAYOUT } = await import('../src/uiLayout.js');
         createScoreDisplay(ui);
         expect(ui.scoreText).toBeTruthy();
         expect(ui.scoreValue).toBe(0);
+        expect(ui.scoreText.visible).toBe(true);
+        expect(ui.scoreText.alpha).toBe(1);
+        expect(ui.scoreText.depth).toBe(DEPTH.SCORE_HUD);
+        expect(ui.scoreText.y).toBe(UI_LAYOUT.scoreHud);
+    });
+
+    it('createInGameControls repositionne le score sous les badges', async () => {
+        const { createScoreDisplay, createInGameControls } = await import('../src/uiHud.js');
+        const { UI_LAYOUT } = await import('../src/uiLayout.js');
+        createScoreDisplay(ui);
+        createInGameControls(ui, {
+            trainingMode: true,
+            hardcoreMode: true,
+            dailyMode: true,
+            dailyGoal: 5,
+            activeSkinId: 'classic',
+            onPause: vi.fn(),
+        });
+        expect(ui.scoreText.visible).toBe(true);
+        expect(ui.scoreText.y).toBeGreaterThan(UI_LAYOUT.scoreHud - 1);
     });
 
     it('updateScore met à jour le texte', async () => {
@@ -50,13 +71,15 @@ describe('uiHud', () => {
     });
 
     it('hideInGameScore masque le score et détruit les contrôles', async () => {
-        const { createScoreDisplay, createInGameControls, hideInGameScore } = await import('../src/uiHud.js');
+        const { createScoreDisplay, createInGameControls, hideInGameScore, showInGameScore } = await import('../src/uiHud.js');
         createScoreDisplay(ui);
         ui.scoreText.setVisible = vi.fn();
         createInGameControls(ui, { trainingMode: false, hardcoreMode: false, onPause: vi.fn() });
         hideInGameScore(ui);
         expect(ui.scoreText.setVisible).toHaveBeenCalledWith(false);
         expect(ui._inGameControlElements).toHaveLength(0);
+        showInGameScore(ui);
+        expect(ui.scoreText.setVisible).toHaveBeenCalledWith(true);
     });
 
     it('showRecordBroken crée une bannière', async () => {
