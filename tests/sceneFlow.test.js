@@ -28,6 +28,8 @@ vi.mock('../src/textures/pipeTextures.js', () => ({
 }));
 
 vi.mock('../src/tutorialStorage.js', () => ({
+    loadTutorialComplete: vi.fn(() => true),
+    loadTutorialProgress: vi.fn(() => 3),
     loadTutorialSeen: vi.fn(() => true),
 }));
 
@@ -52,7 +54,12 @@ describe('sceneFlow', () => {
             dailyGoal: 0,
             activeSkinId: 'classic',
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
-            bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn(), sprite: { setAlpha: vi.fn() } },
+            bird: {
+                reset: vi.fn(),
+                applyDifficulty: vi.fn(),
+                setSkin: vi.fn(),
+                sprite: { setAlpha: vi.fn() },
+            },
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
@@ -103,7 +110,9 @@ describe('sceneFlow', () => {
 
     it('togglePause bascule PLAYING ↔ PAUSED', () => {
         const scene = makeScene(GAME_STATE.PLAYING);
-        scene.togglePause = function () { togglePause(this); };
+        scene.togglePause = function () {
+            togglePause(this);
+        };
         togglePause(scene);
         expect(scene.state).toBe(GAME_STATE.PAUSED);
         expect(scene.time.paused).toBe(true);
@@ -115,7 +124,9 @@ describe('sceneFlow', () => {
     it('handlePrimaryAction reprend la pause sans sauter', () => {
         const scene = makeScene(GAME_STATE.PAUSED);
         scene.time.paused = true;
-        scene.togglePause = function () { togglePause(this); };
+        scene.togglePause = function () {
+            togglePause(this);
+        };
         handlePrimaryAction(scene);
         expect(scene.state).toBe(GAME_STATE.PLAYING);
         expect(scene.round.jumpBufferFrames).toBe(0);

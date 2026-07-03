@@ -13,9 +13,15 @@ beforeEach(() => {
     store.clear();
     vi.stubGlobal('localStorage', {
         getItem: (key) => store.get(key) ?? null,
-        setItem: (key, value) => { store.set(key, value); },
-        removeItem: (key) => { store.delete(key); },
-        clear: () => { store.clear(); },
+        setItem: (key, value) => {
+            store.set(key, value);
+        },
+        removeItem: (key) => {
+            store.delete(key);
+        },
+        clear: () => {
+            store.clear();
+        },
     });
 });
 

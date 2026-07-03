@@ -22,8 +22,12 @@ export const DIFFICULTY_ORDER = Object.freeze([
 export const GAME_CONFIG = {
     width: 288,
     height: 512,
-    get centerX() { return this.width / 2; },
-    get centerY() { return this.height / 2; },
+    get centerX() {
+        return this.width / 2;
+    },
+    get centerY() {
+        return this.height / 2;
+    },
     groundY: 498,
     debug: typeof location !== 'undefined' && new URLSearchParams(location.search).has('debug'),
 
@@ -44,7 +48,7 @@ export const GAME_CONFIG = {
         capMargin: 24,
         spawnMarginY: 48,
         maxGapDelta: 72,
-        minGapDelta: 40,
+        minGapDelta: 48,
         minPipeGap: 72,
     },
 
@@ -59,9 +63,12 @@ export const GAME_CONFIG = {
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         gapTightenAfterScore: 20,
+        difficultyPreviewOffset: 2,
         gapTightenEvery: 10,
         gapTightenStep: 8,
-        streakMilestones: [10, 15],
+        streakMilestones: [10, 15, 20, 30, 40, 50],
+        deathSlowMoMs: 80,
+        deathSlowMoScale: 0.3,
     },
 
     training: {
@@ -77,9 +84,23 @@ export const GAME_CONFIG = {
     },
 
     difficulties: {
-        easy:   { speed: 1.85, gap: 142, gravity: 0.30, jumpPower: -5.7, maxFallSpeed: 10, pipeInterval: 92 },
+        easy: {
+            speed: 1.85,
+            gap: 142,
+            gravity: 0.3,
+            jumpPower: -5.7,
+            maxFallSpeed: 10,
+            pipeInterval: 92,
+        },
         normal: { speed: 2.7, gap: 112, pipeInterval: 76 },
-        hard:   { speed: 3.4, gap: 98, gravity: 0.45, jumpPower: -6.2, maxFallSpeed: 12, pipeInterval: 68 },
+        hard: {
+            speed: 3.4,
+            gap: 98,
+            gravity: 0.45,
+            jumpPower: -6.2,
+            maxFallSpeed: 12,
+            pipeInterval: 68,
+        },
     },
 
     difficultyLabels: {

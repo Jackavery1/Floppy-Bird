@@ -5,6 +5,7 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -22,6 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run icons
       - run: npm run lint
+      - run: npm run format:check
       - run: npm test
       - run: npm run test:coverage
       - uses: actions/upload-artifact@v4
@@ -46,6 +48,34 @@ jobs:
       - run: npm run build
         env:
           BASE_PATH: /Floppy-Bird/
+          VITE_ENABLE_TEST_SEAM: 'true'
       - run: npm run test:e2e:ci
         env:
           BASE_PATH: /Floppy-Bird/
+
+  deploy:
+    needs: [check, e2e]
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run icons
+      - run: npm run build
+        env:
+          BASE_PATH: /Floppy-Bird/
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true

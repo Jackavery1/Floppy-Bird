@@ -9,11 +9,11 @@ const outDir = path.join(__dirname, '..', 'public', 'icons');
 
 // Gradient matching the new game background (dark night → sky blue)
 const SKY_BANDS = [
-    { y: 0.00, h: 0.18, c: '#1a1a4e' },
+    { y: 0.0, h: 0.18, c: '#1a1a4e' },
     { y: 0.18, h: 0.18, c: '#1e3a6e' },
     { y: 0.36, h: 0.22, c: '#2d5a8e' },
     { y: 0.58, h: 0.22, c: '#4a82b8' },
-    { y: 0.80, h: 0.12, c: '#6aafd8' },
+    { y: 0.8, h: 0.12, c: '#6aafd8' },
     { y: 0.92, h: 0.08, c: '#87CEEB' },
 ];
 
@@ -33,7 +33,11 @@ function sunSvg(size) {
 // Quelques étoiles dans la zone sombre
 function starsSvg(size) {
     const positions = [
-        [0.10, 0.07], [0.25, 0.03], [0.42, 0.10], [0.58, 0.05], [0.38, 0.19],
+        [0.1, 0.07],
+        [0.25, 0.03],
+        [0.42, 0.1],
+        [0.58, 0.05],
+        [0.38, 0.19],
     ];
     return positions
         .map(([fx, fy]) => {
@@ -54,15 +58,16 @@ function iconSvg(size) {
     // Légèrement en dessous du centre pour laisser de la place au ciel
     const by = Math.round(size * 0.52 - birdPxH / 2);
 
-    const skyRects = SKY_BANDS.map(b => {
+    const skyRects = SKY_BANDS.map((b) => {
         const y = Math.round(b.y * size);
         const h = Math.max(1, Math.round(b.h * size));
         return `<rect x="0" y="${y}" width="${size}" height="${h}" fill="${b.c}"/>`;
     }).join('\n  ');
 
     const birdRects = getBirdPixelRects()
-        .map(r =>
-            `<rect x="${bx + r.x * scale}" y="${by + r.y * scale}" width="${r.w * scale}" height="${r.h * scale}" fill="${r.c}"/>`
+        .map(
+            (r) =>
+                `<rect x="${bx + r.x * scale}" y="${by + r.y * scale}" width="${r.w * scale}" height="${r.h * scale}" fill="${r.c}"/>`
         )
         .join('\n  ');
 
@@ -112,8 +117,12 @@ await writeMaskablePng('icon-maskable-192.png', 192);
 await writeMaskablePng('icon-maskable-512.png', 512);
 
 for (const f of [
-    'favicon-32.png', 'icon-180.png', 'icon-192.png', 'icon-512.png',
-    'icon-maskable-192.png', 'icon-maskable-512.png',
+    'favicon-32.png',
+    'icon-180.png',
+    'icon-192.png',
+    'icon-512.png',
+    'icon-maskable-192.png',
+    'icon-maskable-512.png',
 ]) {
     const kb = (fs.statSync(path.join(outDir, f)).size / 1024).toFixed(1);
     console.log(`✓ ${f}: ${kb} Ko`);

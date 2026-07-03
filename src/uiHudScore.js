@@ -33,7 +33,7 @@ export function createScoreDisplay(ui) {
         UI_LAYOUT.scoreHud,
         '0',
         SCORE_STYLE,
-        DEPTH.SCORE_HUD,
+        DEPTH.SCORE_HUD
     );
     showInGameScore(ui, UI_LAYOUT.scoreHud);
 }
@@ -64,7 +64,7 @@ export function updateScore(ui, newScore) {
     }
     if (ui._dailyBadge && ui.scene?.dailyGoal > 0) {
         ui._dailyBadge.setText(
-            `${formatDailyHudLabel(newScore, ui.scene.dailyGoal)} · ${getSkin(ui.scene.activeSkinId ?? 'classic').label}`,
+            `${formatDailyHudLabel(newScore, ui.scene.dailyGoal)} · ${getSkin(ui.scene.activeSkinId ?? 'classic').label}`
         );
     }
 }

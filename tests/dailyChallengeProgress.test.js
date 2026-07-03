@@ -12,7 +12,9 @@ describe('dailyChallengeProgress stats', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 
@@ -24,31 +26,69 @@ describe('dailyChallengeProgress stats', () => {
 
     it('compte une réussite par jour maximum', () => {
         saveDailyCompletion({
-            goal: 5, score: 6, difficulty: 'normal', skinId: 'classic', date: day,
+            goal: 5,
+            score: 6,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
         });
         expect(loadDailyStats().totalCompletions).toBe(1);
         expect(isDailyCompletedToday(day)).toBe(true);
 
         saveDailyCompletion({
-            goal: 5, score: 10, difficulty: 'normal', skinId: 'classic', date: day,
+            goal: 5,
+            score: 10,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
         });
         expect(loadDailyStats().totalCompletions).toBe(1);
     });
 
     it('incrémente sur des jours différents', () => {
         saveDailyCompletion({
-            goal: 5, score: 6, difficulty: 'normal', skinId: 'classic', date: day,
+            goal: 5,
+            score: 6,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
         });
         saveDailyCompletion({
-            goal: 5, score: 7, difficulty: 'normal', skinId: 'classic',
+            goal: 5,
+            score: 7,
+            difficulty: 'normal',
+            skinId: 'classic',
             date: new Date(2026, 0, 16),
         });
         expect(loadDailyStats().totalCompletions).toBe(2);
+        expect(loadDailyStats().consecutiveDays).toBe(2);
+    });
+
+    it('réinitialise la série si un jour est manqué', () => {
+        saveDailyCompletion({
+            goal: 5,
+            score: 6,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
+        });
+        saveDailyCompletion({
+            goal: 5,
+            score: 7,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: new Date(2026, 0, 17),
+        });
+        expect(loadDailyStats().consecutiveDays).toBe(1);
     });
 
     it('n’incrémente pas si objectif non atteint', () => {
         saveDailyCompletion({
-            goal: 10, score: 4, difficulty: 'normal', skinId: 'classic', date: day,
+            goal: 10,
+            score: 4,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
         });
         expect(loadDailyStats().totalCompletions).toBe(0);
         expect(isDailyCompletedToday(day)).toBe(false);

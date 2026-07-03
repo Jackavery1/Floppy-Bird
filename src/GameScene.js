@@ -1,10 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_CONFIG } from './config.js';
-import {
-    shouldUpdateDying,
-    shouldUpdateGameplay,
-    shouldAnimateBackground,
-} from './gameState.js';
+import { shouldUpdateDying, shouldUpdateGameplay, shouldAnimateBackground } from './gameState.js';
 import { preloadTextures } from './textures/index.js';
 import { updateClouds, updateGround } from './sceneBackground.js';
 import {
@@ -16,8 +12,8 @@ import {
 import { frameStep, splitPhysicsSteps, checkCollisions } from './sceneBootstrap.js';
 import { hasCoyoteGrace } from './sceneCoyote.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
-import { updateCoyoteTime } from './sceneCoyote.js';
-import { triggerDeath, updateDying } from './sceneDeath.js';
+import { updateCoyoteTime, updateCoyoteVisual } from './sceneCoyote.js';
+import { triggerDeath as runDeath, updateDying } from './sceneDeath.js';
 import { updateSpawnInvincibilityVisual } from './sceneSpawnFeedback.js';
 import {
     showMenu,
@@ -66,15 +62,16 @@ export class GameScene extends Phaser.Scene {
                 this.pipes.update(subStep);
                 this.ghost.update(subStep);
                 updateCoyoteTime(this, subStep);
+                updateCoyoteVisual(this);
                 checkCollisions(this);
                 checkScorePipes(this);
 
-                if (
-                    !this.round.spawnInvincible
-                    && (this.bird.isOutOfBounds() || this.bird.isHittingGround())
-                    && !hasCoyoteGrace(this)
-                ) {
-                    this.triggerDeath();
+                if (!this.round.spawnInvincible && !hasCoyoteGrace(this)) {
+                    if (this.bird.isHittingGround()) {
+                        this.triggerDeath('ground');
+                    } else if (this.bird.isOutOfBounds()) {
+                        this.triggerDeath('ceiling');
+                    }
                     break;
                 }
             }
@@ -85,17 +82,39 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
-    triggerDeath() { triggerDeath(this); }
-    handlePrimaryAction() { handlePrimaryAction(this); }
-    changeDifficulty(d) { changeDifficulty(this, d); }
-    toggleTraining() { toggleTraining(this); }
-    toggleHardcore() { toggleHardcore(this); }
-    launchDailyChallenge() { launchDailyChallenge(this); }
-    showMenu() { showMenu(this); }
-    beginRound(opts) { beginRound(this, opts); }
-    startGame() { startGame(this); }
-    returnToMenu() { returnToMenu(this); }
-    togglePause() { togglePause(this); }
+    triggerDeath(cause = 'pipe') {
+        runDeath(this, cause);
+    }
+    handlePrimaryAction() {
+        handlePrimaryAction(this);
+    }
+    changeDifficulty(d) {
+        changeDifficulty(this, d);
+    }
+    toggleTraining() {
+        toggleTraining(this);
+    }
+    toggleHardcore() {
+        toggleHardcore(this);
+    }
+    launchDailyChallenge() {
+        launchDailyChallenge(this);
+    }
+    showMenu() {
+        showMenu(this);
+    }
+    beginRound(opts) {
+        beginRound(this, opts);
+    }
+    startGame() {
+        startGame(this);
+    }
+    returnToMenu() {
+        returnToMenu(this);
+    }
+    togglePause() {
+        togglePause(this);
+    }
 
     shutdown() {
         cancelPipeSpawnTimer(this);

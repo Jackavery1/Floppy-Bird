@@ -21,6 +21,10 @@ vi.mock('../src/metaAchievements.js', () => ({
     notifyAchievementUnlocks: vi.fn(),
 }));
 
+vi.mock('../src/tutorialProgress.js', () => ({
+    onTutorialFirstScore: vi.fn(),
+}));
+
 vi.mock('../src/textures/pipeTextures.js', () => ({
     ensurePipeTextures: vi.fn(),
 }));
@@ -176,9 +180,11 @@ describe('sceneRound', () => {
             round: createRoundState(),
             time: { delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
             bird: { sprite: { setAlpha: vi.fn() } },
+            ui: { showHardcoreInvincibilityHint: vi.fn() },
         };
         onPipeSpawned(scene, 2);
         expect(scene.round.spawnInvincible).toBe(true);
+        expect(scene.ui.showHardcoreInvincibilityHint).toHaveBeenCalledWith(625);
     });
 
     it('onPipeSpawned ignore le mode normal', () => {

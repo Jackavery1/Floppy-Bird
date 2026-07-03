@@ -3,7 +3,7 @@ import { initClouds, createGround } from './sceneBackground.js';
 import { setupSceneInput } from './sceneInput.js';
 import { Bird } from './bird.js';
 import { Pipes } from './pipes.js';
-import { UI } from './ui.js';
+import { UI } from './uiIndex.js';
 import { ScoreEffects } from './scoreEffects.js';
 import { GhostReplay } from './training.js';
 import { warnFileProtocol, primeAudio, applyTrainingTimeScale } from './sceneBootstrap.js';
@@ -44,7 +44,9 @@ export function setupSceneWorld(scene) {
 
     if (GAME_CONFIG.debug) {
         scene.fps = scene.add.text(10, 10, '', {
-            fontSize: '14px', fill: '#fff', fontFamily: 'monospace',
+            fontSize: '14px',
+            fill: '#fff',
+            fontFamily: 'monospace',
         });
         scene.fps.setDepth(DEPTH.FPS);
     }

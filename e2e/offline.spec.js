@@ -5,14 +5,18 @@ test.describe('PWA hors ligne', () => {
     test('active un service worker après chargement', async ({ page }) => {
         await waitForGameReady(page);
         await page.waitForFunction(() => document.readyState === 'complete', { timeout: 15_000 });
-        await expect.poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller)).toBe(true);
+        await expect
+            .poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller))
+            .toBe(true);
     });
 
     test('charge le jeu hors ligne après precache', async ({ browser }) => {
         const context = await browser.newContext();
         const page = await context.newPage();
         await waitForGameReady(page);
-        await expect.poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller)).toBe(true);
+        await expect
+            .poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller))
+            .toBe(true);
 
         await context.setOffline(true);
         await page.reload({ waitUntil: 'domcontentloaded' });

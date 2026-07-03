@@ -29,14 +29,14 @@ export const Utils = {
     },
 
     clearElements(elements) {
-        elements.forEach(elem => elem.destroy());
+        elements.forEach((elem) => elem.destroy());
         elements.length = 0;
     },
 
     makeStarPoints(cx, cy, outerR, innerR, points = 5) {
         const starPoints = [];
         for (let i = 0; i < points * 2; i++) {
-            const angle = (i * Math.PI / points) - Math.PI / 2;
+            const angle = (i * Math.PI) / points - Math.PI / 2;
             const r = i % 2 === 0 ? outerR : innerR;
             starPoints.push({ x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r });
         }

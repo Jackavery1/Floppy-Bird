@@ -34,9 +34,10 @@ describe('sceneDeath', () => {
             ghost: { finishRound: vi.fn() },
             time: { delayedCall: vi.fn() },
         };
-        triggerDeath(scene);
+        triggerDeath(scene, 'ground');
         expect(scene.state).toBe(GAME_STATE.DYING);
-        expect(playDeathImpactFeedback).toHaveBeenCalledWith(scene);
+        expect(scene.round.deathCause).toBe('ground');
+        expect(playDeathImpactFeedback).toHaveBeenCalledWith(scene, 'ground');
         expect(persistRoundScore).toHaveBeenCalledWith(scene);
         expect(scene.bird.velocityY).toBe(0);
         expect(scene.round.isNewRecord).toBe(true);

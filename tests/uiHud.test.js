@@ -65,13 +65,16 @@ describe('uiHud', () => {
         expect(elements.length).toBeGreaterThan(2);
         expect(ui._trainingBadge).toBeTruthy();
         expect(ui._hardcoreBadge).toBeTruthy();
-        const pauseHit = scene.add.rectangle.mock.calls.find(([, , w, h]) => w === MIN_TOUCH && h === MIN_TOUCH);
+        const pauseHit = scene.add.rectangle.mock.calls.find(
+            ([, , w, h]) => w === MIN_TOUCH && h === MIN_TOUCH
+        );
         expect(pauseHit).toBeTruthy();
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
     });
 
     it('hideInGameScore masque le score et détruit les contrôles', async () => {
-        const { createScoreDisplay, createInGameControls, hideInGameScore, showInGameScore } = await import('../src/uiHud.js');
+        const { createScoreDisplay, createInGameControls, hideInGameScore, showInGameScore } =
+            await import('../src/uiHud.js');
         createScoreDisplay(ui);
         ui.scoreText.setVisible = vi.fn();
         createInGameControls(ui, { trainingMode: false, hardcoreMode: false, onPause: vi.fn() });

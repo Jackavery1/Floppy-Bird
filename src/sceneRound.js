@@ -4,6 +4,7 @@ import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { playScoreFeedback } from './sceneFeedback.js';
 import { notifyAchievementUnlocks } from './metaAchievements.js';
 import { handleScoreMilestones } from './sceneScoreMilestones.js';
+import { onTutorialFirstScore } from './tutorialProgress.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -41,7 +42,7 @@ export function scheduleFirstPipe(scene) {
     };
     scene.round.pipeSpawnTimer = scene.time.delayedCall(
         GAME_CONFIG.round.pipeSpawnDelayMs,
-        spawnWave,
+        spawnWave
     );
 }
 
@@ -78,18 +79,21 @@ export function clearSpawnInvincibility(scene) {
 }
 
 /** @param {SceneContext} scene @param {number} [durationMs] */
-export function startSpawnInvincibility(scene, durationMs = GAME_CONFIG.round.spawnInvincibilityMs) {
+export function startSpawnInvincibility(
+    scene,
+    durationMs = GAME_CONFIG.round.spawnInvincibilityMs
+) {
     const { round } = scene;
     clearSpawnInvincibility(scene);
     round.spawnInvincible = true;
-    round.spawnInvincibleTimer = scene.time.delayedCall(
-        durationMs,
-        () => {
-            round.spawnInvincibleTimer = null;
-            round.spawnInvincible = false;
-            if (scene.bird?.sprite) scene.bird.sprite.setAlpha(1);
-        },
-    );
+    round.spawnInvincibleTimer = scene.time.delayedCall(durationMs, () => {
+        round.spawnInvincibleTimer = null;
+        round.spawnInvincible = false;
+        if (scene.bird?.sprite) scene.bird.sprite.setAlpha(1);
+    });
+    if (scene.hardcoreMode) {
+        scene.ui.showHardcoreInvincibilityHint?.(durationMs);
+    }
 }
 
 /** @param {SceneContext} scene @param {number} pipeCount */
@@ -105,11 +109,14 @@ export function onPipeSpawned(scene, pipeCount) {
 export function checkScorePipes(scene) {
     const { round } = scene;
     const birdX = scene.bird.x;
-    scene.pipes.topPipes.forEach(pipe => {
+    scene.pipes.topPipes.forEach((pipe) => {
         if (!pipe.scored && birdX > pipe.x + scene.pipes.pipeWidth / 2) {
             pipe.scored = true;
             round.score++;
             scene.ui.updateScore(round.score);
+            if (round.score === 1) {
+                onTutorialFirstScore(scene);
+            }
             scene.pipes.applySpeedForScore(round.score);
             playScoreFeedback(round.score);
             handleScoreMilestones(scene, round.score);

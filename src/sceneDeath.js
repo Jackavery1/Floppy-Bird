@@ -9,13 +9,14 @@ import { getDailyChallengeSkin } from './dailyChallenge.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
-/** @param {SceneContext} scene */
-export function triggerDeath(scene) {
+/** @param {SceneContext} scene @param {'pipe' | 'ground' | 'ceiling'} [cause] */
+export function triggerDeath(scene, cause = 'pipe') {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
+    scene.round.deathCause = cause;
     scene.round.resetDeathAnimation();
 
-    playDeathImpactFeedback(scene);
+    playDeathImpactFeedback(scene, cause);
     scene.bird.velocityY = 0;
     scene.ghost.finishRound(scene.round.score);
 
@@ -68,6 +69,7 @@ function finishDying(scene) {
         scene.hardcoreMode,
         scene.playMode === 'daily' ? scene.dailyGoal : 0,
         scene.activeSkinId ?? 'classic',
+        round.deathCause
     );
     scene.ui.setOverlay('gameOver', elements);
 }

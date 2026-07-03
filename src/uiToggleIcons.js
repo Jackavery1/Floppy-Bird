@@ -4,12 +4,12 @@ export function drawTrainingToggleIcon(g, enabled) {
     const s = 10;
     const half = s / 2;
     if (enabled) {
-        g.fillStyle(0x42A5F5, 1);
+        g.fillStyle(0x42a5f5, 1);
         g.fillRect(-half, -half, s, s);
-        g.fillStyle(0xE3F2FD, 1);
+        g.fillStyle(0xe3f2fd, 1);
         g.fillRect(-half + 2, -half + 2, s - 4, s - 4);
     } else {
-        g.lineStyle(2, 0xB0BEC5, 1);
+        g.lineStyle(2, 0xb0bec5, 1);
         g.strokeRect(-half, -half, s, s);
     }
 }
@@ -18,22 +18,22 @@ export function drawTrainingToggleIcon(g, enabled) {
 export function drawHardcoreToggleIcon(g, enabled, unlocked) {
     g.clear();
     if (!unlocked) {
-        g.fillStyle(0x78909C, 1);
+        g.fillStyle(0x78909c, 1);
         g.fillRect(-5, -1, 10, 7);
         g.fillRect(-6, -5, 12, 5);
-        g.fillStyle(0x546E7A, 1);
+        g.fillStyle(0x546e7a, 1);
         g.fillRect(-2, -3, 4, 3);
         return;
     }
     const s = 10;
     const half = s / 2;
     if (enabled) {
-        g.fillStyle(0xE53935, 1);
+        g.fillStyle(0xe53935, 1);
         g.fillRect(-half, -half, s, s);
-        g.fillStyle(0xFFCDD2, 1);
+        g.fillStyle(0xffcdd2, 1);
         g.fillRect(-half + 2, -half + 2, s - 4, s - 4);
     } else {
-        g.lineStyle(2, 0xB0BEC5, 1);
+        g.lineStyle(2, 0xb0bec5, 1);
         g.strokeRect(-half, -half, s, s);
     }
 }

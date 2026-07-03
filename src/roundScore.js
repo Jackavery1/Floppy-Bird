@@ -33,13 +33,13 @@ export function persistRoundScore(scene) {
         scene.difficulty,
         scene.round.roundHighScore,
         scene.hardcoreMode,
-        skinId,
+        skinId
     );
     const leaderboardData = saveToLeaderboard(
         scene.round.score,
         scene.difficulty,
         scene.hardcoreMode,
-        skinId,
+        skinId
     );
     const topEntry = leaderboardData.entries[0]?.score ?? 0;
     if (topEntry > scene.round.roundHighScore) {
@@ -48,7 +48,7 @@ export function persistRoundScore(scene) {
             scene.difficulty,
             scene.round.roundHighScore,
             scene.hardcoreMode,
-            skinId,
+            skinId
         );
     }
 

@@ -4,10 +4,10 @@ const BX = (W - BW) / 2;
 const H = 500;
 const CAP_H = 20;
 
-const PIPE_MAIN = 0x74BF2E;
-const PIPE_LIGHT = 0x8ED94A;
-const PIPE_DARK = 0x5AA022;
-const PIPE_EDGE = 0x3A7A0A;
+const PIPE_MAIN = 0x74bf2e;
+const PIPE_LIGHT = 0x8ed94a;
+const PIPE_DARK = 0x5aa022;
+const PIPE_EDGE = 0x3a7a0a;
 
 /** @param {import('phaser').GameObjects.Graphics} g */
 function drawBody(g, yStart, yEnd) {

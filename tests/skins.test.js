@@ -71,12 +71,24 @@ describe('skins', () => {
     });
 
     it('mushu exige 15+ dans les 3 difficultés', () => {
-        expect(SKINS.mushu.unlock(baseCtx({
-            bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 14,
-        }))).toBe(false);
-        expect(SKINS.mushu.unlock(baseCtx({
-            bestEasyScore: 15, bestNormalScore: 15, bestHardScore: 15,
-        }))).toBe(true);
+        expect(
+            SKINS.mushu.unlock(
+                baseCtx({
+                    bestEasyScore: 15,
+                    bestNormalScore: 15,
+                    bestHardScore: 14,
+                })
+            )
+        ).toBe(false);
+        expect(
+            SKINS.mushu.unlock(
+                baseCtx({
+                    bestEasyScore: 15,
+                    bestNormalScore: 15,
+                    bestHardScore: 15,
+                })
+            )
+        ).toBe(true);
     });
 
     it('glace exige 3 défis du jour réussis', () => {
@@ -106,12 +118,30 @@ describe('skins', () => {
     });
 
     it('8 skins classiques (classement commun) et 8 skins spéciaux (classement dédié)', () => {
-        const classicIds = SKIN_IDS.filter(id => !isSpecialSkin(id));
-        const specialIds = SKIN_IDS.filter(id => isSpecialSkin(id));
-        expect(classicIds).toEqual(['classic', 'lavande', 'ruby', 'ambre', 'ocean', 'corail', 'forest', 'minuit']);
-        expect(specialIds).toEqual(['armure', 'mushu', 'phoenix', 'fantome', 'glace', 'tempete', 'cosmos', 'neon']);
-        expect(classicIds.every(id => getSkin(id).family === 'classic')).toBe(true);
-        expect(specialIds.every(id => getSkin(id).family === 'special')).toBe(true);
+        const classicIds = SKIN_IDS.filter((id) => !isSpecialSkin(id));
+        const specialIds = SKIN_IDS.filter((id) => isSpecialSkin(id));
+        expect(classicIds).toEqual([
+            'classic',
+            'lavande',
+            'ruby',
+            'ambre',
+            'ocean',
+            'corail',
+            'forest',
+            'minuit',
+        ]);
+        expect(specialIds).toEqual([
+            'armure',
+            'mushu',
+            'phoenix',
+            'fantome',
+            'glace',
+            'tempete',
+            'cosmos',
+            'neon',
+        ]);
+        expect(classicIds.every((id) => getSkin(id).family === 'classic')).toBe(true);
+        expect(specialIds.every((id) => getSkin(id).family === 'special')).toBe(true);
     });
 
     it('isSpecialSkin retombe sur classique (non spécial) pour un id inconnu', () => {

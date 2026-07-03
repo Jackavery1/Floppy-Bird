@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildMenuDailyChallenge, refreshDailyChallengeButton } from '../src/uiMenuDailyChallenge.js';
+import {
+    buildMenuDailyChallenge,
+    refreshDailyChallengeButton,
+} from '../src/uiMenuDailyChallenge.js';
 import { UI } from '../src/ui.js';
 import { DIFFICULTY } from '../src/config.js';
 import { DEPTH, MIN_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
@@ -34,7 +37,7 @@ describe('uiMenuDailyChallenge', () => {
             228,
             MIN_TOUCH,
             expect.any(Number),
-            expect.any(Number),
+            expect.any(Number)
         );
     });
 

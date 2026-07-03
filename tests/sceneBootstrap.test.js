@@ -39,7 +39,7 @@ describe('sceneBootstrap', () => {
             triggerDeath: vi.fn(),
         };
         checkCollisions(scene);
-        expect(scene.triggerDeath).toHaveBeenCalled();
+        expect(scene.triggerDeath).toHaveBeenCalledWith('pipe');
     });
 
     it('checkCollisions ignore la collision avec coyote time actif', () => {

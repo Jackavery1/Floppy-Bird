@@ -1,12 +1,9 @@
 import { scoresButtonLabel } from './device.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
-import {
-    buildMenuPanelShell,
-    createMenuPanelController,
-} from './uiMenuPanel.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
 
-const SCORES_BTN_STROKE = 0x42A5F5;
+const SCORES_BTN_STROKE = 0x42a5f5;
 
 const PANEL_CFG = {
     openKey: '_scoresOpen',

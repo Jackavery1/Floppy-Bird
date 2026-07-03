@@ -14,7 +14,9 @@ describe('storage', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 
@@ -94,7 +96,7 @@ describe('storage', () => {
 
         expect(loadLeaderboard(DIFFICULTY.NORMAL, false, 'classic')[0].score).toBe(9);
         expect(loadLeaderboard(DIFFICULTY.NORMAL, false, 'cosmos')[0].score).toBe(40);
-        expect(loadLeaderboard(DIFFICULTY.NORMAL, false).some(e => e.score === 40)).toBe(false);
+        expect(loadLeaderboard(DIFFICULTY.NORMAL, false).some((e) => e.score === 40)).toBe(false);
     });
 
     it('deux skins spéciaux différents ont chacun leur propre record', () => {

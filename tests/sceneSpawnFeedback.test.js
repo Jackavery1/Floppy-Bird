@@ -4,7 +4,12 @@ import { createRoundState } from '../src/roundState.js';
 
 describe('sceneSpawnFeedback', () => {
     it('pulse l’alpha du bird pendant l’invincibilité spawn', () => {
-        const sprite = { alpha: 1, setAlpha: vi.fn(v => { sprite.alpha = v; }) };
+        const sprite = {
+            alpha: 1,
+            setAlpha: vi.fn((v) => {
+                sprite.alpha = v;
+            }),
+        };
         const scene = {
             round: createRoundState(),
             bird: { sprite },
@@ -20,7 +25,12 @@ describe('sceneSpawnFeedback', () => {
     });
 
     it('restaure alpha 1 hors invincibilité', () => {
-        const sprite = { alpha: 0.6, setAlpha: vi.fn(v => { sprite.alpha = v; }) };
+        const sprite = {
+            alpha: 0.6,
+            setAlpha: vi.fn((v) => {
+                sprite.alpha = v;
+            }),
+        };
         const scene = {
             round: createRoundState(),
             bird: { sprite },

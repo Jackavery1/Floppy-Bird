@@ -22,7 +22,9 @@ function readMeta() {
 function writeMeta(meta) {
     try {
         localStorage.setItem(STORAGE_KEYS.meta, JSON.stringify(meta));
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }
 
 export function loadMeta() {

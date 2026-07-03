@@ -26,31 +26,71 @@ function drawEntrySkinSwatch(scene, x, y, skinId, depth) {
  */
 export function buildGameOverLeaderboard(scene, opts) {
     const {
-        cx, y, entries, highlightId, isDaily, dailyGoal, finalScore,
-        special, hardcoreMode, activeSkin,
+        cx,
+        y,
+        entries,
+        highlightId,
+        isDaily,
+        dailyGoal,
+        finalScore,
+        special,
+        hardcoreMode,
+        activeSkin,
     } = opts;
     const leaderboardElements = [];
 
     if (isDaily) {
-        leaderboardElements.push(addCenteredText(scene, cx, y(168), `— OBJECTIF : ${dailyGoal} —`, {
-            fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
-        }, DEPTH.MENU_RAISED));
-        leaderboardElements.push(addCenteredText(scene, cx, y(183),
-            finalScore >= dailyGoal
-                ? 'Bravo, défi validé pour aujourd\'hui !'
-                : `Encore ${dailyGoal - finalScore} point(s) pour valider le défi.`, {
-                fontSize: '10px',
-                fill: '#cccccc',
-            }, DEPTH.MENU_RAISED));
+        leaderboardElements.push(
+            addCenteredText(
+                scene,
+                cx,
+                y(168),
+                `— OBJECTIF : ${dailyGoal} —`,
+                {
+                    fontSize: '9px',
+                    fill: '#90CAF9',
+                    fontStyle: 'bold',
+                },
+                DEPTH.MENU_RAISED
+            )
+        );
+        leaderboardElements.push(
+            addCenteredText(
+                scene,
+                cx,
+                y(183),
+                finalScore >= dailyGoal
+                    ? "Bravo, défi validé pour aujourd'hui !"
+                    : `Encore ${dailyGoal - finalScore} point(s) pour valider le défi.`,
+                {
+                    fontSize: '10px',
+                    fill: '#cccccc',
+                },
+                DEPTH.MENU_RAISED
+            )
+        );
         return leaderboardElements;
     }
 
     const boardTitle = special
         ? `— TOP 5 · ${activeSkin.label.toUpperCase()}${hardcoreMode ? ' HC' : ''} —`
-        : (hardcoreMode ? '— TOP 5 HARDCORE —' : '— TOP 5 —');
-    leaderboardElements.push(addCenteredText(scene, cx, y(168), boardTitle, {
-        fontSize: '9px', fill: '#90CAF9', fontStyle: 'bold',
-    }, DEPTH.MENU_RAISED));
+        : hardcoreMode
+          ? '— TOP 5 HARDCORE —'
+          : '— TOP 5 —';
+    leaderboardElements.push(
+        addCenteredText(
+            scene,
+            cx,
+            y(168),
+            boardTitle,
+            {
+                fontSize: '9px',
+                fill: '#90CAF9',
+                fontStyle: 'bold',
+            },
+            DEPTH.MENU_RAISED
+        )
+    );
 
     entries.forEach((entry, i) => {
         const isNew = entry.id === highlightId;
@@ -58,15 +98,29 @@ export function buildGameOverLeaderboard(scene, opts) {
         const rowY = y(183 + i * 13);
         if (!special) {
             leaderboardElements.push(
-                drawEntrySkinSwatch(scene, cx - 62, rowY, entry.skinId ?? 'classic', DEPTH.MENU_RAISED),
+                drawEntrySkinSwatch(
+                    scene,
+                    cx - 62,
+                    rowY,
+                    entry.skinId ?? 'classic',
+                    DEPTH.MENU_RAISED
+                )
             );
         }
-        leaderboardElements.push(addCenteredText(scene, cx, rowY,
-            `${rank} ${entry.score}`, {
-                fontSize: '11px',
-                fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
-                fontStyle: isNew || i === 0 ? 'bold' : 'normal',
-            }, DEPTH.MENU_RAISED));
+        leaderboardElements.push(
+            addCenteredText(
+                scene,
+                cx,
+                rowY,
+                `${rank} ${entry.score}`,
+                {
+                    fontSize: '11px',
+                    fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
+                    fontStyle: isNew || i === 0 ? 'bold' : 'normal',
+                },
+                DEPTH.MENU_RAISED
+            )
+        );
     });
 
     return leaderboardElements;

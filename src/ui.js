@@ -13,12 +13,16 @@ import {
     destroyInGameControls,
     showJumpTutorial,
     dismissJumpTutorial,
+    showGapTutorial,
+    showScoreTutorial,
+    dismissGameplayTutorial,
     showDailyGoalReached,
-} from './uiHud.js';
-import {
     showDifficultyEscalation,
+    showDifficultyEscalationPreview,
+    showCoyoteHint,
+    showHardcoreInvincibilityHint,
     showScoreStreak,
-} from './uiHudFeedback.js';
+} from './uiHud.js';
 import {
     showMenu,
     updateTrainingLabel,
@@ -26,11 +30,10 @@ import {
     updateDifficultyButtons,
     refreshHighScore as refreshMenuHighScore,
 } from './uiMenu.js';
-import { toggleMenuOptions } from './uiMenuOptions.js';
+import { toggleMenuOptions, refreshHardcoreLockState } from './uiMenuOptions.js';
 import { toggleMenuScores } from './uiMenuScoresPanel.js';
 import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
 import { showPause } from './uiPause.js';
-import { refreshHardcoreLockState } from './uiMenuOptions.js';
 
 export class UI {
     constructor(scene) {
@@ -65,37 +68,99 @@ export class UI {
     }
 
     createOverlay(alpha = 0.7, depth = DEPTH.OVERLAY_DIM, color = 0x000000) {
-        return this.scene.add.rectangle(
-            GAME_CONFIG.centerX, GAME_CONFIG.centerY,
-            GAME_CONFIG.width, GAME_CONFIG.height, color, alpha,
-        ).setDepth(depth);
+        return this.scene.add
+            .rectangle(
+                GAME_CONFIG.centerX,
+                GAME_CONFIG.centerY,
+                GAME_CONFIG.width,
+                GAME_CONFIG.height,
+                color,
+                alpha
+            )
+            .setDepth(depth);
     }
 
-    createScoreDisplay() { createScoreDisplay(this); }
-    hideInGameScore() { hideInGameScore(this); }
-    createInGameControls(opts) { return createInGameControls(this, opts); }
-    updateScore(newScore) { updateScore(this, newScore); }
-    showRecordBroken() { showRecordBroken(this); }
-    showDailyGoalReached() { showDailyGoalReached(this); }
-    showDifficultyEscalation() { showDifficultyEscalation(this); }
-    showScoreStreak(score) { showScoreStreak(this, score); }
+    createScoreDisplay() {
+        createScoreDisplay(this);
+    }
+    hideInGameScore() {
+        hideInGameScore(this);
+    }
+    createInGameControls(opts) {
+        return createInGameControls(this, opts);
+    }
+    updateScore(newScore) {
+        updateScore(this, newScore);
+    }
+    showRecordBroken() {
+        showRecordBroken(this);
+    }
+    showDailyGoalReached() {
+        showDailyGoalReached(this);
+    }
+    showDifficultyEscalation() {
+        showDifficultyEscalation(this);
+    }
+    showScoreStreak(score) {
+        showScoreStreak(this, score);
+    }
     showMenu(difficulty, trainingMode, hardcoreMode) {
         return showMenu(this, difficulty, trainingMode, hardcoreMode);
     }
-    updateTrainingLabel(trainingMode) { updateTrainingLabel(this, trainingMode); }
-    updateHardcoreLabel(hardcoreMode) { updateHardcoreLabel(this, hardcoreMode); }
-    showJumpTutorial() { showJumpTutorial(this); }
-    dismissJumpTutorial() { return dismissJumpTutorial(this); }
-    updateDifficultyButtons(difficulty) { updateDifficultyButtons(this, difficulty); }
+    updateTrainingLabel(trainingMode) {
+        updateTrainingLabel(this, trainingMode);
+    }
+    updateHardcoreLabel(hardcoreMode) {
+        updateHardcoreLabel(this, hardcoreMode);
+    }
+    showJumpTutorial() {
+        showJumpTutorial(this);
+    }
+    showGapTutorial() {
+        showGapTutorial(this);
+    }
+    showScoreTutorial() {
+        showScoreTutorial(this);
+    }
+    dismissJumpTutorial() {
+        return dismissJumpTutorial(this);
+    }
+    dismissGameplayTutorial() {
+        return dismissGameplayTutorial(this);
+    }
+    showDifficultyEscalationPreview() {
+        showDifficultyEscalationPreview(this);
+    }
+    showCoyoteHint() {
+        showCoyoteHint(this);
+    }
+    showHardcoreInvincibilityHint(durationMs) {
+        showHardcoreInvincibilityHint(this, durationMs);
+    }
+    updateDifficultyButtons(difficulty) {
+        updateDifficultyButtons(this, difficulty);
+    }
     refreshHighScore(difficulty, hardcoreMode = false, skinId = null) {
         refreshMenuHighScore(this, difficulty, hardcoreMode, skinId);
     }
-    toggleMenuOptionsPanel() { toggleMenuOptions(this); }
-    toggleMenuScoresPanel() { toggleMenuScores(this); }
-    toggleMenuSkinsPanel() { toggleMenuSkins(this); }
-    showPause(opts) { return showPause(this, opts); }
-    showFlash() { showFlash(this); }
-    refreshHardcoreLockState() { refreshHardcoreLockState(this); }
+    toggleMenuOptionsPanel() {
+        toggleMenuOptions(this);
+    }
+    toggleMenuScoresPanel() {
+        toggleMenuScores(this);
+    }
+    toggleMenuSkinsPanel() {
+        toggleMenuSkins(this);
+    }
+    showPause(opts) {
+        return showPause(this, opts);
+    }
+    showFlash() {
+        showFlash(this);
+    }
+    refreshHardcoreLockState() {
+        refreshHardcoreLockState(this);
+    }
 
     drawGameOverMenuButton(menuBtnY, fillColor = MENU_BTN_COLOR) {
         const { menuBtn } = UI_LAYOUT;
@@ -108,13 +173,31 @@ export class UI {
             menuBtnY - menuBtn.height / 2,
             menuBtn.width,
             menuBtn.height,
-            menuBtn.radius,
+            menuBtn.radius
         );
     }
 
-    showGameOver(finalScore, leaderboardData, fadeIn = false, isNewRecord = false, hardcoreMode = false, dailyGoal = 0, activeSkinId = 'classic') {
+    showGameOver(
+        finalScore,
+        leaderboardData,
+        fadeIn = false,
+        isNewRecord = false,
+        hardcoreMode = false,
+        dailyGoal = 0,
+        activeSkinId = 'classic',
+        deathCause = null
+    ) {
         return buildGameOverUI(
-            this.scene, this, finalScore, leaderboardData, fadeIn, isNewRecord, hardcoreMode, dailyGoal, activeSkinId,
+            this.scene,
+            this,
+            finalScore,
+            leaderboardData,
+            fadeIn,
+            isNewRecord,
+            hardcoreMode,
+            dailyGoal,
+            activeSkinId,
+            deathCause
         );
     }
 

@@ -6,13 +6,19 @@ describe('motion', () => {
     });
 
     it('prefersReducedMotion reflète matchMedia', async () => {
-        vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })));
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
         const { prefersReducedMotion } = await import('../src/motion.js');
         expect(prefersReducedMotion()).toBe(true);
     });
 
     it('sceneTween force duration 0 si reduced motion', async () => {
-        vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true })));
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
         const add = vi.fn();
         const scene = { tweens: { add } };
         const { sceneTween } = await import('../src/motion.js');

@@ -2,10 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import {
-    buildMenuOptions,
-    toggleMenuOptions,
-} from '../src/uiMenuOptions.js';
+import { buildMenuOptions, toggleMenuOptions } from '../src/uiMenuOptions.js';
 import { UI_LAYOUT } from '../src/uiLayout.js';
 
 vi.mock('../src/audio.js', () => ({

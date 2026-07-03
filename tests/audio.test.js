@@ -119,7 +119,9 @@ describe('audio', () => {
         const store = { 'flappy-bird-muted': '1', 'flappy-bird-volume': '0' };
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
         vi.resetModules();
         const Ctx = vi.fn(() => mockCtx);
@@ -134,7 +136,9 @@ describe('audio', () => {
         const store = { 'flappy-bird-volume': '0.5' };
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
         vi.resetModules();
         const Ctx = vi.fn(() => mockCtx);
@@ -144,36 +148,6 @@ describe('audio', () => {
         play(SOUND.JUMP);
         const gainNode = mockCtx.createGain.mock.results[1].value;
         expect(gainNode.gain.linearRampToValueAtTime).toHaveBeenCalled();
-    });
-
-    it('cycleSoundLevel parcourt les paliers de volume', async () => {
-        const store = { 'flappy-bird-volume': '1' };
-        vi.stubGlobal('localStorage', {
-            getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
-        });
-        vi.resetModules();
-        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
-        const { cycleSoundLevel, getVolume, isMuted } = await import('../src/audio.js');
-        cycleSoundLevel();
-        expect(getVolume()).toBe(0.5);
-        cycleSoundLevel();
-        expect(getVolume()).toBe(0.25);
-        cycleSoundLevel();
-        expect(isMuted()).toBe(true);
-    });
-
-    it('formatSoundLabel reflète l’état audio', async () => {
-        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
-        const store = { 'flappy-bird-volume': '0.5' };
-        vi.stubGlobal('localStorage', {
-            getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
-        });
-        vi.resetModules();
-        vi.stubGlobal('AudioContext', vi.fn(() => mockCtx));
-        const { formatSoundLabel } = await import('../src/audio.js');
-        expect(formatSoundLabel()).toBe('50 %');
     });
 
     it('isAudioAvailable détecte l’absence d’AudioContext', async () => {

@@ -69,6 +69,7 @@ vi.mock('../src/sceneRound.js', () => ({
 
 vi.mock('../src/sceneCoyote.js', () => ({
     updateCoyoteTime: vi.fn(),
+    updateCoyoteVisual: vi.fn(),
     hasCoyoteGrace: vi.fn(() => false),
 }));
 
@@ -116,7 +117,13 @@ describe('GameScene', () => {
     it('délègue triggerDeath au module sceneDeath', () => {
         const scene = new GameScene();
         scene.triggerDeath();
-        expect(triggerDeath).toHaveBeenCalledWith(scene);
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'pipe');
+    });
+
+    it('triggerDeath transmet la cause sol ou plafond', () => {
+        const scene = new GameScene();
+        scene.triggerDeath('ground');
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'ground');
     });
 
     it('update délègue la boucle gameplay en état PLAYING', () => {
@@ -187,5 +194,25 @@ describe('GameScene', () => {
         scene.update();
 
         expect(triggerDeath).not.toHaveBeenCalled();
+    });
+
+    it('le sol déclenche une mort différenciée', () => {
+        vi.mocked(hasCoyoteGrace).mockReturnValue(false);
+        const scene = new GameScene();
+        scene.state = GAME_STATE.PLAYING;
+        scene.game = { loop: { delta: 16.67, actualFps: 60 } };
+        scene.round = createRoundState();
+        scene.bird = {
+            update: vi.fn(),
+            isOutOfBounds: vi.fn(() => false),
+            isHittingGround: vi.fn(() => true),
+        };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7, isBirdInGap: vi.fn(() => false) };
+        scene.ghost = { update: vi.fn() };
+        scene._clouds = [];
+
+        scene.update();
+
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'ground');
     });
 });

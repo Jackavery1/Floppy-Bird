@@ -8,7 +8,9 @@ vi.mock('../src/metaProgress.js', () => ({
 describe('metaAchievements', () => {
     it('notifie le callback quand des succès sont débloqués', async () => {
         const { evaluateAchievements } = await import('../src/metaProgress.js');
-        vi.mocked(evaluateAchievements).mockReturnValueOnce([{ id: 'first_flight', title: 'Premier vol' }]);
+        vi.mocked(evaluateAchievements).mockReturnValueOnce([
+            { id: 'first_flight', title: 'Premier vol' },
+        ]);
         const notifier = vi.fn();
         const scene = { achievementNotifier: notifier, trainingMode: false };
 
@@ -21,7 +23,9 @@ describe('metaAchievements', () => {
 
     it('notifyEndOfRoundAchievements filtre les succès de fin de manche', async () => {
         const { evaluateAchievements } = await import('../src/metaProgress.js');
-        vi.mocked(evaluateAchievements).mockReturnValueOnce([{ id: 'collector', title: 'Collectionneur' }]);
+        vi.mocked(evaluateAchievements).mockReturnValueOnce([
+            { id: 'collector', title: 'Collectionneur' },
+        ]);
         const notifier = vi.fn();
         const scene = { achievementNotifier: notifier, trainingMode: false };
 
@@ -33,7 +37,9 @@ describe('metaAchievements', () => {
 
     it('ignore l’absence de notifier', async () => {
         const { evaluateAchievements } = await import('../src/metaProgress.js');
-        vi.mocked(evaluateAchievements).mockReturnValueOnce([{ id: 'first_flight', title: 'Premier vol' }]);
+        vi.mocked(evaluateAchievements).mockReturnValueOnce([
+            { id: 'first_flight', title: 'Premier vol' },
+        ]);
         const scene = { trainingMode: false };
 
         expect(() => notifyAchievementUnlocks(scene)).not.toThrow();

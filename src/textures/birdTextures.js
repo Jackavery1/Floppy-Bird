@@ -8,10 +8,10 @@ const FRAME_H = 28;
 /** @param {import('phaser').GameObjects.Graphics} g */
 function drawOutline(g, ox, oy, alpha) {
     g.fillStyle(0x000000, alpha);
-    g.fillRect(ox + 4,  oy + 1, 26, 26);
-    g.fillRect(ox + 1,  oy + 4, 32, 20);
-    g.fillRect(ox + 0,  oy + 6, 36, 16);
-    g.fillRect(ox + 31, oy + 9,  9, 13);
+    g.fillRect(ox + 4, oy + 1, 26, 26);
+    g.fillRect(ox + 1, oy + 4, 32, 20);
+    g.fillRect(ox + 0, oy + 6, 36, 16);
+    g.fillRect(ox + 31, oy + 9, 9, 13);
 }
 
 /** @param {import('phaser').GameObjects.Graphics} g @param {SkinPalette} p */
@@ -22,11 +22,11 @@ function drawBody(g, ox, oy, p, alpha) {
     g.fillRect(ox + 2, oy + 8, 32, 12);
     g.fillStyle(p.bodyHi, alpha);
     g.fillRect(ox + 15, oy + 11, 11, 9);
-    g.fillStyle(0xFFFFFF, alpha);
+    g.fillStyle(0xffffff, alpha);
     g.fillRect(ox + 22, oy + 4, 9, 11);
     g.fillStyle(0x111111, alpha);
     g.fillRect(ox + 25, oy + 7, 5, 5);
-    g.fillStyle(0xFFFFFF, alpha);
+    g.fillStyle(0xffffff, alpha);
     g.fillRect(ox + 26, oy + 7, 2, 2);
     g.fillStyle(p.beak, alpha);
     g.fillRect(ox + 33, oy + 11, 5, 8);

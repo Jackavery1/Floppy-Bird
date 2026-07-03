@@ -9,13 +9,13 @@ function normalizeGhostPayload(parsed) {
     if (Array.isArray(parsed)) {
         return {
             score: 0,
-            path: parsed.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y)),
+            path: parsed.filter((p) => Number.isFinite(p.t) && Number.isFinite(p.y)),
             difficulty: null,
             hardcore: false,
         };
     }
     const path = Array.isArray(parsed.path)
-        ? parsed.path.filter(p => Number.isFinite(p.t) && Number.isFinite(p.y))
+        ? parsed.path.filter((p) => Number.isFinite(p.t) && Number.isFinite(p.y))
         : [];
     const score = Number(parsed.score);
     return {
@@ -39,13 +39,18 @@ export function loadGhostData() {
 export function saveGhostData(score, path, { difficulty, hardcore } = {}) {
     if (!path?.length) return;
     try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            score,
-            path: path.slice(0, 600),
-            difficulty,
-            hardcore: hardcore === true,
-        }));
-    } catch { /* quota */ }
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify({
+                score,
+                path: path.slice(0, 600),
+                difficulty,
+                hardcore: hardcore === true,
+            })
+        );
+    } catch {
+        /* quota localStorage */
+    }
 }
 
 export function ghostMatchesMode(saved, difficulty, hardcoreMode) {
@@ -104,7 +109,7 @@ export class GhostReplay {
             GAME_CONFIG.bird.startX,
             GAME_CONFIG.centerY,
             birdTextureKey(skinId),
-            1,
+            1
         );
         this.sprite.setDisplaySize(GAME_CONFIG.bird.width, GAME_CONFIG.bird.height);
         this.sprite.setAlpha(GAME_CONFIG.training.ghostAlpha);
@@ -112,12 +117,21 @@ export class GhostReplay {
         this.sprite.setTint(0xaaddff);
     }
 
-    beginRound() {
+    beginRound({ record = true } = {}) {
+        this._record = record && this.scene.trainingMode;
+        this._replayOnly = !this.scene.trainingMode && this.scene.playMode === 'daily';
         this._refreshPathForMode();
         this._recording = [];
         this._roundStartMs = this.scene.time.now;
         this._sampleAcc = 0;
-        this.createSprite();
+        if (this._record || this._replayOnly) {
+            this.createSprite();
+        } else {
+            if (this.sprite) {
+                this.sprite.destroy();
+                this.sprite = null;
+            }
+        }
     }
 
     recordJump() {
@@ -127,18 +141,20 @@ export class GhostReplay {
     }
 
     _replayWingFrame(elapsed) {
-        if (!this.path.some(p => p.j && Math.abs(p.t - elapsed) < 90)) return 1;
+        if (!this.path.some((p) => p.j && Math.abs(p.t - elapsed) < 90)) return 1;
         return 0;
     }
 
     update(step) {
-        if (!this.scene.trainingMode) return;
+        if (!this.scene.trainingMode && !this._replayOnly) return;
 
         const elapsed = this.scene.time.now - this._roundStartMs;
-        this._sampleAcc += step;
-        if (this._sampleAcc >= GAME_CONFIG.training.sampleEveryFrames) {
-            this._sampleAcc = 0;
-            this._recording.push({ t: elapsed, y: this.scene.bird.y });
+        if (this._record) {
+            this._sampleAcc += step;
+            if (this._sampleAcc >= GAME_CONFIG.training.sampleEveryFrames) {
+                this._sampleAcc = 0;
+                this._recording.push({ t: elapsed, y: this.scene.bird.y });
+            }
         }
 
         if (this.sprite && this.path.length) {
@@ -151,7 +167,7 @@ export class GhostReplay {
     }
 
     finishRound(score) {
-        if (score > this._savedScore && this._recording.length > 0) {
+        if (this._record && score > this._savedScore && this._recording.length > 0) {
             this.path = [...this._recording];
             this._savedScore = score;
             saveGhostData(score, this.path, {

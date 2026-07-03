@@ -3,10 +3,7 @@ import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { DEPTH } from './uiDepth.js';
 import { maxGapDeltaForScore, effectivePipeGapForScore } from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
-import {
-    collidesWithPipeGroup,
-    isBirdInPipeGap,
-} from './pipeCollision.js';
+import { collidesWithPipeGroup, isBirdInPipeGap } from './pipeCollision.js';
 import { Utils } from './utils.js';
 
 export { smoothGapY } from './pipeGaps.js';

@@ -2,7 +2,7 @@ import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
 import { GAME_STATE } from './gameState.js';
 import { loadHighScore } from './storage.js';
-import { loadTutorialSeen } from './tutorialStorage.js';
+import { showTutorialForProgress } from './tutorialProgress.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
@@ -86,11 +86,11 @@ export function beginRound(scene, { resetBird = false } = {}) {
         startSpawnInvincibility(scene, steps[0]);
     }
     applyTrainingTimeScale(scene);
-    if (!loadTutorialSeen()) {
-        scene.ui.showJumpTutorial();
-    }
-    if (scene.trainingMode && scene.playMode !== 'daily') {
-        scene.ghost.beginRound();
+    showTutorialForProgress(scene);
+    if (scene.trainingMode) {
+        scene.ghost.beginRound({ record: true });
+    } else if (scene.playMode === 'daily') {
+        scene.ghost.beginRound({ record: false });
     }
 
     scene.time.paused = false;

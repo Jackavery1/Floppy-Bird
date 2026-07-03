@@ -10,6 +10,7 @@ export function createRoundState() {
         spawnInvincible: false,
         spawnInvincibleTimer: null,
         coyoteFrames: 0,
+        deathCause: null,
         roundHighScore: 0,
         recordNotified: false,
         isNewRecord: false,
@@ -22,6 +23,8 @@ export function createRoundState() {
             this.isNewRecord = false;
             this.dailyGoalCelebrated = false;
             this.coyoteFrames = 0;
+            this._wasInGap = false;
+            this.deathCause = null;
             this.dyingFalling = false;
             this.dyingGrounded = false;
             this.leaderboardData = null;

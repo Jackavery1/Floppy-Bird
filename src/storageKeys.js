@@ -13,6 +13,8 @@ export const STORAGE_KEYS = Object.freeze({
     dailyStats: 'flappy-bird-daily-stats',
     trainingBest: 'flappy-bird-training-best',
     tutorialSeen: 'flappy-bird-tutorial-seen',
+    tutorialProgress: 'floppy-bird-tutorial-progress',
+    coyoteHintSeen: 'floppy-bird-coyote-hint-seen',
     meta: 'floppy-bird-meta',
 });
 

@@ -14,26 +14,53 @@ beforeEach(() => {
     store.clear();
     vi.stubGlobal('localStorage', {
         getItem: (key) => store.get(key) ?? null,
-        setItem: (key, value) => { store.set(key, value); },
-        removeItem: (key) => { store.delete(key); },
-        clear: () => { store.clear(); },
+        setItem: (key, value) => {
+            store.set(key, value);
+        },
+        removeItem: (key) => {
+            store.delete(key);
+        },
+        clear: () => {
+            store.clear();
+        },
     });
 });
 
 describe('skins', () => {
     it('classic toujours débloqué', () => {
-        const ctx = { bestScoreAny: 0, bestHardcoreScore: 0, score: 0, hardcore: false, dailyChallenge: true, unlockedSkinCount: 1 };
+        const ctx = {
+            bestScoreAny: 0,
+            bestHardcoreScore: 0,
+            score: 0,
+            hardcore: false,
+            dailyChallenge: true,
+            unlockedSkinCount: 1,
+        };
         expect(listUnlockedSkins(ctx)).toContain('classic');
     });
 
     it('ruby se débloque à 10 points record', () => {
-        const ctx = { bestScoreAny: 10, bestHardcoreScore: 0, score: 0, hardcore: false, dailyChallenge: true, unlockedSkinCount: 2 };
+        const ctx = {
+            bestScoreAny: 10,
+            bestHardcoreScore: 0,
+            score: 0,
+            hardcore: false,
+            dailyChallenge: true,
+            unlockedSkinCount: 2,
+        };
         expect(SKINS.ruby.unlock(ctx)).toBe(true);
         expect(listUnlockedSkins(ctx)).toContain('ruby');
     });
 
     it('nextUnlockedSkin cycle les skins débloqués', () => {
-        const ctx = { bestScoreAny: 10, bestHardcoreScore: 0, score: 0, hardcore: false, dailyChallenge: true, unlockedSkinCount: 2 };
+        const ctx = {
+            bestScoreAny: 10,
+            bestHardcoreScore: 0,
+            score: 0,
+            hardcore: false,
+            dailyChallenge: true,
+            unlockedSkinCount: 2,
+        };
         expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
         expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
     });
@@ -49,7 +76,7 @@ describe('metaProgress achievements', () => {
             hardcoreMode: false,
         };
         const newly = evaluateAchievements(scene);
-        expect(newly.some(a => a.id === 'first_flight')).toBe(true);
+        expect(newly.some((a) => a.id === 'first_flight')).toBe(true);
         expect(loadMeta().achievements).toContain('first_flight');
     });
 
@@ -59,6 +86,6 @@ describe('metaProgress achievements', () => {
         round.score = 5;
         const scene = { round, trainingMode: false, hardcoreMode: false };
         const newly = evaluateAchievements(scene);
-        expect(newly.some(a => a.id === 'first_flight')).toBe(false);
+        expect(newly.some((a) => a.id === 'first_flight')).toBe(false);
     });
 });

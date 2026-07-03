@@ -51,5 +51,5 @@ export function checkCollisions(scene) {
     if (scene.round.spawnInvincible) return;
     if (!scene.pipes.checkCollisionWithBird(scene.bird.getBounds())) return;
     if (hasCoyoteGrace(scene)) return;
-    scene.triggerDeath();
+    scene.triggerDeath('pipe');
 }

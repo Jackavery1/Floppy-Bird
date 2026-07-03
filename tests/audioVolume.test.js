@@ -16,7 +16,9 @@ describe('audioVolume', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 

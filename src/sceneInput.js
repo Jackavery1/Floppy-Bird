@@ -14,7 +14,7 @@ export function setupSceneInput(scene) {
     scene.input.on('pointerdown', (pointer) => {
         resumeAudio();
         const hits = scene.input.hitTestPointer(pointer);
-        if (hits.some(obj => obj.input?.enabled)) return;
+        if (hits.some((obj) => obj.input?.enabled)) return;
         scene.handlePrimaryAction();
     });
 
@@ -26,8 +26,8 @@ export function setupSceneInput(scene) {
         if (canReturnToMenu(scene.state)) scene.returnToMenu();
     });
 
-    scene.input.keyboard.on('keydown-ONE',   () => scene.changeDifficulty(DIFFICULTY.EASY));
-    scene.input.keyboard.on('keydown-TWO',   () => scene.changeDifficulty(DIFFICULTY.NORMAL));
+    scene.input.keyboard.on('keydown-ONE', () => scene.changeDifficulty(DIFFICULTY.EASY));
+    scene.input.keyboard.on('keydown-TWO', () => scene.changeDifficulty(DIFFICULTY.NORMAL));
     scene.input.keyboard.on('keydown-THREE', () => scene.changeDifficulty(DIFFICULTY.HARD));
     scene.input.keyboard.on('keydown-T', () => scene.toggleTraining());
     scene.input.keyboard.on('keydown-H', () => scene.toggleHardcore());

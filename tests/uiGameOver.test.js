@@ -24,7 +24,7 @@ describe('uiGameOver', () => {
             10,
             { entries: [{ score: 10, id: 'a', skinId: 'classic' }], highlightId: 'a' },
             false,
-            false,
+            false
         );
         expect(elements.length).toBeGreaterThan(5);
         expect(ui.drawGameOverMenuButton).toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe('uiGameOver', () => {
             false,
             false,
             false,
-            10,
+            10
         );
         expect(elements.length).toBeGreaterThan(5);
     });
@@ -51,7 +51,9 @@ describe('uiGameOver', () => {
         const ui = makeUi();
         const rectCallsBefore = scene.add.rectangle.mock.calls.length;
         buildGameOverUI(
-            scene, ui, 10,
+            scene,
+            ui,
+            10,
             {
                 entries: [
                     { score: 48, id: 'a', skinId: 'ruby' },
@@ -59,20 +61,49 @@ describe('uiGameOver', () => {
                 ],
                 highlightId: null,
             },
-            false, false, false, 0, 'classic',
+            false,
+            false,
+            false,
+            0,
+            'classic'
         );
         expect(scene.add.rectangle.mock.calls.length).toBeGreaterThan(rectCallsBefore + 1);
+    });
+
+    it('buildGameOverUI affiche la cause de mort', () => {
+        const scene = createBaseScene();
+        const ui = makeUi();
+        buildGameOverUI(
+            scene,
+            ui,
+            5,
+            { entries: [], highlightId: null },
+            false,
+            false,
+            false,
+            0,
+            'classic',
+            'pipe'
+        );
+        const texts = scene.add.text.mock.calls.map((call) => call[2]);
+        expect(texts).toContain('Collision tuyau');
     });
 
     it('skin spécial : classement dédié titré avec le nom du skin, sans icône par entrée', () => {
         const scene = createBaseScene();
         const ui = makeUi();
         buildGameOverUI(
-            scene, ui, 40,
+            scene,
+            ui,
+            40,
             { entries: [{ score: 40, id: 'a', skinId: 'cosmos' }], highlightId: null },
-            false, false, false, 0, 'cosmos',
+            false,
+            false,
+            false,
+            0,
+            'cosmos'
         );
-        const titles = scene.add.text.mock.calls.map(call => call[2]);
-        expect(titles.some(t => t.includes('COSMOS'))).toBe(true);
+        const titles = scene.add.text.mock.calls.map((call) => call[2]);
+        expect(titles.some((t) => t.includes('COSMOS'))).toBe(true);
     });
 });

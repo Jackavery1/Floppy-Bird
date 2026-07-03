@@ -11,5 +11,7 @@ export function loadHardcoreEnabled() {
 export function saveHardcoreEnabled(enabled) {
     try {
         localStorage.setItem(STORAGE_KEYS.hardcore, enabled ? '1' : '0');
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }

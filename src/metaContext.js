@@ -20,6 +20,7 @@ import { loadBestTrainingScore } from './trainingStorage.js';
  * @property {number} bestHardScore
  * @property {number} bestTrainingScore
  * @property {number} dailyCompletionsTotal
+ * @property {number} dailyStreak
  * @property {number} unlockedSkinCount
  */
 
@@ -38,19 +39,24 @@ export function buildMetaContext(scene) {
         hardcore: scene.hardcoreMode,
         dailyChallenge: scene.dailyChallengeMode === true,
         dailyGoal: scene.dailyGoal ?? 0,
-        dailyGoalMet: scene.playMode === 'daily'
-            && scene.dailyGoal > 0
-            && scene.round.score >= scene.dailyGoal,
+        dailyGoalMet:
+            scene.playMode === 'daily' &&
+            scene.dailyGoal > 0 &&
+            scene.round.score >= scene.dailyGoal,
         bestScoreAny,
         bestHardcoreScore,
         bestEasyScore: loadHighScore(DIFFICULTY.EASY, false),
         bestNormalScore: loadHighScore(DIFFICULTY.NORMAL, false),
         bestHardScore: loadHighScore(DIFFICULTY.HARD, false),
         bestTrainingScore: loadBestTrainingScore(),
-        dailyCompletionsTotal: loadDailyStats().totalCompletions,
+        dailyCompletionsTotal: 0,
+        dailyStreak: 0,
         unlockedSkinCount: 0,
         hardcoreUnlocked: false,
     };
+    const dailyStats = loadDailyStats();
+    ctx.dailyCompletionsTotal = dailyStats.totalCompletions;
+    ctx.dailyStreak = dailyStats.consecutiveDays;
     ctx.unlockedSkinCount = listUnlockedSkins(ctx).length;
     ctx.hardcoreUnlocked = isHardcoreUnlocked(ctx);
     return ctx;

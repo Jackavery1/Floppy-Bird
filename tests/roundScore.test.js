@@ -72,7 +72,10 @@ describe('roundScore', () => {
         const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
         vi.mocked(saveHighScore).mockReturnValueOnce(0);
         vi.mocked(saveToLeaderboard).mockReturnValueOnce({
-            entries: [{ score: 48, id: 'legacy-48' }, { score: 5, id: 'a' }],
+            entries: [
+                { score: 48, id: 'legacy-48' },
+                { score: 5, id: 'a' },
+            ],
             highlightId: 'a',
         });
         vi.mocked(saveHighScore).mockReturnValueOnce(48);

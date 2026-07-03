@@ -9,10 +9,7 @@ import {
 import { toggleTrainingMode, toggleHardcoreMode } from './sceneModeSettings.js';
 import { saveTrainingEnabled } from './trainingStorage.js';
 import { saveHardcoreEnabled } from './hardcoreStorage.js';
-import {
-    cancelPipeSpawnTimer,
-    clearSpawnInvincibility,
-} from './sceneRound.js';
+import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
@@ -33,9 +30,7 @@ export function showMenu(scene) {
     scene.round.score = 0;
     scene.ui.clearOverlay('menu');
 
-    const elements = scene.ui.showMenu(
-        scene.difficulty, scene.trainingMode, scene.hardcoreMode,
-    );
+    const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
     scene.ui.setOverlay('menu', elements);
 }
 

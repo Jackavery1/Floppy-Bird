@@ -5,9 +5,9 @@ import { createRoundState } from '../src/roundState.js';
 
 describe('achievements', () => {
     it('expose 5 définitions uniques', () => {
-        const ids = ACHIEVEMENTS.map(a => a.id);
+        const ids = ACHIEVEMENTS.map((a) => a.id);
         expect(new Set(ids).size).toBe(ACHIEVEMENTS.length);
-        expect(ACHIEVEMENTS.length).toBe(6);
+        expect(ACHIEVEMENTS.length).toBe(8);
     });
 
     it('chaque définition a id, title, desc et check', () => {
@@ -20,7 +20,7 @@ describe('achievements', () => {
     });
 
     it('premier vol se déclenche à 1 point', () => {
-        const def = ACHIEVEMENTS.find(a => a.id === 'first_flight');
+        const def = ACHIEVEMENTS.find((a) => a.id === 'first_flight');
         const ctx = buildMetaContext({
             round: createRoundState(),
             trainingMode: false,
@@ -33,7 +33,7 @@ describe('achievements', () => {
     });
 
     it('hardcore hero exige hardcore et score >= 5', () => {
-        const def = ACHIEVEMENTS.find(a => a.id === 'hardcore_hero');
+        const def = ACHIEVEMENTS.find((a) => a.id === 'hardcore_hero');
         const ctx = buildMetaContext({
             round: createRoundState(),
             trainingMode: false,

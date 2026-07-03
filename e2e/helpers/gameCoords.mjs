@@ -10,15 +10,6 @@ export async function getCanvasBox(page) {
     return { canvas, box };
 }
 
-export function gameCoordToScreen(box, gameX, gameY) {
-    const scaleX = box.width / GAME_CONFIG.width;
-    const scaleY = box.height / GAME_CONFIG.height;
-    return {
-        x: box.x + gameX * scaleX,
-        y: box.y + gameY * scaleY,
-    };
-}
-
 /** @param {boolean} usesTouch @param {{ force?: boolean }} [opts] */
 export async function pointerGameCoord(page, gameX, gameY, usesTouch, opts = {}) {
     const { canvas, box } = await getCanvasBox(page);
@@ -33,7 +24,23 @@ export async function pointerGameCoord(page, gameX, gameY, usesTouch, opts = {})
     }
 }
 
-const LANDSCAPE_HINT_HIDE_CSS = '#landscape-hint { display: none !important; pointer-events: none !important; }';
+/** @param {boolean} usesTouch @param {{ force?: boolean, attempts?: number }} [opts] */
+async function pointerUntilState(page, gameX, gameY, usesTouch, expectedState, opts = {}) {
+    const attempts = opts.attempts ?? 3;
+    for (let attempt = 0; attempt < attempts; attempt++) {
+        await pointerGameCoord(page, gameX, gameY, usesTouch, {
+            force: opts.force ?? attempt > 0,
+        });
+        const state = await page.evaluate(() => window.__FLOPPY_TEST__?.getState?.());
+        if (state === expectedState) return;
+        if (attempt < attempts - 1) {
+            await page.waitForTimeout(150);
+        }
+    }
+}
+
+const LANDSCAPE_HINT_HIDE_CSS =
+    '#landscape-hint { display: none !important; pointer-events: none !important; }';
 
 export async function hideLandscapeHint(page) {
     await page.addInitScript((css) => {
@@ -72,7 +79,9 @@ export async function waitForGameReady(page, { hideLandscapeHint: hideLandscape 
 }
 
 export async function expectGameState(page, state, timeout = 8_000) {
-    await expect.poll(async () => page.evaluate(() => window.__FLOPPY_TEST__?.getState()), { timeout }).toBe(state);
+    await expect
+        .poll(async () => page.evaluate(() => window.__FLOPPY_TEST__?.getState()), { timeout })
+        .toBe(state);
 }
 
 /** @param {boolean} usesTouch */
@@ -88,11 +97,7 @@ export async function openPauseFromPlaying(page, usesTouch) {
         await page.keyboard.press('Escape');
     } else {
         const { pauseButton } = TOUCH_TARGETS;
-        await pointerGameCoord(page, pauseButton.x, pauseButton.y, true);
-        const paused = await page.evaluate(() => window.__FLOPPY_TEST__?.getState?.());
-        if (paused !== 'paused') {
-            await page.evaluate(() => window.__FLOPPY_TEST__?.openPause?.());
-        }
+        await pointerUntilState(page, pauseButton.x, pauseButton.y, true, 'paused');
     }
     await expectGameState(page, 'paused');
 }
@@ -101,14 +106,7 @@ export async function openPauseFromPlaying(page, usesTouch) {
 export async function returnToMenuFromPause(page, usesTouch) {
     await expectGameState(page, 'paused');
     const { pauseMenu } = TOUCH_TARGETS;
-    await pointerGameCoord(page, pauseMenu.x, pauseMenu.y, usesTouch, { force: true });
-    let state = await page.evaluate(() => window.__FLOPPY_TEST__?.getState?.());
-    if (state === 'menu') return;
-    if (state === 'playing') {
-        await page.evaluate(() => window.__FLOPPY_TEST__?.openPause?.());
-        await expectGameState(page, 'paused');
-    }
-    await page.evaluate(() => window.__FLOPPY_TEST__?.returnToMenu?.());
+    await pointerUntilState(page, pauseMenu.x, pauseMenu.y, usesTouch, 'menu', { force: true });
     await expectGameState(page, 'menu');
 }
 
@@ -116,7 +114,9 @@ export async function returnToMenuFromPause(page, usesTouch) {
 export async function enterPausedFromPlaying(page, usesTouch) {
     await startPlayingFromMenu(page, usesTouch);
     if (usesTouch) {
-        await page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, { timeout: 5_000 });
+        await page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, {
+            timeout: 5_000,
+        });
     }
     await openPauseFromPlaying(page, usesTouch);
 }
@@ -126,12 +126,11 @@ export function projectUsesTouch(testInfo) {
 }
 
 export function isMobileLandscapeProject(projectName) {
-    return projectName === 'chromium-mobile-landscape'
-        || projectName === 'webkit-mobile-landscape';
+    return projectName === 'chromium-mobile-landscape' || projectName === 'webkit-mobile-landscape';
 }
 
-export async function tapGameCoord(page, gameX, gameY) {
-    await pointerGameCoord(page, gameX, gameY, true);
+export function isMobilePortraitProject(projectName) {
+    return projectName === 'chromium-mobile-portrait' || projectName === 'webkit-mobile-portrait';
 }
 
 export async function landscapeHintCoversCanvas(page) {

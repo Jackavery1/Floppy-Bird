@@ -46,7 +46,7 @@ export function isSpecialSkin(skinId) {
 
 /** @param {import('../metaContext.js').MetaContext} ctx */
 export function listUnlockedSkins(ctx) {
-    return SKIN_IDS.filter(id => SKINS[id].unlock(ctx));
+    return SKIN_IDS.filter((id) => SKINS[id].unlock(ctx));
 }
 
 /** @param {import('../metaContext.js').MetaContext} ctx */

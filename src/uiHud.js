@@ -1,23 +1,22 @@
-export {
-    createScoreDisplay,
-    showInGameScore,
-    updateScore,
-} from './uiHudScore.js';
+export { createScoreDisplay, showInGameScore, updateScore } from './uiHudScore.js';
 
 import { destroyInGameControls } from './uiHudControls.js';
 
-export {
-    createInGameControls,
-    destroyInGameControls,
-} from './uiHudControls.js';
+export { createInGameControls, destroyInGameControls } from './uiHudControls.js';
 
 export {
     showRecordBroken,
     showJumpTutorial,
+    showGapTutorial,
+    showScoreTutorial,
     dismissJumpTutorial,
+    dismissGameplayTutorial,
     showFlash,
     showDailyGoalReached,
     showDifficultyEscalation,
+    showDifficultyEscalationPreview,
+    showCoyoteHint,
+    showHardcoreInvincibilityHint,
     showScoreStreak,
 } from './uiHudFeedback.js';
 

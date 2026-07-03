@@ -24,7 +24,7 @@ vi.mock('../src/pipes.js', () => ({
     }),
 }));
 
-vi.mock('../src/ui.js', () => ({
+vi.mock('../src/uiIndex.js', () => ({
     UI: vi.fn(function UI() {
         this.destroy = vi.fn();
     }),
@@ -68,7 +68,7 @@ vi.mock('../src/textures/index.js', () => ({
 import { setupSceneWorld } from '../src/sceneSetup.js';
 import { Bird } from '../src/bird.js';
 import { Pipes } from '../src/pipes.js';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/uiIndex.js';
 import { showMenu } from '../src/sceneFlow.js';
 import { setupSceneInput } from '../src/sceneInput.js';
 import { createBirdAnimations, ensurePipeTextures } from '../src/textures/index.js';
@@ -89,7 +89,12 @@ describe('setupSceneWorld', () => {
         setupSceneWorld(scene);
 
         expect(setupSceneInput).toHaveBeenCalledWith(scene);
-        expect(Bird).toHaveBeenCalledWith(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY, 'classic');
+        expect(Bird).toHaveBeenCalledWith(
+            scene,
+            GAME_CONFIG.bird.startX,
+            GAME_CONFIG.centerY,
+            'classic'
+        );
         expect(Pipes).toHaveBeenCalledWith(scene);
         expect(UI).toHaveBeenCalledWith(scene);
         expect(scene.bird).toBeDefined();

@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { loadTrainingEnabled, saveTrainingEnabled, loadBestTrainingScore, saveBestTrainingScore } from '../src/trainingStorage.js';
+import {
+    loadTrainingEnabled,
+    saveTrainingEnabled,
+    loadBestTrainingScore,
+    saveBestTrainingScore,
+} from '../src/trainingStorage.js';
 
 describe('trainingStorage', () => {
     let store;
@@ -8,7 +13,9 @@ describe('trainingStorage', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 

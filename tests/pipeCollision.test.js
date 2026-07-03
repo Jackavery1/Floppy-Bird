@@ -4,6 +4,7 @@ import {
     pipeCollider,
     collidesWithPipeGroup,
     isBirdInPipeGap,
+    birdVerticallyInGap,
 } from '../src/pipeCollision.js';
 
 describe('pipeCollision', () => {
@@ -38,6 +39,14 @@ describe('pipeCollision', () => {
         });
     });
 
+    describe('birdVerticallyInGap', () => {
+        it('accepte le centre ou la hitbox entière', () => {
+            expect(birdVerticallyInGap({ y: 130, height: 20 }, 120, 232)).toBe(true);
+            expect(birdVerticallyInGap({ y: 121, height: 18 }, 120, 232)).toBe(true);
+            expect(birdVerticallyInGap({ y: 100, height: 20 }, 120, 232)).toBe(false);
+        });
+    });
+
     describe('isBirdInPipeGap', () => {
         const topPipes = [{ x: 200, y: 120 }];
         const bottomPipes = [{ x: 200, y: 232 }];
@@ -50,6 +59,11 @@ describe('pipeCollision', () => {
         it('accorde le coyote si le centre est dans le gap malgré un frôlement', () => {
             const clipping = { x: 186, y: 222, width: 28, height: 20 };
             expect(isBirdInPipeGap(clipping, topPipes, bottomPipes, 28)).toBe(true);
+        });
+
+        it('accorde le coyote si la hitbox entière est dans le gap', () => {
+            const boundsOnly = { x: 186, y: 121, width: 28, height: 18 };
+            expect(isBirdInPipeGap(boundsOnly, topPipes, bottomPipes, 28)).toBe(true);
         });
 
         it('rejette un oiseau hors du gap vertical', () => {

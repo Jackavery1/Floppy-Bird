@@ -15,7 +15,7 @@ export function initClouds(scene) {
         const cloud = scene.add.sprite(x, y, 'cloud');
         cloud.setDepth(DEPTH.CLOUDS);
         cloud.setAlpha(isNight ? 0.62 : 0.94);
-        cloud.setTint(isNight ? 0xB0BEC5 : 0xFFFFFF);
+        cloud.setTint(isNight ? 0xb0bec5 : 0xffffff);
         cloud._speed = 0.3 + Math.random() * 0.2;
         clouds.push(cloud);
     }
@@ -41,7 +41,7 @@ export function createGround(scene) {
         centerY,
         GAME_CONFIG.width,
         GROUND_TILE_H,
-        'ground',
+        'ground'
     );
     groundSprite.setDepth(DEPTH.GROUND);
     return groundSprite;

@@ -64,7 +64,7 @@ describe('uiMenuSkins', () => {
         buildSkinsTab(ui, elements, ui._optionsPanelElements);
         scene.difficulty = DIFFICULTY.NORMAL;
         scene.hardcoreMode = false;
-        const cosmosCell = ui._skinCells.find(c => c.skinId === 'cosmos');
+        const cosmosCell = ui._skinCells.find((c) => c.skinId === 'cosmos');
         expect(cosmosCell?.recordLabel).toBeTruthy();
         refreshSkinsTab(ui);
         expect(cosmosCell.recordLabel.setText).toHaveBeenCalledWith('★ 22');

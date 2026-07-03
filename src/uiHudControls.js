@@ -16,7 +16,7 @@ import { dismissJumpTutorial } from './uiHudFeedback.js';
 import { showInGameScore } from './uiHudScore.js';
 
 export function destroyInGameControls(ui) {
-    ui._inGameControlElements.forEach(e => e?.destroy());
+    ui._inGameControlElements.forEach((e) => e?.destroy());
     ui._inGameControlElements = [];
     ui._pauseBtnGraphics = null;
     ui._trainingBadge = null;
@@ -24,7 +24,10 @@ export function destroyInGameControls(ui) {
     dismissJumpTutorial(ui);
 }
 
-export function createInGameControls(ui, { trainingMode, hardcoreMode, dailyMode, dailyGoal, activeSkinId, onPause }) {
+export function createInGameControls(
+    ui,
+    { trainingMode, hardcoreMode, dailyMode, dailyGoal, activeSkinId, onPause }
+) {
     destroyInGameControls(ui);
     const elements = [];
     const { playing } = UI_LAYOUT;
@@ -34,40 +37,68 @@ export function createInGameControls(ui, { trainingMode, hardcoreMode, dailyMode
         const skinLabel = activeSkinId ? getSkin(activeSkinId).label : '';
         const pattern = activeSkinId ? getSkinPattern(activeSkinId).tagline : '';
         ui._dailyBadge = addCenteredText(
-            ui.scene, GAME_CONFIG.centerX, badgeY,
-            `${formatDailyHudLabel(ui.scoreValue ?? 0, dailyGoal)} · ${skinLabel}`, {
+            ui.scene,
+            GAME_CONFIG.centerX,
+            badgeY,
+            `${formatDailyHudLabel(ui.scoreValue ?? 0, dailyGoal)} · ${skinLabel}`,
+            {
                 fontSize: '10px',
                 fill: '#CE93D8',
                 fontStyle: 'bold',
                 stroke: '#000000',
                 strokeThickness: 2,
-            }, DEPTH.HUD_BADGE,
+            },
+            DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyBadge);
         badgeY += 14;
         ui._dailyPatternBadge = addCenteredText(
-            ui.scene, GAME_CONFIG.centerX, badgeY,
-            pattern, {
+            ui.scene,
+            GAME_CONFIG.centerX,
+            badgeY,
+            pattern,
+            {
                 fontSize: '9px',
                 fill: '#B39DDB',
                 stroke: '#000000',
                 strokeThickness: 2,
-            }, DEPTH.HUD_BADGE,
+            },
+            DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyPatternBadge);
+        badgeY += 14;
+        ui._dailyRecordBadge = addCenteredText(
+            ui.scene,
+            GAME_CONFIG.centerX,
+            badgeY,
+            'DÉFI · hors record classique',
+            {
+                fontSize: '10px',
+                fill: '#CE93D8',
+                fontStyle: 'bold',
+                stroke: '#000000',
+                strokeThickness: 2,
+            },
+            DEPTH.HUD_BADGE
+        );
+        elements.push(ui._dailyRecordBadge);
         badgeY += 14;
     }
 
     if (trainingMode) {
         ui._trainingBadge = addCenteredText(
-            ui.scene, GAME_CONFIG.centerX, badgeY,
-            'ENTRAÎNEMENT', {
+            ui.scene,
+            GAME_CONFIG.centerX,
+            badgeY,
+            'ENTRAÎN. · sans record',
+            {
                 fontSize: '10px',
                 fill: '#81D4FA',
                 fontStyle: 'bold',
                 stroke: '#000000',
                 strokeThickness: 2,
-            }, DEPTH.HUD_BADGE,
+            },
+            DEPTH.HUD_BADGE
         );
         elements.push(ui._trainingBadge);
         badgeY += 14;
@@ -75,22 +106,24 @@ export function createInGameControls(ui, { trainingMode, hardcoreMode, dailyMode
 
     if (hardcoreMode) {
         ui._hardcoreBadge = addCenteredText(
-            ui.scene, GAME_CONFIG.centerX, badgeY,
-            'HARDCORE', {
+            ui.scene,
+            GAME_CONFIG.centerX,
+            badgeY,
+            'HARDCORE · inv. / tuyau',
+            {
                 fontSize: '10px',
                 fill: '#FF8A80',
                 fontStyle: 'bold',
                 stroke: '#000000',
                 strokeThickness: 2,
-            }, DEPTH.HUD_BADGE,
+            },
+            DEPTH.HUD_BADGE
         );
         elements.push(ui._hardcoreBadge);
         badgeY += 14;
     }
 
-    const scoreY = badgeY > playing.trainingBadgeY
-        ? badgeY + 10
-        : UI_LAYOUT.scoreHud;
+    const scoreY = badgeY > playing.trainingBadgeY ? badgeY + 10 : UI_LAYOUT.scoreHud;
     showInGameScore(ui, scoreY);
 
     ui._pauseBtnGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_ICON);
@@ -98,7 +131,12 @@ export function createInGameControls(ui, { trainingMode, hardcoreMode, dailyMode
     drawPauseButton(ui, PAUSE_BTN_COLOR);
 
     const pauseHit = ui.scene.add.rectangle(
-        playing.pauseBtnX, playing.pauseBtnY, MIN_TOUCH, MIN_TOUCH, 0x000000, 0,
+        playing.pauseBtnX,
+        playing.pauseBtnY,
+        MIN_TOUCH,
+        MIN_TOUCH,
+        0x000000,
+        0
     );
     pauseHit.setDepth(DEPTH.PAUSE_ICON_HIT);
     pauseHit.setInteractive({ useHandCursor: true });

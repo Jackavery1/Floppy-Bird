@@ -22,7 +22,12 @@ describe('uiMenuBuild', () => {
     let layout;
 
     beforeEach(() => {
-        scene = createBaseScene({ round: createRoundState(), trainingMode: false, hardcoreMode: false, dailyChallengeMode: true });
+        scene = createBaseScene({
+            round: createRoundState(),
+            trainingMode: false,
+            hardcoreMode: false,
+            dailyChallengeMode: true,
+        });
         ui = new UI(scene);
         ui._currentDifficulty = DIFFICULTY.NORMAL;
         ui.highScore = 42;
@@ -58,7 +63,7 @@ describe('uiMenuBuild', () => {
             240,
             MIN_TOUCH,
             expect.any(Number),
-            expect.any(Number),
+            expect.any(Number)
         );
         expect(ui._hint1).toBeTruthy();
         expect(ui._muteHit).toBeUndefined();

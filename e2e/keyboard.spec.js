@@ -44,7 +44,9 @@ test.describe('clavier desktop', () => {
         await waitForGameReady(page);
         const before = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
         await page.keyboard.press('KeyD');
-        await expect.poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.())).not.toBe(before);
+        await expect
+            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.()))
+            .not.toBe(before);
         await expectGameState(page, 'playing', 3_000);
     });
 

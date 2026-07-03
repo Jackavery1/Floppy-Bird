@@ -17,11 +17,18 @@ export function buildScoresTab(ui, elements, panelElements) {
     ui._scoresTabElements = [];
 
     const title = addCenteredText(
-        scene, GAME_CONFIG.centerX, panel.scoresTitle,
-        'MEILLEURS SCORES', {
-            fontSize: '12px', fill: '#90CAF9', fontStyle: 'bold',
-            stroke: '#0d1117', strokeThickness: 2,
-        }, DEPTH.PANEL_FRAME,
+        scene,
+        GAME_CONFIG.centerX,
+        panel.scoresTitle,
+        'MEILLEURS SCORES',
+        {
+            fontSize: '12px',
+            fill: '#90CAF9',
+            fontStyle: 'bold',
+            stroke: '#0d1117',
+            strokeThickness: 2,
+        },
+        DEPTH.PANEL_FRAME
     );
     panelElements.push(title);
     elements.push(title);
@@ -30,11 +37,17 @@ export function buildScoresTab(ui, elements, panelElements) {
     ui._scoreLines = DIFFICULTY_ORDER.map((diff, i) => {
         const y = panel.scoresFirst + i * panel.scoresGap;
         const label = addCenteredText(
-            scene, GAME_CONFIG.centerX, y,
-            formatScoreLine(diff), {
-                fontSize: '12px', fill: '#ECEFF1',
-                stroke: '#0d1117', strokeThickness: 2,
-            }, DEPTH.PANEL_FRAME,
+            scene,
+            GAME_CONFIG.centerX,
+            y,
+            formatScoreLine(diff),
+            {
+                fontSize: '12px',
+                fill: '#ECEFF1',
+                stroke: '#0d1117',
+                strokeThickness: 2,
+            },
+            DEPTH.PANEL_FRAME
         );
         panelElements.push(label);
         elements.push(label);
@@ -43,22 +56,35 @@ export function buildScoresTab(ui, elements, panelElements) {
     });
 
     ui._hardcoreScoreLine = addCenteredText(
-        scene, GAME_CONFIG.centerX, panel.scoresHardcore,
-        formatHardcoreLine(), {
-            fontSize: '12px', fill: '#FFAB91', fontStyle: 'bold',
-            stroke: '#0d1117', strokeThickness: 2,
-        }, DEPTH.PANEL_FRAME,
+        scene,
+        GAME_CONFIG.centerX,
+        panel.scoresHardcore,
+        formatHardcoreLine(),
+        {
+            fontSize: '12px',
+            fill: '#FFAB91',
+            fontStyle: 'bold',
+            stroke: '#0d1117',
+            strokeThickness: 2,
+        },
+        DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._hardcoreScoreLine);
     elements.push(ui._hardcoreScoreLine);
     ui._scoresTabElements.push(ui._hardcoreScoreLine);
 
     ui._achievementsScoreLine = addCenteredText(
-        scene, GAME_CONFIG.centerX, panel.scoresAchievements,
-        formatAchievementsLine(), {
-            fontSize: '11px', fill: '#B0BEC5',
-            stroke: '#0d1117', strokeThickness: 2,
-        }, DEPTH.PANEL_FRAME,
+        scene,
+        GAME_CONFIG.centerX,
+        panel.scoresAchievements,
+        formatAchievementsLine(),
+        {
+            fontSize: '11px',
+            fill: '#B0BEC5',
+            stroke: '#0d1117',
+            strokeThickness: 2,
+        },
+        DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._achievementsScoreLine);
     elements.push(ui._achievementsScoreLine);

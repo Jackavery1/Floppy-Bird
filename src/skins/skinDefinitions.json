@@ -1,0 +1,282 @@
+{
+  "classic": {
+    "label": "Classique",
+    "hint": "Toujours disponible",
+    "family": "classic",
+    "palette": {
+      "body": "FFCC00",
+      "bodyHi": "FFEE88",
+      "wing": "FFAA00",
+      "beak": "FF8800",
+      "beakDark": "CC5500"
+    },
+    "unlock": {
+      "type": "always"
+    }
+  },
+  "lavande": {
+    "label": "Lavande",
+    "hint": "Meilleur score ≥ 5",
+    "family": "classic",
+    "palette": {
+      "body": "B39DDB",
+      "bodyHi": "E1BEE7",
+      "wing": "9575CD",
+      "beak": "FF8A65",
+      "beakDark": "E64A19"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 5
+    }
+  },
+  "ruby": {
+    "label": "Rubis",
+    "hint": "Meilleur score ≥ 10",
+    "family": "classic",
+    "palette": {
+      "body": "E53935",
+      "bodyHi": "FF8A80",
+      "wing": "C62828",
+      "beak": "FF6F00",
+      "beakDark": "E65100"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 10
+    }
+  },
+  "ambre": {
+    "label": "Ambre",
+    "hint": "Meilleur score ≥ 12",
+    "family": "classic",
+    "palette": {
+      "body": "FFB300",
+      "bodyHi": "FFE082",
+      "wing": "FF8F00",
+      "beak": "FF6D00",
+      "beakDark": "E65100"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 12
+    }
+  },
+  "ocean": {
+    "label": "Océan",
+    "hint": "Meilleur score ≥ 20",
+    "family": "classic",
+    "palette": {
+      "body": "29B6F6",
+      "bodyHi": "81D4FA",
+      "wing": "0288D1",
+      "beak": "FF8F00",
+      "beakDark": "EF6C00"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 20
+    }
+  },
+  "corail": {
+    "label": "Corail",
+    "hint": "Meilleur score ≥ 25",
+    "family": "classic",
+    "palette": {
+      "body": "FF7043",
+      "bodyHi": "FFAB91",
+      "wing": "F4511E",
+      "beak": "FFD54F",
+      "beakDark": "FFA000"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 25
+    }
+  },
+  "forest": {
+    "label": "Forêt",
+    "hint": "Meilleur score hardcore ≥ 5",
+    "family": "classic",
+    "palette": {
+      "body": "66BB6A",
+      "bodyHi": "A5D6A7",
+      "wing": "388E3C",
+      "beak": "FFA726",
+      "beakDark": "F57C00"
+    },
+    "unlock": {
+      "type": "hardcore",
+      "min": 5
+    }
+  },
+  "minuit": {
+    "label": "Minuit",
+    "hint": "Meilleur score ≥ 15",
+    "family": "classic",
+    "palette": {
+      "body": "3949AB",
+      "bodyHi": "7986CB",
+      "wing": "283593",
+      "beak": "B0BEC5",
+      "beakDark": "78909C"
+    },
+    "unlock": {
+      "type": "scoreAny",
+      "min": 15
+    }
+  },
+  "armure": {
+    "label": "Chevalier",
+    "hint": "Meilleur score hardcore ≥ 15",
+    "family": "special",
+    "palette": {
+      "body": "78909C",
+      "bodyHi": "B0BEC5",
+      "wing": "546E7A",
+      "beak": "CFD8DC",
+      "beakDark": "90A4AE",
+      "helmet": "455A64",
+      "helmetHi": "607D8B",
+      "plume": "C62828"
+    },
+    "accessoryKey": "armure",
+    "unlock": {
+      "type": "hardcore",
+      "min": 15
+    }
+  },
+  "mushu": {
+    "label": "Mushu",
+    "hint": "Score ≥ 15 dans les 3 difficultés",
+    "family": "special",
+    "palette": {
+      "body": "E64A19",
+      "bodyHi": "FFCA28",
+      "wing": "BF360C",
+      "beak": "FFD54F",
+      "beakDark": "FFA000",
+      "horn": "FFD54F",
+      "ridge": "FFCA28",
+      "whisker": "FFECB3"
+    },
+    "accessoryKey": "mushu",
+    "unlock": {
+      "type": "allDifficulties",
+      "min": 15
+    }
+  },
+  "phoenix": {
+    "label": "Phénix",
+    "hint": "Meilleur score hardcore ≥ 20",
+    "family": "special",
+    "palette": {
+      "body": "FF5722",
+      "bodyHi": "FFAB91",
+      "wing": "E64A19",
+      "beak": "FFD54F",
+      "beakDark": "FF8F00",
+      "flame": "FFEB3B",
+      "ember": "FF6F00"
+    },
+    "accessoryKey": "phoenix",
+    "unlock": {
+      "type": "hardcore",
+      "min": 20
+    }
+  },
+  "fantome": {
+    "label": "Fantôme",
+    "hint": "Meilleur score ≥ 30",
+    "family": "special",
+    "palette": {
+      "body": "E0F7FA",
+      "bodyHi": "FFFFFF",
+      "wing": "B2EBF2",
+      "beak": "E1F5FE",
+      "beakDark": "B3E5FC",
+      "glow": "18FFFF",
+      "wisp": "E0F7FA"
+    },
+    "accessoryKey": "fantome",
+    "unlock": {
+      "type": "scoreAny",
+      "min": 30
+    }
+  },
+  "glace": {
+    "label": "Glace",
+    "hint": "3 défis du jour réussis",
+    "family": "special",
+    "palette": {
+      "body": "B3E5FC",
+      "bodyHi": "E1F5FE",
+      "wing": "4FC3F7",
+      "beak": "FFE082",
+      "beakDark": "FFB300",
+      "crystal": "FFFFFF",
+      "shine": "E0F7FA"
+    },
+    "accessoryKey": "glace",
+    "unlock": {
+      "type": "dailyCompletions",
+      "min": 3
+    }
+  },
+  "tempete": {
+    "label": "Tempête",
+    "hint": "10 pts en entraînement",
+    "family": "special",
+    "palette": {
+      "body": "607D8B",
+      "bodyHi": "90A4AE",
+      "wing": "455A64",
+      "beak": "FFD54F",
+      "beakDark": "FFA000",
+      "cloud": "CFD8DC",
+      "bolt": "FFEB3B"
+    },
+    "accessoryKey": "tempete",
+    "unlock": {
+      "type": "training",
+      "min": 10
+    }
+  },
+  "cosmos": {
+    "label": "Cosmos",
+    "hint": "Meilleur score hardcore ≥ 28",
+    "family": "special",
+    "palette": {
+      "body": "311B92",
+      "bodyHi": "5E35B1",
+      "wing": "4527A0",
+      "beak": "CE93D8",
+      "beakDark": "8E24AA",
+      "star": "FFFFFF",
+      "ring": "B388FF"
+    },
+    "accessoryKey": "cosmos",
+    "unlock": {
+      "type": "hardcore",
+      "min": 28
+    }
+  },
+  "neon": {
+    "label": "Néon",
+    "hint": "Collection complète (15 skins)",
+    "family": "special",
+    "palette": {
+      "body": "1A1A2E",
+      "bodyHi": "3D2C5C",
+      "wing": "00E5FF",
+      "beak": "FF2BD6",
+      "beakDark": "C2185B",
+      "visor": "FF2BD6",
+      "trim": "00E5FF"
+    },
+    "accessoryKey": "neon",
+    "unlock": {
+      "type": "neonCollection"
+    }
+  }
+}

@@ -1,20 +1,10 @@
 import { loadHighScore } from './storage.js';
-import {
-    computeMenuLayout,
-    diffLabelColor,
-    UI_LAYOUT,
-} from './uiLayout.js';
+import { computeMenuLayout, diffLabelColor, UI_LAYOUT } from './uiLayout.js';
 import { applyMenuLayout, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from './uiHud.js';
-import {
-    buildMenuFooter,
-    playMenuIntroTween,
-} from './uiMenuBuild.js';
+import { buildMenuFooter, playMenuIntroTween } from './uiMenuBuild.js';
 import { buildMenuHeader, buildMenuDifficulty } from './uiMenuHeader.js';
-import {
-    buildMenuDailyChallenge,
-    refreshDailyChallengeButton,
-} from './uiMenuDailyChallenge.js';
+import { buildMenuDailyChallenge, refreshDailyChallengeButton } from './uiMenuDailyChallenge.js';
 import {
     buildMenuOptions,
     refreshOptionsButtonLabel,
@@ -28,10 +18,7 @@ import {
     refreshScoresButtonLabel,
     setMenuScoresOpen,
 } from './uiMenuScoresPanel.js';
-import {
-    buildMenuSkinsPanel,
-    setMenuSkinsOpen,
-} from './uiMenuSkinsPanel.js';
+import { buildMenuSkinsPanel, setMenuSkinsOpen } from './uiMenuSkinsPanel.js';
 import { refreshScoresTab } from './uiMenuScores.js';
 import { syncMenuChromeVisibility } from './uiMenuPanel.js';
 import { buildMetaContext } from './metaContext.js';

@@ -5,6 +5,10 @@ vi.mock('../src/GameScene.js', () => ({
     GameScene: class GameScene {},
 }));
 
+vi.mock('../src/textures/index.js', () => ({
+    getBackgroundCanvasColor: () => 0x1a1a2e,
+}));
+
 describe('phaserBootstrap', () => {
     let Phaser;
     let onReady;

@@ -1,7 +1,12 @@
 import { FONT, DEPTH } from './uiLayout.js';
 import { sceneTween } from './motion.js';
 
-const PARTICLE_DIRS = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
+const PARTICLE_DIRS = [
+    [-1, -1],
+    [1, -1],
+    [-1, 1],
+    [1, 1],
+];
 
 export class ScoreEffects {
     constructor(scene) {
@@ -33,7 +38,7 @@ export class ScoreEffects {
     }
 
     _showPopup(x, y) {
-        const popup = this._popups.find(t => !t.active) ?? this._popups[0];
+        const popup = this._popups.find((t) => !t.active) ?? this._popups[0];
         popup.setPosition(x, y).setAlpha(1).setVisible(true).setActive(true);
 
         sceneTween(this.scene, {
@@ -47,7 +52,7 @@ export class ScoreEffects {
 
     _showParticles(x, y) {
         for (const [dx, dy] of PARTICLE_DIRS) {
-            const star = this._stars.find(s => !s.active) ?? this._stars[0];
+            const star = this._stars.find((s) => !s.active) ?? this._stars[0];
             star.setPosition(x, y).setAlpha(1).setScale(1).setVisible(true).setActive(true);
 
             sceneTween(this.scene, {
@@ -65,8 +70,8 @@ export class ScoreEffects {
     }
 
     destroy() {
-        this._popups.forEach(t => t.destroy());
-        this._stars.forEach(s => s.destroy());
+        this._popups.forEach((t) => t.destroy());
+        this._stars.forEach((s) => s.destroy());
         this._popups.length = 0;
         this._stars.length = 0;
     }

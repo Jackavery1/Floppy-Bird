@@ -47,13 +47,21 @@ describe('appBootstrap', () => {
             },
         });
         vi.stubGlobal('getComputedStyle', () => ({
-            paddingTop: '44', paddingRight: '0', paddingBottom: '34', paddingLeft: '0',
+            paddingTop: '44',
+            paddingRight: '0',
+            paddingBottom: '34',
+            paddingLeft: '0',
         }));
 
         const canvas = { width: 0, height: 0, style: {}, parentElement: { style: {} } };
         const { resizeGameCanvas } = await import('../src/appBootstrap.js');
         const result = resizeGameCanvas({ canvas });
-        const expectedH = computeLetterboxSize(390, 766, GAME_CONFIG.width, GAME_CONFIG.height).height;
+        const expectedH = computeLetterboxSize(
+            390,
+            766,
+            GAME_CONFIG.width,
+            GAME_CONFIG.height
+        ).height;
         expect(result.targetH).toBe(expectedH);
     });
 
@@ -67,14 +75,22 @@ describe('appBootstrap', () => {
             body: { clientWidth: 390, clientHeight: 844, style: {} },
         });
         vi.stubGlobal('getComputedStyle', () => ({
-            paddingTop: '0', paddingRight: '0', paddingBottom: '0', paddingLeft: '0',
+            paddingTop: '0',
+            paddingRight: '0',
+            paddingBottom: '0',
+            paddingLeft: '0',
         }));
 
         const container = { style: {} };
         const canvas = { width: 0, height: 0, style: {}, parentElement: container };
         const { resizeGameCanvas } = await import('../src/appBootstrap.js');
         const result = resizeGameCanvas({ canvas });
-        const expectedH = computeLetterboxSize(390, 620, GAME_CONFIG.width, GAME_CONFIG.height).height;
+        const expectedH = computeLetterboxSize(
+            390,
+            620,
+            GAME_CONFIG.width,
+            GAME_CONFIG.height
+        ).height;
         expect(result.targetH).toBe(expectedH);
         expect(container.style.marginTop).toBe('22px');
     });
@@ -93,6 +109,8 @@ describe('appBootstrap', () => {
     });
 
     it('onGameReady enchaîne resize, listeners et masquage', async () => {
+        vi.stubEnv('DEV', false);
+        vi.stubEnv('VITE_ENABLE_TEST_SEAM', '');
         const addListener = vi.fn();
         vi.stubGlobal('window', {
             innerWidth: 390,
@@ -107,7 +125,10 @@ describe('appBootstrap', () => {
             body: { clientWidth: 390, clientHeight: 844, style: {} },
         });
         vi.stubGlobal('getComputedStyle', () => ({
-            paddingTop: '0', paddingRight: '0', paddingBottom: '0', paddingLeft: '0',
+            paddingTop: '0',
+            paddingRight: '0',
+            paddingBottom: '0',
+            paddingLeft: '0',
         }));
 
         const game = { canvas: { width: 0, height: 0, style: {}, parentElement: { style: {} } } };
@@ -116,5 +137,19 @@ describe('appBootstrap', () => {
 
         expect(addListener).toHaveBeenCalled();
         expect(loading.classList.add).toHaveBeenCalledWith('hidden');
+    });
+
+    it('shouldInstallTestSeam est false sans DEV ni VITE_ENABLE_TEST_SEAM', async () => {
+        vi.stubEnv('DEV', false);
+        vi.stubEnv('VITE_ENABLE_TEST_SEAM', '');
+        const { shouldInstallTestSeam } = await import('../src/appBootstrap.js');
+        expect(shouldInstallTestSeam()).toBe(false);
+    });
+
+    it('shouldInstallTestSeam est true avec VITE_ENABLE_TEST_SEAM', async () => {
+        vi.stubEnv('DEV', false);
+        vi.stubEnv('VITE_ENABLE_TEST_SEAM', 'true');
+        const { shouldInstallTestSeam } = await import('../src/appBootstrap.js');
+        expect(shouldInstallTestSeam()).toBe(true);
     });
 });

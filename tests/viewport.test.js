@@ -1,5 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { computeLetterboxSize, readSafeAreaInsets, getViewportDimensions, getLetterboxViewport } from '../src/viewport.js';
+import {
+    computeLetterboxSize,
+    readSafeAreaInsets,
+    getViewportDimensions,
+    getLetterboxViewport,
+} from '../src/viewport.js';
 
 describe('viewport', () => {
     it('letterbox portrait mobile', () => {

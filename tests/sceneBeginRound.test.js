@@ -6,6 +6,8 @@ import { createRoundState } from '../src/roundState.js';
 import { applySkinPatternToDifficulty } from '../src/skinPatterns.js';
 
 vi.mock('../src/tutorialStorage.js', () => ({
+    loadTutorialComplete: vi.fn(() => true),
+    loadTutorialProgress: vi.fn(() => 3),
     loadTutorialSeen: vi.fn(() => true),
 }));
 
@@ -39,7 +41,12 @@ describe('sceneBeginRound', () => {
             hardcoreMode: false,
             dailyChallengeMode: true,
             time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
-            bird: { reset: vi.fn(), applyDifficulty: vi.fn(), setSkin: vi.fn(), sprite: { setAlpha: vi.fn() } },
+            bird: {
+                reset: vi.fn(),
+                applyDifficulty: vi.fn(),
+                setSkin: vi.fn(),
+                sprite: { setAlpha: vi.fn() },
+            },
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
@@ -104,6 +111,14 @@ describe('sceneBeginRound', () => {
         const scene = makeScene();
         scene.trainingMode = true;
         beginRound(scene);
-        expect(scene.ghost.beginRound).toHaveBeenCalled();
+        expect(scene.ghost.beginRound).toHaveBeenCalledWith({ record: true });
+    });
+
+    it('beginRound affiche le ghost en défi daily sans enregistrer', () => {
+        const scene = makeScene();
+        scene.playMode = 'daily';
+        scene.trainingMode = false;
+        beginRound(scene);
+        expect(scene.ghost.beginRound).toHaveBeenCalledWith({ record: false });
     });
 });

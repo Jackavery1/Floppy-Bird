@@ -5,12 +5,7 @@ import {
     formatSoundLabel as formatVolumeLabel,
 } from './audioVolume.js';
 
-export {
-    getVolume,
-    setVolume,
-    isMuted,
-    setMuted,
-} from './audioVolume.js';
+export { getVolume, setVolume, isMuted, setMuted } from './audioVolume.js';
 
 export function cycleSoundLevel() {
     if (!isAudioAvailable()) return;
@@ -89,10 +84,18 @@ export function playSound(soundName, score = 1) {
         if (!ctx) return;
         if (ctx.state === 'suspended') ctx.resume();
         switch (soundName) {
-            case SOUND.JUMP:      playJump(ctx);           break;
-            case SOUND.SCORE:     playScore(ctx, score);   break;
-            case SOUND.GAME_OVER: playGameOver(ctx);       break;
-            case SOUND.GROUND:    playGround(ctx);         break;
+            case SOUND.JUMP:
+                playJump(ctx);
+                break;
+            case SOUND.SCORE:
+                playScore(ctx, score);
+                break;
+            case SOUND.GAME_OVER:
+                playGameOver(ctx);
+                break;
+            case SOUND.GROUND:
+                playGround(ctx);
+                break;
         }
     } catch {
         audioUnavailable = true;
@@ -151,7 +154,14 @@ function playNoise(ctx, { duration, peakGain, filterFreq = 420, delay = 0 }) {
 
 function playJump(ctx) {
     playTone(ctx, { type: 'sine', freqAt: 380, freqRamp: 920, duration: 0.09, peakGain: 0.22 });
-    playTone(ctx, { type: 'triangle', freqAt: 520, freqRamp: 780, duration: 0.05, peakGain: 0.08, delay: 0.02 });
+    playTone(ctx, {
+        type: 'triangle',
+        freqAt: 520,
+        freqRamp: 780,
+        duration: 0.05,
+        peakGain: 0.08,
+        delay: 0.02,
+    });
 }
 
 function isScoreMilestone(score) {
@@ -167,7 +177,12 @@ function playScore(ctx, score = 1) {
     const boost = Math.min(score, 25) * 12;
     const primaryType = getScoreToneType(score);
     const detune = (score % 5) * 8;
-    playTone(ctx, { type: primaryType, freqAt: 660 + boost + detune, duration: 0.15, peakGain: 0.3 });
+    playTone(ctx, {
+        type: primaryType,
+        freqAt: 660 + boost + detune,
+        duration: 0.15,
+        peakGain: 0.3,
+    });
     playTone(ctx, {
         type: score % 2 === 0 ? 'sine' : 'triangle',
         freqAt: 880 + boost + detune,
@@ -190,10 +205,24 @@ function playScore(ctx, score = 1) {
 
 function playGameOver(ctx) {
     playTone(ctx, { type: 'triangle', freqAt: 440, freqRamp: 80, duration: 0.28, peakGain: 0.32 });
-    playTone(ctx, { type: 'sine', freqAt: 220, freqRamp: 55, duration: 0.35, peakGain: 0.18, delay: 0.08 });
+    playTone(ctx, {
+        type: 'sine',
+        freqAt: 220,
+        freqRamp: 55,
+        duration: 0.35,
+        peakGain: 0.18,
+        delay: 0.08,
+    });
 }
 
 function playGround(ctx) {
     playNoise(ctx, { duration: 0.14, peakGain: 0.45, filterFreq: 320 });
-    playTone(ctx, { type: 'sine', freqAt: 110, freqRamp: 55, duration: 0.1, peakGain: 0.22, delay: 0.02 });
+    playTone(ctx, {
+        type: 'sine',
+        freqAt: 110,
+        freqRamp: 55,
+        duration: 0.1,
+        peakGain: 0.22,
+        delay: 0.02,
+    });
 }

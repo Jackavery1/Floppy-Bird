@@ -1,6 +1,15 @@
 import { GAME_CONFIG } from './config.js';
-import { installTestSeam } from './testSeam.js';
 import { computeLetterboxSize, getLetterboxViewport } from './viewport.js';
+
+/** Seam Playwright : dev ou build explicite `VITE_ENABLE_TEST_SEAM=true` (jamais Pages prod). */
+export function shouldInstallTestSeam() {
+    return import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true';
+}
+
+function loadTestSeam(game) {
+    if (typeof window === 'undefined' || !shouldInstallTestSeam()) return;
+    import('./testSeam.js').then(({ installTestSeam }) => installTestSeam(game));
+}
 
 export function resizeGameCanvas(game) {
     const canvas = game?.canvas;
@@ -11,7 +20,7 @@ export function resizeGameCanvas(game) {
         windowW,
         windowH,
         GAME_CONFIG.width,
-        GAME_CONFIG.height,
+        GAME_CONFIG.height
     );
 
     canvas.width = GAME_CONFIG.width;
@@ -45,6 +54,6 @@ export function attachViewportResize(game, resizeFn = resizeGameCanvas) {
 export function onGameReady(game, { resizeFn = resizeGameCanvas, doc = document } = {}) {
     resizeFn(game);
     attachViewportResize(game, resizeFn);
-    installTestSeam(game);
+    loadTestSeam(game);
     hideLoadingScreen(doc);
 }

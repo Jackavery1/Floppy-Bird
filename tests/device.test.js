@@ -1,12 +1,14 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
 async function loadDevice(coarse) {
-    vi.stubGlobal('matchMedia', vi.fn((query) => ({
-        matches: coarse && (
-            query.includes('pointer: coarse')
-            || query.includes('any-pointer: coarse')
-        ),
-    })));
+    vi.stubGlobal(
+        'matchMedia',
+        vi.fn((query) => ({
+            matches:
+                coarse &&
+                (query.includes('pointer: coarse') || query.includes('any-pointer: coarse')),
+        }))
+    );
     vi.resetModules();
     return import('../src/device.js');
 }
@@ -74,7 +76,12 @@ describe('device', () => {
 
     it('hardcoreToggleLabel mentionne la grace progressive', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toContain('700→550 ms');
+        expect(hardcoreToggleLabel(true)).toContain('700→325 ms');
+    });
+
+    it('hardcoreInvincibilityHintText indique la durée', async () => {
+        const { hardcoreInvincibilityHintText } = await loadDevice(false);
+        expect(hardcoreInvincibilityHintText(625)).toContain('625 ms');
     });
 
     it('modesHintLine renvoie vers OPTIONS', async () => {
@@ -87,5 +94,12 @@ describe('device', () => {
         expect(dailyReplayHint()).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(true)).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(false)).toBe('TAP : rejouer');
+    });
+
+    it('deathCauseLabel décrit la cause de mort', async () => {
+        const { deathCauseLabel } = await loadDevice(false);
+        expect(deathCauseLabel('pipe')).toBe('Collision tuyau');
+        expect(deathCauseLabel('ground')).toBe('Touché le sol');
+        expect(deathCauseLabel(null)).toBe('');
     });
 });

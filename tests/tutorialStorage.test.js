@@ -7,7 +7,9 @@ describe('tutorialStorage', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 
@@ -15,10 +17,37 @@ describe('tutorialStorage', () => {
         vi.unstubAllGlobals();
     });
 
-    it('marque le tutoriel comme vu', async () => {
-        const { loadTutorialSeen, markTutorialSeen } = await import('../src/tutorialStorage.js');
+    it('marque le tutoriel comme vu (compat legacy)', async () => {
+        const { loadTutorialSeen, markTutorialSeen, loadTutorialProgress } =
+            await import('../src/tutorialStorage.js');
         expect(loadTutorialSeen()).toBe(false);
         markTutorialSeen();
         expect(loadTutorialSeen()).toBe(true);
+        expect(loadTutorialProgress()).toBe(3);
+    });
+
+    it('progression par étapes', async () => {
+        const { loadTutorialProgress, setTutorialProgress, loadTutorialComplete } =
+            await import('../src/tutorialStorage.js');
+        expect(loadTutorialProgress()).toBe(0);
+        setTutorialProgress(1);
+        expect(loadTutorialProgress()).toBe(1);
+        expect(loadTutorialComplete()).toBe(false);
+        setTutorialProgress(3);
+        expect(loadTutorialComplete()).toBe(true);
+    });
+
+    it('migre tutorialSeen vers progression complète', async () => {
+        store['flappy-bird-tutorial-seen'] = '1';
+        const { loadTutorialProgress } = await import('../src/tutorialStorage.js');
+        expect(loadTutorialProgress()).toBe(3);
+    });
+
+    it('hint coyote une seule fois', async () => {
+        const { loadCoyoteHintSeen, markCoyoteHintSeen } =
+            await import('../src/tutorialStorage.js');
+        expect(loadCoyoteHintSeen()).toBe(false);
+        markCoyoteHintSeen();
+        expect(loadCoyoteHintSeen()).toBe(true);
     });
 });

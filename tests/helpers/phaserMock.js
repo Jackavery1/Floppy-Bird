@@ -101,7 +101,10 @@ export function createInteractable() {
         alpha: 1,
         depth: 0,
         y: 0,
-        setDepth: vi.fn(function (d) { this.depth = d; return this; }),
+        setDepth: vi.fn(function (d) {
+            this.depth = d;
+            return this;
+        }),
         setInteractive: vi.fn(),
         on: vi.fn(),
         destroy: vi.fn(),
@@ -111,9 +114,18 @@ export function createInteractable() {
         setFontSize: vi.fn().mockReturnThis(),
         setStyle: vi.fn().mockReturnThis(),
         setX: vi.fn().mockReturnThis(),
-        setVisible: vi.fn(function (v) { this.visible = v; return this; }),
-        setY: vi.fn(function (y) { this.y = y; return this; }),
-        setAlpha: vi.fn(function (a) { this.alpha = a; return this; }),
+        setVisible: vi.fn(function (v) {
+            this.visible = v;
+            return this;
+        }),
+        setY: vi.fn(function (y) {
+            this.y = y;
+            return this;
+        }),
+        setAlpha: vi.fn(function (a) {
+            this.alpha = a;
+            return this;
+        }),
         setScale: vi.fn().mockReturnThis(),
         setFillStyle: vi.fn().mockReturnThis(),
         setStrokeStyle: vi.fn().mockReturnThis(),

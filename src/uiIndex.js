@@ -1,5 +1,6 @@
 /**
- * Carte des modules UI — point de découverte (imports directs recommandés en prod).
+ * Carte des modules UI — point d’entrée façade (utilisé par sceneSetup).
+ * Les sous-modules restent importables directement pour limiter le graphe.
  * @module uiIndex
  */
 
@@ -15,17 +16,13 @@ export { showMenu, updateDifficultyButtons, refreshHighScore } from './uiMenu.js
 export { buildMenuHeader, buildMenuDifficulty } from './uiMenuHeader.js';
 export { buildMenuDailyChallenge, refreshDailyChallengeButton } from './uiMenuDailyChallenge.js';
 export { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';
-export { toggleMenuOptions } from './uiMenuOptions.js';
+export { toggleMenuOptions, applyTrainingLabel, applyHardcoreLabel } from './uiMenuOptions.js';
 export { toggleMenuScores } from './uiMenuScoresPanel.js';
 export { toggleMenuSkins } from './uiMenuSkinsPanel.js';
 export { buildMenuToggleButton } from './uiMenuPanel.js';
 
 /** HUD en jeu */
-export {
-    createScoreDisplay,
-    updateScore,
-    showInGameScore,
-} from './uiHudScore.js';
+export { createScoreDisplay, updateScore, showInGameScore } from './uiHudScore.js';
 export {
     showRecordBroken,
     showDailyGoalReached,
@@ -40,4 +37,7 @@ export { createInGameControls } from './uiHudControls.js';
 /** Pause et game over */
 export { showPause } from './uiPause.js';
 export { buildGameOverUI } from './uiGameOver.js';
+export { buildGameOverShell } from './uiGameOverPanel.js';
+export { buildGameOverSummary } from './uiGameOverSummary.js';
+export { buildGameOverActions, animateGameOverReveal } from './uiGameOverActions.js';
 export { showAchievementToasts } from './uiAchievementToast.js';

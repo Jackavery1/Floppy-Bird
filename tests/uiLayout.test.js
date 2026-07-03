@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { diffButtonCenter, diffLabelColor } from '../src/uiLayout.js';
-import { DIFFICULTY } from '../src/config.js';
+import { DIFFICULTY, GAME_CONFIG } from '../src/config.js';
 
 describe('uiLayout', () => {
     it('calcule le centre des boutons difficulté', () => {
@@ -14,12 +14,25 @@ describe('uiLayout', () => {
     });
 
     it('expose les cibles tactiles pour les tests e2e', async () => {
-        const { TOUCH_TARGETS, UI_LAYOUT, MIN_TOUCH, PAUSE_BTN_VISUAL } = await import('../src/uiLayout.js');
+        const { TOUCH_TARGETS, UI_LAYOUT, MIN_TOUCH, PAUSE_BTN_VISUAL, PAUSE_BTN_INSET } =
+            await import('../src/uiLayout.js');
         expect(TOUCH_TARGETS.pauseButton).toEqual({
             x: UI_LAYOUT.playing.pauseBtnX,
             y: UI_LAYOUT.playing.pauseBtnY,
         });
+        expect(TOUCH_TARGETS.pauseButton.x).toBe(
+            GAME_CONFIG.width - MIN_TOUCH / 2 - PAUSE_BTN_INSET
+        );
         expect(TOUCH_TARGETS.pauseResume.y).toBe(UI_LAYOUT.pause.resumeBtn);
+        expect(TOUCH_TARGETS.menuStart).toEqual({
+            x: GAME_CONFIG.centerX,
+            y: UI_LAYOUT.menu.start,
+        });
+        expect(TOUCH_TARGETS.menuScores).toEqual({
+            x: UI_LAYOUT.menu.scoresBtn,
+            y: UI_LAYOUT.menu.menuRow,
+        });
+        expect(TOUCH_TARGETS.scoreHud.y).toBe(UI_LAYOUT.scoreHud);
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
         expect(UI_LAYOUT.menuBtn.height).toBe(MIN_TOUCH);
         expect(UI_LAYOUT.menu.menuBtnW).toBeGreaterThanOrEqual(MIN_TOUCH);

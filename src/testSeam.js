@@ -1,3 +1,4 @@
+/** API d’observation Playwright — chargée dynamiquement (voir appBootstrap.shouldInstallTestSeam). */
 /** @param {import('phaser').Game} game */
 export function installTestSeam(game) {
     const getScene = () => game.scene?.getScene?.('GameScene');
@@ -35,14 +36,6 @@ export function installTestSeam(game) {
         },
         ready: () => getScene()?.state != null,
         getDailyChallengeMode: () => getScene()?.dailyChallengeMode ?? null,
-        getPipeCount: () => {
-            const scene = getScene();
-            if (!scene?.pipes) return { top: 0, bottom: 0 };
-            return {
-                top: scene.pipes.topPipes.length,
-                bottom: scene.pipes.bottomPipes.length,
-            };
-        },
         forceGameOver: () => {
             const scene = getScene();
             if (!scene) return;
@@ -53,21 +46,23 @@ export function installTestSeam(game) {
                 { entries: [], highlightId: null },
                 false,
                 false,
-                scene.hardcoreMode,
+                scene.hardcoreMode
             );
             scene.ui.setOverlay('gameOver', elements);
         },
-        openPause: () => {
+        getMenuPanels: () => {
             const scene = getScene();
-            if (!scene || scene.state !== 'playing') return scene?.state ?? null;
-            scene.togglePause();
-            return scene.state;
-        },
-        returnToMenu: () => {
-            const scene = getScene();
-            if (!scene) return null;
-            scene.returnToMenu();
-            return scene.state;
+            const ui = scene?.ui;
+            if (!ui) return null;
+            return {
+                options: Boolean(ui._optionsOpen),
+                scores: Boolean(ui._scoresOpen),
+                skins: Boolean(ui._skinsOpen),
+                difficulty: scene.difficulty ?? null,
+                trainingMode: Boolean(scene.trainingMode),
+                hardcoreMode: Boolean(scene.hardcoreMode),
+                dailyChallengeMode: Boolean(scene.dailyChallengeMode),
+            };
         },
     };
 }

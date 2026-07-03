@@ -38,7 +38,7 @@ describe('GAME_CONFIG.getDifficulty', () => {
 
     it('easy applique des overrides', () => {
         const e = GAME_CONFIG.getDifficulty('easy');
-        expect(e.gravity).toBe(0.30);
+        expect(e.gravity).toBe(0.3);
         expect(e.gap).toBe(142);
         expect(e.pipeInterval).toBe(92);
     });

@@ -2,10 +2,10 @@ import { GAME_CONFIG } from './config.js';
 
 export const MIN_TOUCH = 44;
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
+/** Marge droite (px jeu) pour le bouton pause — évite les taps ratés au bord letterbox. */
+export const PAUSE_BTN_INSET = 12;
 /** Marge haute minimale (px jeu) pour HUD pause / score sous encoche visuelle. */
 export const HUD_SAFE_TOP = 16;
-/** Espacement vertical minimal entre centres de lignes tactiles (évite chevauchement 44 px). */
-export const MENU_ROW_GAP = 44;
 
 export const GAME_OVER_PANEL = { x: 24, y: 80, w: 240, h: 340, radius: 12 };
 
@@ -18,10 +18,10 @@ export const UI_LAYOUT = {
         dailySubtitle: 212,
         start: 248,
         menuRow: 292,
-        scoresBtn: 58,
+        scoresBtn: 56,
         optionsBtn: 144,
-        skinsBtn: 230,
-        menuBtnW: 72,
+        skinsBtn: 232,
+        menuBtnW: MIN_TOUCH * 2,
         hint1: 336,
     },
     optionsPanel: {
@@ -57,7 +57,7 @@ export const UI_LAYOUT = {
     playing: {
         trainingBadgeY: 30,
         hardcoreBadgeY: 44,
-        pauseBtnX: 258,
+        pauseBtnX: GAME_CONFIG.width - MIN_TOUCH / 2 - PAUSE_BTN_INSET,
         pauseBtnY: MIN_TOUCH / 2 + HUD_SAFE_TOP,
     },
     diffBtn: { width: 68, height: MIN_TOUCH, gap: 10, radius: 6, x: [32, 110, 188] },
@@ -83,11 +83,11 @@ export const TOUCH_TARGETS = Object.freeze({
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 
-export const PAUSE_BTN_COLOR = 0x37474F;
-export const PAUSE_BTN_HOVER = 0x546E7A;
-export const MENU_BTN_COLOR = 0x1565C0;
-export const MENU_BTN_HOVER = 0x42A5F5;
-export const DIFF_BTN_ACTIVE = 0xFDD835;
+export const PAUSE_BTN_COLOR = 0x37474f;
+export const PAUSE_BTN_HOVER = 0x546e7a;
+export const MENU_BTN_COLOR = 0x1565c0;
+export const MENU_BTN_HOVER = 0x42a5f5;
+export const DIFF_BTN_ACTIVE = 0xfdd835;
 export const DIFF_BTN_IDLE = { color: 0xffffff, alpha: 0.2 };
 export const DIFF_BTN_HOVER = { color: 0xffffff, alpha: 0.38 };
 export const TITLE_MAX_WIDTH = 260;
@@ -97,7 +97,7 @@ export const GAME_TITLE = 'FLOPPY BIRD';
 export const FONT = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
 
 export function computeMenuLayout() {
-    return { ...UI_LAYOUT.menu, compact: false };
+    return { ...UI_LAYOUT.menu };
 }
 
 export function diffButtonCenter(index) {

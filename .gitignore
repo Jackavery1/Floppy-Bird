@@ -1,14 +1,19 @@
+# Dépendances et artefacts de build — ne jamais committer
 node_modules/
 dist/
+coverage/
+test-results/
+playwright-report/
+.vite/
+
+# Fichiers générés localement (regénérés par npm run icons / build)
+public/vendor/
+public/icons/
+
+# Système et secrets
 .DS_Store
 Thumbs.db
 Desktop.ini
 *.log
 .env
 .env.*
-.vite/
-coverage/
-test-results/
-playwright-report/
-public/vendor/
-public/icons/

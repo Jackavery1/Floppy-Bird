@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/tutorialStorage.js', () => ({
-    markTutorialSeen: vi.fn(),
+vi.mock('../src/tutorialProgress.js', () => ({
+    onTutorialJump: vi.fn(),
 }));
 
 vi.mock('../src/sceneFeedback.js', () => ({
@@ -18,16 +18,16 @@ describe('sceneJumpBuffer', () => {
         expect(scene.round.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
 
-    it('requestJump marque le tutoriel vu quand affiché', async () => {
-        const { markTutorialSeen } = await import('../src/tutorialStorage.js');
+    it('requestJump déclenche la progression tutoriel', async () => {
+        const { onTutorialJump } = await import('../src/tutorialProgress.js');
         const { requestJump } = await import('../src/sceneJumpBuffer.js');
         const scene = {
             round: createRoundState(),
             bird: { bufferJump: () => {} },
-            ui: { dismissJumpTutorial: vi.fn(() => true) },
+            ui: {},
         };
         requestJump(scene);
-        expect(markTutorialSeen).toHaveBeenCalled();
+        expect(onTutorialJump).toHaveBeenCalledWith(scene);
     });
 
     it('processJumpBuffer consomme le buffer', async () => {
@@ -38,7 +38,11 @@ describe('sceneJumpBuffer', () => {
         round.jumpBufferFrames = 4;
         const scene = {
             round,
-            bird: { bufferJump: () => { buffered = true; } },
+            bird: {
+                bufferJump: () => {
+                    buffered = true;
+                },
+            },
         };
         processJumpBuffer(scene);
         expect(buffered).toBe(true);

@@ -2,13 +2,13 @@ import { sceneTween } from './motion.js';
 import { Utils } from './utils.js';
 import { DEPTH } from './uiLayout.js';
 
-const CONFETTI_COLORS = [0xFFD700, 0xFF6F91, 0x64B5F6, 0x81C784, 0xFFFFFF];
+const CONFETTI_COLORS = [0xffd700, 0xff6f91, 0x64b5f6, 0x81c784, 0xffffff];
 
 /** Assombrit une couleur hex d'un facteur (0-1). */
 export function shade(color, factor) {
-    const r = Math.floor(((color >> 16) & 0xFF) * factor);
-    const g = Math.floor(((color >> 8) & 0xFF) * factor);
-    const b = Math.floor((color & 0xFF) * factor);
+    const r = Math.floor(((color >> 16) & 0xff) * factor);
+    const g = Math.floor(((color >> 8) & 0xff) * factor);
+    const b = Math.floor((color & 0xff) * factor);
     return (r << 16) | (g << 8) | b;
 }
 
@@ -17,19 +17,23 @@ export function drawPlaqueCorners(g, P) {
     const inset = 7;
     const len = 10;
     const t = 2;
-    g.fillStyle(0xFFD700, 0.55);
+    g.fillStyle(0xffd700, 0.55);
     const corners = [
-        [P.x + inset, P.y + inset, len, t], [P.x + inset, P.y + inset, t, len],
-        [P.x + P.w - inset - len, P.y + inset, len, t], [P.x + P.w - inset - t, P.y + inset, t, len],
-        [P.x + inset, P.y + P.h - inset - t, len, t], [P.x + inset, P.y + P.h - inset - len, t, len],
-        [P.x + P.w - inset - len, P.y + P.h - inset - t, len, t], [P.x + P.w - inset - t, P.y + P.h - inset - len, t, len],
+        [P.x + inset, P.y + inset, len, t],
+        [P.x + inset, P.y + inset, t, len],
+        [P.x + P.w - inset - len, P.y + inset, len, t],
+        [P.x + P.w - inset - t, P.y + inset, t, len],
+        [P.x + inset, P.y + P.h - inset - t, len, t],
+        [P.x + inset, P.y + P.h - inset - len, t, len],
+        [P.x + P.w - inset - len, P.y + P.h - inset - t, len, t],
+        [P.x + P.w - inset - t, P.y + P.h - inset - len, t, len],
     ];
     corners.forEach(([x, y, w, h]) => g.fillRect(x, y, w, h));
 }
 
 /** Fine ligne de séparation entre deux blocs du panneau. */
 export function drawDivider(scene, cx, y, width, depth) {
-    const line = scene.add.rectangle(cx, y, width, 1, 0xFFD700, 0.18);
+    const line = scene.add.rectangle(cx, y, width, 1, 0xffd700, 0.18);
     line.setDepth(depth);
     return line;
 }

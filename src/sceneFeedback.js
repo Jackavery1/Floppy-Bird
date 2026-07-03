@@ -1,6 +1,8 @@
-import { SOUND } from './config.js';
+import { SOUND, GAME_CONFIG } from './config.js';
+import { GAME_STATE } from './gameState.js';
 import { playSound } from './audio.js';
 import { hapticLight, hapticMedium } from './haptics.js';
+import { applyTrainingTimeScale } from './sceneBootstrap.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -15,13 +17,33 @@ export function playScoreFeedback(score) {
     hapticLight();
 }
 
-/** @param {SceneContext} scene */
-export function playDeathImpactFeedback(scene) {
+/** @param {SceneContext} scene @param {'pipe' | 'ground' | 'ceiling'} [cause] */
+export function playDeathImpactFeedback(scene, cause = 'pipe') {
     playSound(SOUND.GAME_OVER);
     hapticMedium();
     scene.ui.hideInGameScore();
-    scene.cameras.main.shake(200, 0.015);
-    scene.ui.showFlash();
+    if (cause === 'pipe') {
+        scene.cameras.main.shake(200, 0.015);
+        scene.ui.showFlash(0xffffff, 0.8);
+    } else if (cause === 'ground') {
+        scene.cameras.main.shake(140, 0.012);
+        scene.ui.showFlash(0xffcc80, 0.65);
+    } else {
+        scene.cameras.main.shake(120, 0.01);
+        scene.ui.showFlash(0xb3e5fc, 0.55);
+    }
+    applyDeathSlowMo(scene);
+}
+
+/** @param {SceneContext} scene */
+function applyDeathSlowMo(scene) {
+    const { deathSlowMoMs, deathSlowMoScale } = GAME_CONFIG.round;
+    scene.time.timeScale = deathSlowMoScale;
+    scene.time.delayedCall(deathSlowMoMs, () => {
+        if (scene.state === GAME_STATE.DYING || scene.state === GAME_STATE.PLAYING) {
+            applyTrainingTimeScale(scene);
+        }
+    });
 }
 
 export function playGroundImpactFeedback() {

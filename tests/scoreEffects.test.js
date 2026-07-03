@@ -10,7 +10,10 @@ function createMockScene() {
             setVisible: vi.fn().mockReturnThis(),
             setPosition: vi.fn().mockReturnThis(),
             setAlpha: vi.fn().mockReturnThis(),
-            setActive: vi.fn(function (v) { popup.active = v; return popup; }),
+            setActive: vi.fn(function (v) {
+                popup.active = v;
+                return popup;
+            }),
             destroy: vi.fn(),
         };
         return popup;
@@ -23,13 +26,16 @@ function createMockScene() {
             setPosition: vi.fn().mockReturnThis(),
             setAlpha: vi.fn().mockReturnThis(),
             setScale: vi.fn().mockReturnThis(),
-            setActive: vi.fn(function (v) { star.active = v; return star; }),
+            setActive: vi.fn(function (v) {
+                star.active = v;
+                return star;
+            }),
             destroy: vi.fn(),
         };
         return star;
     };
     return {
-        tweens: { add: vi.fn(config => tweens.push(config)) },
+        tweens: { add: vi.fn((config) => tweens.push(config)) },
         add: {
             text: vi.fn(makeText),
             sprite: vi.fn(makeSprite),

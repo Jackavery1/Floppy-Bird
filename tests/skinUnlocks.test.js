@@ -36,7 +36,7 @@ describe('skinUnlocks', () => {
 
     it('neonCollection exige tous les autres skins', () => {
         const skins = Object.fromEntries(
-            SKIN_IDS.map(id => [id, { unlock: () => id === 'classic' }]),
+            SKIN_IDS.map((id) => [id, { unlock: () => id === 'classic' }])
         );
         const unlock = resolveUnlock(SKIN_DEFINITIONS.neon.unlock, skins);
         expect(unlock(makeCtx())).toBe(false);

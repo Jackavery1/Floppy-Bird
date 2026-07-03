@@ -58,9 +58,9 @@ Checklist rapide selon le type :
 - `page.goto` bloqué par SW → `waitUntil: 'domcontentloaded'`
 
 **CI / déploiement**
-- Le job `deploy` est-il **skipped** car un job amont (`e2e`, `build`) a échoué ?
-- Artefact `dist/` produit avec le bon `BASE_PATH` ?
-- Pages : source = **GitHub Actions**, pas « Deploy from branch »
+- Le job `deploy` dépend de `check` (pas de `e2e`) — les e2e rouges n’empêchent pas le déploiement
+- Build prod avec le bon `BASE_PATH` (`/Nom-Repo/`) ?
+- Pages : branche **`gh-pages`**, dossier **`/ (root)`** — pas `main`
 
 **Jeux (Phaser, canvas)**
 - Texte UI sur canvas → pas de `getByText` Playwright ; utiliser une test seam (`window.__TEST__`)
@@ -129,7 +129,7 @@ Observé : …
 | Localhost OK, GitHub Pages KO | Correctif non poussé ; ou CI deploy en échec |
 | PWA mobile bloquée après fix | Cache service worker — vider données site / réinstaller PWA |
 | `npm run preview` échoue sous Windows | Préférer `npx vite preview --host 127.0.0.1 --port 4173` |
-| E2E rouge, pas de deploy | Corriger e2e ou cause build ; deploy `needs: [build, e2e]` |
+| E2E rouge, site OK | Normal : `deploy` ne dépend que de `check` |
 
 ## Hors scope
 
@@ -140,6 +140,6 @@ Observé : …
 
 ## Références projet
 
-- Workflow deploy : `.github/workflows/deploy.yml`
+- Workflow CI + deploy : `.github/workflows/ci.yml`
 - Build Pages : `CONTRIBUTING.md` (section GitHub Pages)
 - Config base : `vite.config.js`, `BASE_PATH`

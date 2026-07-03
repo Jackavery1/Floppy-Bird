@@ -25,8 +25,9 @@ describe('uiPause', () => {
         expect(elements.length).toBeGreaterThan(4);
         const rectangles = scene.add.rectangle.mock.calls;
         const pauseHits = rectangles.filter(
-            ([, y, , h]) => h === MIN_TOUCH
-                && (y === UI_LAYOUT.pause.resumeBtn || y === UI_LAYOUT.pause.menuBtn),
+            ([, y, , h]) =>
+                h === MIN_TOUCH &&
+                (y === UI_LAYOUT.pause.resumeBtn || y === UI_LAYOUT.pause.menuBtn)
         );
         expect(pauseHits.length).toBe(2);
     });
@@ -37,10 +38,10 @@ describe('uiPause', () => {
         showPause(ui, { onResume, onMenu: vi.fn() });
 
         const resumeHit = scene.add.rectangle.mock.results.find(
-            r => r.value?.on?.mock?.calls?.length,
+            (r) => r.value?.on?.mock?.calls?.length
         )?.value;
         expect(resumeHit).toBeTruthy();
-        const downHandler = resumeHit.on.mock.calls.find(c => c[0] === 'pointerdown')?.[1];
+        const downHandler = resumeHit.on.mock.calls.find((c) => c[0] === 'pointerdown')?.[1];
         downHandler?.({}, {}, {}, { stopPropagation: vi.fn() });
         expect(onResume).toHaveBeenCalled();
     });

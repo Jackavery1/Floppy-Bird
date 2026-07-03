@@ -22,7 +22,12 @@ describe('uiText', () => {
     it('addReliefText crée ombre et label', () => {
         const scene = createBaseScene();
         const { shadow, label } = addReliefText(
-            scene, 144, 80, 'T', { fontSize: '20px', fill: '#fff' }, 52,
+            scene,
+            144,
+            80,
+            'T',
+            { fontSize: '20px', fill: '#fff' },
+            52
         );
         expect(shadow.setDepth).toHaveBeenCalledWith(51);
         expect(label.setDepth).toHaveBeenCalledWith(52);

@@ -31,9 +31,13 @@ describe('uiLayout menu', () => {
     });
 
     it('la rangée SCORES · OPTIONS · SKINS est centrée', () => {
-        const { scoresBtn, optionsBtn, skinsBtn } = UI_LAYOUT.menu;
+        const { scoresBtn, optionsBtn, skinsBtn, menuBtnW } = UI_LAYOUT.menu;
         expect(optionsBtn).toBe(GAME_CONFIG.centerX);
         expect(scoresBtn).toBeLessThan(optionsBtn);
         expect(skinsBtn).toBeGreaterThan(optionsBtn);
+        expect(menuBtnW).toBe(MIN_TOUCH * 2);
+        const half = menuBtnW / 2;
+        expect(scoresBtn - half).toBeGreaterThanOrEqual(0);
+        expect(skinsBtn + half).toBeLessThanOrEqual(GAME_CONFIG.width);
     });
 });

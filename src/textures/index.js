@@ -6,7 +6,11 @@ import { createCloudTexture } from './cloudTextures.js';
 import { createStarTexture } from './starTextures.js';
 import { createGroundTexture } from './groundTextures.js';
 
-export { getBackgroundPeriod, resetBackgroundCache, getBackgroundCanvasColor } from './backgroundTextures.js';
+export {
+    getBackgroundPeriod,
+    resetBackgroundCache,
+    getBackgroundCanvasColor,
+} from './backgroundTextures.js';
 export { GROUND_BLADE_H, GROUND_TILE_H } from './groundTextures.js';
 
 export function preloadTextures(scene) {

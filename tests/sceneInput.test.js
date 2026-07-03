@@ -20,9 +20,13 @@ describe('sceneInput', () => {
             returnToMenu: vi.fn(),
             input: {
                 keyboard: {
-                    on: vi.fn((key, fn) => { handlers[key] = fn; }),
+                    on: vi.fn((key, fn) => {
+                        handlers[key] = fn;
+                    }),
                 },
-                on: vi.fn((_event, fn) => { pointerHandlers.push(fn); }),
+                on: vi.fn((_event, fn) => {
+                    pointerHandlers.push(fn);
+                }),
                 hitTestPointer: vi.fn(() => []),
             },
             _handlers: handlers,

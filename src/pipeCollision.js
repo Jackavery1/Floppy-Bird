@@ -23,16 +23,23 @@ export function collidesWithPipeGroup(pipes, type, birdBounds, pipeBodyWidth) {
     return false;
 }
 
+/** @param {{ x: number, y: number, width: number, height: number }} birdBounds @param {number} topY @param {number} bottomY */
+export function birdVerticallyInGap(birdBounds, topY, bottomY) {
+    const birdCy = birdBounds.y + birdBounds.height / 2;
+    const centerInGap = birdCy >= topY && birdCy <= bottomY;
+    const boundsInGap = birdBounds.y >= topY && birdBounds.y + birdBounds.height <= bottomY;
+    return centerInGap || boundsInGap;
+}
+
 export function isBirdInPipeGap(birdBounds, topPipes, bottomPipes, pipeBodyWidth) {
     const birdCx = birdBounds.x + birdBounds.width / 2;
-    const birdCy = birdBounds.y + birdBounds.height / 2;
     const halfW = pipeBodyWidth / 2;
     for (let i = 0; i < topPipes.length; i++) {
         const top = topPipes[i];
         const bottom = bottomPipes[i];
         if (!bottom) continue;
         if (birdCx < top.x - halfW || birdCx > top.x + halfW) continue;
-        if (birdCy >= top.y && birdCy <= bottom.y) return true;
+        if (birdVerticallyInGap(birdBounds, top.y, bottom.y)) return true;
     }
     return false;
 }

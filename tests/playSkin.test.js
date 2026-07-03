@@ -22,12 +22,22 @@ vi.mock('../src/dailyChallenge.js', () => ({
 
 describe('playSkin', () => {
     it('utilise le skin du défi en mode daily', () => {
-        const scene = { playMode: 'daily', round: { score: 0 }, hardcoreMode: false, dailyChallengeMode: true };
+        const scene = {
+            playMode: 'daily',
+            round: { score: 0 },
+            hardcoreMode: false,
+            dailyChallengeMode: true,
+        };
         expect(resolvePlaySkin(scene)).toBe('mushu');
     });
 
     it('retombe sur classique si skin sélectionné verrouillé', () => {
-        const scene = { playMode: 'classic', round: { score: 0 }, hardcoreMode: false, dailyChallengeMode: false };
+        const scene = {
+            playMode: 'classic',
+            round: { score: 0 },
+            hardcoreMode: false,
+            dailyChallengeMode: false,
+        };
         expect(resolvePlaySkin(scene)).toBe('classic');
     });
 });

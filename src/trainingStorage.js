@@ -12,7 +12,9 @@ export function loadTrainingEnabled() {
 export function saveTrainingEnabled(enabled) {
     try {
         localStorage.setItem(STORAGE_KEYS.training, enabled ? '1' : '0');
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }
 
 export function loadBestTrainingScore(skinId = null) {
@@ -32,5 +34,7 @@ export function saveBestTrainingScore(score, skinId = null) {
     if (score <= best) return;
     try {
         localStorage.setItem(trainingBestKey(routedSkinId(skinId)), String(score));
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }

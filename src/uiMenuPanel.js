@@ -1,20 +1,15 @@
 import { GAME_CONFIG } from './config.js';
-import {
-    addCenteredText,
-    DEPTH,
-    MIN_TOUCH,
-    stopUiEvent,
-} from './uiLayout.js';
+import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 /** @param {import('phaser').GameObjects.GameObject[]} elements */
 export function setMenuPanelVisible(elements, visible) {
-    elements?.forEach(el => el?.setVisible?.(visible));
+    elements?.forEach((el) => el?.setVisible?.(visible));
 }
 
 /** @param {import('./ui.js').UI} ui */
 export function syncMenuChromeVisibility(ui) {
     const panelOpen = ui._optionsOpen || ui._scoresOpen || ui._skinsOpen;
-    ui._menuChromeElements?.forEach(el => el?.setVisible?.(!panelOpen));
+    ui._menuChromeElements?.forEach((el) => el?.setVisible?.(!panelOpen));
 }
 
 /**
@@ -28,10 +23,10 @@ export function buildMenuPanelBackdrop(scene, panel) {
         panel.w,
         panel.panelH,
         0x0d1117,
-        0.94,
+        0.94
     );
     backdrop.setDepth(DEPTH.PANEL_BACKDROP);
-    backdrop.setStrokeStyle(2, 0x37474F, 0.9);
+    backdrop.setStrokeStyle(2, 0x37474f, 0.9);
     backdrop.setVisible(false);
     return backdrop;
 }
@@ -42,23 +37,29 @@ export function buildMenuPanelBackdrop(scene, panel) {
  * @param {{ cx: number, cy: number, width: number, depth: number, color: number, stroke: number, labelText: string, labelStroke: string, onToggle: () => void }} cfg
  */
 export function buildMenuToggleButton(scene, elements, cfg) {
-    const bg = scene.add.rectangle(
-        cfg.cx, cfg.cy, cfg.width, MIN_TOUCH, cfg.color, 0.88,
-    );
+    const touchW = Math.max(cfg.width, MIN_TOUCH);
+    const bg = scene.add.rectangle(cfg.cx, cfg.cy, cfg.width, MIN_TOUCH, cfg.color, 0.88);
     bg.setDepth(cfg.depth);
     bg.setStrokeStyle(2, cfg.stroke, 0.6);
     elements.push(bg);
 
-    const label = addCenteredText(scene, cfg.cx, cfg.cy, cfg.labelText, {
-        fontSize: '11px',
-        fill: '#FFFFFF',
-        fontStyle: 'bold',
-        stroke: cfg.labelStroke,
-        strokeThickness: 2,
-    }, cfg.depth + 1);
+    const label = addCenteredText(
+        scene,
+        cfg.cx,
+        cfg.cy,
+        cfg.labelText,
+        {
+            fontSize: '11px',
+            fill: '#FFFFFF',
+            fontStyle: 'bold',
+            stroke: cfg.labelStroke,
+            strokeThickness: 2,
+        },
+        cfg.depth + 1
+    );
     elements.push(label);
 
-    const hit = scene.add.rectangle(cfg.cx, cfg.cy, cfg.width, MIN_TOUCH, 0x000000, 0);
+    const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, MIN_TOUCH, 0x000000, 0);
     hit.setDepth(cfg.depth + 2);
     hit.setInteractive({ useHandCursor: true });
     hit.on('pointerdown', (_p, _lx, _ly, event) => {

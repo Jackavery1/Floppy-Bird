@@ -16,7 +16,7 @@ function showAchievementToast(scene, achievement) {
             stroke: '#000000',
             strokeThickness: 2,
         },
-        DEPTH.ACHIEVEMENT_TOAST,
+        DEPTH.ACHIEVEMENT_TOAST
     );
     sceneTween(scene, {
         targets: toast,
@@ -31,5 +31,5 @@ function showAchievementToast(scene, achievement) {
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {Array<{ title: string }>} achievements */
 export function showAchievementToasts(scene, achievements) {
-    achievements.forEach(a => showAchievementToast(scene, a));
+    achievements.forEach((a) => showAchievementToast(scene, a));
 }

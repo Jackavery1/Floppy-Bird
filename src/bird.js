@@ -50,7 +50,7 @@ export class Bird {
         this.sprite.setPosition(this.x, this.y);
         if (rotation === 'live') {
             const angle = Math.min(Math.max(this.velocityY * 3, -30), 60);
-            this.sprite.setRotation(angle * Math.PI / 180);
+            this.sprite.setRotation((angle * Math.PI) / 180);
         } else {
             this.sprite.setRotation(Math.PI / 2.2);
         }
@@ -69,11 +69,12 @@ export class Bird {
     }
 
     getBounds() {
-        const mx = 3, my = 2;
+        const mx = 3,
+            my = 2;
         return {
             x: this.x - this.width / 2 + mx,
             y: this.y - this.height / 2 + my,
-            width:  this.width  - mx * 2,
+            width: this.width - mx * 2,
             height: this.height - my * 2,
         };
     }

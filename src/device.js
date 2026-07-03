@@ -1,8 +1,7 @@
 export function isCoarsePointer() {
     if (typeof matchMedia === 'undefined') return false;
     if (matchMedia('(hover: none) and (pointer: coarse)').matches) return true;
-    return matchMedia('(any-pointer: coarse)').matches
-        && !matchMedia('(pointer: fine)').matches;
+    return matchMedia('(any-pointer: coarse)').matches && !matchMedia('(pointer: fine)').matches;
 }
 
 export function jumpHint() {
@@ -42,9 +41,7 @@ export function trainingToggleLabel(enabled) {
     if (enabled) {
         return isCoarsePointer() ? '🟦 ENTR. ON' : '🟦 ENTRAÎNEMENT : ON (ralenti + fantôme)';
     }
-    return isCoarsePointer()
-        ? '⬜ ENTR. OFF · tap'
-        : '⬜ ENTRAÎNEMENT : OFF (T pour activer)';
+    return isCoarsePointer() ? '⬜ ENTR. OFF · tap' : '⬜ ENTRAÎNEMENT : OFF (T pour activer)';
 }
 
 export function hardcoreHint() {
@@ -53,18 +50,14 @@ export function hardcoreHint() {
 
 export function hardcoreToggleLabel(enabled, unlocked = true) {
     if (!unlocked) {
-        return isCoarsePointer()
-            ? '🔒 HARD · score ≥ 10'
-            : '🔒 HARDCORE : score ≥ 10 requis';
+        return isCoarsePointer() ? '🔒 HARD · score ≥ 10' : '🔒 HARDCORE : score ≥ 10 requis';
     }
     if (enabled) {
         return isCoarsePointer()
-            ? '🟥 HARD ON'
-            : '🟥 HARDCORE : ON (grace 700→550 ms sur 3 tuyaux)';
+            ? '🟥 HARD ON · inv. / tuyau'
+            : '🟥 HARDCORE : ON (invinc. / tuyau, 700→325 ms)';
     }
-    return isCoarsePointer()
-        ? '⬜ HARD OFF · tap'
-        : '⬜ HARDCORE : OFF (H pour activer)';
+    return isCoarsePointer() ? '⬜ HARD OFF · tap' : '⬜ HARDCORE : OFF (H pour activer)';
 }
 
 export function dailyChallengeHint() {
@@ -101,8 +94,39 @@ export function jumpTutorialText() {
     return isCoarsePointer() ? '↑  TAP pour sauter' : '↑  ESPACE pour sauter';
 }
 
+export function gapTutorialText() {
+    return isCoarsePointer() ? 'Vise le corridor entre les tuyaux' : 'Passe entre les tuyaux';
+}
+
+export function scoreTutorialText() {
+    return '+1 point par tuyau passé !';
+}
+
+export function coyoteHintText() {
+    return 'Seconde chance dans le gap !';
+}
+
+/** @param {number} ms */
+export function hardcoreInvincibilityHintText(ms) {
+    return isCoarsePointer() ? `Invincible ${ms} ms` : `Invincible ${ms} ms · tuyau`;
+}
+
 export function classicModeHint() {
     return isCoarsePointer()
         ? 'Classique : aléatoire selon difficulté'
         : 'Classique : gaps aléatoires';
+}
+
+/** @param {'pipe' | 'ground' | 'ceiling' | null | undefined} cause */
+export function deathCauseLabel(cause) {
+    switch (cause) {
+        case 'pipe':
+            return 'Collision tuyau';
+        case 'ground':
+            return 'Touché le sol';
+        case 'ceiling':
+            return 'Touché le plafond';
+        default:
+            return '';
+    }
 }

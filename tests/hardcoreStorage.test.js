@@ -7,7 +7,9 @@ describe('hardcoreStorage', () => {
         store = {};
         vi.stubGlobal('localStorage', {
             getItem: (k) => store[k] ?? null,
-            setItem: (k, v) => { store[k] = v; },
+            setItem: (k, v) => {
+                store[k] = v;
+            },
         });
     });
 
@@ -16,7 +18,8 @@ describe('hardcoreStorage', () => {
     });
 
     it('persiste le mode hardcore', async () => {
-        const { loadHardcoreEnabled, saveHardcoreEnabled } = await import('../src/hardcoreStorage.js');
+        const { loadHardcoreEnabled, saveHardcoreEnabled } =
+            await import('../src/hardcoreStorage.js');
         expect(loadHardcoreEnabled()).toBe(false);
         saveHardcoreEnabled(true);
         expect(loadHardcoreEnabled()).toBe(true);

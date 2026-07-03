@@ -31,8 +31,12 @@ function createMockScene() {
                 setOrigin: vi.fn(),
                 setDepth: vi.fn(),
                 setTexture: vi.fn(),
-                setActive: vi.fn(function () { return this; }),
-                setVisible: vi.fn(function () { return this; }),
+                setActive: vi.fn(function () {
+                    return this;
+                }),
+                setVisible: vi.fn(function () {
+                    return this;
+                }),
                 destroy: vi.fn(),
             })),
         },
@@ -157,7 +161,9 @@ describe('Pipes', () => {
             expect(pipes.pipeGap).toBe(112);
             pipes.applySpeedForScore(30);
             expect(pipes.pipeGap).toBe(112 - GAME_CONFIG.round.gapTightenStep);
-            expect(maxGapDeltaForScore(30)).toBe(GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep);
+            expect(maxGapDeltaForScore(30)).toBe(
+                GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep
+            );
         });
     });
 

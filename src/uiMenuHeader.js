@@ -29,7 +29,7 @@ export function buildMenuHeader(ui, elements, layout) {
         GAME_TITLE,
         titleStyle,
         DEPTH.MENU_PANEL,
-        { dx: 3, dy: 4, fill: '#BF360C', alpha: 0.65 },
+        { dx: 3, dy: 4, fill: '#BF360C', alpha: 0.65 }
     );
     ui._menuTitleShadow = shadow;
     elements.push(shadow, title);
@@ -46,16 +46,28 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
     ui._diffBtnLabels = [];
     DIFFICULTY_ORDER.forEach((diff, i) => {
         const btnCx = diffButtonCenter(i);
-        const label = addCenteredText(ui.scene, btnCx, layout.difficulty,
-            GAME_CONFIG.difficultyLabels[diff], {
+        const label = addCenteredText(
+            ui.scene,
+            btnCx,
+            layout.difficulty,
+            GAME_CONFIG.difficultyLabels[diff],
+            {
                 fontSize: '9px',
                 fill: diffLabelColor(ui._currentDifficulty, diff),
                 fontStyle: 'bold',
-            }, DEPTH.MENU_BTN_BG);
+            },
+            DEPTH.MENU_BTN_BG
+        );
         elements.push(label);
 
+        const hitW = Math.max(diffBtn.width, MIN_TOUCH);
         const hitZone = ui.scene.add.rectangle(
-            btnCx, layout.difficulty, diffBtn.width, MIN_TOUCH, 0x000000, 0,
+            btnCx,
+            layout.difficulty,
+            hitW,
+            MIN_TOUCH,
+            0x000000,
+            0
         );
         hitZone.setDepth(DEPTH.MENU_HIT);
         hitZone.setInteractive({ useHandCursor: true });

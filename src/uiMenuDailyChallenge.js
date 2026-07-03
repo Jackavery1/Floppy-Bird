@@ -1,8 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import {
-    formatDailyMenuButtonLabel,
-    formatDailyMenuSubtitle,
-} from './dailyChallenge.js';
+import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
 import {
     addCenteredText,
     applyFittedLabel,
@@ -13,8 +10,8 @@ import {
     stopUiEvent,
 } from './uiLayout.js';
 
-const DAILY_BTN_COLOR = 0x6A1B9A;
-const DAILY_BTN_HOVER = 0x9C27B0;
+const DAILY_BTN_COLOR = 0x6a1b9a;
+const DAILY_BTN_HOVER = 0x9c27b0;
 
 const DAILY_BTN_STYLE = {
     fontSize: '10px',
@@ -33,40 +30,58 @@ const DAILY_SUBTITLE_STYLE = {
 
 export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     ui._dailyBtnBg = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX, layout.dailyBtn, 228, MIN_TOUCH, DAILY_BTN_COLOR, 0.9,
+        GAME_CONFIG.centerX,
+        layout.dailyBtn,
+        228,
+        MIN_TOUCH,
+        DAILY_BTN_COLOR,
+        0.9
     );
     ui._dailyBtnBg.setDepth(DEPTH.MENU_BTN_BG);
     ui._dailyBtnBg.setStrokeStyle(2, DAILY_BTN_HOVER, 0.7);
     elements.push(ui._dailyBtnBg);
 
     ui._dailyBtnLabel = addCenteredText(
-        ui.scene, GAME_CONFIG.centerX, layout.dailyBtn,
-        formatDailyMenuButtonLabel(difficulty), DAILY_BTN_STYLE, DEPTH.MENU_BTN_BG,
+        ui.scene,
+        GAME_CONFIG.centerX,
+        layout.dailyBtn,
+        formatDailyMenuButtonLabel(difficulty),
+        DAILY_BTN_STYLE,
+        DEPTH.MENU_BTN_BG
     );
     applyFittedLabel(
         ui.scene,
         ui._dailyBtnLabel,
         formatDailyMenuButtonLabel(difficulty),
         DAILY_BTN_STYLE,
-        DAILY_BTN_TEXT_MAX_WIDTH,
+        DAILY_BTN_TEXT_MAX_WIDTH
     );
     elements.push(ui._dailyBtnLabel);
 
     ui._dailyMenuSubtitle = addCenteredText(
-        ui.scene, GAME_CONFIG.centerX, layout.dailySubtitle,
-        formatDailyMenuSubtitle(difficulty), DAILY_SUBTITLE_STYLE, DEPTH.MENU_RAISED,
+        ui.scene,
+        GAME_CONFIG.centerX,
+        layout.dailySubtitle,
+        formatDailyMenuSubtitle(difficulty),
+        DAILY_SUBTITLE_STYLE,
+        DEPTH.MENU_RAISED
     );
     applyFittedLabel(
         ui.scene,
         ui._dailyMenuSubtitle,
         formatDailyMenuSubtitle(difficulty),
         DAILY_SUBTITLE_STYLE,
-        PANEL_TEXT_MAX_WIDTH,
+        PANEL_TEXT_MAX_WIDTH
     );
     elements.push(ui._dailyMenuSubtitle);
 
     ui._dailyBtnHit = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX, layout.dailyBtn, 228, MIN_TOUCH, 0x000000, 0,
+        GAME_CONFIG.centerX,
+        layout.dailyBtn,
+        228,
+        MIN_TOUCH,
+        0x000000,
+        0
     );
     ui._dailyBtnHit.setDepth(DEPTH.MENU_HIT);
     ui._dailyBtnHit.setInteractive({ useHandCursor: true });
@@ -84,7 +99,7 @@ export function refreshDailyChallengeButton(ui, difficulty) {
         ui._dailyBtnLabel,
         formatDailyMenuButtonLabel(difficulty),
         DAILY_BTN_STYLE,
-        DAILY_BTN_TEXT_MAX_WIDTH,
+        DAILY_BTN_TEXT_MAX_WIDTH
     );
     if (ui._dailyMenuSubtitle) {
         applyFittedLabel(
@@ -92,7 +107,7 @@ export function refreshDailyChallengeButton(ui, difficulty) {
             ui._dailyMenuSubtitle,
             formatDailyMenuSubtitle(difficulty),
             DAILY_SUBTITLE_STYLE,
-            PANEL_TEXT_MAX_WIDTH,
+            PANEL_TEXT_MAX_WIDTH
         );
     }
 }

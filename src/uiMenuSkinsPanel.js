@@ -1,13 +1,10 @@
 import { skinsButtonLabel } from './device.js';
 import { UI_LAYOUT } from './uiLayout.js';
-import {
-    buildMenuPanelShell,
-    createMenuPanelController,
-} from './uiMenuPanel.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';
 
-const SKINS_BTN_COLOR = 0x00897B;
-const SKINS_BTN_STROKE = 0x4DB6AC;
+const SKINS_BTN_COLOR = 0x00897b;
+const SKINS_BTN_STROKE = 0x4db6ac;
 
 const PANEL_CFG = {
     openKey: '_skinsOpen',

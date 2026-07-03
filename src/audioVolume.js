@@ -4,8 +4,10 @@ export const VOLUME_STEPS = Object.freeze([1, 0.5, 0.25, 0]);
 
 function readStoredVolume() {
     try {
-        return localStorage.getItem(STORAGE_KEYS.volume)
-            ?? localStorage.getItem(STORAGE_KEYS.volumeLegacy);
+        return (
+            localStorage.getItem(STORAGE_KEYS.volume) ??
+            localStorage.getItem(STORAGE_KEYS.volumeLegacy)
+        );
     } catch {
         return null;
     }
@@ -24,7 +26,9 @@ export function setVolume(level) {
         localStorage.setItem(STORAGE_KEYS.volume, String(level));
         if (level > 0) setMuted(false);
         else setMuted(true);
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }
 
 export function isMuted() {
@@ -38,7 +42,9 @@ export function isMuted() {
 export function setMuted(muted) {
     try {
         localStorage.setItem(STORAGE_KEYS.muted, muted ? '1' : '0');
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
 }
 
 export function cycleSoundLevel() {

@@ -1,11 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
-import {
-    smoothGapY,
-    gapBounds,
-    randomGapY,
-    resolveNextGapY,
-} from '../src/pipeGaps.js';
+import { smoothGapY, gapBounds, randomGapY, resolveNextGapY } from '../src/pipeGaps.js';
 import { Utils } from '../src/utils.js';
 
 describe('pipeGaps', () => {

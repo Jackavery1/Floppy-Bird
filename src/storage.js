@@ -53,16 +53,18 @@ export function saveHighScore(
     difficulty = DIFFICULTY.NORMAL,
     currentHigh,
     hardcore = false,
-    skinId = null,
+    skinId = null
 ) {
     const high = currentHigh ?? loadHighScore(difficulty, hardcore, skinId);
     if (score > high) {
         try {
             localStorage.setItem(
                 highScoreKey(difficulty, hardcore, routedSkinId(skinId)),
-                String(score),
+                String(score)
             );
-        } catch { /* quota */ }
+        } catch {
+            /* quota localStorage */
+        }
         return score;
     }
     return high;
@@ -79,7 +81,7 @@ export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false
         const parsed = JSON.parse(data);
         if (!Array.isArray(parsed)) return [];
         return parsed
-            .map(item => {
+            .map((item) => {
                 if (typeof item === 'number') {
                     return { score: item, id: `legacy-${item}`, skinId: 'classic' };
                 }
@@ -90,13 +92,18 @@ export function loadLeaderboard(difficulty = DIFFICULTY.NORMAL, hardcore = false
                     skinId: typeof item.skinId === 'string' ? item.skinId : 'classic',
                 };
             })
-            .filter(e => Number.isFinite(e.score) && e.score >= 0);
+            .filter((e) => Number.isFinite(e.score) && e.score >= 0);
     } catch {
         return [];
     }
 }
 
-export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL, hardcore = false, skinId = null) {
+export function saveToLeaderboard(
+    score,
+    difficulty = DIFFICULTY.NORMAL,
+    hardcore = false,
+    skinId = null
+) {
     const entries = loadLeaderboard(difficulty, hardcore, skinId);
     if (score <= 0) {
         return { entries, highlightId: null };
@@ -108,8 +115,10 @@ export function saveToLeaderboard(score, difficulty = DIFFICULTY.NORMAL, hardcor
     try {
         localStorage.setItem(
             leaderboardKey(difficulty, hardcore, routedSkinId(skinId)),
-            JSON.stringify(top5),
+            JSON.stringify(top5)
         );
-    } catch { /* quota */ }
+    } catch {
+        /* quota localStorage */
+    }
     return { entries: top5, highlightId };
 }

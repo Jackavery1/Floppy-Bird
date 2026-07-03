@@ -15,8 +15,14 @@ export function showPause(ui, { onResume, onMenu }) {
     const overlay = ui.createOverlay(0.65, DEPTH.PAUSE_OVERLAY);
     const elements = [overlay];
 
-    const pauseTitle = addCenteredText(ui.scene, GAME_CONFIG.centerX, pause.title,
-        'PAUSE', { fontSize: '32px', fill: '#ffffff', fontStyle: 'bold' }, DEPTH.PAUSE_TITLE);
+    const pauseTitle = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        pause.title,
+        'PAUSE',
+        { fontSize: '32px', fill: '#ffffff', fontStyle: 'bold' },
+        DEPTH.PAUSE_TITLE
+    );
     elements.push(pauseTitle);
 
     const resumeGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_BTN);
@@ -30,17 +36,28 @@ export function showPause(ui, { onResume, onMenu }) {
             resumeBtnY - menuBtn.height / 2,
             menuBtn.width,
             menuBtn.height,
-            menuBtn.radius,
+            menuBtn.radius
         );
     };
     drawResume(MENU_BTN_COLOR);
 
-    const resumeText = addCenteredText(ui.scene, GAME_CONFIG.centerX, resumeBtnY,
-        'REPRENDRE', { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' }, DEPTH.PAUSE_BTN_LABEL);
+    const resumeText = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        resumeBtnY,
+        'REPRENDRE',
+        { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' },
+        DEPTH.PAUSE_BTN_LABEL
+    );
     elements.push(resumeText);
 
     const resumeHit = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX, resumeBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0,
+        GAME_CONFIG.centerX,
+        resumeBtnY,
+        menuBtn.width,
+        MIN_TOUCH,
+        0x000000,
+        0
     );
     resumeHit.setDepth(DEPTH.PAUSE_HIT);
     resumeHit.setInteractive({ useHandCursor: true });
@@ -63,17 +80,28 @@ export function showPause(ui, { onResume, onMenu }) {
             menuBtnY - menuBtn.height / 2,
             menuBtn.width,
             menuBtn.height,
-            menuBtn.radius,
+            menuBtn.radius
         );
     };
     drawMenu(MENU_BTN_COLOR);
 
-    const menuText = addCenteredText(ui.scene, GAME_CONFIG.centerX, menuBtnY,
-        'MENU', { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' }, DEPTH.PAUSE_BTN_LABEL);
+    const menuText = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        menuBtnY,
+        'MENU',
+        { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' },
+        DEPTH.PAUSE_BTN_LABEL
+    );
     elements.push(menuText);
 
     const menuHit = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX, menuBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0,
+        GAME_CONFIG.centerX,
+        menuBtnY,
+        menuBtn.width,
+        MIN_TOUCH,
+        0x000000,
+        0
     );
     menuHit.setDepth(DEPTH.PAUSE_HIT);
     menuHit.setInteractive({ useHandCursor: true });
@@ -85,8 +113,16 @@ export function showPause(ui, { onResume, onMenu }) {
     });
     elements.push(menuHit);
 
-    elements.push(addCenteredText(ui.scene, GAME_CONFIG.centerX, pause.menuBtn + 40,
-        pauseResumeHint(), { fontSize: '11px', fill: '#cccccc' }, DEPTH.PAUSE_TITLE));
+    elements.push(
+        addCenteredText(
+            ui.scene,
+            GAME_CONFIG.centerX,
+            pause.menuBtn + 40,
+            pauseResumeHint(),
+            { fontSize: '11px', fill: '#cccccc' },
+            DEPTH.PAUSE_TITLE
+        )
+    );
 
     return { elements };
 }

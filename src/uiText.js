@@ -1,9 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import {
-    FONT,
-    PANEL_TEXT_MAX_WIDTH,
-    TITLE_MAX_WIDTH,
-} from './uiLayoutConstants.js';
+import { FONT, PANEL_TEXT_MAX_WIDTH, TITLE_MAX_WIDTH } from './uiLayoutConstants.js';
 
 export function addCenteredText(scene, x, y, text, style, depth) {
     const label = scene.add.text(x, y, text, { fontFamily: FONT, ...style });
@@ -52,12 +48,19 @@ export function diffLabelColor(difficulty, diff) {
 }
 
 export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
-    return fitLabelFontSize(scene, text, {
-        fontSize: '48px',
-        fontStyle: 'bold',
-        stroke: '#E65100',
-        strokeThickness: 3,
-    }, maxWidth, 14, 2);
+    return fitLabelFontSize(
+        scene,
+        text,
+        {
+            fontSize: '48px',
+            fontStyle: 'bold',
+            stroke: '#E65100',
+            strokeThickness: 3,
+        },
+        maxWidth,
+        14,
+        2
+    );
 }
 
 export function fitLabelFontSize(
@@ -66,7 +69,7 @@ export function fitLabelFontSize(
     style,
     maxWidth = PANEL_TEXT_MAX_WIDTH,
     minSize = 8,
-    step = 1,
+    step = 1
 ) {
     const baseSize = parseInt(String(style.fontSize ?? '12px'), 10) || 12;
     let fontSize = baseSize;
@@ -98,7 +101,15 @@ export function applyFittedLabel(scene, label, text, style, maxWidth = PANEL_TEX
     label.setFontSize?.(fontSize);
 }
 
-export function addFittedCenteredText(scene, x, y, text, style, depth, maxWidth = PANEL_TEXT_MAX_WIDTH) {
+export function addFittedCenteredText(
+    scene,
+    x,
+    y,
+    text,
+    style,
+    depth,
+    maxWidth = PANEL_TEXT_MAX_WIDTH
+) {
     const label = addCenteredText(scene, x, y, text, style, depth);
     applyFittedLabel(scene, label, text, style, maxWidth);
     return label;

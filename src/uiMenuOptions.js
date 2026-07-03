@@ -1,14 +1,8 @@
 import { optionsButtonLabel } from './device.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
-import {
-    MENU_BTN_COLOR,
-    UI_LAYOUT,
-} from './uiLayout.js';
-import {
-    buildMenuPanelShell,
-    createMenuPanelController,
-} from './uiMenuPanel.js';
+import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import {
     applyHardcoreLabel,
     buildOptionsContent,
@@ -26,7 +20,7 @@ const PANEL_CFG = {
     btnHitKey: '_optionsBtnHit',
     buttonLabelFn: optionsButtonLabel,
     btnColor: MENU_BTN_COLOR,
-    btnStroke: 0x42A5F5,
+    btnStroke: 0x42a5f5,
     labelStroke: '#0D47A1',
 };
 

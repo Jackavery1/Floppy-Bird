@@ -21,9 +21,13 @@ export default defineConfig({
         serviceWorkers: 'allow',
     },
     webServer: {
-        command: 'npx vite preview --host 127.0.0.1 --port 4173',
+        command: 'npm run build:e2e && npx vite preview --host 127.0.0.1 --port 4173',
         port: 4173,
         reuseExistingServer: !process.env.CI,
+        env: {
+            ...process.env,
+            VITE_ENABLE_TEST_SEAM: 'true',
+        },
     },
     projects: [
         {
@@ -58,6 +62,15 @@ export default defineConfig({
                 browserName: 'webkit',
                 ...devices['iPhone 13'],
                 viewport: { width: 844, height: 390 },
+                isMobile: true,
+                hasTouch: true,
+            },
+        },
+        {
+            name: 'chromium-tablet-landscape',
+            use: {
+                browserName: 'chromium',
+                viewport: { width: 1024, height: 768 },
                 isMobile: true,
                 hasTouch: true,
             },
