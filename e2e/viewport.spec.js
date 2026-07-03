@@ -7,6 +7,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
+import { getCanvasLayout } from './helpers/testSeam.mjs';
 
 test.describe('jeu chargé', () => {
     test('affiche le canvas et masque le chargement', async ({ page }) => {
@@ -57,7 +58,7 @@ test.describe('jeu chargé', () => {
         const box = await canvas.boundingBox();
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
-        const layout = await page.evaluate(() => window.__FLOPPY_TEST__?.getCanvasLayout?.());
+        const layout = await getCanvasLayout(page);
         expect(layout?.height ?? 0).toBeGreaterThan(300);
     });
 
@@ -86,15 +87,63 @@ test.describe('jeu chargé', () => {
             const canvas = document.querySelector('#game-container canvas');
             const container = document.getElementById('game-container');
             const box = canvas?.getBoundingClientRect();
+            const vv = { width: 390, height: 620, offsetTop: 24, offsetLeft: 0 };
+            const cx = vv.offsetLeft + vv.width / 2;
+            const cy = vv.offsetTop + vv.height / 2;
+            const canvasCx = box ? box.left + box.width / 2 : 0;
+            const canvasCy = box ? box.top + box.height / 2 : 0;
             return {
-                marginTop: parseFloat(getComputedStyle(container).marginTop) || 0,
+                top: parseFloat(getComputedStyle(container).top) || 0,
                 canvasHeight: box?.height ?? 0,
                 ratio: box && box.height > 0 ? box.width / box.height : 0,
+                deltaX: Math.abs(canvasCx - cx),
+                deltaY: Math.abs(canvasCy - cy),
             };
         });
         expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(metrics.canvasHeight).toBeLessThanOrEqual(622);
-        expect(metrics.marginTop).toBeGreaterThanOrEqual(24);
+        expect(metrics.top).toBeGreaterThanOrEqual(24);
+        expect(metrics.deltaX).toBeLessThan(8);
+        expect(metrics.deltaY).toBeLessThan(8);
+    });
+
+    test('conserve le centrage après zoom pinch simulé', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name.startsWith('webkit'),
+            'mock visualViewport fragile sous WebKit'
+        );
+        await page.setViewportSize({ width: 390, height: 844 });
+        await waitForGameReady(page);
+        const metrics = await page.evaluate(() => {
+            Object.defineProperty(window, 'visualViewport', {
+                configurable: true,
+                value: {
+                    width: 260,
+                    height: 460,
+                    offsetTop: 40,
+                    offsetLeft: 30,
+                    scale: 1.5,
+                    addEventListener: () => {},
+                    removeEventListener: () => {},
+                },
+            });
+            window.dispatchEvent(new Event('resize'));
+            const canvas = document.querySelector('#game-container canvas');
+            const box = canvas?.getBoundingClientRect();
+            const vv = { width: 260, height: 460, offsetTop: 40, offsetLeft: 30 };
+            const cx = vv.offsetLeft + vv.width / 2;
+            const cy = vv.offsetTop + vv.height / 2;
+            const canvasCx = box ? box.left + box.width / 2 : 0;
+            const canvasCy = box ? box.top + box.height / 2 : 0;
+            return {
+                ratio: box && box.height > 0 ? box.width / box.height : 0,
+                deltaX: Math.abs(canvasCx - cx),
+                deltaY: Math.abs(canvasCy - cy),
+            };
+        });
+        expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+        expect(metrics.deltaX).toBeLessThan(8);
+        expect(metrics.deltaY).toBeLessThan(8);
     });
 
     test('affiche l’aide paysage sur grand téléphone en paysage', async ({ page }) => {
@@ -115,6 +164,19 @@ test.describe('jeu chargé', () => {
         await expect(page.locator('#landscape-hint')).toBeVisible();
         expect(await landscapeHintCoversCanvas(page)).toBe(true);
         await expectGameState(page, 'menu');
+    });
+
+    test('expose og:image et twitter:card pour le partage social', async ({ page }) => {
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+            'content',
+            /icon-512\.png/
+        );
+        await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+            'content',
+            'summary_large_image'
+        );
+        await expect(page.locator('#game-container')).toHaveAttribute('role', 'application');
     });
 
     test('expose le manifest PWA', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import { computeLetterboxSize, getLetterboxViewport } from './viewport.js';
+import { computeLetterboxSize, computeLetterboxPosition, getLetterboxViewport } from './viewport.js';
 
 /** Seam Playwright : dev ou build explicite `VITE_ENABLE_TEST_SEAM=true` (jamais Pages prod). */
 export function shouldInstallTestSeam() {
@@ -30,8 +30,21 @@ export function resizeGameCanvas(game) {
 
     const container = canvas.parentElement;
     if (container) {
-        container.style.marginTop = `${offsetTop}px`;
-        container.style.marginLeft = `${offsetLeft}px`;
+        const { left, top } = computeLetterboxPosition(
+            windowW,
+            windowH,
+            targetW,
+            targetH,
+            offsetTop,
+            offsetLeft
+        );
+        container.style.position = 'fixed';
+        container.style.left = `${left}px`;
+        container.style.top = `${top}px`;
+        container.style.width = `${targetW}px`;
+        container.style.height = `${targetH}px`;
+        container.style.marginTop = '';
+        container.style.marginLeft = '';
     }
 
     return { targetW, targetH, offsetTop, offsetLeft };

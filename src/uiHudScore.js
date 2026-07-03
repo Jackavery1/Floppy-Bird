@@ -14,10 +14,6 @@ const SCORE_STYLE = Object.freeze({
 
 export function createScoreDisplay(ui) {
     if (ui.scoreText) ui.scoreText.destroy();
-    if (ui._scoreShadow) {
-        ui._scoreShadow.destroy();
-        ui._scoreShadow = null;
-    }
     if (ui._recordBanner) {
         ui._recordBanner.destroy();
         ui._recordBanner = null;

@@ -95,6 +95,7 @@ export const PANEL_TEXT_MAX_WIDTH = 236;
 export const DAILY_BTN_TEXT_MAX_WIDTH = 216;
 export const GAME_TITLE = 'FLOPPY BIRD';
 export const FONT = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
+export const FONT_TITLE = '"Press Start 2P", "Courier New", monospace';
 
 export function computeMenuLayout() {
     return { ...UI_LAYOUT.menu };

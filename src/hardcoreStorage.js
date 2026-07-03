@@ -15,3 +15,19 @@ export function saveHardcoreEnabled(enabled) {
         /* quota localStorage */
     }
 }
+
+export function loadHardcoreTutorialSeen() {
+    try {
+        return localStorage.getItem(STORAGE_KEYS.hardcoreTutorialSeen) === '1';
+    } catch {
+        return false;
+    }
+}
+
+export function markHardcoreTutorialSeen() {
+    try {
+        localStorage.setItem(STORAGE_KEYS.hardcoreTutorialSeen, '1');
+    } catch {
+        /* quota localStorage */
+    }
+}

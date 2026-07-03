@@ -18,6 +18,21 @@
             content="Évite les tuyaux et bats ton record — PWA jouable hors ligne."
         />
         <meta property="og:type" content="website" />
+        <meta property="og:url" content="./" />
+        <meta property="og:image" content="icons/icon-512.png" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta
+            property="og:image:alt"
+            content="Floppy Bird — oiseau jaune style arcade sur fond sombre"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Floppy Bird" />
+        <meta
+            name="twitter:description"
+            content="Évite les tuyaux et bats ton record — PWA jouable hors ligne."
+        />
+        <meta name="twitter:image" content="icons/icon-512.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Floppy Bird" />
@@ -30,9 +45,18 @@
         <link rel="manifest" href="manifest.webmanifest" />
     </head>
     <body>
-        <div id="loading" aria-live="polite">Chargement…</div>
-        <div id="landscape-hint" role="status">Tourne ton téléphone en portrait pour jouer</div>
-        <div id="game-container"></div>
+        <div id="loading" role="status" aria-live="polite">Chargement…</div>
+        <div id="landscape-hint" role="status" aria-live="polite">
+            Tourne ton téléphone en portrait pour jouer
+        </div>
+        <div id="game-container" role="application" aria-label="Floppy Bird — jeu arcade"></div>
+        <script>
+            (function () {
+                if (navigator.onLine !== false) return;
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) return;
+                location.replace('offline.html');
+            })();
+        </script>
         <script type="module" src="./src/main.js"></script>
         <script>
             setTimeout(function () {

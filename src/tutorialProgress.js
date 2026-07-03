@@ -3,6 +3,7 @@ import {
     loadTutorialComplete,
     setTutorialProgress,
 } from './tutorialStorage.js';
+import { loadHardcoreTutorialSeen, markHardcoreTutorialSeen } from './hardcoreStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -34,4 +35,17 @@ export function onTutorialFirstScore(scene) {
             setTutorialProgress(3);
         }
     });
+}
+
+/** @param {SceneContext} scene */
+export function showHardcoreTutorialIfNeeded(scene) {
+    if (!scene.hardcoreMode || !loadTutorialComplete()) return;
+    if (loadHardcoreTutorialSeen()) return;
+    scene.ui.showHardcoreTutorial?.();
+    markHardcoreTutorialSeen();
+}
+
+/** @param {SceneContext} scene */
+export function onHardcoreTutorialJump(scene) {
+    scene.ui.dismissHardcoreTutorial?.();
 }

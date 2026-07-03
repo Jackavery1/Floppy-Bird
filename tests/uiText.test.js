@@ -50,7 +50,7 @@ describe('uiText', () => {
     it('fitTitleFontSize délègue à fitLabelFontSize', () => {
         const scene = createBaseScene();
         scene.make.text = vi.fn(() => ({ width: 50, destroy: vi.fn() }));
-        expect(fitTitleFontSize(scene, 'Floppy Bird')).toBeGreaterThanOrEqual(14);
+        expect(fitTitleFontSize(scene, 'Floppy Bird')).toBeGreaterThanOrEqual(10);
     });
 
     it('applyFittedLabel met à jour texte et taille', () => {

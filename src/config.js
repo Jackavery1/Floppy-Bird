@@ -50,6 +50,8 @@ export const GAME_CONFIG = {
         maxGapDelta: 72,
         minGapDelta: 48,
         minPipeGap: 72,
+        consecutiveGapDeltaFactor: 0.6,
+        consecutiveGapDeltaThreshold: 0.85,
     },
 
     level: {

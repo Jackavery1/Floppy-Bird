@@ -82,7 +82,9 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
 - **Mobile paysage** : overlay bloquant sur téléphone tactile (hauteur ≤520 px) ; **tablette paysage** (hauteur >520 px) autorisée
-- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (accessibilité) ; le canvas reste en letterbox
+- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (accessibilité) ; le canvas reste centré dans le `visualViewport` (position `fixed`)
+- **PWA** : `orientation: portrait-primary` (portrait recommandé sur téléphone) ; 1ère visite hors ligne → `offline.html`
+- **UI** : titres menu/pause/game over en **Press Start 2P** ; métadonnées Open Graph / Twitter (`og:image` 512 px en prod)
 
 ## Installer la PWA
 

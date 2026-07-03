@@ -18,6 +18,7 @@ export {
     DAILY_BTN_TEXT_MAX_WIDTH,
     GAME_TITLE,
     FONT,
+    FONT_TITLE,
     computeMenuLayout,
     diffButtonCenter,
     stopUiEvent,

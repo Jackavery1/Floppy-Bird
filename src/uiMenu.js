@@ -42,10 +42,6 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui.scoreText.destroy();
         ui.scoreText = null;
     }
-    if (ui._scoreShadow) {
-        ui._scoreShadow.destroy();
-        ui._scoreShadow = null;
-    }
     destroyInGameControls(ui);
 
     ui._currentDifficulty = difficulty;

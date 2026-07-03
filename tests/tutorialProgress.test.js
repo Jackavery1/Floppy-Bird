@@ -39,4 +39,17 @@ describe('tutorialProgress', () => {
         showTutorialForProgress({ ui: { showGapTutorial, showJumpTutorial: vi.fn() } });
         expect(showGapTutorial).toHaveBeenCalled();
     });
+
+    it('showHardcoreTutorialIfNeeded affiche le tutoriel hardcore une fois', async () => {
+        const { setTutorialProgress } = await import('../src/tutorialStorage.js');
+        const { showHardcoreTutorialIfNeeded } = await import('../src/tutorialProgress.js');
+        setTutorialProgress(3);
+        const showHardcoreTutorial = vi.fn();
+        const scene = { hardcoreMode: true, ui: { showHardcoreTutorial } };
+        showHardcoreTutorialIfNeeded(scene);
+        expect(showHardcoreTutorial).toHaveBeenCalled();
+        showHardcoreTutorial.mockClear();
+        showHardcoreTutorialIfNeeded(scene);
+        expect(showHardcoreTutorial).not.toHaveBeenCalled();
+    });
 });

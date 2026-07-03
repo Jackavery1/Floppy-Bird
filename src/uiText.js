@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import { FONT, PANEL_TEXT_MAX_WIDTH, TITLE_MAX_WIDTH } from './uiLayoutConstants.js';
+import { FONT, FONT_TITLE, PANEL_TEXT_MAX_WIDTH, TITLE_MAX_WIDTH } from './uiLayoutConstants.js';
 
 export function addCenteredText(scene, x, y, text, style, depth) {
     const label = scene.add.text(x, y, text, { fontFamily: FONT, ...style });
@@ -52,14 +52,15 @@ export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
         scene,
         text,
         {
-            fontSize: '48px',
-            fontStyle: 'bold',
+            fontFamily: FONT_TITLE,
+            fontSize: '22px',
+            fontStyle: 'normal',
             stroke: '#E65100',
             strokeThickness: 3,
         },
         maxWidth,
-        14,
-        2
+        10,
+        1
     );
 }
 

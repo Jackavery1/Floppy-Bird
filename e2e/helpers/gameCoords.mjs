@@ -1,6 +1,11 @@
 import { expect } from '@playwright/test';
 import { GAME_CONFIG } from '../../src/config.js';
 import { TOUCH_TARGETS } from '../../src/uiLayout.js';
+import {
+    getTestState,
+    waitForTestSeamReady,
+    waitForScoreHud,
+} from './testSeam.mjs';
 
 export async function getCanvasBox(page) {
     const canvas = page.locator('#game-container canvas');
@@ -31,7 +36,7 @@ async function pointerUntilState(page, gameX, gameY, usesTouch, expectedState, o
         await pointerGameCoord(page, gameX, gameY, usesTouch, {
             force: opts.force ?? attempt > 0,
         });
-        const state = await page.evaluate(() => window.__FLOPPY_TEST__?.getState?.());
+        const state = await getTestState(page);
         if (state === expectedState) return;
         if (attempt < attempts - 1) {
             await page.waitForTimeout(150);
@@ -74,13 +79,13 @@ export async function waitForGameReady(page, { hideLandscapeHint: hideLandscape 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     if (hideLandscape) await dismissLandscapeHint(page);
     await page.locator('#loading').waitFor({ state: 'hidden', timeout: 20_000 });
-    await page.waitForFunction(() => window.__FLOPPY_TEST__?.ready(), { timeout: 20_000 });
+    await waitForTestSeamReady(page, 20_000);
     await getCanvasBox(page);
 }
 
 export async function expectGameState(page, state, timeout = 8_000) {
     await expect
-        .poll(async () => page.evaluate(() => window.__FLOPPY_TEST__?.getState()), { timeout })
+        .poll(async () => getTestState(page), { timeout })
         .toBe(state);
 }
 
@@ -88,6 +93,17 @@ export async function expectGameState(page, state, timeout = 8_000) {
 export async function startPlayingFromMenu(page, usesTouch) {
     const { menuStart } = TOUCH_TARGETS;
     await pointerGameCoord(page, menuStart.x, menuStart.y, usesTouch);
+    await expectGameState(page, 'playing');
+}
+
+/** @param {boolean} usesTouch */
+export async function replayFromGameOver(page, usesTouch) {
+    if (usesTouch) {
+        const { menuStart } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuStart.x, menuStart.y, true);
+    } else {
+        await page.keyboard.press('Space');
+    }
     await expectGameState(page, 'playing');
 }
 
@@ -114,9 +130,7 @@ export async function returnToMenuFromPause(page, usesTouch) {
 export async function enterPausedFromPlaying(page, usesTouch) {
     await startPlayingFromMenu(page, usesTouch);
     if (usesTouch) {
-        await page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, {
-            timeout: 5_000,
-        });
+        await waitForScoreHud(page, 5_000);
     }
     await openPauseFromPlaying(page, usesTouch);
 }

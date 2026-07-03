@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { preloadTextures } from '../../src/textures/index.js';
+import { preloadTextures, createBirdAnimations } from '../../src/textures/index.js';
 import { createBirdSpriteSheet } from '../../src/textures/birdTextures.js';
 import { createPipeSprites, ensurePipeTextures } from '../../src/textures/pipeTextures.js';
 import { createCloudTexture } from '../../src/textures/cloudTextures.js';
@@ -16,6 +16,7 @@ import {
     getBackgroundCanvasColor,
 } from '../../src/textures/backgroundTextures.js';
 import { createTextureScene, createGraphicsMock } from '../helpers/phaserMock.js';
+import { SKIN_IDS, birdAnimKey } from '../../src/skins/index.js';
 
 function sceneWithGraphicsList() {
     const graphicsList = [];
@@ -157,6 +158,20 @@ describe('textures', () => {
         const scene = createTextureScene();
         createGroundTexture(scene);
         expect(scene._graphics.generateTexture).toHaveBeenCalledWith('ground', 288, 30);
+    });
+
+    it('createBirdAnimations enregistre les animations via le barrel', () => {
+        const created = [];
+        const scene = {
+            anims: {
+                exists: vi.fn(() => false),
+                create: vi.fn((cfg) => created.push(cfg.key)),
+            },
+        };
+        createBirdAnimations(scene);
+        expect(created).toHaveLength(SKIN_IDS.length);
+        expect(created[0]).toBe(birdAnimKey(SKIN_IDS[0]));
+        expect(scene.anims.create).toHaveBeenCalledTimes(SKIN_IDS.length);
     });
 
     it('preloadTextures génère toutes les textures', () => {

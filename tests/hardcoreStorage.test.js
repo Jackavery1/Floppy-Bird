@@ -24,4 +24,12 @@ describe('hardcoreStorage', () => {
         saveHardcoreEnabled(true);
         expect(loadHardcoreEnabled()).toBe(true);
     });
+
+    it('persiste le tutoriel hardcore vu', async () => {
+        const { loadHardcoreTutorialSeen, markHardcoreTutorialSeen } =
+            await import('../src/hardcoreStorage.js');
+        expect(loadHardcoreTutorialSeen()).toBe(false);
+        markHardcoreTutorialSeen();
+        expect(loadHardcoreTutorialSeen()).toBe(true);
+    });
 });

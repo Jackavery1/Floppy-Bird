@@ -14,8 +14,9 @@ describe('uiLayout', () => {
     });
 
     it('expose les cibles tactiles pour les tests e2e', async () => {
-        const { TOUCH_TARGETS, UI_LAYOUT, MIN_TOUCH, PAUSE_BTN_VISUAL, PAUSE_BTN_INSET } =
+        const { TOUCH_TARGETS, UI_LAYOUT, MIN_TOUCH, PAUSE_BTN_VISUAL, PAUSE_BTN_INSET, FONT_TITLE } =
             await import('../src/uiLayout.js');
+        expect(FONT_TITLE).toContain('Press Start 2P');
         expect(TOUCH_TARGETS.pauseButton).toEqual({
             x: UI_LAYOUT.playing.pauseBtnX,
             y: UI_LAYOUT.playing.pauseBtnY,

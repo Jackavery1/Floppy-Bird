@@ -19,6 +19,20 @@ function phaserScriptSrc(basePath) {
     return `${normalized}vendor/phaser.min.js`;
 }
 
+function socialMetaUrls(basePath) {
+    const sitePath =
+        basePath === './'
+            ? '/Floppy-Bird'
+            : basePath.endsWith('/')
+              ? basePath.slice(0, -1)
+              : basePath;
+    const siteUrl = (process.env.SITE_URL || `https://jackavery1.github.io${sitePath}`).replace(
+        /\/$/,
+        ''
+    );
+    return { siteUrl, imageUrl: `${siteUrl}/icons/icon-512.png` };
+}
+
 export default defineConfig(({ mode }) => {
     const useVendorPhaser = mode === 'production';
 
@@ -43,10 +57,24 @@ export default defineConfig(({ mode }) => {
                     order: 'post',
                     handler(html) {
                         if (!useVendorPhaser) return html;
-                        return html.replace(
-                            /(\s*<script type="module")/,
-                            `\n    <script src="${phaserScriptSrc(base)}" crossorigin="anonymous"></script>$1`,
-                        );
+                        const { siteUrl, imageUrl } = socialMetaUrls(base);
+                        return html
+                            .replace(
+                                /(\s*<script type="module")/,
+                                `\n    <script src="${phaserScriptSrc(base)}" crossorigin="anonymous"></script>$1`
+                            )
+                            .replace(
+                                /<meta property="og:url" content="[^"]*" \/>/,
+                                `<meta property="og:url" content="${siteUrl}/" />`
+                            )
+                            .replace(
+                                /<meta property="og:image" content="[^"]*" \/>/,
+                                `<meta property="og:image" content="${imageUrl}" />`
+                            )
+                            .replace(
+                                /<meta name="twitter:image" content="[^"]*" \/>/,
+                                `<meta name="twitter:image" content="${imageUrl}" />`
+                            );
                     },
                 },
             },

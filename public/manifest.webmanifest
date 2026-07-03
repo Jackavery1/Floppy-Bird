@@ -1,11 +1,11 @@
 {
   "name": "Floppy Bird",
   "short_name": "Floppy",
-  "description": "Floppy Bird — évite les tuyaux et bats ton record.",
+  "description": "Floppy Bird — arcade portrait sur téléphone ; tablette paysage supportée.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "portrait-primary",
   "background_color": "#1a1a2e",
   "theme_color": "#1a1a2e",
   "lang": "fr",

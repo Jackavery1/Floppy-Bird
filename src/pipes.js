@@ -6,8 +6,6 @@ import { resolveNextGapY } from './pipeGaps.js';
 import { collidesWithPipeGroup, isBirdInPipeGap } from './pipeCollision.js';
 import { Utils } from './utils.js';
 
-export { smoothGapY } from './pipeGaps.js';
-
 export class Pipes {
     constructor(scene) {
         this.scene = scene;
@@ -26,6 +24,7 @@ export class Pipes {
         this._spawnCounter = 0;
         this._gapIndex = 0;
         this._lastGapY = null;
+        this._prevGapDelta = 0;
         this._autoSpawnEnabled = false;
         this._baseSpeed = normal.speed;
         this._baseGap = normal.gap;
@@ -45,9 +44,11 @@ export class Pipes {
             dailyRng: this._dailyRng,
             pipeGap: this.pipeGap,
             runScore: this._runScore,
+            prevGapDelta: this._prevGapDelta,
         });
         this._gapIndex = next.gapIndex;
         this._lastGapY = next.lastGapY;
+        this._prevGapDelta = next.gapDelta ?? 0;
         return next.gapY;
     }
 
@@ -128,6 +129,7 @@ export class Pipes {
         this._dailyRng = seed != null ? Utils.createSeededRandom(seed) : null;
         this._gapIndex = 0;
         this._lastGapY = null;
+        this._prevGapDelta = 0;
     }
 
     setSpawnHandler(handler) {
@@ -151,6 +153,7 @@ export class Pipes {
         this._spawnCounter = 0;
         this._gapIndex = 0;
         this._lastGapY = null;
+        this._prevGapDelta = 0;
         this._autoSpawnEnabled = false;
         this._dailyRng = null;
         this._runScore = 0;

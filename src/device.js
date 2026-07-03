@@ -111,6 +111,12 @@ export function hardcoreInvincibilityHintText(ms) {
     return isCoarsePointer() ? `Invincible ${ms} ms` : `Invincible ${ms} ms · tuyau`;
 }
 
+export function hardcoreTutorialText() {
+    return isCoarsePointer()
+        ? 'Hardcore : invincible au 1er tuyau,\npuis moins longtemps à chaque tuyau'
+        : 'Hardcore : invincible 700 ms au 1er tuyau,\npuis 625→325 ms à chaque tuyau passé';
+}
+
 export function classicModeHint() {
     return isCoarsePointer()
         ? 'Classique : aléatoire selon difficulté'

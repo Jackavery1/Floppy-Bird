@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
-import { smoothGapY, gapBounds, randomGapY, resolveNextGapY } from '../src/pipeGaps.js';
+import { smoothGapY, gapBounds, randomGapY, resolveNextGapY, effectiveGapDeltaCap } from '../src/pipeGaps.js';
 import { Utils } from '../src/utils.js';
 
 describe('pipeGaps', () => {
@@ -17,6 +17,20 @@ describe('pipeGaps', () => {
         it('borne le résultat dans min/max', () => {
             expect(smoothGapY(10, null, 80, 48, 400)).toBe(48);
             expect(smoothGapY(500, null, 80, 48, 400)).toBe(400);
+        });
+
+        it('réduit le delta si deux déplacements consécutifs dans la même direction', () => {
+            expect(smoothGapY(300, 150, 80, 48, 400, 72)).toBe(198);
+        });
+    });
+
+    describe('effectiveGapDeltaCap', () => {
+        it('conserve le plafond si la direction change', () => {
+            expect(effectiveGapDeltaCap(80, 60, -40)).toBe(80);
+        });
+
+        it('réduit le plafond après un grand déplacement dans la même direction', () => {
+            expect(effectiveGapDeltaCap(80, 72, 50)).toBe(48);
         });
     });
 

@@ -2,7 +2,7 @@ import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
 import { GAME_STATE } from './gameState.js';
 import { loadHighScore } from './storage.js';
-import { showTutorialForProgress } from './tutorialProgress.js';
+import { showTutorialForProgress, showHardcoreTutorialIfNeeded } from './tutorialProgress.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
@@ -87,6 +87,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     }
     applyTrainingTimeScale(scene);
     showTutorialForProgress(scene);
+    showHardcoreTutorialIfNeeded(scene);
     if (scene.trainingMode) {
         scene.ghost.beginRound({ record: true });
     } else if (scene.playMode === 'daily') {

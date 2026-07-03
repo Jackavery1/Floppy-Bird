@@ -21,6 +21,8 @@ import {
     showDifficultyEscalationPreview,
     showCoyoteHint,
     showHardcoreInvincibilityHint,
+    showHardcoreTutorial,
+    dismissHardcoreTutorial,
     showScoreStreak,
 } from './uiHud.js';
 import {
@@ -137,6 +139,12 @@ export class UI {
     showHardcoreInvincibilityHint(durationMs) {
         showHardcoreInvincibilityHint(this, durationMs);
     }
+    showHardcoreTutorial() {
+        showHardcoreTutorial(this);
+    }
+    dismissHardcoreTutorial() {
+        return dismissHardcoreTutorial(this);
+    }
     updateDifficultyButtons(difficulty) {
         updateDifficultyButtons(this, difficulty);
     }
@@ -203,7 +211,6 @@ export class UI {
 
     destroy() {
         if (this.scoreText) this.scoreText.destroy();
-        if (this._scoreShadow) this._scoreShadow.destroy();
         destroyInGameControls(this);
         this.clearOverlay('menu');
         this.clearOverlay('pause');

@@ -3,6 +3,7 @@ import { pauseResumeHint } from './device.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_TITLE,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
     MIN_TOUCH,
@@ -20,7 +21,12 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         pause.title,
         'PAUSE',
-        { fontSize: '32px', fill: '#ffffff', fontStyle: 'bold' },
+        {
+            fontFamily: FONT_TITLE,
+            fontSize: '18px',
+            fill: '#ffffff',
+            fontStyle: 'normal',
+        },
         DEPTH.PAUSE_TITLE
     );
     elements.push(pauseTitle);

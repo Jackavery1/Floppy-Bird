@@ -25,4 +25,44 @@ describe('motion', () => {
         sceneTween(scene, { targets: {}, duration: 400, repeat: 2 });
         expect(add).toHaveBeenCalledWith(expect.objectContaining({ duration: 0, repeat: 0 }));
     });
+
+    it('sceneTween applique l’état final et onComplete si reduced motion', async () => {
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
+        const onComplete = vi.fn();
+        const target = { setAlpha: vi.fn(), setY: vi.fn() };
+        const add = vi.fn();
+        const scene = { tweens: { add } };
+        const { sceneTween } = await import('../src/motion.js');
+        sceneTween(scene, {
+            targets: target,
+            alpha: { from: 1, to: 0 },
+            y: 72,
+            duration: 1200,
+            onComplete,
+        });
+        expect(target.setAlpha).toHaveBeenCalledWith(0);
+        expect(target.setY).toHaveBeenCalledWith(72);
+        expect(onComplete).toHaveBeenCalled();
+    });
+
+    it('sceneTween applique scale finale si reduced motion', async () => {
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
+        const target = { setScale: vi.fn() };
+        const scene = { tweens: { add: vi.fn() } };
+        const { sceneTween } = await import('../src/motion.js');
+        sceneTween(scene, {
+            targets: target,
+            scaleX: { from: 0.85, to: 1.05 },
+            scaleY: { from: 0.85, to: 1.05 },
+            duration: 180,
+            repeat: 1,
+        });
+        expect(target.setScale).toHaveBeenCalledWith(1.05, 1.05);
+    });
 });

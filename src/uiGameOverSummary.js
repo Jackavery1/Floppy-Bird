@@ -4,7 +4,7 @@ import { Utils } from './utils.js';
 import { getSkin, isSpecialSkin } from './skins/index.js';
 import { shade } from './uiGameOverDecor.js';
 import { bestScoreLabel } from './uiMenuLayout.js';
-import { addCenteredText, DEPTH } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_TITLE } from './uiLayout.js';
 
 /**
  * En-tête, médaille/record et bloc score du game over.
@@ -36,9 +36,10 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
         y(28),
         'GAME OVER',
         {
-            fontSize: '24px',
+            fontFamily: FONT_TITLE,
+            fontSize: '14px',
             fill: '#FF1744',
-            fontStyle: 'bold',
+            fontStyle: 'normal',
             stroke: '#8B0000',
             strokeThickness: 2,
         },

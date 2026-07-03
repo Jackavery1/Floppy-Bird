@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
     computeLetterboxSize,
+    computeLetterboxPosition,
     readSafeAreaInsets,
     getViewportDimensions,
     getLetterboxViewport,
@@ -25,6 +26,18 @@ describe('viewport', () => {
         const availW = 390 - 20;
         expect(width).toBe(availW);
         expect(height).toBe(Math.floor(availW / (288 / 512)));
+    });
+
+    it('computeLetterboxPosition centre dans le visualViewport', () => {
+        const pos = computeLetterboxPosition(390, 620, 300, 533, 22, 0);
+        expect(pos.top).toBe(22 + Math.max(0, (620 - 533) / 2));
+        expect(pos.left).toBe(Math.max(0, (390 - 300) / 2));
+    });
+
+    it('computeLetterboxPosition décale au pinch-zoom (offsets visualViewport)', () => {
+        const pos = computeLetterboxPosition(260, 460, 200, 355, 40, 30);
+        expect(pos.left).toBe(30 + Math.max(0, (260 - 200) / 2));
+        expect(pos.top).toBe(40 + Math.max(0, (460 - 355) / 2));
     });
 
     it('readSafeAreaInsets retourne des zéros sans document', () => {

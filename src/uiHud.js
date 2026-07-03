@@ -17,6 +17,8 @@ export {
     showDifficultyEscalationPreview,
     showCoyoteHint,
     showHardcoreInvincibilityHint,
+    showHardcoreTutorial,
+    dismissHardcoreTutorial,
     showScoreStreak,
 } from './uiHudFeedback.js';
 

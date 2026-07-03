@@ -11,6 +11,11 @@ vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialSeen: vi.fn(() => true),
 }));
 
+vi.mock('../src/hardcoreStorage.js', () => ({
+    loadHardcoreTutorialSeen: vi.fn(() => false),
+    markHardcoreTutorialSeen: vi.fn(),
+}));
+
 vi.mock('../src/skinPatterns.js', async (importOriginal) => {
     const actual = await importOriginal();
     return {
@@ -61,6 +66,7 @@ describe('sceneBeginRound', () => {
                 refreshHighScore: vi.fn(),
                 highScore: 0,
                 showJumpTutorial: vi.fn(),
+                showHardcoreTutorial: vi.fn(),
             },
             togglePause: vi.fn(),
         };
@@ -82,6 +88,7 @@ describe('sceneBeginRound', () => {
         scene.hardcoreMode = true;
         beginRound(scene);
         expect(scene.round.spawnInvincible).toBe(true);
+        expect(scene.ui.showHardcoreTutorial).toHaveBeenCalled();
     });
 
     it('beginRound applique la seed daily uniquement si activé', () => {

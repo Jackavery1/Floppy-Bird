@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Pipes, smoothGapY } from '../src/pipes.js';
+import { Pipes } from '../src/pipes.js';
+import { smoothGapY } from '../src/pipeGaps.js';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
 import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
 

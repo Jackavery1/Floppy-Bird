@@ -92,7 +92,8 @@ describe('appBootstrap', () => {
             GAME_CONFIG.height
         ).height;
         expect(result.targetH).toBe(expectedH);
-        expect(container.style.marginTop).toBe('22px');
+        expect(container.style.top).toBe('22px');
+        expect(parseFloat(container.style.left)).toBeGreaterThanOrEqual(0);
     });
 
     it('hideLoadingScreen masque le chargement et marque le document', async () => {

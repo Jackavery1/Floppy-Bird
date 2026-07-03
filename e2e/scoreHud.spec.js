@@ -7,6 +7,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
+import { bumpScore, getScoreHud } from './helpers/testSeam.mjs';
 
 test.describe('score HUD', () => {
     test('affiche 0 visible au démarrage de partie', async ({ page }, testInfo) => {
@@ -14,15 +15,13 @@ test.describe('score HUD', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, projectUsesTouch(testInfo));
 
-        await expect
-            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__.getScoreHud()))
-            .toMatchObject({
-                visible: true,
-                alpha: 1,
-                text: '0',
-                depth: DEPTH.SCORE_HUD,
-            });
-        const hud = await page.evaluate(() => window.__FLOPPY_TEST__.getScoreHud());
+        await expect.poll(() => getScoreHud(page)).toMatchObject({
+            visible: true,
+            alpha: 1,
+            text: '0',
+            depth: DEPTH.SCORE_HUD,
+        });
+        const hud = await getScoreHud(page);
         expect(hud.y).toBeGreaterThanOrEqual(TOUCH_TARGETS.scoreHud.y - 2);
         expect(hud.y).toBeGreaterThanOrEqual(UI_LAYOUT.scoreHud - 2);
     });
@@ -32,9 +31,7 @@ test.describe('score HUD', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, projectUsesTouch(testInfo));
 
-        await page.evaluate(() => window.__FLOPPY_TEST__.bumpScore(3));
-        await expect
-            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__.getScoreHud()?.text))
-            .toBe('3');
+        await bumpScore(page, 3);
+        await expect.poll(async () => (await getScoreHud(page))?.text).toBe('3');
     });
 });

@@ -6,6 +6,7 @@ import {
     diffLabelColor,
     fitTitleFontSize,
     GAME_TITLE,
+    FONT_TITLE,
     MIN_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
@@ -16,9 +17,10 @@ import { drawDiffButtons } from './uiMenuLayout.js';
 export function buildMenuHeader(ui, elements, layout) {
     const titleSize = fitTitleFontSize(ui.scene, GAME_TITLE);
     const titleStyle = {
+        fontFamily: FONT_TITLE,
         fontSize: `${titleSize}px`,
         fill: '#FDD835',
-        fontStyle: 'bold',
+        fontStyle: 'normal',
         stroke: '#E65100',
         strokeThickness: 4,
     };

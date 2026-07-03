@@ -7,6 +7,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
+import { forceGameOver, getDailyChallengeMode } from './helpers/testSeam.mjs';
 
 test.describe('clavier desktop', () => {
     test('ESPACE démarre puis ESC ouvre la pause', async ({ page }, testInfo) => {
@@ -42,18 +43,16 @@ test.describe('clavier desktop', () => {
     test('D lance le défi du jour depuis le menu', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
-        const before = await page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.());
+        const before = await getDailyChallengeMode(page);
         await page.keyboard.press('KeyD');
-        await expect
-            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getDailyChallengeMode?.()))
-            .not.toBe(before);
+        await expect.poll(() => getDailyChallengeMode(page)).not.toBe(before);
         await expectGameState(page, 'playing', 3_000);
     });
 
     test('ESPACE rejoue depuis le game over', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
-        await page.evaluate(() => window.__FLOPPY_TEST__?.forceGameOver?.());
+        await forceGameOver(page);
         await expectGameState(page, 'gameover');
         await page.keyboard.press('Space');
         await expectGameState(page, 'playing');
