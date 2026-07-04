@@ -52,4 +52,26 @@ describe('tutorialProgress', () => {
         showHardcoreTutorialIfNeeded(scene);
         expect(showHardcoreTutorial).not.toHaveBeenCalled();
     });
+
+    it('showTutorialForProgress skip après 3 parties', async () => {
+        const { incrementRoundsStarted } = await import('../src/tutorialStorage.js');
+        const { showTutorialForProgress } = await import('../src/tutorialProgress.js');
+        incrementRoundsStarted();
+        incrementRoundsStarted();
+        incrementRoundsStarted();
+        const showJumpTutorial = vi.fn();
+        showTutorialForProgress({ ui: { showJumpTutorial, showGapTutorial: vi.fn() } });
+        expect(showJumpTutorial).not.toHaveBeenCalled();
+        const { loadTutorialComplete } = await import('../src/tutorialStorage.js');
+        expect(loadTutorialComplete()).toBe(true);
+    });
+
+    it('skipTutorial marque le tutoriel terminé', async () => {
+        const { skipTutorial } = await import('../src/tutorialProgress.js');
+        const dismissGameplayTutorial = vi.fn();
+        skipTutorial({ ui: { dismissGameplayTutorial } });
+        expect(dismissGameplayTutorial).toHaveBeenCalled();
+        const { loadTutorialComplete } = await import('../src/tutorialStorage.js');
+        expect(loadTutorialComplete()).toBe(true);
+    });
 });

@@ -1,4 +1,5 @@
 import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 import {
     addCenteredText,
     DEPTH,
@@ -19,9 +20,9 @@ export function buildMenuHeader(ui, elements, layout) {
     const titleStyle = {
         fontFamily: FONT_TITLE,
         fontSize: `${titleSize}px`,
-        fill: '#FDD835',
+        fill: DESIGN_TOKENS.accentTitre,
         fontStyle: 'normal',
-        stroke: '#E65100',
+        stroke: DESIGN_TOKENS.accentTitreContour,
         strokeThickness: 4,
     };
     const { shadow, label: title } = addReliefText(
@@ -31,7 +32,7 @@ export function buildMenuHeader(ui, elements, layout) {
         GAME_TITLE,
         titleStyle,
         DEPTH.MENU_PANEL,
-        { dx: 3, dy: 4, fill: '#BF360C', alpha: 0.65 }
+        { dx: 3, dy: 4, fill: DESIGN_TOKENS.accentTitreOmbre, alpha: 0.65 }
     );
     ui._menuTitleShadow = shadow;
     elements.push(shadow, title);

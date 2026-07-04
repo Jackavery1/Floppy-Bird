@@ -1,7 +1,14 @@
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { GAME_CONFIG } from './config.js';
 import { formatDailyHudLabel } from './dailyChallenge.js';
 import { getSkinPattern } from './skinPatterns.js';
 import { getSkin } from './skins/index.js';
+import {
+    bindAccessibilityAction,
+    setAccessibilityControlVisible,
+    syncAccessibilityLayer,
+} from './uiDomAccessibility.js';
+import { destroyGapHudBadge } from './uiHudGapBadge.js';
 import {
     addCenteredText,
     DEPTH,
@@ -21,6 +28,8 @@ export function destroyInGameControls(ui) {
     ui._pauseBtnGraphics = null;
     ui._trainingBadge = null;
     ui._hardcoreBadge = null;
+    destroyGapHudBadge(ui);
+    setAccessibilityControlVisible('pause', false);
     dismissJumpTutorial(ui);
 }
 
@@ -41,13 +50,11 @@ export function createInGameControls(
             GAME_CONFIG.centerX,
             badgeY,
             `${formatDailyHudLabel(ui.scoreValue ?? 0, dailyGoal)} · ${skinLabel}`,
-            {
+            hudTextStyle({
                 fontSize: '10px',
-                fill: '#CE93D8',
+                fill: DESIGN_TOKENS.badgeDaily,
                 fontStyle: 'bold',
-                stroke: '#000000',
-                strokeThickness: 2,
-            },
+            }),
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyBadge);
@@ -57,12 +64,10 @@ export function createInGameControls(
             GAME_CONFIG.centerX,
             badgeY,
             pattern,
-            {
+            hudTextStyle({
                 fontSize: '9px',
-                fill: '#B39DDB',
-                stroke: '#000000',
-                strokeThickness: 2,
-            },
+                fill: DESIGN_TOKENS.badgeDailySecondary,
+            }),
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyPatternBadge);
@@ -72,13 +77,11 @@ export function createInGameControls(
             GAME_CONFIG.centerX,
             badgeY,
             'DÉFI · hors record classique',
-            {
+            hudTextStyle({
                 fontSize: '10px',
-                fill: '#CE93D8',
+                fill: DESIGN_TOKENS.badgeDaily,
                 fontStyle: 'bold',
-                stroke: '#000000',
-                strokeThickness: 2,
-            },
+            }),
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyRecordBadge);
@@ -91,13 +94,11 @@ export function createInGameControls(
             GAME_CONFIG.centerX,
             badgeY,
             'ENTRAÎN. · sans record',
-            {
+            hudTextStyle({
                 fontSize: '10px',
-                fill: '#81D4FA',
+                fill: DESIGN_TOKENS.badgeTraining,
                 fontStyle: 'bold',
-                stroke: '#000000',
-                strokeThickness: 2,
-            },
+            }),
             DEPTH.HUD_BADGE
         );
         elements.push(ui._trainingBadge);
@@ -110,13 +111,11 @@ export function createInGameControls(
             GAME_CONFIG.centerX,
             badgeY,
             'HARDCORE · inv. / tuyau',
-            {
+            hudTextStyle({
                 fontSize: '10px',
-                fill: '#FF8A80',
+                fill: DESIGN_TOKENS.badgeHardcore,
                 fontStyle: 'bold',
-                stroke: '#000000',
-                strokeThickness: 2,
-            },
+            }),
             DEPTH.HUD_BADGE
         );
         elements.push(ui._hardcoreBadge);
@@ -124,6 +123,7 @@ export function createInGameControls(
     }
 
     const scoreY = badgeY > playing.trainingBadgeY ? badgeY + 10 : UI_LAYOUT.scoreHud;
+    ui._scoreHudY = scoreY;
     showInGameScore(ui, scoreY);
 
     ui._pauseBtnGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_ICON);
@@ -147,6 +147,10 @@ export function createInGameControls(
         onPause();
     });
     elements.push(pauseHit);
+
+    bindAccessibilityAction('pause', onPause);
+    setAccessibilityControlVisible('pause', true);
+    syncAccessibilityLayer(ui.scene.game);
 
     ui._inGameControlElements = elements;
     return elements;

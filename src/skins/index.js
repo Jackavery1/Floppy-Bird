@@ -51,8 +51,15 @@ export function listUnlockedSkins(ctx) {
 
 /** @param {import('../metaContext.js').MetaContext} ctx */
 export function nextUnlockedSkin(currentId, ctx) {
+    return cycleUnlockedSkin(currentId, ctx, 1);
+}
+
+/** @param {import('../metaContext.js').MetaContext} ctx @param {1 | -1} step */
+export function cycleUnlockedSkin(currentId, ctx, step = 1) {
     const unlocked = listUnlockedSkins(ctx);
     if (!unlocked.length) return 'classic';
     const idx = unlocked.indexOf(currentId);
-    return unlocked[(idx + 1) % unlocked.length];
+    const base = idx >= 0 ? idx : 0;
+    const next = (base + step + unlocked.length) % unlocked.length;
+    return unlocked[next];
 }

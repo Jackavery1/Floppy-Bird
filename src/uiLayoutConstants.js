@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 
 export const MIN_TOUCH = 44;
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
@@ -77,25 +78,27 @@ export const TOUCH_TARGETS = Object.freeze({
     menuDiffEasy: { x: diffButtonCenter(0), y: UI_LAYOUT.menu.difficulty },
     menuDiffNormal: { x: diffButtonCenter(1), y: UI_LAYOUT.menu.difficulty },
     menuDiffHard: { x: diffButtonCenter(2), y: UI_LAYOUT.menu.difficulty },
+    menuSkinsPrev: { x: GAME_CONFIG.centerX - 100, y: UI_LAYOUT.skinsPanel.skinsRow1 },
+    menuSkinsNext: { x: GAME_CONFIG.centerX + 100, y: UI_LAYOUT.skinsPanel.skinsRow1 },
     pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
     pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
     pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 
-export const PAUSE_BTN_COLOR = 0x37474f;
-export const PAUSE_BTN_HOVER = 0x546e7a;
-export const MENU_BTN_COLOR = 0x1565c0;
-export const MENU_BTN_HOVER = 0x42a5f5;
-export const DIFF_BTN_ACTIVE = 0xfdd835;
+export const PAUSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonPause);
+export const PAUSE_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonPauseHover);
+export const MENU_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonMenu);
+export const MENU_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonMenuHover);
+export const DIFF_BTN_ACTIVE = hexVersPhaser(DESIGN_TOKENS.accent);
 export const DIFF_BTN_IDLE = { color: 0xffffff, alpha: 0.2 };
 export const DIFF_BTN_HOVER = { color: 0xffffff, alpha: 0.38 };
 export const TITLE_MAX_WIDTH = 260;
 export const PANEL_TEXT_MAX_WIDTH = 236;
 export const DAILY_BTN_TEXT_MAX_WIDTH = 216;
 export const GAME_TITLE = 'FLOPPY BIRD';
-export const FONT = "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif";
-export const FONT_TITLE = '"Press Start 2P", "Courier New", monospace';
+export const FONT = DESIGN_TOKENS.policeInterface;
+export const FONT_TITLE = DESIGN_TOKENS.policeTitre;
 
 export function computeMenuLayout() {
     return { ...UI_LAYOUT.menu };

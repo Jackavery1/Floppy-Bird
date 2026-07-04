@@ -1,4 +1,5 @@
 import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { loadHighScore } from './storage.js';
 import { loadUnlockedAchievements } from './metaStorage.js';
 import { ACHIEVEMENTS } from './achievements.js';
@@ -21,13 +22,11 @@ export function buildScoresTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.scoresTitle,
         'MEILLEURS SCORES',
-        {
+        menuTextStyle({
             fontSize: '12px',
-            fill: '#90CAF9',
+            fill: DESIGN_TOKENS.texteChargement,
             fontStyle: 'bold',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(title);
@@ -41,12 +40,7 @@ export function buildScoresTab(ui, elements, panelElements) {
             GAME_CONFIG.centerX,
             y,
             formatScoreLine(diff),
-            {
-                fontSize: '12px',
-                fill: '#ECEFF1',
-                stroke: '#0d1117',
-                strokeThickness: 2,
-            },
+            menuTextStyle({ fontSize: '12px', fill: DESIGN_TOKENS.texteClair }),
             DEPTH.PANEL_FRAME
         );
         panelElements.push(label);
@@ -60,13 +54,11 @@ export function buildScoresTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.scoresHardcore,
         formatHardcoreLine(),
-        {
+        menuTextStyle({
             fontSize: '12px',
-            fill: '#FFAB91',
+            fill: DESIGN_TOKENS.accentScoreHardcore,
             fontStyle: 'bold',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._hardcoreScoreLine);
@@ -78,12 +70,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.scoresAchievements,
         formatAchievementsLine(),
-        {
-            fontSize: '11px',
-            fill: '#B0BEC5',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+        menuTextStyle({ fontSize: '11px', fill: DESIGN_TOKENS.texteHintMenu }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._achievementsScoreLine);

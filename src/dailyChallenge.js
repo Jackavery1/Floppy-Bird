@@ -76,6 +76,6 @@ export function formatDailyMenuSubtitle(difficulty, date = new Date()) {
     return `${s.patternTag} · objectif ${s.goal} pts (${diff})`;
 }
 
-export function formatDailyHudLabel(score, goal) {
-    return `DÉFI ${score}/${goal}`;
+export function formatDailyHudLabel(score, goal, date = new Date()) {
+    return `DÉFI #${getDailyChallengeCode(date)} · ${score}/${goal}`;
 }

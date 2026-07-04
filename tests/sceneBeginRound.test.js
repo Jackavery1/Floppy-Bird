@@ -9,6 +9,7 @@ vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialComplete: vi.fn(() => true),
     loadTutorialProgress: vi.fn(() => 3),
     loadTutorialSeen: vi.fn(() => true),
+    incrementRoundsStarted: vi.fn(() => 1),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
@@ -67,6 +68,7 @@ describe('sceneBeginRound', () => {
                 highScore: 0,
                 showJumpTutorial: vi.fn(),
                 showHardcoreTutorial: vi.fn(),
+                showDailyGoalBrief: vi.fn(),
             },
             togglePause: vi.fn(),
         };
@@ -112,6 +114,7 @@ describe('sceneBeginRound', () => {
         scene.playMode = 'daily';
         beginRound(scene);
         expect(applySkinPatternToDifficulty).toHaveBeenCalled();
+        expect(scene.ui.showDailyGoalBrief).toHaveBeenCalled();
     });
 
     it('beginRound lance le ghost en mode entraînement', () => {

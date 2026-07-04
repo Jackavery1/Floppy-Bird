@@ -1,10 +1,15 @@
 import { skinsButtonLabel } from './device.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
+import {
+    bindSkinsAccessibility,
+    setSkinsPanelAccessibility,
+} from './uiDomAccessibility.js';
 import { UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';
 
-const SKINS_BTN_COLOR = 0x00897b;
-const SKINS_BTN_STROKE = 0x4db6ac;
+const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
+const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 
 const PANEL_CFG = {
     openKey: '_skinsOpen',
@@ -16,12 +21,17 @@ const PANEL_CFG = {
     buttonLabelFn: skinsButtonLabel,
     btnColor: SKINS_BTN_COLOR,
     btnStroke: SKINS_BTN_STROKE,
-    labelStroke: '#004D40',
+    labelStroke: DESIGN_TOKENS.contourSkins,
 };
 
 const controllerCfg = {
     ...PANEL_CFG,
-    onOpen: refreshSkinsTab,
+    onOpen: (targetUi) => {
+        refreshSkinsTab(targetUi);
+        bindSkinsAccessibility(targetUi.scene);
+        setSkinsPanelAccessibility(targetUi.scene, true);
+    },
+    onClose: (targetUi) => setSkinsPanelAccessibility(targetUi.scene, false),
 };
 
 /** @param {import('./ui.js').UI} ui */

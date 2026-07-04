@@ -6,6 +6,7 @@ export { createInGameControls, destroyInGameControls } from './uiHudControls.js'
 
 export {
     showRecordBroken,
+    showDailyGoalBrief,
     showJumpTutorial,
     showGapTutorial,
     showScoreTutorial,

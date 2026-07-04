@@ -1,5 +1,6 @@
 @import '@fontsource/press-start-2p/400.css';
 
+/* Valeurs par défaut — synchronisées au runtime via src/shellTheme.js (src/designTokens.js). */
 :root {
     --couleur-fond: #1a1a2e;
     --couleur-texte-chargement: #90caf9;
@@ -42,6 +43,44 @@ body {
     position: fixed;
     z-index: 1;
     touch-action: none;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+#a11y-controls {
+    position: fixed;
+    inset: 0;
+    z-index: 10001;
+    pointer-events: none;
+}
+
+.a11y-btn {
+    position: fixed;
+    pointer-events: auto;
+    margin: 0;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+}
+
+.a11y-btn:focus-visible {
+    opacity: 1;
+    border-color: var(--couleur-accent);
+    background: rgba(253, 216, 53, 0.15);
+    outline: none;
 }
 
 #loading {

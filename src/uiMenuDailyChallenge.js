@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
@@ -13,20 +14,18 @@ import {
 const DAILY_BTN_COLOR = 0x6a1b9a;
 const DAILY_BTN_HOVER = 0x9c27b0;
 
-const DAILY_BTN_STYLE = {
+const DAILY_BTN_STYLE = hudTextStyle({
     fontSize: '10px',
-    fill: '#FFFFFF',
+    fill: DESIGN_TOKENS.texteMenu,
     fontStyle: 'bold',
-    stroke: '#4A148C',
-    strokeThickness: 2,
-};
+    stroke: DESIGN_TOKENS.badgeDailyContour,
+});
 
-const DAILY_SUBTITLE_STYLE = {
+const DAILY_SUBTITLE_STYLE = hudTextStyle({
     fontSize: '9px',
-    fill: '#CE93D8',
-    stroke: '#0d1117',
-    strokeThickness: 2,
-};
+    fill: DESIGN_TOKENS.badgeDaily,
+    stroke: DESIGN_TOKENS.contourMenu,
+});
 
 export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     ui._dailyBtnBg = ui.scene.add.rectangle(

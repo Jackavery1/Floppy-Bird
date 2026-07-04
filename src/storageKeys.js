@@ -16,6 +16,7 @@ export const STORAGE_KEYS = Object.freeze({
     tutorialProgress: 'floppy-bird-tutorial-progress',
     coyoteHintSeen: 'floppy-bird-coyote-hint-seen',
     hardcoreTutorialSeen: 'floppy-bird-hardcore-tutorial-seen',
+    roundsStarted: 'floppy-bird-rounds-started',
     meta: 'floppy-bird-meta',
 });
 

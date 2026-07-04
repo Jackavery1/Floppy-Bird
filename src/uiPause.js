@@ -1,5 +1,10 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { pauseResumeHint } from './device.js';
+import {
+    bindAccessibilityAction,
+    syncAccessibilityLayer,
+} from './uiDomAccessibility.js';
 import {
     addCenteredText,
     DEPTH,
@@ -21,12 +26,12 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         pause.title,
         'PAUSE',
-        {
+        menuTextStyle({
             fontFamily: FONT_TITLE,
             fontSize: '18px',
-            fill: '#ffffff',
+            fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'normal',
-        },
+        }),
         DEPTH.PAUSE_TITLE
     );
     elements.push(pauseTitle);
@@ -52,7 +57,7 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         resumeBtnY,
         'REPRENDRE',
-        { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' },
+        menuTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu, fontStyle: 'bold' }),
         DEPTH.PAUSE_BTN_LABEL
     );
     elements.push(resumeText);
@@ -96,7 +101,7 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         menuBtnY,
         'MENU',
-        { fontSize: '13px', fill: '#ffffff', fontStyle: 'bold' },
+        menuTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu, fontStyle: 'bold' }),
         DEPTH.PAUSE_BTN_LABEL
     );
     elements.push(menuText);
@@ -119,13 +124,17 @@ export function showPause(ui, { onResume, onMenu }) {
     });
     elements.push(menuHit);
 
+    bindAccessibilityAction('pauseResume', onResume);
+    bindAccessibilityAction('pauseMenu', onMenu);
+    syncAccessibilityLayer(ui.scene.game);
+
     elements.push(
         addCenteredText(
             ui.scene,
             GAME_CONFIG.centerX,
             pause.menuBtn + 40,
             pauseResumeHint(),
-            { fontSize: '11px', fill: '#cccccc' },
+            menuTextStyle({ fontSize: '11px', fill: DESIGN_TOKENS.texteMuted }),
             DEPTH.PAUSE_TITLE
         )
     );

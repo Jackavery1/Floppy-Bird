@@ -1,4 +1,5 @@
 import { sceneTween } from './motion.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { restartHintForMode, menuHint } from './device.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
@@ -31,11 +32,11 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
             cx,
             y(252),
             restartHintForMode(isDaily),
-            {
+            menuTextStyle({
                 fontSize: '9px',
-                fill: '#ffffff',
+                fill: DESIGN_TOKENS.texteMenu,
                 fontStyle: 'italic',
-            },
+            }),
             DEPTH.MENU_RAISED
         )
     );
@@ -59,11 +60,11 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
         cx,
         menuBtnY,
         'MENU',
-        {
+        menuTextStyle({
             fontSize: '13px',
-            fill: '#ffffff',
+            fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'bold',
-        },
+        }),
         DEPTH.MENU_BTN_BG
     );
 
@@ -87,7 +88,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
             cx,
             y(308),
             menuHint(),
-            { fontSize: '9px', fill: '#aaaaaa' },
+            menuTextStyle({ fontSize: '9px', fill: DESIGN_TOKENS.texteHintFaible }),
             DEPTH.MENU_RAISED
         )
     );

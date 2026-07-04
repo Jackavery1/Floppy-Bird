@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 import { FONT, FONT_TITLE, PANEL_TEXT_MAX_WIDTH, TITLE_MAX_WIDTH } from './uiLayoutConstants.js';
 
 export function addCenteredText(scene, x, y, text, style, depth) {
@@ -21,7 +22,7 @@ export function addCenteredText(scene, x, y, text, style, depth) {
 export function addReliefText(scene, x, y, text, style, depth, relief = {}) {
     const dx = relief.dx ?? 3;
     const dy = relief.dy ?? 3;
-    const shadowFill = relief.fill ?? '#1a1a2e';
+    const shadowFill = relief.fill ?? DESIGN_TOKENS.fondNuit;
     const shadowAlpha = relief.alpha ?? 0.55;
     const base = { fontFamily: FONT, ...style };
 
@@ -43,8 +44,8 @@ export function addReliefText(scene, x, y, text, style, depth, relief = {}) {
 }
 
 export function diffLabelColor(difficulty, diff) {
-    if (difficulty === diff) return '#000000';
-    return GAME_CONFIG.difficultyColors[diff] ?? '#ffffff';
+    if (difficulty === diff) return DESIGN_TOKENS.contourHud;
+    return GAME_CONFIG.difficultyColors[diff] ?? DESIGN_TOKENS.texteHud;
 }
 
 export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
@@ -55,7 +56,7 @@ export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
             fontFamily: FONT_TITLE,
             fontSize: '22px',
             fontStyle: 'normal',
-            stroke: '#E65100',
+            stroke: DESIGN_TOKENS.accentTitreContour,
             strokeThickness: 3,
         },
         maxWidth,

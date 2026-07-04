@@ -2,6 +2,16 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { computeLetterboxSize } from '../src/viewport.js';
 
+vi.mock('../src/uiDomAccessibility.js', () => ({
+    initAccessibilityLayer: vi.fn(),
+    syncAccessibilityLayer: vi.fn(),
+    bindAccessibilityAction: vi.fn(),
+    setAccessibilityControlVisible: vi.fn(),
+    setupMenuAccessibility: vi.fn(),
+    announceAccessibility: vi.fn(),
+    hideAllAccessibilityControls: vi.fn(),
+}));
+
 describe('appBootstrap', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
@@ -109,7 +119,7 @@ describe('appBootstrap', () => {
         expect(doc.documentElement.classList.add).toHaveBeenCalledWith('game-ready');
     });
 
-    it('onGameReady enchaîne resize, listeners et masquage', async () => {
+    it('onGameReady synchronise le thème shell puis masque le chargement', async () => {
         vi.stubEnv('DEV', false);
         vi.stubEnv('VITE_ENABLE_TEST_SEAM', '');
         const addListener = vi.fn();
@@ -120,10 +130,12 @@ describe('appBootstrap', () => {
             visualViewport: { addEventListener: addListener },
         });
         const loading = { classList: { add: vi.fn() } };
+        const rootStyle = { setProperty: vi.fn() };
         vi.stubGlobal('document', {
             getElementById: vi.fn(() => loading),
-            documentElement: { classList: { add: vi.fn() } },
+            documentElement: { style: rootStyle, classList: { add: vi.fn() } },
             body: { clientWidth: 390, clientHeight: 844, style: {} },
+            querySelector: vi.fn(() => ({ setAttribute: vi.fn() })),
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '0',
@@ -136,6 +148,7 @@ describe('appBootstrap', () => {
         const { onGameReady } = await import('../src/appBootstrap.js');
         onGameReady(game);
 
+        expect(rootStyle.setProperty).toHaveBeenCalled();
         expect(addListener).toHaveBeenCalled();
         expect(loading.classList.add).toHaveBeenCalledWith('hidden');
     });

@@ -1,7 +1,10 @@
 import {
     loadTutorialProgress,
     loadTutorialComplete,
+    loadRoundsStarted,
     setTutorialProgress,
+    markTutorialSeen,
+    SKIP_TUTORIAL_AFTER_ROUNDS,
 } from './tutorialStorage.js';
 import { loadHardcoreTutorialSeen, markHardcoreTutorialSeen } from './hardcoreStorage.js';
 
@@ -10,6 +13,10 @@ import { loadHardcoreTutorialSeen, markHardcoreTutorialSeen } from './hardcoreSt
 /** @param {SceneContext} scene */
 export function showTutorialForProgress(scene) {
     if (loadTutorialComplete()) return;
+    if (loadRoundsStarted() >= SKIP_TUTORIAL_AFTER_ROUNDS) {
+        markTutorialSeen();
+        return;
+    }
     const step = loadTutorialProgress();
     if (step === 0) scene.ui.showJumpTutorial();
     else if (step === 1) scene.ui.showGapTutorial();
@@ -48,4 +55,18 @@ export function showHardcoreTutorialIfNeeded(scene) {
 /** @param {SceneContext} scene */
 export function onHardcoreTutorialJump(scene) {
     scene.ui.dismissHardcoreTutorial?.();
+}
+
+/** @param {SceneContext} scene */
+export function skipTutorial(scene) {
+    if (loadTutorialComplete()) return false;
+    markTutorialSeen();
+    scene.ui.dismissGameplayTutorial();
+    return true;
+}
+
+/** @param {SceneContext} scene */
+export function skipTutorialIfActive(scene) {
+    if (loadTutorialComplete()) return false;
+    return skipTutorial(scene);
 }

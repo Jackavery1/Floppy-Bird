@@ -86,6 +86,16 @@ export function skinsButtonLabel(open) {
     return open ? '▾ SKINS' : '▸ SKINS';
 }
 
+export function skinsCycleHint() {
+    return isCoarsePointer() ? 'Tap une case pour choisir' : '← → : skin précédent / suivant';
+}
+
+export function skinsPanelHint() {
+    return isCoarsePointer()
+        ? 'Scores · hardcore · défi · entraînement · néon = collection'
+        : `${skinsCycleHint()} · débloqués via scores et modes`;
+}
+
 export function optionsHint() {
     return isCoarsePointer() ? 'Scores · Options · Skins' : 'S scores · O options · K skins';
 }

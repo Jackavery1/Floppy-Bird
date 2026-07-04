@@ -65,4 +65,15 @@ describe('motion', () => {
         });
         expect(target.setScale).toHaveBeenCalledWith(1.05, 1.05);
     });
+
+    it('sceneCameraShake ignore si reduced motion', async () => {
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
+        const shake = vi.fn();
+        const { sceneCameraShake } = await import('../src/motion.js');
+        sceneCameraShake({ shake }, 200, 0.015);
+        expect(shake).not.toHaveBeenCalled();
+    });
 });

@@ -114,4 +114,22 @@ describe('sceneInput', () => {
         scene._handlers['keydown-K']();
         expect(scene.ui.toggleMenuSkinsPanel).toHaveBeenCalled();
     });
+
+    it('flèches cyclent les skins quand le panneau est ouvert', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { _skinsOpen: true, cycleMenuSkin: vi.fn() };
+        setupSceneInput(scene);
+        scene._handlers['keydown-LEFT']();
+        scene._handlers['keydown-RIGHT']();
+        expect(scene.ui.cycleMenuSkin).toHaveBeenCalledWith(-1);
+        expect(scene.ui.cycleMenuSkin).toHaveBeenCalledWith(1);
+    });
+
+    it('flèches ignorées si panneau skins fermé', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { _skinsOpen: false, cycleMenuSkin: vi.fn() };
+        setupSceneInput(scene);
+        scene._handlers['keydown-LEFT']();
+        expect(scene.ui.cycleMenuSkin).not.toHaveBeenCalled();
+    });
 });

@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
 
@@ -9,13 +10,12 @@ function showAchievementToast(scene, achievement) {
         GAME_CONFIG.centerX,
         118,
         `🏆 ${achievement.title}`,
-        {
+        menuTextStyle({
             fontSize: '14px',
-            fill: '#FDD835',
+            fill: DESIGN_TOKENS.accentTitre,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
+            stroke: DESIGN_TOKENS.contourHud,
+        }),
         DEPTH.ACHIEVEMENT_TOAST
     );
     sceneTween(scene, {

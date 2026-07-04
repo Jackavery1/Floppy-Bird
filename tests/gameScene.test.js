@@ -83,6 +83,7 @@ vi.mock('../src/sceneFlow.js', () => ({
     changeDifficulty: vi.fn(),
     toggleTraining: vi.fn(),
     toggleHardcore: vi.fn(),
+    launchDailyChallenge: vi.fn(),
 }));
 
 import { GameScene } from '../src/GameScene.js';
@@ -112,6 +113,27 @@ describe('GameScene', () => {
         scene.create();
         expect(preloadTextures).toHaveBeenCalledWith(scene);
         expect(setupSceneWorld).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue handlePrimaryAction au module sceneFlow', async () => {
+        const { handlePrimaryAction } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.handlePrimaryAction();
+        expect(handlePrimaryAction).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue togglePause au module sceneFlow', async () => {
+        const { togglePause } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.togglePause();
+        expect(togglePause).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue returnToMenu au module sceneFlow', async () => {
+        const { returnToMenu } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.returnToMenu();
+        expect(returnToMenu).toHaveBeenCalledWith(scene);
     });
 
     it('délègue triggerDeath au module sceneDeath', () => {

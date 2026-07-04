@@ -1,4 +1,5 @@
 import { drawPlaqueCorners } from './uiGameOverDecor.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { DEPTH, GAME_OVER_PANEL } from './uiLayout.js';
 
 /**
@@ -13,11 +14,13 @@ export function buildGameOverShell(scene, ui, P = GAME_OVER_PANEL) {
     const overlay = ui.createOverlay(0.75, DEPTH.OVERLAY_DIM);
 
     const panel = scene.add.graphics().setDepth(DEPTH.MENU_PANEL);
-    panel.fillStyle(0x141e30, 0.92);
+    const fond = hexVersPhaser(DESIGN_TOKENS.fondPanneauGameOver);
+    const liseré = hexVersPhaser(DESIGN_TOKENS.liseréGameOver);
+    panel.fillStyle(fond, 0.92);
     panel.fillRoundedRect(P.x, P.y, P.w, P.h, P.radius);
-    panel.lineStyle(2, 0xffd700, 1);
+    panel.lineStyle(2, liseré, 1);
     panel.strokeRoundedRect(P.x, P.y, P.w, P.h, P.radius);
-    panel.lineStyle(1, 0xffd700, 0.25);
+    panel.lineStyle(1, liseré, 0.25);
     panel.strokeRoundedRect(P.x + 5, P.y + 5, P.w - 10, P.h - 10, Math.max(P.radius - 4, 2));
     drawPlaqueCorners(panel, P);
 

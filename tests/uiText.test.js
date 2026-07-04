@@ -8,6 +8,7 @@ import {
     applyFittedLabel,
     addFittedCenteredText,
 } from '../src/uiText.js';
+import { DESIGN_TOKENS } from '../src/designTokens.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
@@ -34,7 +35,9 @@ describe('uiText', () => {
     });
 
     it('diffLabelColor met le bouton actif en noir', () => {
-        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe('#000000');
+        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
+            DESIGN_TOKENS.contourHud
+        );
     });
 
     it('fitLabelFontSize réduit jusqu’à tenir dans la largeur max', () => {

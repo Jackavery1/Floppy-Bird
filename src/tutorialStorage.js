@@ -2,6 +2,9 @@ import { STORAGE_KEYS } from './storageKeys.js';
 
 const TUTORIAL_STEPS = 3;
 
+/** Nombre de parties avant auto-skip du tutoriel implicite. */
+export const SKIP_TUTORIAL_AFTER_ROUNDS = 3;
+
 export function loadTutorialProgress() {
     try {
         const stored = localStorage.getItem(STORAGE_KEYS.tutorialProgress);
@@ -56,4 +59,27 @@ export function markCoyoteHintSeen() {
     } catch {
         /* quota localStorage */
     }
+}
+
+export function loadRoundsStarted() {
+    try {
+        const stored = localStorage.getItem(STORAGE_KEYS.roundsStarted);
+        if (stored != null) {
+            const count = Number.parseInt(stored, 10);
+            if (!Number.isNaN(count)) return Math.max(0, count);
+        }
+    } catch {
+        /* quota localStorage */
+    }
+    return 0;
+}
+
+export function incrementRoundsStarted() {
+    const next = loadRoundsStarted() + 1;
+    try {
+        localStorage.setItem(STORAGE_KEYS.roundsStarted, String(next));
+    } catch {
+        /* quota localStorage */
+    }
+    return next;
 }

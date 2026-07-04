@@ -1,14 +1,16 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyHudLabel } from './dailyChallenge.js';
 import { getSkin } from './skins/index.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 import { sceneTween } from './motion.js';
+import { updateGapHudBadge } from './uiHudGapBadge.js';
 import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 
 const SCORE_STYLE = Object.freeze({
     fontSize: '40px',
-    fill: '#ffffff',
+    fill: DESIGN_TOKENS.texteHud,
     fontStyle: 'bold',
-    stroke: '#000000',
+    stroke: DESIGN_TOKENS.contourHud,
     strokeThickness: 4,
 });
 
@@ -63,4 +65,5 @@ export function updateScore(ui, newScore) {
             `${formatDailyHudLabel(newScore, ui.scene.dailyGoal)} · ${getSkin(ui.scene.activeSkinId ?? 'classic').label}`
         );
     }
+    updateGapHudBadge(ui, newScore);
 }

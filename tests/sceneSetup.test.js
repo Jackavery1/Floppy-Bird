@@ -52,6 +52,10 @@ vi.mock('../src/sceneFlow.js', () => ({
     showMenu: vi.fn(),
 }));
 
+vi.mock('../src/shellTheme.js', () => ({
+    syncShellTheme: vi.fn(),
+}));
+
 vi.mock('../src/audio.js', () => ({
     resumeAudio: vi.fn(),
 }));
@@ -70,6 +74,7 @@ import { Bird } from '../src/bird.js';
 import { Pipes } from '../src/pipes.js';
 import { UI } from '../src/uiIndex.js';
 import { showMenu } from '../src/sceneFlow.js';
+import { syncShellTheme } from '../src/shellTheme.js';
 import { setupSceneInput } from '../src/sceneInput.js';
 import { createBirdAnimations, ensurePipeTextures } from '../src/textures/index.js';
 
@@ -101,6 +106,7 @@ describe('setupSceneWorld', () => {
         expect(scene.pipes).toBeDefined();
         expect(scene.ui).toBeDefined();
         expect(showMenu).toHaveBeenCalledWith(scene);
+        expect(syncShellTheme).toHaveBeenCalled();
         expect(ensurePipeTextures).toHaveBeenCalledWith(scene);
         expect(createBirdAnimations).toHaveBeenCalledWith(scene);
     });

@@ -1,4 +1,6 @@
 import { cycleSoundLevel, formatSoundLabel, isAudioAvailable } from './audio.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
+import { bindAccessibilityAction } from './uiDomAccessibility.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { GAME_CONFIG } from './config.js';
 
@@ -10,6 +12,13 @@ function iconeSon(label) {
 
 function libelleMute(label) {
     return `${iconeSon(label)} SON · ${label}`;
+}
+
+/** @param {import('./ui.js').UI} ui */
+function cycleMuteLabel(ui) {
+    if (!isAudioAvailable()) return;
+    cycleSoundLevel();
+    ui._muteText.setText(libelleMute(formatSoundLabel(isAudioAvailable())));
 }
 
 /**
@@ -25,7 +34,7 @@ export function buildMuteControls(ui, elements, y) {
         GAME_CONFIG.centerX,
         y,
         libelleMute(formatSoundLabel(isAudioAvailable())),
-        { fontSize: '12px', fill: '#ECEFF1', stroke: '#0d1117', strokeThickness: 2 },
+        menuTextStyle({ fontSize: '12px', fill: DESIGN_TOKENS.texteClair }),
         DEPTH.PANEL_FRAME
     );
     ui._optionsPanelElements.push(ui._muteText);
@@ -37,10 +46,9 @@ export function buildMuteControls(ui, elements, y) {
         ui._muteHit.setInteractive({ useHandCursor: true });
         ui._muteHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
-            cycleSoundLevel();
-            const label = formatSoundLabel(isAudioAvailable());
-            ui._muteText.setText(libelleMute(label));
+            cycleMuteLabel(ui);
         });
+        bindAccessibilityAction('menuMute', () => cycleMuteLabel(ui));
     }
     ui._optionsPanelElements.push(ui._muteHit);
     elements.push(ui._muteHit);

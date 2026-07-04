@@ -1,6 +1,8 @@
 import { DIFFICULTY } from './config.js';
 import { GAME_STATE, canReturnToMenu, canTogglePause } from './gameState.js';
 import { resumeAudio } from './audio.js';
+import { skipTutorialIfActive } from './tutorialProgress.js';
+import { loadTutorialComplete } from './tutorialStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -44,5 +46,23 @@ export function setupSceneInput(scene) {
     });
     scene.input.keyboard.on('keydown-K', () => {
         if (scene.state === GAME_STATE.MENU) scene.ui.toggleMenuSkinsPanel();
+    });
+
+    scene.input.keyboard.on('keydown-P', () => {
+        if (scene.state === GAME_STATE.PLAYING && !loadTutorialComplete()) {
+            skipTutorialIfActive(scene);
+        }
+    });
+
+    scene.input.keyboard.on('keydown-LEFT', () => {
+        if (scene.state === GAME_STATE.MENU && scene.ui?._skinsOpen) {
+            scene.ui.cycleMenuSkin(-1);
+        }
+    });
+
+    scene.input.keyboard.on('keydown-RIGHT', () => {
+        if (scene.state === GAME_STATE.MENU && scene.ui?._skinsOpen) {
+            scene.ui.cycleMenuSkin(1);
+        }
     });
 }

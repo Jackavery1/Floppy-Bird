@@ -39,3 +39,9 @@ export function sceneTween(scene, config) {
         yoyo: false,
     });
 }
+
+/** Secousse caméra — ignorée si `prefers-reduced-motion`. */
+export function sceneCameraShake(camera, duration, intensity) {
+    if (prefersReducedMotion() || !camera?.shake) return;
+    camera.shake(duration, intensity);
+}

@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { initClouds, createGround } from './sceneBackground.js';
 import { setupSceneInput } from './sceneInput.js';
+import { syncShellTheme } from './shellTheme.js';
 import { Bird } from './bird.js';
 import { Pipes } from './pipes.js';
 import { UI } from './uiIndex.js';
@@ -40,6 +41,7 @@ export function setupSceneWorld(scene) {
     scene.ghost = new GhostReplay(scene);
 
     applyTrainingTimeScale(scene);
+    syncShellTheme();
     showMenu(scene);
 
     if (GAME_CONFIG.debug) {

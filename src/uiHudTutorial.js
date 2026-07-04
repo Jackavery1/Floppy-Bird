@@ -1,27 +1,74 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import {
+    isCoarsePointer,
     jumpTutorialText,
     gapTutorialText,
     scoreTutorialText,
     hardcoreTutorialText,
 } from './device.js';
+import { skipTutorialIfActive } from './tutorialProgress.js';
+import { loadTutorialComplete } from './tutorialStorage.js';
 import { sceneTween } from './motion.js';
-import { addCenteredText, DEPTH } from './uiLayout.js';
+import {
+    addCenteredText,
+    DEPTH,
+    MIN_TOUCH,
+    stopUiEvent,
+} from './uiLayout.js';
 
-function showPulsingTutorialHint(ui, text) {
+function dismissSkipTutorialControl(ui) {
+    ui._tutorialSkipLabel?.destroy();
+    ui._tutorialSkipLabel = null;
+    ui._tutorialSkipHit?.destroy();
+    ui._tutorialSkipHit = null;
+}
+
+function addSkipTutorialControl(ui) {
+    if (loadTutorialComplete()) return;
+    dismissSkipTutorialControl(ui);
+    const skipY = GAME_CONFIG.centerY + 24;
+    const skipHint = isCoarsePointer() ? 'TAP : passer' : 'P : passer';
+    ui._tutorialSkipLabel = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        skipY,
+        skipHint,
+        hudTextStyle({
+            fontSize: '10px',
+            fill: DESIGN_TOKENS.texteHintMenu,
+            fontStyle: 'italic',
+        }),
+        DEPTH.HUD_TUTORIAL
+    );
+    ui._tutorialSkipHit = ui.scene.add.rectangle(
+        GAME_CONFIG.centerX,
+        skipY,
+        120,
+        MIN_TOUCH,
+        0x000000,
+        0
+    );
+    ui._tutorialSkipHit.setDepth(DEPTH.HUD_TUTORIAL + 1);
+    ui._tutorialSkipHit.setInteractive({ useHandCursor: true });
+    ui._tutorialSkipHit.on('pointerdown', (_p, _lx, _ly, event) => {
+        stopUiEvent(event);
+        skipTutorialIfActive(ui.scene);
+    });
+}
+
+function showPulsingTutorialHint(ui, text, { skippable = false } = {}) {
     dismissGameplayTutorial(ui);
     ui._tutorialHint = addCenteredText(
         ui.scene,
         GAME_CONFIG.centerX,
         GAME_CONFIG.centerY - 30,
         text,
-        {
+        hudTextStyle({
             fontSize: '14px',
-            fill: '#ffffff',
+            fill: DESIGN_TOKENS.texteHud,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.HUD_TUTORIAL
     );
     sceneTween(ui.scene, {
@@ -32,18 +79,19 @@ function showPulsingTutorialHint(ui, text) {
         repeat: -1,
         ease: 'Sine.easeInOut',
     });
+    if (skippable) addSkipTutorialControl(ui);
 }
 
 export function showJumpTutorial(ui) {
-    showPulsingTutorialHint(ui, jumpTutorialText());
+    showPulsingTutorialHint(ui, jumpTutorialText(), { skippable: true });
 }
 
 export function showGapTutorial(ui) {
-    showPulsingTutorialHint(ui, gapTutorialText());
+    showPulsingTutorialHint(ui, gapTutorialText(), { skippable: true });
 }
 
 export function showScoreTutorial(ui) {
-    showPulsingTutorialHint(ui, scoreTutorialText());
+    showPulsingTutorialHint(ui, scoreTutorialText(), { skippable: true });
 }
 
 export function showHardcoreTutorial(ui) {
@@ -62,6 +110,7 @@ export function dismissGameplayTutorial(ui) {
 }
 
 export function dismissJumpTutorial(ui) {
+    dismissSkipTutorialControl(ui);
     if (!ui._tutorialHint) return false;
     ui._tutorialHint.destroy();
     ui._tutorialHint = null;

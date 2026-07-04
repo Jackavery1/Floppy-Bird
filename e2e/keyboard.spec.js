@@ -57,4 +57,55 @@ test.describe('clavier desktop', () => {
         await page.keyboard.press('Space');
         await expectGameState(page, 'playing');
     });
+
+    test('Tab puis Entrée sur jouer démarre la partie', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        for (let i = 0; i < 12; i++) {
+            const id = await page.evaluate(() => document.activeElement?.id ?? '');
+            if (id === 'a11y-start') break;
+            await page.keyboard.press('Tab');
+        }
+        await expect(page.locator('#a11y-start')).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'playing');
+    });
+
+    test('Tab sur difficulté normale change la difficulté', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-diff-normal').focus();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'menu');
+    });
+
+    test('Tab ouvre options puis focus entraînement', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-options').focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#a11y-training')).toBeVisible();
+        await page.locator('#a11y-training').focus();
+        await expect(page.locator('#a11y-training')).toBeFocused();
+    });
+
+    test('Tab ouvre skins puis focus skin suivant', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-skins').focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#a11y-skin-next')).toBeVisible();
+        await page.locator('#a11y-skin-next').focus();
+        await expect(page.locator('#a11y-skin-next')).toBeFocused();
+    });
+
+    test('K puis flèches cycle les skins au menu', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.keyboard.press('KeyK');
+        await page.keyboard.press('ArrowRight');
+        await page.keyboard.press('ArrowRight');
+        await page.keyboard.press('ArrowLeft');
+        await expectGameState(page, 'menu');
+    });
 });

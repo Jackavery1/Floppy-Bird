@@ -2,14 +2,17 @@ import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { loadHighScore } from './storage.js';
+import { skinsPanelHint } from './device.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
 import {
     getSkin,
     listUnlockedSkins,
+    cycleUnlockedSkin,
     SKIN_IDS,
     birdTextureKey,
     isSpecialSkin,
 } from './skins/index.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
 
 const SKIN_COLS = 4;
@@ -32,13 +35,11 @@ export function buildSkinsTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.skinsTitle,
         'APPARENCE',
-        {
+        menuTextStyle({
             fontSize: '12px',
-            fill: '#90CAF9',
+            fill: DESIGN_TOKENS.texteChargement,
             fontStyle: 'bold',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(title);
@@ -50,7 +51,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.skinsSubtitle,
         '',
-        { fontSize: '11px', fill: '#B0BEC5', stroke: '#0d1117', strokeThickness: 2 },
+        menuTextStyle({ fontSize: '11px', fill: DESIGN_TOKENS.texteHintMenu }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._skinsCountLine);
@@ -65,8 +66,15 @@ export function buildSkinsTab(ui, elements, panelElements) {
         const cx = gridLeft + col * SKIN_CELL_W;
         const cy = panel.skinsRow1 + row * (SKIN_CELL_H + 8);
 
-        const frame = scene.add.rectangle(cx, cy, 46, 46, 0x263238, 0.9);
-        frame.setStrokeStyle(2, 0x455a64);
+        const frame = scene.add.rectangle(
+            cx,
+            cy,
+            46,
+            46,
+            hexVersPhaser(DESIGN_TOKENS.cadreSkinFond),
+            0.9
+        );
+        frame.setStrokeStyle(2, hexVersPhaser(DESIGN_TOKENS.cadreSkinContour));
         frame.setDepth(DEPTH.PANEL_FRAME);
         panelElements.push(frame);
         elements.push(frame);
@@ -85,12 +93,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
             cx,
             cy + 24,
             skin.label,
-            {
-                fontSize: '9px',
-                fill: '#CFD8DC',
-                stroke: '#0d1117',
-                strokeThickness: 2,
-            },
+            menuTextStyle({ fontSize: '9px', fill: DESIGN_TOKENS.texteSkinLabel }),
             DEPTH.PANEL_PREVIEW
         );
         panelElements.push(nameLabel);
@@ -104,12 +107,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
                 cx,
                 cy + 34,
                 '',
-                {
-                    fontSize: '8px',
-                    fill: '#FFD54F',
-                    stroke: '#0d1117',
-                    strokeThickness: 2,
-                },
+                menuTextStyle({ fontSize: '8px', fill: DESIGN_TOKENS.accent }),
                 DEPTH.PANEL_PREVIEW
             );
             panelElements.push(recordLabel);
@@ -139,20 +137,28 @@ export function buildSkinsTab(ui, elements, panelElements) {
         scene,
         GAME_CONFIG.centerX,
         panel.skinsHint,
-        'Scores · hardcore · défi du jour · entraînement · néon = collection',
-        {
+        skinsPanelHint(),
+        menuTextStyle({
             fontSize: '10px',
-            fill: '#78909C',
+            fill: DESIGN_TOKENS.texteSecondaire,
             fontStyle: 'italic',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._skinHint);
     elements.push(ui._skinHint);
     ui._skinsTabElements.push(ui._skinHint);
 
+    refreshSkinsTab(ui);
+}
+
+/** @param {import('./ui.js').UI} ui @param {1 | -1} step */
+export function cycleMenuSkin(ui, step) {
+    const ctx = buildMetaContext(ui.scene);
+    const current = loadSelectedSkin();
+    const nextId = cycleUnlockedSkin(current, ctx, step);
+    if (nextId === current) return;
+    applySelectedSkin(ui.scene, nextId);
     refreshSkinsTab(ui);
 }
 
@@ -170,9 +176,18 @@ export function refreshSkinsTab(ui) {
         const isUnlocked = unlocked.has(skinId);
         const isSelected = skinId === selected;
         preview.setAlpha(isUnlocked ? 1 : 0.28);
-        nameLabel.setColor(isUnlocked ? (isSelected ? '#FDD835' : '#CFD8DC') : '#546E7A');
+        nameLabel.setColor(
+            isUnlocked
+                ? isSelected
+                    ? DESIGN_TOKENS.accent
+                    : DESIGN_TOKENS.texteSkinLabel
+                : DESIGN_TOKENS.texteVerrouille
+        );
         nameLabel.setText(isUnlocked ? getSkin(skinId).label : '???');
-        frame.setStrokeStyle(2, isSelected ? 0xfdd835 : 0x455a64);
+        frame.setStrokeStyle(
+            2,
+            isSelected ? hexVersPhaser(DESIGN_TOKENS.accent) : hexVersPhaser(DESIGN_TOKENS.cadreSkinContour)
+        );
         if (!isUnlocked) {
             nameLabel.setText('???');
         }

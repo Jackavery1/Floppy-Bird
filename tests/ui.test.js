@@ -53,7 +53,8 @@ describe('UI', () => {
 
     it('refreshHighScore charge le record par difficulté', async () => {
         const { loadHighScore } = await import('../src/storage.js');
+        vi.mocked(loadHighScore).mockClear();
         ui.refreshHighScore(DIFFICULTY.HARD);
-        expect(loadHighScore).toHaveBeenCalledWith(DIFFICULTY.HARD, false);
+        expect(loadHighScore).toHaveBeenLastCalledWith(DIFFICULTY.HARD, false, null);
     });
 });

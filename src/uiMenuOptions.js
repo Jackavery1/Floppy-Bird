@@ -1,6 +1,11 @@
 import { optionsButtonLabel } from './device.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
+import {
+    bindOptionsAccessibility,
+    setOptionsPanelAccessibility,
+} from './uiDomAccessibility.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import {
@@ -21,13 +26,18 @@ const PANEL_CFG = {
     buttonLabelFn: optionsButtonLabel,
     btnColor: MENU_BTN_COLOR,
     btnStroke: 0x42a5f5,
-    labelStroke: '#0D47A1',
+    labelStroke: DESIGN_TOKENS.contourOptions,
 };
 
 const controllerCfg = {
     ...PANEL_CFG,
     panelElementsKey: '_optionsPanelElements',
     setContentVisible: setOptionsContentVisible,
+    onOpen: (targetUi) => {
+        bindOptionsAccessibility(targetUi.scene);
+        setOptionsPanelAccessibility(targetUi.scene, true);
+    },
+    onClose: (targetUi) => setOptionsPanelAccessibility(targetUi.scene, false),
 };
 
 /** @param {import('./ui.js').UI} ui */

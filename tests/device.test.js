@@ -1,14 +1,19 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 
+function stubMatchMedia(coarse) {
+    return vi.fn((query) => ({
+        matches: coarse
+            ? query.includes('(hover: none) and (pointer: coarse)') ||
+              query.includes('(any-pointer: coarse)')
+            : query.includes('(pointer: fine)'),
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+    }));
+}
+
 async function loadDevice(coarse) {
-    vi.stubGlobal(
-        'matchMedia',
-        vi.fn((query) => ({
-            matches:
-                coarse &&
-                (query.includes('pointer: coarse') || query.includes('any-pointer: coarse')),
-        }))
-    );
+    vi.stubGlobal('matchMedia', stubMatchMedia(coarse));
     vi.resetModules();
     return import('../src/device.js');
 }
@@ -25,25 +30,34 @@ describe('device', () => {
         expect(fine.isCoarsePointer()).toBe(false);
     });
 
-    it('jumpHint adapte le libellé au type de pointeur', async () => {
+    it('jumpHint tactile', async () => {
         const { jumpHint } = await loadDevice(true);
         expect(jumpHint()).toBe('TAP : sauter');
-        const { jumpHint: fine } = await loadDevice(false);
-        expect(fine()).toBe('ESPACE : sauter');
     });
 
-    it('restartHint adapte le libellé', async () => {
+    it('jumpHint clavier', async () => {
+        const { jumpHint } = await loadDevice(false);
+        expect(jumpHint()).toBe('ESPACE : sauter');
+    });
+
+    it('restartHint tactile', async () => {
         const { restartHint } = await loadDevice(true);
         expect(restartHint()).toBe('TAP : rejouer');
-        const { restartHint: fine } = await loadDevice(false);
-        expect(fine()).toBe('ESPACE : rejouer');
     });
 
-    it('pauseResumeHint adapte le libellé', async () => {
+    it('restartHint clavier', async () => {
+        const { restartHint } = await loadDevice(false);
+        expect(restartHint()).toBe('ESPACE : rejouer');
+    });
+
+    it('pauseResumeHint tactile', async () => {
         const { pauseResumeHint } = await loadDevice(true);
         expect(pauseResumeHint()).toBe('TAP : reprendre');
-        const { pauseResumeHint: fine } = await loadDevice(false);
-        expect(fine()).toBe('ESC : reprendre');
+    });
+
+    it('pauseResumeHint clavier', async () => {
+        const { pauseResumeHint } = await loadDevice(false);
+        expect(pauseResumeHint()).toBe('ESC : reprendre');
     });
 
     it('difficultyHint adapte le libellé', async () => {

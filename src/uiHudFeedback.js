@@ -1,5 +1,6 @@
 export {
     showRecordBroken,
+    showDailyGoalBrief,
     showDailyGoalReached,
     showDifficultyEscalation,
     showScoreStreak,

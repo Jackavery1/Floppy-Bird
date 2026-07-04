@@ -17,6 +17,7 @@ import {
     showScoreTutorial,
     dismissGameplayTutorial,
     showDailyGoalReached,
+    showDailyGoalBrief,
     showDifficultyEscalation,
     showDifficultyEscalationPreview,
     showCoyoteHint,
@@ -35,6 +36,7 @@ import {
 import { toggleMenuOptions, refreshHardcoreLockState } from './uiMenuOptions.js';
 import { toggleMenuScores } from './uiMenuScoresPanel.js';
 import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
+import { cycleMenuSkin } from './uiMenuSkins.js';
 import { showPause } from './uiPause.js';
 
 export class UI {
@@ -100,6 +102,9 @@ export class UI {
     showDailyGoalReached() {
         showDailyGoalReached(this);
     }
+    showDailyGoalBrief(goal) {
+        showDailyGoalBrief(this, goal);
+    }
     showDifficultyEscalation() {
         showDifficultyEscalation(this);
     }
@@ -159,6 +164,9 @@ export class UI {
     }
     toggleMenuSkinsPanel() {
         toggleMenuSkins(this);
+    }
+    cycleMenuSkin(step) {
+        cycleMenuSkin(this, step);
     }
     showPause(opts) {
         return showPause(this, opts);

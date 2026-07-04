@@ -6,6 +6,7 @@ import {
     isSpecialSkin,
     listUnlockedSkins,
     nextUnlockedSkin,
+    cycleUnlockedSkin,
 } from '../src/skins/index.js';
 
 function baseCtx(overrides = {}) {
@@ -115,6 +116,11 @@ describe('skins', () => {
         expect(listUnlockedSkins(ctx)).toEqual(['classic', 'lavande', 'ruby']);
         expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
         expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
+    });
+
+    it('cycleUnlockedSkin accepte un pas négatif', () => {
+        const ctx = baseCtx({ bestScoreAny: 10 });
+        expect(cycleUnlockedSkin('lavande', ctx, -1)).toBe('classic');
     });
 
     it('8 skins classiques (classement commun) et 8 skins spéciaux (classement dédié)', () => {

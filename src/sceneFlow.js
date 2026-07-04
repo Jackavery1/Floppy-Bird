@@ -13,12 +13,25 @@ import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
+import {
+    applyPausedState,
+    applyPlayingState,
+    resumeClock,
+} from './sceneFlowTransitions.js';
+import {
+    announceAccessibility,
+    hideAllAccessibilityControls,
+    setAccessibilityControlVisible,
+    setupMenuAccessibility,
+    syncAccessibilityLayer,
+} from './uiDomAccessibility.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
 function clearPauseOverlay(scene) {
     scene.ui.clearOverlay('pause');
+    hideAllAccessibilityControls();
 }
 
 /** @param {SceneContext} scene */
@@ -32,6 +45,8 @@ export function showMenu(scene) {
 
     const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
     scene.ui.setOverlay('menu', elements);
+    setupMenuAccessibility(scene);
+    announceAccessibility('Menu principal');
 }
 
 /** @param {SceneContext} scene */
@@ -39,9 +54,11 @@ export function startGame(scene) {
     scene.playMode = 'classic';
     scene.dailyChallengeMode = false;
     if (scene.state === GAME_STATE.MENU) {
+        hideAllAccessibilityControls();
         scene.ui.clearOverlay('menu');
         beginRound(scene, { resetBird: true });
     } else if (scene.state === GAME_STATE.GAME_OVER) {
+        hideAllAccessibilityControls();
         scene.ui.clearOverlay('gameOver');
         beginRound(scene, { resetBird: true });
     }
@@ -57,8 +74,10 @@ export function startDailyChallenge(scene) {
     scene.hardcoreMode = false;
     saveHardcoreEnabled(false);
     if (scene.state === GAME_STATE.MENU) {
+        hideAllAccessibilityControls();
         scene.ui.clearOverlay('menu');
     } else {
+        hideAllAccessibilityControls();
         scene.ui.clearOverlay('gameOver');
     }
     beginRound(scene, { resetBird: true });
@@ -67,7 +86,7 @@ export function startDailyChallenge(scene) {
 /** @param {SceneContext} scene */
 export function returnToMenu(scene) {
     if (!canReturnToMenu(scene.state)) return;
-    scene.time.paused = false;
+    resumeClock(scene);
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
     scene.round.jumpBufferFrames = 0;
@@ -85,8 +104,7 @@ export function returnToMenu(scene) {
 /** @param {SceneContext} scene */
 export function togglePause(scene) {
     if (scene.state === GAME_STATE.PLAYING) {
-        scene.state = GAME_STATE.PAUSED;
-        scene.time.paused = true;
+        applyPausedState(scene);
         const pauseUI = scene.ui.showPause({
             onResume: () => {
                 if (scene.state === GAME_STATE.PAUSED) togglePause(scene);
@@ -94,10 +112,17 @@ export function togglePause(scene) {
             onMenu: () => returnToMenu(scene),
         });
         scene.ui.setOverlay('pause', pauseUI.elements);
+        setAccessibilityControlVisible('pause', false);
+        setAccessibilityControlVisible('pauseResume', true);
+        setAccessibilityControlVisible('pauseMenu', true);
+        syncAccessibilityLayer(scene.game);
+        announceAccessibility('Partie en pause');
     } else if (scene.state === GAME_STATE.PAUSED) {
-        scene.state = GAME_STATE.PLAYING;
-        scene.time.paused = false;
+        applyPlayingState(scene);
         clearPauseOverlay(scene);
+        setAccessibilityControlVisible('pause', true);
+        syncAccessibilityLayer(scene.game);
+        announceAccessibility('Partie reprise');
     }
 }
 

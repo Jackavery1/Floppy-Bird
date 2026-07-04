@@ -39,6 +39,7 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 | S            | Scores (menu)                              |
 | O            | Options (menu)                             |
 | K            | Skins (menu)                               |
+| ← / →        | Skin précédent / suivant (panneau skins)   |
 | ESC          | Pause                                      |
 | M            | Menu (pause ou game over)                  |
 
@@ -48,13 +49,14 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 - 8 premiers gaps scriptés à chaque manche, puis séquence daily / aléatoire lissé
 - Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (hardcore : 700→325 ms sur les 6 premiers tuyaux, collisions tuyaux seulement)
 - Coyote time 5 frames : centre **ou** hitbox entière dans le corridor du gap ; teinte discrète pendant la grâce ; hint « seconde chance » la première fois ; buffer de saut 4 frames
-- Tutoriel en 3 étapes (saut → gap → score) à la première partie, puis hint coyote au premier passage
+- Tutoriel en 3 étapes (saut → gap → score) à la première partie, puis hint coyote au premier passage ; **auto-skip après 3 parties** si non terminé
 - Son de palier distinct tous les 10 points
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
+- **Preview gaps** au score 18 (« GAPS ↓ au score 20 ») puis bannière « GAPS RESSERRÉS » au score 20
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,65), fantôme enregistré (meilleur parcours par difficulté/hardcore), scores non enregistrés
 - **Défi du jour** (D) : séquence partagée, skin/objectif imposés, fantôme replay sans ralenti, **hors TOP 5 classique**, rejouable depuis le game over
-- Escalade : +3 % vitesse / 10 pts ; gaps resserrés après 20 ; preview « DIFFICULTÉ ↑ à 20 » au score 18, bannière « DIFFICULTÉ ↑ » (20) et séries à 10, 15, 20, 30, 40, 50 pts
+- Escalade : +3 % vitesse / 10 pts ; gaps resserrés après 20 ; preview « GAPS ↓ au score 20 » au score 18, bannière « GAPS RESSERRÉS » (20) et séries à 10, 15, 20, 30, 40, 50 pts
 - **Mort différenciée** : feedback visuel (tuyau / sol / plafond) + libellé au game over ; micro slow-mo à l’impact
 - **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→325 ms sur 6 tuyaux (bannière « Invincible N ms » à chaque renouvellement), **TOP 5 hardcore** séparé
 - **Meta** : 16 skins et 8 trophées déblocables (dont score 25 et série daily ×3)
@@ -81,7 +83,8 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Dev** : Phaser bundlé par Vite (HMR rapide).
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
-- **Mobile paysage** : overlay bloquant sur téléphone tactile (hauteur ≤520 px) ; **tablette paysage** (hauteur >520 px) autorisée
+- **Mobile paysage** : `#landscape-hint` bloque le jeu sur téléphone tactile (hauteur ≤520 px) — choix assumé ; **tablette paysage** (hauteur >520 px) autorisée
+- **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`) — pause, CTA menu et **boutons difficulté** (Tab + Entrée)
 - **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (accessibilité) ; le canvas reste centré dans le `visualViewport` (position `fixed`)
 - **PWA** : `orientation: portrait-primary` (portrait recommandé sur téléphone) ; 1ère visite hors ligne → `offline.html`
 - **UI** : titres menu/pause/game over en **Press Start 2P** ; métadonnées Open Graph / Twitter (`og:image` 512 px en prod)

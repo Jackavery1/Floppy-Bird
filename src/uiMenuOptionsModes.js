@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { classicModeHint, hardcoreToggleLabel, trainingToggleLabel } from './device.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { buildMetaContext } from './metaContext.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
@@ -27,12 +28,10 @@ export function buildModeControls(ui, elements, panel) {
         GAME_CONFIG.centerX,
         panel.hintLine,
         classicModeHint(),
-        {
+        menuTextStyle({
             fontSize: '10px',
-            fill: '#B0BEC5',
-            stroke: '#0d1117',
-            strokeThickness: 2,
-        },
+            fill: DESIGN_TOKENS.texteHintMenu,
+        }),
         DEPTH.PANEL_FRAME
     );
     ui._optionsPanelElements.push(ui._classicHint);
@@ -52,7 +51,7 @@ export function buildModeControls(ui, elements, panel) {
         trainingToggleLabel(scene.trainingMode),
         {
             ...TRAINING_LABEL_STYLE,
-            fill: scene.trainingMode ? '#81D4FA' : '#B0BEC5',
+            fill: scene.trainingMode ? DESIGN_TOKENS.badgeTraining : DESIGN_TOKENS.texteHintMenu,
         },
         DEPTH.PANEL_FRAME
     );
@@ -91,7 +90,11 @@ export function buildModeControls(ui, elements, panel) {
         hardcoreToggleLabel(scene.hardcoreMode, hardcoreUnlocked),
         {
             ...TRAINING_LABEL_STYLE,
-            fill: hardcoreUnlocked ? (scene.hardcoreMode ? '#FF8A80' : '#B0BEC5') : '#78909C',
+            fill: hardcoreUnlocked
+                ? scene.hardcoreMode
+                    ? DESIGN_TOKENS.badgeHardcore
+                    : DESIGN_TOKENS.texteHintMenu
+                : DESIGN_TOKENS.texteSecondaire,
         },
         DEPTH.PANEL_FRAME
     );

@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 /** @param {import('phaser').GameObjects.GameObject[]} elements */
@@ -48,13 +49,12 @@ export function buildMenuToggleButton(scene, elements, cfg) {
         cfg.cx,
         cfg.cy,
         cfg.labelText,
-        {
+        hudTextStyle({
             fontSize: '11px',
-            fill: '#FFFFFF',
+            fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'bold',
             stroke: cfg.labelStroke,
-            strokeThickness: 2,
-        },
+        }),
         cfg.depth + 1
     );
     elements.push(label);
@@ -81,6 +81,7 @@ export function buildMenuToggleButton(scene, elements, cfg) {
  *   buttonLabelFn: (open: boolean) => string,
  *   setContentVisible?: (ui: import('./ui.js').UI, open: boolean) => void,
  *   onOpen?: (ui: import('./ui.js').UI) => void,
+ *   onClose?: (ui: import('./ui.js').UI) => void,
  * }} cfg
  */
 export function createMenuPanelController(ui, cfg) {
@@ -90,6 +91,7 @@ export function createMenuPanelController(ui, cfg) {
     }
 
     function setOpen(open) {
+        const wasOpen = ui[cfg.openKey];
         ui[cfg.openKey] = open;
         ui[cfg.backdropKey]?.setVisible(open);
         if (cfg.setContentVisible) {
@@ -99,6 +101,7 @@ export function createMenuPanelController(ui, cfg) {
         }
         refreshButtonLabel();
         if (open && cfg.onOpen) cfg.onOpen(ui);
+        if (wasOpen && !open && cfg.onClose) cfg.onClose(ui);
         syncMenuChromeVisibility(ui);
     }
 

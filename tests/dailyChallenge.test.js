@@ -6,6 +6,7 @@ import {
     getDailyChallengeGoal,
     formatDailyMenuButtonLabel,
     formatDailyMenuSubtitle,
+    formatDailyHudLabel,
 } from '../src/dailyChallenge.js';
 import { DIFFICULTY } from '../src/config.js';
 
@@ -39,5 +40,10 @@ describe('dailyChallenge', () => {
     it('formatDailyMenuSubtitle décrit le pattern', () => {
         const sub = formatDailyMenuSubtitle(DIFFICULTY.NORMAL, date);
         expect(sub).toMatch(/objectif \d+ pts/);
+    });
+
+    it('formatDailyHudLabel inclut le code du jour', () => {
+        const code = getDailyChallengeCode(date);
+        expect(formatDailyHudLabel(3, 10, date)).toBe(`DÉFI #${code} · 3/10`);
     });
 });

@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import { coyoteHintText, hardcoreInvincibilityHintText } from './device.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
@@ -43,25 +44,22 @@ export function showRecordBroken(ui) {
         '_recordBanner',
         'NOUVEAU RECORD !',
         90,
-        {
+        hudTextStyle({
             fontSize: '16px',
-            fill: '#FDD835',
+            fill: DESIGN_TOKENS.accent,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
+        }),
         72
     );
 }
 
 export function showDifficultyEscalation(ui) {
-    showTransientBanner(ui, '_escalationBanner', 'DIFFICULTÉ ↑', 104, {
+    showTransientBanner(ui, '_escalationBanner', 'GAPS RESSERRÉS', 104, hudTextStyle({
         fontSize: '13px',
-        fill: '#FF8A65',
+        fill: DESIGN_TOKENS.bannerEscalation,
         fontStyle: 'bold',
-        stroke: '#000000',
-        strokeThickness: 2,
-    });
+    }));
+    showFlash(ui, hexVersPhaser(DESIGN_TOKENS.bannerEscalation), 0.22);
 }
 
 export function showScoreStreak(ui, score) {
@@ -74,13 +72,26 @@ export function showScoreStreak(ui, score) {
         50: 'MAÎTRE !',
     };
     const label = labels[score] ?? `SÉRIE ×${score}`;
-    showTransientBanner(ui, '_streakBanner', label, 112, {
+    showTransientBanner(ui, '_streakBanner', label, 112, hudTextStyle({
         fontSize: '14px',
-        fill: '#FFAB40',
+        fill: DESIGN_TOKENS.bannerStreak,
         fontStyle: 'bold',
-        stroke: '#000000',
-        strokeThickness: 2,
-    });
+    }));
+}
+
+export function showDailyGoalBrief(ui, goal) {
+    showTransientBanner(
+        ui,
+        '_dailyBriefBanner',
+        `OBJECTIF : ${goal} pts`,
+        148,
+        hudTextStyle({
+            fontSize: '13px',
+            fill: DESIGN_TOKENS.badgeDaily,
+            fontStyle: 'bold',
+        }),
+        130
+    );
 }
 
 export function showDailyGoalReached(ui) {
@@ -90,13 +101,11 @@ export function showDailyGoalReached(ui) {
         GAME_CONFIG.centerX,
         118,
         'OBJECTIF ATTEINT !',
-        {
+        hudTextStyle({
             fontSize: '15px',
-            fill: '#81C784',
+            fill: DESIGN_TOKENS.bannerSuccess,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
+        }),
         DEPTH.RECORD_BANNER
     );
     ui._dailyGoalBanner = banner;
@@ -126,23 +135,20 @@ export function showDailyGoalReached(ui) {
 
 export function showDifficultyEscalationPreview(ui) {
     const at = GAME_CONFIG.round.gapTightenAfterScore;
-    showTransientBanner(ui, '_escalationPreviewBanner', `DIFFICULTÉ ↑ à ${at}`, 104, {
-        fontSize: '12px',
-        fill: '#FFCC80',
+    const step = GAME_CONFIG.round.gapTightenStep;
+    showTransientBanner(ui, '_escalationPreviewBanner', `GAPS ↓ au score ${at} (−${step}px)`, 104, hudTextStyle({
+        fontSize: '11px',
+        fill: DESIGN_TOKENS.accentGap,
         fontStyle: 'bold',
-        stroke: '#000000',
-        strokeThickness: 2,
-    });
+    }));
 }
 
 export function showCoyoteHint(ui) {
-    showTransientBanner(ui, '_coyoteHintBanner', coyoteHintText(), 118, {
+    showTransientBanner(ui, '_coyoteHintBanner', coyoteHintText(), 118, hudTextStyle({
         fontSize: '11px',
-        fill: '#FFEEAA',
+        fill: DESIGN_TOKENS.bannerCoyote,
         fontStyle: 'italic',
-        stroke: '#000000',
-        strokeThickness: 2,
-    });
+    }));
 }
 
 export function showHardcoreInvincibilityHint(ui, durationMs) {
@@ -155,18 +161,16 @@ export function showHardcoreInvincibilityHint(ui, durationMs) {
         '_hardcoreInvBanner',
         hardcoreInvincibilityHintText(durationMs),
         132,
-        {
+        hudTextStyle({
             fontSize: '11px',
-            fill: '#FF8A80',
+            fill: DESIGN_TOKENS.badgeHardcore,
             fontStyle: 'bold',
-            stroke: '#000000',
-            strokeThickness: 2,
-        },
+        }),
         116
     );
 }
 
-export function showFlash(ui, color = 0xffffff, alpha = 0.8) {
+export function showFlash(ui, color = hexVersPhaser(DESIGN_TOKENS.texteHud), alpha = 0.8) {
     const flash = ui.scene.add.rectangle(
         GAME_CONFIG.centerX,
         GAME_CONFIG.centerY,

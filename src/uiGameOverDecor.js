@@ -1,8 +1,13 @@
+import {
+    CONFETTI_COLORS_PHASER,
+    DESIGN_TOKENS,
+    hexVersPhaser,
+} from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { Utils } from './utils.js';
 import { DEPTH } from './uiLayout.js';
 
-const CONFETTI_COLORS = [0xffd700, 0xff6f91, 0x64b5f6, 0x81c784, 0xffffff];
+const LISERÉ_PHASER = hexVersPhaser(DESIGN_TOKENS.liseréGameOver);
 
 /** Assombrit une couleur hex d'un facteur (0-1). */
 export function shade(color, factor) {
@@ -17,7 +22,7 @@ export function drawPlaqueCorners(g, P) {
     const inset = 7;
     const len = 10;
     const t = 2;
-    g.fillStyle(0xffd700, 0.55);
+    g.fillStyle(LISERÉ_PHASER, 0.55);
     const corners = [
         [P.x + inset, P.y + inset, len, t],
         [P.x + inset, P.y + inset, t, len],
@@ -33,7 +38,7 @@ export function drawPlaqueCorners(g, P) {
 
 /** Fine ligne de séparation entre deux blocs du panneau. */
 export function drawDivider(scene, cx, y, width, depth) {
-    const line = scene.add.rectangle(cx, y, width, 1, 0xffd700, 0.18);
+    const line = scene.add.rectangle(cx, y, width, 1, LISERÉ_PHASER, 0.18);
     line.setDepth(depth);
     return line;
 }
@@ -43,7 +48,7 @@ export function spawnConfetti(scene, cx, topY, elements) {
     for (let i = 0; i < 12; i++) {
         const startX = cx + Utils.randomInt(-95, 95);
         const size = Utils.randomInt(3, 6);
-        const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+        const color = CONFETTI_COLORS_PHASER[i % CONFETTI_COLORS_PHASER.length];
         const piece = scene.add.rectangle(startX, topY, size, size, color, 0.95);
         piece.setDepth(DEPTH.PANEL_TOP);
         elements.push(piece);

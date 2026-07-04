@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { modesHintLine } from './device.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 import { buildModeControls } from './uiMenuOptionsModes.js';
 import { buildMuteControls } from './uiMenuOptionsMute.js';
@@ -24,13 +25,11 @@ export function buildOptionsContent(ui, elements) {
         GAME_CONFIG.centerX,
         panel.hint2,
         modesHintLine(),
-        {
+        menuTextStyle({
             fontSize: '10px',
-            fill: '#78909C',
-            stroke: '#0d1117',
-            strokeThickness: 2,
+            fill: DESIGN_TOKENS.texteSecondaire,
             align: 'center',
-        },
+        }),
         DEPTH.PANEL_FRAME
     );
     ui._optionsPanelElements.push(ui._hint2);

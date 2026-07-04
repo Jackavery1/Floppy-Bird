@@ -53,8 +53,22 @@ jobs:
         env:
           BASE_PATH: /Floppy-Bird/
 
+  lighthouse:
+    needs: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run icons
+      - run: npm run build
+      - run: npm run lighthouse
+
   deploy:
-    needs: [check, e2e]
+    needs: [check, e2e, lighthouse]
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:

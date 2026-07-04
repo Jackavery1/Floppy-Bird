@@ -1,5 +1,12 @@
 import { GAME_CONFIG } from './config.js';
+import { syncShellTheme } from './shellTheme.js';
+import {
+    initAccessibilityLayer,
+    syncAccessibilityLayer,
+} from './uiDomAccessibility.js';
 import { computeLetterboxSize, computeLetterboxPosition, getLetterboxViewport } from './viewport.js';
+
+export { syncShellTheme } from './shellTheme.js';
 
 /** Seam Playwright : dev ou build explicite `VITE_ENABLE_TEST_SEAM=true` (jamais Pages prod). */
 export function shouldInstallTestSeam() {
@@ -47,6 +54,8 @@ export function resizeGameCanvas(game) {
         container.style.marginLeft = '';
     }
 
+    if (game) syncAccessibilityLayer(game);
+
     return { targetW, targetH, offsetTop, offsetLeft };
 }
 
@@ -65,6 +74,8 @@ export function attachViewportResize(game, resizeFn = resizeGameCanvas) {
 }
 
 export function onGameReady(game, { resizeFn = resizeGameCanvas, doc = document } = {}) {
+    initAccessibilityLayer(doc);
+    syncShellTheme(doc);
     resizeFn(game);
     attachViewportResize(game, resizeFn);
     loadTestSeam(game);

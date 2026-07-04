@@ -1,4 +1,5 @@
 import { getSkin } from './skins/index.js';
+import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
 
 function drawEntrySkinSwatch(scene, x, y, skinId, depth) {
@@ -46,11 +47,11 @@ export function buildGameOverLeaderboard(scene, opts) {
                 cx,
                 y(168),
                 `— OBJECTIF : ${dailyGoal} —`,
-                {
+                menuTextStyle({
                     fontSize: '9px',
-                    fill: '#90CAF9',
+                    fill: DESIGN_TOKENS.texteLeaderboard,
                     fontStyle: 'bold',
-                },
+                }),
                 DEPTH.MENU_RAISED
             )
         );
@@ -62,10 +63,10 @@ export function buildGameOverLeaderboard(scene, opts) {
                 finalScore >= dailyGoal
                     ? "Bravo, défi validé pour aujourd'hui !"
                     : `Encore ${dailyGoal - finalScore} point(s) pour valider le défi.`,
-                {
+                menuTextStyle({
                     fontSize: '10px',
-                    fill: '#cccccc',
-                },
+                    fill: DESIGN_TOKENS.texteMuted,
+                }),
                 DEPTH.MENU_RAISED
             )
         );
@@ -83,11 +84,11 @@ export function buildGameOverLeaderboard(scene, opts) {
             cx,
             y(168),
             boardTitle,
-            {
+            menuTextStyle({
                 fontSize: '9px',
-                fill: '#90CAF9',
+                fill: DESIGN_TOKENS.texteLeaderboard,
                 fontStyle: 'bold',
-            },
+            }),
             DEPTH.MENU_RAISED
         )
     );
@@ -113,11 +114,15 @@ export function buildGameOverLeaderboard(scene, opts) {
                 cx,
                 rowY,
                 `${rank} ${entry.score}`,
-                {
+                menuTextStyle({
                     fontSize: '11px',
-                    fill: isNew ? '#ffff00' : i === 0 ? '#FDD835' : '#cccccc',
+                    fill: isNew
+                        ? DESIGN_TOKENS.accentLeaderboardNew
+                        : i === 0
+                          ? DESIGN_TOKENS.accentTitre
+                          : DESIGN_TOKENS.texteMuted,
                     fontStyle: isNew || i === 0 ? 'bold' : 'normal',
-                },
+                }),
                 DEPTH.MENU_RAISED
             )
         );

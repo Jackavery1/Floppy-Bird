@@ -50,4 +50,13 @@ describe('tutorialStorage', () => {
         markCoyoteHintSeen();
         expect(loadCoyoteHintSeen()).toBe(true);
     });
+
+    it('compte les parties démarrées', async () => {
+        const { loadRoundsStarted, incrementRoundsStarted } =
+            await import('../src/tutorialStorage.js');
+        expect(loadRoundsStarted()).toBe(0);
+        expect(incrementRoundsStarted()).toBe(1);
+        expect(incrementRoundsStarted()).toBe(2);
+        expect(loadRoundsStarted()).toBe(2);
+    });
 });

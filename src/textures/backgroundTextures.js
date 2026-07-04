@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from '../config.js';
+import { DESIGN_TOKENS } from '../designTokens.js';
 
 let cachedBackgroundPeriod = null;
 
@@ -126,5 +127,5 @@ export function createBackgroundSprite(scene) {
 
 /** Couleur de letterbox / chargement alignée sur la période courante. */
 export function getBackgroundCanvasColor() {
-    return getBackgroundPeriod() === 'day' ? '#87ceeb' : '#1a1a2e';
+    return getBackgroundPeriod() === 'day' ? DESIGN_TOKENS.fondJour : DESIGN_TOKENS.fondNuit;
 }

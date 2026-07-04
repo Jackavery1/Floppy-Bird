@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { menuControlsHint } from './device.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
@@ -11,7 +12,7 @@ export function buildMenuFooter(ui, elements, layout) {
         GAME_CONFIG.centerX,
         layout.start,
         'APPUYER POUR JOUER',
-        { fontSize: '14px', fill: '#ffffff' },
+        hudTextStyle({ fontSize: '14px', fill: DESIGN_TOKENS.texteMenu }),
         DEPTH.MENU_PANEL
     );
     sceneTween(ui.scene, {
@@ -44,13 +45,11 @@ export function buildMenuFooter(ui, elements, layout) {
         GAME_CONFIG.centerX,
         layout.hint1,
         menuControlsHint(),
-        {
+        hudTextStyle({
             fontSize: '10px',
-            fill: '#B0BEC5',
-            stroke: '#0d1117',
-            strokeThickness: 2,
+            fill: DESIGN_TOKENS.texteHintMenu,
             align: 'center',
-        },
+        }),
         DEPTH.MENU_RAISED
     );
     elements.push(ui._hint1);

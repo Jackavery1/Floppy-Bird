@@ -31,6 +31,7 @@ vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialComplete: vi.fn(() => true),
     loadTutorialProgress: vi.fn(() => 3),
     loadTutorialSeen: vi.fn(() => true),
+    incrementRoundsStarted: vi.fn(() => 1),
 }));
 
 vi.mock('../src/storage.js', () => ({
@@ -53,7 +54,8 @@ describe('sceneFlow', () => {
             dailyChallengeMode: false,
             dailyGoal: 0,
             activeSkinId: 'classic',
-            time: { timeScale: 1, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
+            time: { timeScale: 1, paused: false, delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
+            game: { canvas: null },
             bird: {
                 reset: vi.fn(),
                 applyDifficulty: vi.fn(),
@@ -80,6 +82,7 @@ describe('sceneFlow', () => {
                 updateHardcoreLabel: vi.fn(),
                 refreshHardcoreLockState: vi.fn(),
                 showJumpTutorial: vi.fn(),
+                showDailyGoalBrief: vi.fn(),
                 showPause: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
             },
             toggleTraining: vi.fn(function toggle() {

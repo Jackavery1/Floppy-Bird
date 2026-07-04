@@ -3,6 +3,7 @@ import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.j
 import { GAME_STATE } from './gameState.js';
 import { loadHighScore } from './storage.js';
 import { showTutorialForProgress, showHardcoreTutorialIfNeeded } from './tutorialProgress.js';
+import { incrementRoundsStarted } from './tutorialStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
@@ -44,6 +45,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     }
 
     if (resetBird) {
+        incrementRoundsStarted();
         scene.bird.reset(GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
         scene.bird.setSkin(skinId);
     }
@@ -88,6 +90,9 @@ export function beginRound(scene, { resetBird = false } = {}) {
     applyTrainingTimeScale(scene);
     showTutorialForProgress(scene);
     showHardcoreTutorialIfNeeded(scene);
+    if (scene.dailyChallengeMode && scene.dailyGoal > 0) {
+        scene.ui.showDailyGoalBrief(scene.dailyGoal);
+    }
     if (scene.trainingMode) {
         scene.ghost.beginRound({ record: true });
     } else if (scene.playMode === 'daily') {
