@@ -13,7 +13,7 @@ import {
     isSpecialSkin,
 } from './skins/index.js';
 import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_BADGE, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
 
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
@@ -93,7 +93,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
             cx,
             cy + 24,
             skin.label,
-            menuTextStyle({ fontSize: '9px', fill: DESIGN_TOKENS.texteSkinLabel }),
+            menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.texteSkinLabel }),
             DEPTH.PANEL_PREVIEW
         );
         panelElements.push(nameLabel);
@@ -107,7 +107,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
                 cx,
                 cy + 34,
                 '',
-                menuTextStyle({ fontSize: '8px', fill: DESIGN_TOKENS.accent }),
+                menuTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.accent }),
                 DEPTH.PANEL_PREVIEW
             );
             panelElements.push(recordLabel);
@@ -139,7 +139,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         panel.skinsHint,
         skinsPanelHint(),
         menuTextStyle({
-            fontSize: '10px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteSecondaire,
             fontStyle: 'italic',
         }),

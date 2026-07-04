@@ -6,6 +6,8 @@ import { notifyEndOfRoundAchievements } from './metaAchievements.js';
 import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneFeedback.js';
 import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
+import { recordPipeDeathForCoyoteHint } from './tutorialStorage.js';
+import { setupGameOverAccessibility } from './uiDomAccessibility.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -17,6 +19,9 @@ export function triggerDeath(scene, cause = 'pipe') {
     scene.round.resetDeathAnimation();
 
     playDeathImpactFeedback(scene, cause);
+    if (cause === 'pipe') {
+        recordPipeDeathForCoyoteHint();
+    }
     scene.bird.velocityY = 0;
     scene.ghost.finishRound(scene.round.score);
 
@@ -72,4 +77,8 @@ function finishDying(scene) {
         round.deathCause
     );
     scene.ui.setOverlay('gameOver', elements);
+    setupGameOverAccessibility(scene, {
+        score: round.score,
+        isDaily: scene.playMode === 'daily',
+    });
 }

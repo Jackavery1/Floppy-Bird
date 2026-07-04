@@ -1,4 +1,5 @@
 import { SOUND, GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { GAME_STATE } from './gameState.js';
 import { playSound } from './audio.js';
 import { hapticLight, hapticMedium } from './haptics.js';
@@ -25,13 +26,13 @@ export function playDeathImpactFeedback(scene, cause = 'pipe') {
     scene.ui.hideInGameScore();
     if (cause === 'pipe') {
         sceneCameraShake(scene.cameras.main, 200, 0.015);
-        scene.ui.showFlash(0xffffff, 0.8);
+        scene.ui.showFlash(hexVersPhaser(DESIGN_TOKENS.texteHud), 0.8);
     } else if (cause === 'ground') {
         sceneCameraShake(scene.cameras.main, 140, 0.012);
-        scene.ui.showFlash(0xffcc80, 0.65);
+        scene.ui.showFlash(hexVersPhaser(DESIGN_TOKENS.accentGap), 0.65);
     } else {
         sceneCameraShake(scene.cameras.main, 120, 0.01);
-        scene.ui.showFlash(0xb3e5fc, 0.55);
+        scene.ui.showFlash(hexVersPhaser(DESIGN_TOKENS.flashPlafond), 0.55);
     }
     applyDeathSlowMo(scene);
 }

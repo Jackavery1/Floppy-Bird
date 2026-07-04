@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
+import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 /** @param {import('phaser').GameObjects.GameObject[]} elements */
 export function setMenuPanelVisible(elements, visible) {
@@ -23,11 +23,11 @@ export function buildMenuPanelBackdrop(scene, panel) {
         panel.panelTop + panel.panelH / 2,
         panel.w,
         panel.panelH,
-        0x0d1117,
+        hexVersPhaser(DESIGN_TOKENS.contourMenu),
         0.94
     );
     backdrop.setDepth(DEPTH.PANEL_BACKDROP);
-    backdrop.setStrokeStyle(2, 0x37474f, 0.9);
+    backdrop.setStrokeStyle(2, hexVersPhaser(DESIGN_TOKENS.boutonPause), 0.9);
     backdrop.setVisible(false);
     return backdrop;
 }
@@ -62,6 +62,12 @@ export function buildMenuToggleButton(scene, elements, cfg) {
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, MIN_TOUCH, 0x000000, 0);
     hit.setDepth(cfg.depth + 2);
     hit.setInteractive({ useHandCursor: true });
+    hit.on('pointerover', () => {
+        bg.setFillStyle(MENU_BTN_HOVER, 0.88);
+    });
+    hit.on('pointerout', () => {
+        bg.setFillStyle(cfg.color, 0.88);
+    });
     hit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         cfg.onToggle();

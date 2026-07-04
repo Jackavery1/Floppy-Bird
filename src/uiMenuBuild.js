@@ -2,7 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { menuControlsHint } from './device.js';
 import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
-import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 const START_HIT_WIDTH = 240;
 
@@ -46,7 +46,7 @@ export function buildMenuFooter(ui, elements, layout) {
         layout.hint1,
         menuControlsHint(),
         hudTextStyle({
-            fontSize: '10px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteHintMenu,
             align: 'center',
         }),

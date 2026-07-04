@@ -7,21 +7,25 @@ export { createInGameControls, destroyInGameControls } from './uiHudControls.js'
 export {
     showRecordBroken,
     showDailyGoalBrief,
-    showJumpTutorial,
-    showGapTutorial,
-    showScoreTutorial,
-    dismissJumpTutorial,
-    dismissGameplayTutorial,
-    showFlash,
     showDailyGoalReached,
     showDifficultyEscalation,
+    showScoreStreak,
+    showSpeedBoostPreview,
     showDifficultyEscalationPreview,
     showCoyoteHint,
     showHardcoreInvincibilityHint,
+    showFlash,
+} from './uiHudBanners.js';
+
+export {
+    showJumpTutorial,
+    showGapTutorial,
+    showScoreTutorial,
     showHardcoreTutorial,
     dismissHardcoreTutorial,
-    showScoreStreak,
-} from './uiHudFeedback.js';
+    dismissJumpTutorial,
+    dismissGameplayTutorial,
+} from './uiHudTutorial.js';
 
 /** @param {import('./ui.js').UI} ui */
 export function hideInGameScore(ui) {

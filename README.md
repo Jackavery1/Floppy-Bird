@@ -9,7 +9,7 @@ Couverture Vitest en CI : seuils ≥ 75 % lines / statements, ≥ 70 % functions
 ## Commandes
 
 > **Ne pas utiliser Live Server** (port 5500) : il ne bundle pas Vite/Phaser — écran bloqué sur « Chargement… ».  
-> Lance toujours **`npm run dev`** → http://localhost:5173
+> Lance toujours **`npm run dev`** ou **`npm start`** → http://localhost:5173
 
 ```bash
 npm install
@@ -46,17 +46,18 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 ## Jeu
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
-- 8 premiers gaps scriptés à chaque manche, puis séquence daily / aléatoire lissé
-- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (hardcore : 700→325 ms sur les 6 premiers tuyaux, collisions tuyaux seulement)
-- Coyote time 5 frames : centre **ou** hitbox entière dans le corridor du gap ; teinte discrète pendant la grâce ; hint « seconde chance » la première fois ; buffer de saut 4 frames
+- 8 premiers gaps scriptés (±10 px de jitter par manche), puis séquence daily / aléatoire lissé
+- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (hardcore : 700→325 ms sur les 6 premiers tuyaux — sol/plafond protégés pendant la grâce)
+- Coyote time 5 frames : centre **ou** hitbox entière dans le corridor du gap (tuyaux seulement — sol et plafond restent mortels hors invincibilité spawn) ; teinte discrète pendant la grâce ; hint explicite la première fois (~5 frames / ~0,08 s) ; buffer de saut 4 frames
 - Tutoriel en 3 étapes (saut → gap → score) à la première partie, puis hint coyote au premier passage ; **auto-skip après 3 parties** si non terminé
 - Son de palier distinct tous les 10 points
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
-- **Preview gaps** au score 18 (« GAPS ↓ au score 20 ») puis bannière « GAPS RESSERRÉS » au score 20
+- **Preview gaps** au score 15 (« GAPS ↓ + VITESSE +3 % au score 20 ») puis bannière « GAPS RESSERRÉS » au score 20
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,65), fantôme enregistré (meilleur parcours par difficulté/hardcore), scores non enregistrés
 - **Défi du jour** (D) : séquence partagée, skin/objectif imposés, fantôme replay sans ralenti, **hors TOP 5 classique**, rejouable depuis le game over
-- Escalade : +3 % vitesse / 10 pts ; gaps resserrés après 20 ; preview « GAPS ↓ au score 20 » au score 18, bannière « GAPS RESSERRÉS » (20) et séries à 10, 15, 20, 30, 40, 50 pts
+- Escalade : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; preview vitesse au score 9 ; gaps resserrés après 20 ; preview combinée au score 15 ; séries à 10, 15, 20, 30, 40, 50 pts
+- Hint coyote : réaffiché après chaque 3e mort sur tuyau
 - **Mort différenciée** : feedback visuel (tuyau / sol / plafond) + libellé au game over ; micro slow-mo à l’impact
 - **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→325 ms sur 6 tuyaux (bannière « Invincible N ms » à chaque renouvellement), **TOP 5 hardcore** séparé
 - **Meta** : 16 skins et 8 trophées déblocables (dont score 25 et série daily ×3)
@@ -67,7 +68,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 
 | Dossier         | Rôle                                                                                                      |
 | --------------- | --------------------------------------------------------------------------------------------------------- |
-| `src/`          | gameplay (`bird`, `pipes`, `scene*`), UI (`ui*` — carte : [`uiIndex.js`](src/uiIndex.js)), meta, textures |
+| `src/`          | gameplay (`bird`, `pipes`, `scene*`), UI (`ui*` — carte : [`uiIndex.js`](src/uiIndex.js)), meta, I/O (`boolStorage`, `*Storage`) |
 | `src/scene*.js` | Orchestration Phaser (flow, round, death, input…) — `GameScene.js` mince                                  |
 | `tests/`        | Vitest (miroir des modules métier)                                                                        |
 | `e2e/`          | Playwright (desktop, mobile portrait/paysage Chromium + WebKit, tablette paysage)                         |
@@ -84,8 +85,8 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
 - **Mobile paysage** : `#landscape-hint` bloque le jeu sur téléphone tactile (hauteur ≤520 px) — choix assumé ; **tablette paysage** (hauteur >520 px) autorisée
-- **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`) — pause, CTA menu et **boutons difficulté** (Tab + Entrée)
-- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (accessibilité) ; le canvas reste centré dans le `visualViewport` (position `fixed`)
+- **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`) — pause, menu, game over (rejouer / menu) et **boutons difficulté** (Tab + Entrée)
+- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (`maximum-scale=3.0` dans le viewport) pour l’accessibilité visuelle ; le canvas reste centré via `visualViewport` (position `fixed`, recalcul au resize/scroll clavier virtuel) ; le letterbox préserve le ratio 288×512
 - **PWA** : `orientation: portrait-primary` (portrait recommandé sur téléphone) ; 1ère visite hors ligne → `offline.html`
 - **UI** : titres menu/pause/game over en **Press Start 2P** ; métadonnées Open Graph / Twitter (`og:image` 512 px en prod)
 
@@ -97,7 +98,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 | **iPhone / iPad (Safari)**  | Partager ↑ → « Sur l’écran d’accueil » (icône 192 px déjà fournie) |
 | **Desktop (Chrome / Edge)** | Icône ⊕ dans la barre d’adresse → Installer                        |
 
-Après installation, le jeu s’ouvre en plein écran (`display: standalone`, orientation libre). Une visite en ligne est requise avant le mode hors ligne.
+Après installation, le jeu s’ouvre en plein écran (`display: standalone`, portrait recommandé — voir `manifest.webmanifest`). Une visite en ligne est requise avant le mode hors ligne.
 
 ## Déploiement
 

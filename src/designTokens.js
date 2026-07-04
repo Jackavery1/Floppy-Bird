@@ -9,6 +9,7 @@ export const DESIGN_TOKENS = Object.freeze({
     texteHint: '#ffffff',
     accent: '#fdd835',
     accentGap: '#FFCC80',
+    flashPlafond: '#b3e5fc',
     texteHud: '#ffffff',
     contourHud: '#000000',
     texteSecondaire: '#78909C',
@@ -29,7 +30,7 @@ export const DESIGN_TOKENS = Object.freeze({
     badgeDailyContour: '#4A148C',
     texteClair: '#ECEFF1',
     texteSkinLabel: '#CFD8DC',
-    texteVerrouille: '#546E7A',
+    texteVerrouille: '#90A4AE',
     accentScoreHardcore: '#FFAB91',
     contourOptions: '#0D47A1',
     contourSkins: '#004D40',
@@ -57,6 +58,9 @@ export const DESIGN_TOKENS = Object.freeze({
     boutonSkins: '#00897b',
     boutonSkinsStroke: '#4db6ac',
     boutonOptionsStroke: '#42a5f5',
+    toggleTrainingInner: '#e3f2fd',
+    toggleHardcoreOn: '#e53935',
+    toggleHardcoreInner: '#ffcdd2',
     policeInterface: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     policeTitre: '"Press Start 2P", "Courier New", monospace',
 });
@@ -86,8 +90,8 @@ export function hexVersPhaser(hex) {
 
 /** Couleurs Phaser des médailles game over (or / argent / bronze). */
 export const MEDAILLE_COLORS_PHASER = Object.freeze({
-    gold: hexVersPhaser(DESIGN_TOKENS.medailleOr),
-    silver: hexVersPhaser(DESIGN_TOKENS.medailleArgent),
+    or: hexVersPhaser(DESIGN_TOKENS.medailleOr),
+    argent: hexVersPhaser(DESIGN_TOKENS.medailleArgent),
     bronze: hexVersPhaser(DESIGN_TOKENS.medailleBronze),
 });
 

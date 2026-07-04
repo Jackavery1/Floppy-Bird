@@ -1,3 +1,5 @@
+import { HARDCORE_UNLOCK_SCORE } from './hardcoreUnlock.js';
+
 export function isCoarsePointer() {
     if (typeof matchMedia === 'undefined') return false;
     if (matchMedia('(hover: none) and (pointer: coarse)').matches) return true;
@@ -50,7 +52,9 @@ export function hardcoreHint() {
 
 export function hardcoreToggleLabel(enabled, unlocked = true) {
     if (!unlocked) {
-        return isCoarsePointer() ? '🔒 HARD · score ≥ 10' : '🔒 HARDCORE : score ≥ 10 requis';
+        return isCoarsePointer()
+            ? `🔒 HARD · score ≥ ${HARDCORE_UNLOCK_SCORE}`
+            : `🔒 HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
     }
     if (enabled) {
         return isCoarsePointer()
@@ -113,7 +117,9 @@ export function scoreTutorialText() {
 }
 
 export function coyoteHintText() {
-    return 'Seconde chance dans le gap !';
+    return isCoarsePointer()
+        ? 'Grâce dans le gap : ~0,08 s après sortie'
+        : 'Grâce dans le gap : ~5 frames après sortie du corridor';
 }
 
 /** @param {number} ms */

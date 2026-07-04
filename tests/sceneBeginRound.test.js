@@ -56,6 +56,7 @@ describe('sceneBeginRound', () => {
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
+                setGapJitterSeed: vi.fn(),
                 setSpawnHandler: vi.fn(),
                 applyRoundDifficulty: vi.fn(),
             },

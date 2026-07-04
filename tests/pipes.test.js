@@ -156,6 +156,16 @@ describe('Pipes', () => {
             expect(pipes.pipeSpeed).toBe(base);
         });
 
+        it('plafonne l’accélération après score 50', () => {
+            pipes.setDifficulty('normal');
+            const base = pipes.pipeSpeed;
+            pipes.applySpeedForScore(50);
+            const at50 = pipes.pipeSpeed;
+            pipes.applySpeedForScore(100);
+            expect(pipes.pipeSpeed).toBe(at50);
+            expect(at50).toBeCloseTo(base * 1.15);
+        });
+
         it('resserre le gap physique après 20 points', () => {
             pipes.applyRoundDifficulty({ speed: 2.7, gap: 112, pipeInterval: 76 });
             pipes.applySpeedForScore(19);
@@ -190,6 +200,20 @@ describe('Pipes', () => {
             expect(other._resolveGapY()).toBe(gap1);
             expect(other._resolveGapY()).toBe(gap2);
             expect(gap1).not.toBe(gap2);
+        });
+    });
+
+    describe('setGapJitterSeed', () => {
+        it('varie les gaps scriptés sans casser la reproductibilité', () => {
+            pipes.pipeGap = 112;
+            pipes.setGapJitterSeed(777);
+            const gapA = pipes._resolveGapY();
+            pipes.reset();
+            pipes.pipeGap = 112;
+            pipes.setGapJitterSeed(777);
+            const gapB = pipes._resolveGapY();
+            expect(gapA).toBe(gapB);
+            expect(gapA).not.toBe(getScriptedPipeGapY(0, 112));
         });
     });
 });

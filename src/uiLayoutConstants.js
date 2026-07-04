@@ -2,6 +2,23 @@ import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 
 export const MIN_TOUCH = 44;
+
+/** Grille spacing 4 px — référence layout menu / HUD. */
+export const SPACING = Object.freeze({
+    unit: 4,
+    xs: 4,
+    sm: 8,
+    md: 12,
+    lg: 16,
+    xl: 24,
+    touch: MIN_TOUCH,
+});
+/** Taille minimale des hints secondaires (menu, game over, HUD). */
+export const FONT_SIZE_HINT = '11px';
+/** Petits badges in-game (mode, objectif). */
+export const FONT_SIZE_BADGE = '11px';
+/** Petits labels compacts (grille skins). */
+export const FONT_SIZE_COMPACT = '10px';
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
 /** Marge droite (px jeu) pour le bouton pause — évite les taps ratés au bord letterbox. */
 export const PAUSE_BTN_INSET = 12;
@@ -83,6 +100,8 @@ export const TOUCH_TARGETS = Object.freeze({
     pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
     pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
     pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
+    gameOverRestart: { x: GAME_CONFIG.centerX, y: GAME_OVER_PANEL.y + 252 },
+    gameOverMenu: { x: GAME_CONFIG.centerX, y: GAME_OVER_PANEL.y + 285 },
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 

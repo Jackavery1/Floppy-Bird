@@ -1,6 +1,6 @@
 import { getSkin } from './skins/index.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_SIZE_HINT } from './uiLayout.js';
 
 function drawEntrySkinSwatch(scene, x, y, skinId, depth) {
     const color = getSkin(skinId).palette.body;
@@ -48,7 +48,7 @@ export function buildGameOverLeaderboard(scene, opts) {
                 y(168),
                 `— OBJECTIF : ${dailyGoal} —`,
                 menuTextStyle({
-                    fontSize: '9px',
+                    fontSize: FONT_SIZE_HINT,
                     fill: DESIGN_TOKENS.texteLeaderboard,
                     fontStyle: 'bold',
                 }),
@@ -64,7 +64,7 @@ export function buildGameOverLeaderboard(scene, opts) {
                     ? "Bravo, défi validé pour aujourd'hui !"
                     : `Encore ${dailyGoal - finalScore} point(s) pour valider le défi.`,
                 menuTextStyle({
-                    fontSize: '10px',
+                    fontSize: FONT_SIZE_BADGE,
                     fill: DESIGN_TOKENS.texteMuted,
                 }),
                 DEPTH.MENU_RAISED
@@ -85,7 +85,7 @@ export function buildGameOverLeaderboard(scene, opts) {
             y(168),
             boardTitle,
             menuTextStyle({
-                fontSize: '9px',
+                fontSize: FONT_SIZE_HINT,
                 fill: DESIGN_TOKENS.texteLeaderboard,
                 fontStyle: 'bold',
             }),

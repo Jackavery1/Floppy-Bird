@@ -8,6 +8,7 @@ import {
     fitTitleFontSize,
     GAME_TITLE,
     FONT_TITLE,
+    FONT_SIZE_HINT,
     MIN_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
@@ -55,7 +56,7 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
             layout.difficulty,
             GAME_CONFIG.difficultyLabels[diff],
             {
-                fontSize: '9px',
+                fontSize: FONT_SIZE_HINT,
                 fill: diffLabelColor(ui._currentDifficulty, diff),
                 fontStyle: 'bold',
             },

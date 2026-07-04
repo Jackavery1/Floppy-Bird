@@ -1,28 +1,30 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
-import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
     DAILY_BTN_TEXT_MAX_WIDTH,
     DEPTH,
+    FONT_SIZE_BADGE,
+    FONT_SIZE_HINT,
     MIN_TOUCH,
     PANEL_TEXT_MAX_WIDTH,
     stopUiEvent,
 } from './uiLayout.js';
 
-const DAILY_BTN_COLOR = 0x6a1b9a;
-const DAILY_BTN_HOVER = 0x9c27b0;
+const DAILY_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonDaily);
+const DAILY_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonDailyHover);
 
 const DAILY_BTN_STYLE = hudTextStyle({
-    fontSize: '10px',
+    fontSize: FONT_SIZE_BADGE,
     fill: DESIGN_TOKENS.texteMenu,
     fontStyle: 'bold',
     stroke: DESIGN_TOKENS.badgeDailyContour,
 });
 
 const DAILY_SUBTITLE_STYLE = hudTextStyle({
-    fontSize: '9px',
+    fontSize: FONT_SIZE_HINT,
     fill: DESIGN_TOKENS.badgeDaily,
     stroke: DESIGN_TOKENS.contourMenu,
 });
@@ -84,6 +86,12 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     );
     ui._dailyBtnHit.setDepth(DEPTH.MENU_HIT);
     ui._dailyBtnHit.setInteractive({ useHandCursor: true });
+    ui._dailyBtnHit.on('pointerover', () => {
+        ui._dailyBtnBg.setFillStyle(DAILY_BTN_HOVER, 0.95);
+    });
+    ui._dailyBtnHit.on('pointerout', () => {
+        ui._dailyBtnBg.setFillStyle(DAILY_BTN_COLOR, 0.9);
+    });
     ui._dailyBtnHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         ui.scene.launchDailyChallenge();

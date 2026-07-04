@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
-import { smoothGapY, gapBounds, randomGapY, resolveNextGapY, effectiveGapDeltaCap } from '../src/pipeGaps.js';
+import { smoothGapY, gapBounds, randomGapY, resolveNextGapY, effectiveGapDeltaCap, applyScriptedGapJitter } from '../src/pipeGaps.js';
 import { Utils } from '../src/utils.js';
 
 describe('pipeGaps', () => {
@@ -53,7 +53,7 @@ describe('pipeGaps', () => {
     });
 
     describe('resolveNextGapY', () => {
-        it('applique la séquence scriptée en classique', () => {
+        it('applique la séquence scriptée en classique sans jitter', () => {
             const pipeGap = 112;
             const first = resolveNextGapY({
                 gapIndex: 0,
@@ -61,9 +61,18 @@ describe('pipeGaps', () => {
                 dailyRng: null,
                 pipeGap,
                 runScore: 0,
+                gapJitterSeed: 0,
             });
             expect(first.gapY).toBe(getScriptedPipeGapY(0, pipeGap));
             expect(first.gapIndex).toBe(1);
+        });
+
+        it('jitter les gaps scriptés dans une fenêtre bornée', () => {
+            const pipeGap = 112;
+            const base = getScriptedPipeGapY(0, pipeGap);
+            const jittered = applyScriptedGapJitter(base, 0, 4242, pipeGap);
+            expect(jittered).toBeGreaterThanOrEqual(base - GAME_CONFIG.pipes.scriptedGapJitterPx);
+            expect(jittered).toBeLessThanOrEqual(base + GAME_CONFIG.pipes.scriptedGapJitterPx);
         });
 
         it('ignore le script en mode daily', () => {

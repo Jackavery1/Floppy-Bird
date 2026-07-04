@@ -60,7 +60,7 @@ describe('appBootstrap a11y', () => {
         const { onGameReady } = await import('../src/appBootstrap.js');
         onGameReady(game);
 
-        expect(stored['a11y-controls']?.children.length).toBe(16);
+        expect(stored['a11y-controls']?.children.length).toBe(18);
         expect(stored['ui-announcer']).toBeTruthy();
         expect(game.canvas.width).toBe(GAME_CONFIG.width);
     });

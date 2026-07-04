@@ -70,7 +70,7 @@ describe('uiDomAccessibility', () => {
         const { initAccessibilityLayer } = await import('../src/uiDomAccessibility.js');
         initAccessibilityLayer(document);
 
-        expect(stored['a11y-controls']?.children.length).toBe(16);
+        expect(stored['a11y-controls']?.children.length).toBe(18);
         expect(stored['ui-announcer']).toBeTruthy();
     });
 
@@ -219,5 +219,70 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-skins'].hidden).toBe(false);
         expect(buttons['a11y-skin-prev'].hidden).toBe(false);
         expect(buttons['a11y-skin-next'].hidden).toBe(false);
+    });
+
+    it('setupGameOverAccessibility active rejouer et menu', async () => {
+        const buttons = Object.fromEntries(
+            ['a11y-gameover-restart', 'a11y-gameover-menu'].map((id) => [
+                id,
+                { hidden: true, style: {} },
+            ])
+        );
+        const announcer = { textContent: '' };
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => {
+                if (id === 'ui-announcer') return announcer;
+                return buttons[id] ?? null;
+            }),
+        });
+
+        const { setupGameOverAccessibility } = await import('../src/uiDomAccessibility.js');
+        const scene = {
+            handlePrimaryAction: vi.fn(),
+            returnToMenu: vi.fn(),
+            game: {
+                canvas: {
+                    getBoundingClientRect: () => ({
+                        left: 0,
+                        top: 0,
+                        width: GAME_CONFIG.width,
+                        height: GAME_CONFIG.height,
+                    }),
+                },
+            },
+        };
+
+        setupGameOverAccessibility(scene, { score: 12, isDaily: false });
+        expect(buttons['a11y-gameover-restart'].hidden).toBe(false);
+        expect(buttons['a11y-gameover-menu'].hidden).toBe(false);
+        expect(announcer.textContent).toContain('12');
+    });
+
+    it('setAccessibilityControlDisabled marque le bouton hardcore verrouillé', async () => {
+        const btn = {
+            hidden: false,
+            disabled: false,
+            tabIndex: 0,
+            setAttribute: vi.fn(function (name, value) {
+                if (name === 'aria-disabled') this._ariaDisabled = value;
+                if (name === 'aria-label') this._ariaLabel = value;
+            }),
+            removeAttribute: vi.fn(function (name) {
+                if (name === 'aria-disabled') delete this._ariaDisabled;
+            }),
+        };
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => (id === 'a11y-hardcore' ? btn : null)),
+        });
+
+        const { setAccessibilityControlDisabled } = await import('../src/uiDomAccessibility.js');
+        setAccessibilityControlDisabled('menuHardcore', true);
+        expect(btn.disabled).toBe(true);
+        expect(btn.tabIndex).toBe(-1);
+        expect(btn._ariaDisabled).toBe('true');
+
+        setAccessibilityControlDisabled('menuHardcore', false);
+        expect(btn.disabled).toBe(false);
+        expect(btn._ariaDisabled).toBeUndefined();
     });
 });

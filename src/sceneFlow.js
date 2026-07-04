@@ -14,11 +14,6 @@ import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
 import {
-    applyPausedState,
-    applyPlayingState,
-    resumeClock,
-} from './sceneFlowTransitions.js';
-import {
     announceAccessibility,
     hideAllAccessibilityControls,
     setAccessibilityControlVisible,
@@ -27,6 +22,23 @@ import {
 } from './uiDomAccessibility.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {SceneContext} scene */
+export function applyPlayingState(scene) {
+    scene.state = GAME_STATE.PLAYING;
+    scene.time.paused = false;
+}
+
+/** @param {SceneContext} scene */
+export function applyPausedState(scene) {
+    scene.state = GAME_STATE.PAUSED;
+    scene.time.paused = true;
+}
+
+/** @param {SceneContext} scene */
+export function resumeClock(scene) {
+    scene.time.paused = false;
+}
 
 /** @param {SceneContext} scene */
 function clearPauseOverlay(scene) {

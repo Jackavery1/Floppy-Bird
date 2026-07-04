@@ -6,8 +6,6 @@ import {
 } from './uiDomAccessibility.js';
 import { computeLetterboxSize, computeLetterboxPosition, getLetterboxViewport } from './viewport.js';
 
-export { syncShellTheme } from './shellTheme.js';
-
 /** Seam Playwright : dev ou build explicite `VITE_ENABLE_TEST_SEAM=true` (jamais Pages prod). */
 export function shouldInstallTestSeam() {
     return import.meta.env.DEV || import.meta.env.VITE_ENABLE_TEST_SEAM === 'true';

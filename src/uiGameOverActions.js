@@ -5,6 +5,7 @@ import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_HINT,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
     MIN_TOUCH,
@@ -33,7 +34,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
             y(252),
             restartHintForMode(isDaily),
             menuTextStyle({
-                fontSize: '9px',
+                fontSize: FONT_SIZE_HINT,
                 fill: DESIGN_TOKENS.texteMenu,
                 fontStyle: 'italic',
             }),
@@ -88,7 +89,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
             cx,
             y(308),
             menuHint(),
-            menuTextStyle({ fontSize: '9px', fill: DESIGN_TOKENS.texteHintFaible }),
+            menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.texteHintFaible }),
             DEPTH.MENU_RAISED
         )
     );

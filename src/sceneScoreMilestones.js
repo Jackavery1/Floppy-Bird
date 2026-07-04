@@ -4,7 +4,16 @@ import { GAME_CONFIG } from './config.js';
 
 /** @param {SceneContext} scene @param {number} score */
 export function handleScoreMilestones(scene, score) {
-    const { gapTightenAfterScore, difficultyPreviewOffset, streakMilestones } = GAME_CONFIG.round;
+    const {
+        gapTightenAfterScore,
+        difficultyPreviewOffset,
+        speedBoostEvery,
+        speedBoostPreviewOffset,
+        streakMilestones,
+    } = GAME_CONFIG.round;
+    if (score === speedBoostEvery - speedBoostPreviewOffset) {
+        scene.ui.showSpeedBoostPreview?.();
+    }
     if (score === gapTightenAfterScore - difficultyPreviewOffset) {
         scene.ui.showDifficultyEscalationPreview?.();
     }

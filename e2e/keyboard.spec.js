@@ -99,6 +99,21 @@ test.describe('clavier desktop', () => {
         await expect(page.locator('#a11y-skin-next')).toBeFocused();
     });
 
+    test('Tab puis Entrée sur menu game over retourne au menu', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await forceGameOver(page);
+        await expectGameState(page, 'gameover');
+        for (let i = 0; i < 16; i++) {
+            const id = await page.evaluate(() => document.activeElement?.id ?? '');
+            if (id === 'a11y-gameover-menu') break;
+            await page.keyboard.press('Tab');
+        }
+        await expect(page.locator('#a11y-gameover-menu')).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'menu');
+    });
+
     test('K puis flèches cycle les skins au menu', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);

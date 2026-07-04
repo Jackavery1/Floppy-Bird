@@ -45,11 +45,13 @@
         <link rel="manifest" href="manifest.webmanifest" />
     </head>
     <body>
-        <div id="loading" role="status" aria-live="polite">Chargement…</div>
-        <div id="landscape-hint" role="status" aria-live="polite">
-            Tourne ton téléphone en portrait pour jouer
-        </div>
-        <div id="game-container" role="application" aria-label="Floppy Bird — jeu arcade"></div>
+        <main id="app" aria-label="Floppy Bird">
+            <div id="loading" role="status" aria-live="polite">Chargement…</div>
+            <div id="landscape-hint" role="status" aria-live="polite">
+                Tourne ton téléphone en portrait pour jouer
+            </div>
+            <div id="game-container" role="application" aria-label="Floppy Bird — jeu arcade"></div>
+        </main>
         <script>
             (function () {
                 if (navigator.onLine !== false) return;
@@ -64,7 +66,7 @@
                 if (el && !el.classList.contains('hidden')) {
                     el.innerHTML =
                         'Impossible de charger le jeu.<br><br>' +
-                        'Utilise <strong>npm run dev</strong> (Vite), pas Live Server.<br>' +
+                        'Utilise <strong>npm run dev</strong> ou <strong>npm start</strong> (Vite), pas Live Server.<br>' +
                         'Live Server ne peut pas résoudre les modules npm (Phaser).<br>' +
                         'Après build : <strong>npm run preview</strong>.';
                 }

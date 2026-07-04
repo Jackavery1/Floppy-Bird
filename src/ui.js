@@ -20,6 +20,7 @@ import {
     showDailyGoalBrief,
     showDifficultyEscalation,
     showDifficultyEscalationPreview,
+    showSpeedBoostPreview,
     showCoyoteHint,
     showHardcoreInvincibilityHint,
     showHardcoreTutorial,
@@ -137,6 +138,9 @@ export class UI {
     }
     showDifficultyEscalationPreview() {
         showDifficultyEscalationPreview(this);
+    }
+    showSpeedBoostPreview() {
+        showSpeedBoostPreview(this);
     }
     showCoyoteHint() {
         showCoyoteHint(this);

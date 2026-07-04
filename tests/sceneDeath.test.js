@@ -16,6 +16,12 @@ vi.mock('../src/roundScore.js', () => ({
 vi.mock('../src/metaAchievements.js', () => ({
     notifyEndOfRoundAchievements: vi.fn(),
 }));
+vi.mock('../src/uiDomAccessibility.js', () => ({
+    setupGameOverAccessibility: vi.fn(),
+}));
+vi.mock('../src/tutorialStorage.js', () => ({
+    recordPipeDeathForCoyoteHint: vi.fn(),
+}));
 
 describe('sceneDeath', () => {
     it('triggerDeath passe en DYING et enregistre le score', async () => {
@@ -43,6 +49,19 @@ describe('sceneDeath', () => {
         expect(scene.round.isNewRecord).toBe(true);
     });
 
+    it('triggerDeath pipe enregistre les morts tuyau pour le hint coyote', async () => {
+        const { recordPipeDeathForCoyoteHint } = await import('../src/tutorialStorage.js');
+        const scene = {
+            state: GAME_STATE.PLAYING,
+            round: createRoundState(),
+            bird: { velocityY: 0 },
+            ghost: { finishRound: vi.fn() },
+            time: { delayedCall: vi.fn() },
+        };
+        triggerDeath(scene, 'pipe');
+        expect(recordPipeDeathForCoyoteHint).toHaveBeenCalled();
+    });
+
     it('updateDying termine quand l’oiseau touche le sol', async () => {
         const { playGroundImpactFeedback } = await import('../src/sceneFeedback.js');
         const { notifyEndOfRoundAchievements } = await import('../src/metaAchievements.js');
@@ -53,6 +72,7 @@ describe('sceneDeath', () => {
         round.roundHighScore = 7;
         const scene = {
             state: GAME_STATE.DYING,
+            playMode: 'classic',
             round,
             hardcoreMode: false,
             game: { loop: { delta: 16.67 } },
@@ -70,10 +90,15 @@ describe('sceneDeath', () => {
             },
         };
         updateDying(scene);
+        const { setupGameOverAccessibility } = await import('../src/uiDomAccessibility.js');
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
         expect(scene.ui.highScore).toBe(7);
         expect(playGroundImpactFeedback).toHaveBeenCalled();
         expect(notifyEndOfRoundAchievements).toHaveBeenCalledWith(scene);
         expect(scene.ui.setOverlay).toHaveBeenCalledWith('gameOver', expect.any(Array));
+        expect(setupGameOverAccessibility).toHaveBeenCalledWith(scene, {
+            score: 2,
+            isDaily: false,
+        });
     });
 });

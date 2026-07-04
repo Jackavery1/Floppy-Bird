@@ -8,6 +8,11 @@
     --couleur-accent: #fdd835;
     --police-interface: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --police-titre: 'Press Start 2P', 'Courier New', monospace;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
 }
 
 * {
@@ -107,6 +112,12 @@ html.game-ready #loading {
     display: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    #loading {
+        animation: none;
+    }
+}
+
 #landscape-hint {
     display: none;
     position: fixed;
@@ -116,7 +127,7 @@ html.game-ready #loading {
     justify-content: center;
     padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
         max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
-    background: rgba(26, 26, 46, 0.96);
+    background: color-mix(in srgb, var(--couleur-fond) 96%, transparent);
     color: var(--couleur-texte-hint);
     font-family: var(--police-interface);
     font-size: clamp(14px, 3.8vw, 15px);
@@ -130,13 +141,6 @@ html.game-ready #loading {
 @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
     #landscape-hint {
         display: flex;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    #loading,
-    #landscape-hint {
-        transition: none;
     }
 }
 

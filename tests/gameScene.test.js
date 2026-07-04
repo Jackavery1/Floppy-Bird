@@ -177,9 +177,10 @@ describe('GameScene', () => {
         expect(tickJumpBuffer).toHaveBeenCalledWith(scene);
     });
 
-    it('le sol n’écourte pas pendant l’invincibilité spawn', () => {
+    it('le sol n’écourte pas pendant l’invincibilité spawn classique', () => {
         const scene = new GameScene();
         scene.state = GAME_STATE.PLAYING;
+        scene.hardcoreMode = false;
         scene.game = { loop: { delta: 16.67, actualFps: 60 } };
         scene.round = createRoundState();
         scene.round.spawnInvincible = true;
@@ -198,7 +199,29 @@ describe('GameScene', () => {
         expect(checkCollisions).toHaveBeenCalledWith(scene);
     });
 
-    it('le coyote time protège aussi plafond et sol', () => {
+    it('le sol n’écourte pas pendant l’invincibilité spawn en hardcore', () => {
+        const scene = new GameScene();
+        scene.state = GAME_STATE.PLAYING;
+        scene.hardcoreMode = true;
+        scene.game = { loop: { delta: 16.67, actualFps: 60 } };
+        scene.round = createRoundState();
+        scene.round.spawnInvincible = true;
+        scene.bird = {
+            update: vi.fn(),
+            isOutOfBounds: vi.fn(() => false),
+            isHittingGround: vi.fn(() => true),
+        };
+        scene.pipes = { update: vi.fn(), pipeSpeed: 2.7, isBirdInGap: vi.fn(() => false) };
+        scene.ghost = { update: vi.fn() };
+        scene._clouds = [];
+
+        scene.update();
+
+        expect(triggerDeath).not.toHaveBeenCalled();
+        expect(checkCollisions).toHaveBeenCalledWith(scene);
+    });
+
+    it('le coyote time ne protège pas le plafond', () => {
         const scene = new GameScene();
         scene.state = GAME_STATE.PLAYING;
         scene.game = { loop: { delta: 16.67, actualFps: 60 } };
@@ -215,7 +238,7 @@ describe('GameScene', () => {
 
         scene.update();
 
-        expect(triggerDeath).not.toHaveBeenCalled();
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'ceiling');
     });
 
     it('le sol déclenche une mort différenciée', () => {

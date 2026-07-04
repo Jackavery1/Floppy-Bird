@@ -8,6 +8,7 @@ import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
 import { applySkinPatternToDifficulty } from './skinPatterns.js';
+import { Utils } from './utils.js';
 import { ensurePipeTextures } from './textures/index.js';
 import {
     cancelPipeSpawnTimer,
@@ -52,11 +53,13 @@ export function beginRound(scene, { resetBird = false } = {}) {
 
     scene.pipes.reset();
     scene.pipes.setSpawnHandler((count) => onPipeSpawned(scene, count));
+    scene.round.gapJitterSeed = scene.dailyChallengeMode ? 0 : Utils.randomInt(1, 0x7fffffff);
     if (scene.dailyChallengeMode) {
         scene.pipes.setDailySeed(getDailyChallengeSeed());
     } else {
         scene.pipes.setDailySeed(null);
     }
+    scene.pipes.setGapJitterSeed(scene.round.gapJitterSeed);
 
     let roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
     if (scene.playMode === 'daily') {

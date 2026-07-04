@@ -7,13 +7,14 @@ import {
     showFlash,
     showDifficultyEscalation,
     showDifficultyEscalationPreview,
+    showSpeedBoostPreview,
     showCoyoteHint,
     showHardcoreInvincibilityHint,
     showScoreStreak,
     showGapTutorial,
     showScoreTutorial,
     dismissGameplayTutorial,
-} from '../src/uiHudFeedback.js';
+} from '../src/uiHud.js';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
@@ -22,7 +23,7 @@ vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
 }));
 
-describe('uiHudFeedback', () => {
+describe('uiHudBanners', () => {
     let ui;
 
     beforeEach(() => {
@@ -65,6 +66,11 @@ describe('uiHudFeedback', () => {
     it('showDifficultyEscalationPreview crée une bannière', () => {
         showDifficultyEscalationPreview(ui);
         expect(ui._escalationPreviewBanner).toBeTruthy();
+    });
+
+    it('showSpeedBoostPreview crée une bannière', () => {
+        showSpeedBoostPreview(ui);
+        expect(ui._speedBoostPreviewBanner).toBeTruthy();
     });
 
     it('showCoyoteHint crée une bannière', () => {

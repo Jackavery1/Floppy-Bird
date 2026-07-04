@@ -1,33 +1,18 @@
 import { STORAGE_KEYS } from './storageKeys.js';
+import { loadBoolFlag, saveBoolFlag } from './boolStorage.js';
 
 export function loadHardcoreEnabled() {
-    try {
-        return localStorage.getItem(STORAGE_KEYS.hardcore) === '1';
-    } catch {
-        return false;
-    }
+    return loadBoolFlag(STORAGE_KEYS.hardcore);
 }
 
 export function saveHardcoreEnabled(enabled) {
-    try {
-        localStorage.setItem(STORAGE_KEYS.hardcore, enabled ? '1' : '0');
-    } catch {
-        /* quota localStorage */
-    }
+    saveBoolFlag(STORAGE_KEYS.hardcore, enabled);
 }
 
 export function loadHardcoreTutorialSeen() {
-    try {
-        return localStorage.getItem(STORAGE_KEYS.hardcoreTutorialSeen) === '1';
-    } catch {
-        return false;
-    }
+    return loadBoolFlag(STORAGE_KEYS.hardcoreTutorialSeen);
 }
 
 export function markHardcoreTutorialSeen() {
-    try {
-        localStorage.setItem(STORAGE_KEYS.hardcoreTutorialSeen, '1');
-    } catch {
-        /* quota localStorage */
-    }
+    saveBoolFlag(STORAGE_KEYS.hardcoreTutorialSeen, true);
 }

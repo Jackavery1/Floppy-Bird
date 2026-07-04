@@ -10,6 +10,9 @@ import {
     toggleTraining,
     toggleHardcore,
     startDailyChallenge,
+    applyPausedState,
+    applyPlayingState,
+    resumeClock,
 } from '../src/sceneFlow.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -65,6 +68,7 @@ describe('sceneFlow', () => {
             pipes: {
                 reset: vi.fn(),
                 setDailySeed: vi.fn(),
+                setGapJitterSeed: vi.fn(),
                 setSpawnHandler: vi.fn(),
                 applyRoundDifficulty: vi.fn(),
             },
@@ -195,6 +199,29 @@ describe('sceneFlow', () => {
         handlePrimaryAction(scene);
         expect(scene.ui.clearOverlay).toHaveBeenCalledWith('gameOver');
         expect(scene.playMode).toBe('daily');
+        expect(scene.state).toBe(GAME_STATE.PLAYING);
+    });
+
+    it('applyPausedState met en pause', () => {
+        const scene = makeScene(GAME_STATE.PLAYING);
+        applyPausedState(scene);
+        expect(scene.state).toBe(GAME_STATE.PAUSED);
+        expect(scene.time.paused).toBe(true);
+    });
+
+    it('applyPlayingState reprend', () => {
+        const scene = makeScene(GAME_STATE.PLAYING);
+        applyPausedState(scene);
+        applyPlayingState(scene);
+        expect(scene.state).toBe(GAME_STATE.PLAYING);
+        expect(scene.time.paused).toBe(false);
+    });
+
+    it('resumeClock débloque le timer sans changer l’état', () => {
+        const scene = makeScene(GAME_STATE.PLAYING);
+        scene.time.paused = true;
+        resumeClock(scene);
+        expect(scene.time.paused).toBe(false);
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
 });

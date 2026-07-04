@@ -52,6 +52,8 @@ export const GAME_CONFIG = {
         minPipeGap: 72,
         consecutiveGapDeltaFactor: 0.6,
         consecutiveGapDeltaThreshold: 0.85,
+        /** Variation ± px sur les gaps scriptés (classique) — une seed par manche. */
+        scriptedGapJitterPx: 10,
     },
 
     level: {
@@ -64,8 +66,13 @@ export const GAME_CONFIG = {
         hardcoreSpawnInvincibilitySteps: [700, 625, 550, 475, 400, 325],
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
+        /** Plafond d’accélération (+3 % / palier) — score 50+ sans montée supplémentaire. */
+        speedBoostMaxBoosts: 5,
+        /** Aperçu vitesse un point avant le 1er palier (+3 % à score 10). */
+        speedBoostPreviewOffset: 1,
         gapTightenAfterScore: 20,
-        difficultyPreviewOffset: 2,
+        /** Aperçu HUD N points avant l’escalade (gaps + vitesse). */
+        difficultyPreviewOffset: 5,
         gapTightenEvery: 10,
         gapTightenStep: 8,
         streakMilestones: [10, 15, 20, 30, 40, 50],

@@ -1,7 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { DEPTH } from './uiDepth.js';
-import { maxGapDeltaForScore, effectivePipeGapForScore } from './gapDifficulty.js';
+import { maxGapDeltaForScore, effectivePipeGapForScore, speedBoostMultiplierForScore } from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
 import { collidesWithPipeGroup, isBirdInPipeGap } from './pipeCollision.js';
 import { Utils } from './utils.js';
@@ -29,6 +29,7 @@ export class Pipes {
         this._baseSpeed = normal.speed;
         this._baseGap = normal.gap;
         this._dailyRng = null;
+        this._gapJitterSeed = 0;
         this._runScore = 0;
         this._onSpawn = null;
     }
@@ -45,6 +46,7 @@ export class Pipes {
             pipeGap: this.pipeGap,
             runScore: this._runScore,
             prevGapDelta: this._prevGapDelta,
+            gapJitterSeed: this._gapJitterSeed,
         });
         this._gapIndex = next.gapIndex;
         this._lastGapY = next.lastGapY;
@@ -132,15 +134,17 @@ export class Pipes {
         this._prevGapDelta = 0;
     }
 
+    setGapJitterSeed(seed) {
+        this._gapJitterSeed = seed ?? 0;
+    }
+
     setSpawnHandler(handler) {
         this._onSpawn = typeof handler === 'function' ? handler : null;
     }
 
     applySpeedForScore(score) {
         this._runScore = score;
-        const { speedBoostEvery, speedBoostPercent } = GAME_CONFIG.round;
-        const boosts = Math.floor(score / speedBoostEvery);
-        this.pipeSpeed = this._baseSpeed * (1 + boosts * speedBoostPercent);
+        this.pipeSpeed = this._baseSpeed * speedBoostMultiplierForScore(score);
         this.pipeGap = effectivePipeGapForScore(this._baseGap, score);
     }
 
@@ -156,6 +160,7 @@ export class Pipes {
         this._prevGapDelta = 0;
         this._autoSpawnEnabled = false;
         this._dailyRng = null;
+        this._gapJitterSeed = 0;
         this._runScore = 0;
     }
 

@@ -177,6 +177,7 @@ test.describe('jeu chargé', () => {
             'summary_large_image'
         );
         await expect(page.locator('#game-container')).toHaveAttribute('role', 'application');
+        await expect(page.locator('main#app')).toHaveAttribute('aria-label', 'Floppy Bird');
     });
 
     test('expose le manifest PWA', async ({ page }) => {

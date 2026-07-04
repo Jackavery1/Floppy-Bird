@@ -61,11 +61,38 @@ describe('designTokens', () => {
         expect(contrastRatio(DESIGN_TOKENS.accent, DESIGN_TOKENS.fondNuit)).toBeGreaterThanOrEqual(4.5);
     });
 
+    it('texteHintFaible reste lisible sur fond panneau game over', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteHintFaible, DESIGN_TOKENS.fondPanneauGameOver)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('contour badge daily atteint AA sur fond jour', () => {
+        expect(contrastRatio(DESIGN_TOKENS.badgeDailyContour, DESIGN_TOKENS.fondJour)).toBeGreaterThanOrEqual(
+            4.5
+        );
+    });
+
+    it('badges HUD utilisent un contour sombre (lisibilité mode jour)', () => {
+        expect(hudTextStyle({ fill: DESIGN_TOKENS.badgeDaily }).stroke).toBe(
+            DESIGN_TOKENS.contourHud
+        );
+        expect(hudTextStyle({ fill: DESIGN_TOKENS.badgeDaily, stroke: DESIGN_TOKENS.badgeDailyContour }).stroke).toBe(
+            DESIGN_TOKENS.badgeDailyContour
+        );
+    });
+
+    it('texteVerrouille atteint AA sur cadre skin', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteVerrouille, DESIGN_TOKENS.cadreSkinFond)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
     it('expose les couleurs Phaser médailles et confettis', async () => {
         const { MEDAILLE_COLORS_PHASER, CONFETTI_COLORS_PHASER, hexVersPhaser } = await import(
             '../src/designTokens.js'
         );
-        expect(MEDAILLE_COLORS_PHASER.gold).toBe(hexVersPhaser(DESIGN_TOKENS.medailleOr));
+        expect(MEDAILLE_COLORS_PHASER.or).toBe(hexVersPhaser(DESIGN_TOKENS.medailleOr));
         expect(CONFETTI_COLORS_PHASER.length).toBe(5);
     });
 });

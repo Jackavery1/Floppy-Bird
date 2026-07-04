@@ -13,6 +13,7 @@ import { sceneTween } from './motion.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_HINT,
     MIN_TOUCH,
     stopUiEvent,
 } from './uiLayout.js';
@@ -35,7 +36,7 @@ function addSkipTutorialControl(ui) {
         skipY,
         skipHint,
         hudTextStyle({
-            fontSize: '10px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteHintMenu,
             fontStyle: 'italic',
         }),

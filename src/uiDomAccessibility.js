@@ -1,6 +1,7 @@
 import { DIFFICULTY, GAME_CONFIG } from './config.js';
 import {
     CONTROL_DEFS,
+    GAME_OVER_CONTROL_KEYS,
     MENU_CONTROL_KEYS,
     OPTIONS_CONTROL_KEYS,
     SKINS_PANEL_CONTROL_KEYS,
@@ -77,6 +78,27 @@ export function setAccessibilityControlVisible(key, visible) {
     if (!doc) return;
     const btn = doc.getElementById(def.id);
     if (btn) btn.hidden = !visible;
+}
+
+/** @param {keyof typeof CONTROL_DEFS} key @param {boolean} disabled */
+export function setAccessibilityControlDisabled(key, disabled) {
+    const def = CONTROL_DEFS[key];
+    if (!def) return;
+    const doc = getDocument();
+    if (!doc) return;
+    const btn = doc.getElementById(def.id);
+    if (!btn) return;
+    if (disabled) {
+        btn.setAttribute('aria-disabled', 'true');
+        btn.setAttribute('aria-label', `${def.label} (verrouillé)`);
+        btn.disabled = true;
+        btn.tabIndex = -1;
+    } else {
+        btn.removeAttribute('aria-disabled');
+        btn.setAttribute('aria-label', def.label);
+        btn.disabled = false;
+        btn.tabIndex = 0;
+    }
 }
 
 /** @param {import('phaser').Game} game */
@@ -204,6 +226,18 @@ export function announceAccessibility(message, doc = getDocument()) {
     } else {
         apply();
     }
+}
+
+/** @param {import('./sceneTypes.js').SceneContext} scene @param {{ score: number, isDaily?: boolean }} opts */
+export function setupGameOverAccessibility(scene, { score, isDaily = false }) {
+    bindAccessibilityAction('gameOverRestart', () => scene.handlePrimaryAction());
+    bindAccessibilityAction('gameOverMenu', () => scene.returnToMenu());
+    for (const key of GAME_OVER_CONTROL_KEYS) {
+        setAccessibilityControlVisible(/** @type {keyof typeof CONTROL_DEFS} */ (key), true);
+    }
+    syncAccessibilityLayer(scene.game);
+    const mode = isDaily ? 'défi du jour' : 'partie';
+    announceAccessibility(`Game over. Score ${score}. ${mode}. Rejouer ou retour au menu.`);
 }
 
 /** Masque tous les boutons DOM overlay (pause menu, etc.). */

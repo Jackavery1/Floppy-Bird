@@ -133,14 +133,37 @@ export function showDailyGoalReached(ui) {
     showFlash(ui);
 }
 
+export function showSpeedBoostPreview(ui) {
+    const at = GAME_CONFIG.round.speedBoostEvery;
+    const speedPct = Math.round(GAME_CONFIG.round.speedBoostPercent * 100);
+    showTransientBanner(
+        ui,
+        '_speedBoostPreviewBanner',
+        `VITESSE +${speedPct}% au score ${at}`,
+        96,
+        hudTextStyle({
+            fontSize: '11px',
+            fill: DESIGN_TOKENS.bannerStreak,
+            fontStyle: 'bold',
+        })
+    );
+}
+
 export function showDifficultyEscalationPreview(ui) {
     const at = GAME_CONFIG.round.gapTightenAfterScore;
     const step = GAME_CONFIG.round.gapTightenStep;
-    showTransientBanner(ui, '_escalationPreviewBanner', `GAPS ↓ au score ${at} (−${step}px)`, 104, hudTextStyle({
-        fontSize: '11px',
-        fill: DESIGN_TOKENS.accentGap,
-        fontStyle: 'bold',
-    }));
+    const speedPct = Math.round(GAME_CONFIG.round.speedBoostPercent * 100);
+    showTransientBanner(
+        ui,
+        '_escalationPreviewBanner',
+        `GAPS ↓ + VITESSE +${speedPct}% au score ${at} (−${step}px)`,
+        104,
+        hudTextStyle({
+            fontSize: '11px',
+            fill: DESIGN_TOKENS.accentGap,
+            fontStyle: 'bold',
+        })
+    );
 }
 
 export function showCoyoteHint(ui) {

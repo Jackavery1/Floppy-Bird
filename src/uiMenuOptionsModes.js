@@ -3,7 +3,7 @@ import { classicModeHint, hardcoreToggleLabel, trainingToggleLabel } from './dev
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { buildMetaContext } from './metaContext.js';
-import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from './uiToggleIcons.js';
 import {
     applyHardcoreLabel,
@@ -29,7 +29,7 @@ export function buildModeControls(ui, elements, panel) {
         panel.hintLine,
         classicModeHint(),
         menuTextStyle({
-            fontSize: '10px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteHintMenu,
         }),
         DEPTH.PANEL_FRAME
@@ -69,6 +69,12 @@ export function buildModeControls(ui, elements, panel) {
     );
     ui._trainingHit.setDepth(DEPTH.PANEL_HIT);
     ui._trainingHit.setInteractive({ useHandCursor: true });
+    ui._trainingHit.on('pointerover', () => {
+        ui._trainingLabel.setAlpha(1);
+    });
+    ui._trainingHit.on('pointerout', () => {
+        ui._trainingLabel.setAlpha(0.92);
+    });
     ui._trainingHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         scene.toggleTraining();
@@ -113,6 +119,12 @@ export function buildModeControls(ui, elements, panel) {
     ui._hardcoreHit.setDepth(DEPTH.PANEL_HIT);
     if (hardcoreUnlocked) {
         ui._hardcoreHit.setInteractive({ useHandCursor: true });
+        ui._hardcoreHit.on('pointerover', () => {
+            ui._hardcoreLabel.setAlpha(1);
+        });
+        ui._hardcoreHit.on('pointerout', () => {
+            ui._hardcoreLabel.setAlpha(0.92);
+        });
         ui._hardcoreHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             scene.toggleHardcore();

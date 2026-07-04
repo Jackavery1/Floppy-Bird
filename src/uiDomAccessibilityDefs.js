@@ -15,6 +15,8 @@ export const OPTIONS_CONTROL_KEYS = Object.freeze(['menuTraining', 'menuHardcore
 
 export const SKINS_PANEL_CONTROL_KEYS = Object.freeze(['menuSkinsPrev', 'menuSkinsNext']);
 
+export const GAME_OVER_CONTROL_KEYS = Object.freeze(['gameOverRestart', 'gameOverMenu']);
+
 export const CONTROL_DEFS = Object.freeze({
     pause: {
         id: 'a11y-pause',
@@ -139,6 +141,22 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.menuSkinsNext.x,
         y: TOUCH_TARGETS.menuSkinsNext.y,
         width: MIN_TOUCH,
+        height: MIN_TOUCH,
+    },
+    gameOverRestart: {
+        id: 'a11y-gameover-restart',
+        label: 'Rejouer',
+        x: TOUCH_TARGETS.gameOverRestart.x,
+        y: TOUCH_TARGETS.gameOverRestart.y,
+        width: 240,
+        height: MIN_TOUCH,
+    },
+    gameOverMenu: {
+        id: 'a11y-gameover-menu',
+        label: 'Retour au menu',
+        x: TOUCH_TARGETS.gameOverMenu.x,
+        y: TOUCH_TARGETS.gameOverMenu.y,
+        width: UI_LAYOUT.menuBtn.width,
         height: MIN_TOUCH,
     },
 });

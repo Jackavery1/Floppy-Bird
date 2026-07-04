@@ -10,7 +10,6 @@ import {
     tickPipeSpawnFallback,
 } from './sceneRound.js';
 import { frameStep, splitPhysicsSteps, checkCollisions } from './sceneBootstrap.js';
-import { hasCoyoteGrace } from './sceneCoyote.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
 import { updateCoyoteTime, updateCoyoteVisual } from './sceneCoyote.js';
 import { triggerDeath as runDeath, updateDying } from './sceneDeath.js';
@@ -66,7 +65,8 @@ export class GameScene extends Phaser.Scene {
                 checkCollisions(this);
                 checkScorePipes(this);
 
-                if (!this.round.spawnInvincible && !hasCoyoteGrace(this)) {
+                const spawnProtectsBounds = this.round.spawnInvincible;
+                if (!spawnProtectsBounds) {
                     if (this.bird.isHittingGround()) {
                         this.triggerDeath('ground');
                     } else if (this.bird.isOutOfBounds()) {

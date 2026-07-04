@@ -10,6 +10,9 @@ describe('tutorialStorage', () => {
             setItem: (k, v) => {
                 store[k] = v;
             },
+            removeItem: (k) => {
+                delete store[k];
+            },
         });
     });
 
@@ -58,5 +61,17 @@ describe('tutorialStorage', () => {
         expect(incrementRoundsStarted()).toBe(1);
         expect(incrementRoundsStarted()).toBe(2);
         expect(loadRoundsStarted()).toBe(2);
+    });
+
+    it('réinitialise le hint coyote tous les 3 morts tuyau', async () => {
+        const { recordPipeDeathForCoyoteHint, loadCoyoteHintSeen, markCoyoteHintSeen } =
+            await import('../src/tutorialStorage.js');
+        markCoyoteHintSeen();
+        expect(loadCoyoteHintSeen()).toBe(true);
+        recordPipeDeathForCoyoteHint();
+        recordPipeDeathForCoyoteHint();
+        expect(loadCoyoteHintSeen()).toBe(true);
+        recordPipeDeathForCoyoteHint();
+        expect(loadCoyoteHintSeen()).toBe(false);
     });
 });

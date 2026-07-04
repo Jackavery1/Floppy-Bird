@@ -12,6 +12,8 @@ import { destroyGapHudBadge } from './uiHudGapBadge.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_BADGE,
+    FONT_SIZE_HINT,
     MIN_TOUCH,
     PAUSE_BTN_COLOR,
     PAUSE_BTN_HOVER,
@@ -19,7 +21,7 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
-import { dismissJumpTutorial } from './uiHudFeedback.js';
+import { dismissJumpTutorial } from './uiHudTutorial.js';
 import { showInGameScore } from './uiHudScore.js';
 
 export function destroyInGameControls(ui) {
@@ -51,7 +53,7 @@ export function createInGameControls(
             badgeY,
             `${formatDailyHudLabel(ui.scoreValue ?? 0, dailyGoal)} · ${skinLabel}`,
             hudTextStyle({
-                fontSize: '10px',
+                fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.badgeDaily,
                 fontStyle: 'bold',
             }),
@@ -65,7 +67,7 @@ export function createInGameControls(
             badgeY,
             pattern,
             hudTextStyle({
-                fontSize: '9px',
+                fontSize: FONT_SIZE_HINT,
                 fill: DESIGN_TOKENS.badgeDailySecondary,
             }),
             DEPTH.HUD_BADGE
@@ -78,7 +80,7 @@ export function createInGameControls(
             badgeY,
             'DÉFI · hors record classique',
             hudTextStyle({
-                fontSize: '10px',
+                fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.badgeDaily,
                 fontStyle: 'bold',
             }),
@@ -95,7 +97,7 @@ export function createInGameControls(
             badgeY,
             'ENTRAÎN. · sans record',
             hudTextStyle({
-                fontSize: '10px',
+                fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.badgeTraining,
                 fontStyle: 'bold',
             }),
@@ -112,7 +114,7 @@ export function createInGameControls(
             badgeY,
             'HARDCORE · inv. / tuyau',
             hudTextStyle({
-                fontSize: '10px',
+                fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.badgeHardcore,
                 fontStyle: 'bold',
             }),

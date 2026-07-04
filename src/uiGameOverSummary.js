@@ -5,7 +5,7 @@ import { Utils } from './utils.js';
 import { getSkin, isSpecialSkin } from './skins/index.js';
 import { shade } from './uiGameOverDecor.js';
 import { bestScoreLabel } from './uiMenuLayout.js';
-import { addCenteredText, DEPTH, FONT_TITLE } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_SIZE_HINT, FONT_TITLE } from './uiLayout.js';
 
 /**
  * En-tête, médaille/record et bloc score du game over.
@@ -56,7 +56,7 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
                 y(52),
                 deathLabel,
                 menuTextStyle({
-                    fontSize: '10px',
+                    fontSize: FONT_SIZE_BADGE,
                     fill: DESIGN_TOKENS.accentScoreHardcore,
                     fontStyle: 'italic',
                 }),
@@ -97,9 +97,9 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
     } else {
         const medalColor =
             finalScore > 20
-                ? MEDAILLE_COLORS_PHASER.gold
+                ? MEDAILLE_COLORS_PHASER.or
                 : finalScore > 10
-                  ? MEDAILLE_COLORS_PHASER.silver
+                  ? MEDAILLE_COLORS_PHASER.argent
                   : finalScore > 5
                     ? MEDAILLE_COLORS_PHASER.bronze
                     : null;
@@ -124,7 +124,7 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
             cx,
             y(82),
             'SCORE',
-            menuTextStyle({ fontSize: '10px', fill: DESIGN_TOKENS.texteMenu }),
+            menuTextStyle({ fontSize: FONT_SIZE_BADGE, fill: DESIGN_TOKENS.texteMenu }),
             DEPTH.MENU_RAISED
         )
     );
@@ -153,7 +153,7 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
                 : special
                   ? `MEILLEUR${hardcoreMode ? ' HC' : ''} · ${activeSkin.label} (${GAME_CONFIG.difficultyLabels[ui._currentDifficulty] ?? ''})`
                   : bestScoreLabel(ui._currentDifficulty, hardcoreMode),
-            menuTextStyle({ fontSize: '9px', fill: DESIGN_TOKENS.accentTitre }),
+            menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.accentTitre }),
             DEPTH.MENU_RAISED
         )
     );

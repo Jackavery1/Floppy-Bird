@@ -1,9 +1,10 @@
 import { optionsButtonLabel } from './device.js';
-import { DESIGN_TOKENS } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import {
     bindOptionsAccessibility,
+    setAccessibilityControlDisabled,
     setOptionsPanelAccessibility,
 } from './uiDomAccessibility.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
@@ -25,7 +26,7 @@ const PANEL_CFG = {
     btnHitKey: '_optionsBtnHit',
     buttonLabelFn: optionsButtonLabel,
     btnColor: MENU_BTN_COLOR,
-    btnStroke: 0x42a5f5,
+    btnStroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
     labelStroke: DESIGN_TOKENS.contourOptions,
 };
 
@@ -53,8 +54,10 @@ export function refreshHardcoreLockState(ui) {
     applyHardcoreLabel(ui, ui.scene.hardcoreMode, unlocked);
     if (unlocked) {
         ui._hardcoreHit?.setInteractive?.({ useHandCursor: true });
+        setAccessibilityControlDisabled('menuHardcore', false);
     } else {
         ui._hardcoreHit?.disableInteractive?.();
+        setAccessibilityControlDisabled('menuHardcore', true);
     }
 }
 

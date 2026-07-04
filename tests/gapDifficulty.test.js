@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { maxGapDeltaForScore, effectivePipeGapForScore } from '../src/gapDifficulty.js';
+import { maxGapDeltaForScore, effectivePipeGapForScore, speedBoostMultiplierForScore } from '../src/gapDifficulty.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('gapDifficulty', () => {
@@ -26,5 +26,12 @@ describe('gapDifficulty', () => {
         expect(effectivePipeGapForScore(base, 19)).toBe(base);
         expect(effectivePipeGapForScore(base, 30)).toBe(base - GAME_CONFIG.round.gapTightenStep);
         expect(effectivePipeGapForScore(base, 999)).toBe(GAME_CONFIG.pipes.minPipeGap);
+    });
+
+    it('speedBoostMultiplierForScore plafonne à score 50+', () => {
+        expect(speedBoostMultiplierForScore(0)).toBe(1);
+        expect(speedBoostMultiplierForScore(10)).toBeCloseTo(1.03);
+        expect(speedBoostMultiplierForScore(50)).toBeCloseTo(1.15);
+        expect(speedBoostMultiplierForScore(100)).toBeCloseTo(1.15);
     });
 });

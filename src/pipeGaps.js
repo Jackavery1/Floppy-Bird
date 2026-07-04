@@ -35,6 +35,15 @@ export function randomGapY(dailyRng, pipeGap) {
     return Utils.randomInt(min, max);
 }
 
+export function applyScriptedGapJitter(scriptedY, gapIndex, jitterSeed, pipeGap) {
+    const maxJitter = GAME_CONFIG.pipes.scriptedGapJitterPx ?? 0;
+    if (!maxJitter || jitterSeed == null || jitterSeed === 0) return scriptedY;
+    const rng = Utils.createSeededRandom((jitterSeed + gapIndex * 7919) >>> 0);
+    const delta = Utils.seededRandomInt(rng, -maxJitter, maxJitter);
+    const { min, max } = gapBounds(pipeGap);
+    return Utils.clamp(scriptedY + delta, min, max);
+}
+
 /**
  * @param {object} ctx
  * @param {number} ctx.gapIndex
@@ -43,6 +52,7 @@ export function randomGapY(dailyRng, pipeGap) {
  * @param {number} ctx.pipeGap
  * @param {number} ctx.runScore
  * @param {number} [ctx.prevGapDelta]
+ * @param {number} [ctx.gapJitterSeed]
  * @returns {{ gapY: number, gapIndex: number, lastGapY: number, gapDelta: number }}
  */
 export function resolveNextGapY({
@@ -52,11 +62,13 @@ export function resolveNextGapY({
     pipeGap,
     runScore,
     prevGapDelta = 0,
+    gapJitterSeed = 0,
 }) {
     const scriptedY = dailyRng ? null : getScriptedPipeGapY(gapIndex, pipeGap);
     if (scriptedY !== null) {
-        const gapDelta = lastGapY != null ? scriptedY - lastGapY : 0;
-        return { gapY: scriptedY, gapIndex: gapIndex + 1, lastGapY: scriptedY, gapDelta };
+        const gapY = applyScriptedGapJitter(scriptedY, gapIndex, gapJitterSeed, pipeGap);
+        const gapDelta = lastGapY != null ? gapY - lastGapY : 0;
+        return { gapY, gapIndex: gapIndex + 1, lastGapY: gapY, gapDelta };
     }
 
     const { min, max } = gapBounds(pipeGap);

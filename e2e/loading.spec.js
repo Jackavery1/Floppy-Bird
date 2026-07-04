@@ -8,5 +8,6 @@ test.describe('écran de chargement', () => {
             timeout: 10_000,
         });
         await expect(page.locator('#loading')).toContainText('npm run dev');
+        await expect(page.locator('#loading')).toContainText('npm start');
     });
 });
