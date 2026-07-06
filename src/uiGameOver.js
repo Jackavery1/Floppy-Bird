@@ -1,4 +1,4 @@
-import { drawDivider } from './uiGameOverDecor.js';
+import { drawDivider, spawnConfetti } from './uiGameOverDecor.js';
 import { buildGameOverLeaderboard } from './uiGameOverLeaderboard.js';
 import { buildGameOverActions, animateGameOverReveal } from './uiGameOverActions.js';
 import { buildGameOverShell } from './uiGameOverPanel.js';
@@ -77,6 +77,8 @@ export function buildGameOverUI(
 
     if (fadeIn) {
         animateGameOverReveal(scene, elements, scoreText, finalScore, isNewRecord, cx, P);
+    } else if (isNewRecord) {
+        spawnConfetti(scene, cx, P.y - 6, elements);
     }
 
     return { elements };

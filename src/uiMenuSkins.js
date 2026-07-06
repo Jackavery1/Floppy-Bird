@@ -15,6 +15,7 @@ import {
 import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_HINT, MENU_BTN_COLOR, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
+import { announceAccessibility } from './uiDomAccessibility.js';
 
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
@@ -176,6 +177,8 @@ export function cycleMenuSkin(ui, step) {
     if (nextId === current) return;
     applySelectedSkin(ui.scene, nextId);
     refreshSkinsTab(ui);
+    const nextSkin = getSkin(nextId);
+    announceAccessibility(`Apparence sélectionnée : ${nextSkin.label}`);
 }
 
 /** @param {import('./ui.js').UI} ui */

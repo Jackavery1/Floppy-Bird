@@ -1,10 +1,39 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { sceneTween } from './motion.js';
+import { prefersReducedMotion } from './motion.js';
 
-/** @param {import('phaser').GameObjects.GameObject[]} elements */
-export function setMenuPanelVisible(elements, visible) {
-    elements?.forEach((el) => el?.setVisible?.(visible));
+/** @param {import('phaser').GameObjects.GameObject[]} elements @param {boolean} visible @param {import('phaser').Scene} [scene] */
+export function setMenuPanelVisible(elements, visible, scene) {
+    if (!elements) return;
+    if (!scene || prefersReducedMotion()) {
+        elements.forEach((el) => el?.setVisible?.(visible));
+        return;
+    }
+    if (visible) {
+        elements.forEach((el) => {
+            if (!el?.setVisible) return;
+            el.setAlpha(0);
+            el.setVisible(true);
+        });
+        sceneTween(scene, {
+            targets: elements.filter((el) => el?.setAlpha),
+            alpha: 1,
+            duration: 250,
+            ease: 'Cubic.easeOut',
+        });
+    } else {
+        sceneTween(scene, {
+            targets: elements.filter((el) => el?.setAlpha),
+            alpha: 0,
+            duration: 200,
+            ease: 'Cubic.easeIn',
+            onComplete: () => {
+                elements.forEach((el) => el?.setVisible?.(false));
+            },
+        });
+    }
 }
 
 /** @param {import('./ui.js').UI} ui */
@@ -103,7 +132,7 @@ export function createMenuPanelController(ui, cfg) {
         if (cfg.setContentVisible) {
             cfg.setContentVisible(ui, open);
         } else {
-            setMenuPanelVisible(ui[cfg.panelElementsKey], open);
+            setMenuPanelVisible(ui[cfg.panelElementsKey], open, ui.scene);
         }
         refreshButtonLabel();
         if (open && cfg.onOpen) cfg.onOpen(ui);
