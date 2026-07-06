@@ -81,7 +81,9 @@ test.describe('touch mobile portrait', () => {
         await expect.poll(() => getMenuPanels(page).then((p) => p?.scores)).toBe(true);
     });
 
-    test('le bouton RETOUR referme le panneau scores (sans repasser par la rangée du menu)', async ({ page }, testInfo) => {
+    test('le bouton RETOUR referme le panneau scores (sans repasser par la rangée du menu)', async ({
+        page,
+    }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);

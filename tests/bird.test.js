@@ -37,7 +37,9 @@ describe('Bird', () => {
 
     describe('getBounds', () => {
         it('applique un scale uniforme pour conserver le ratio texture', () => {
-            expect(scene._sprite.setScale).toHaveBeenCalledWith(birdSpriteScale(GAME_CONFIG.bird.width));
+            expect(scene._sprite.setScale).toHaveBeenCalledWith(
+                birdSpriteScale(GAME_CONFIG.bird.width)
+            );
         });
 
         it('retourne une hitbox légèrement réduite par rapport au sprite', () => {

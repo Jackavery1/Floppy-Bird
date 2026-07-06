@@ -11,11 +11,20 @@ export const MENU_CONTROL_KEYS = Object.freeze([
     'menuSkins',
 ]);
 
-export const OPTIONS_CONTROL_KEYS = Object.freeze(['menuTraining', 'menuHardcore', 'menuMute', 'menuOptionsClose']);
+export const OPTIONS_CONTROL_KEYS = Object.freeze([
+    'menuTraining',
+    'menuHardcore',
+    'menuMute',
+    'menuOptionsClose',
+]);
 
 export const SCORES_PANEL_CONTROL_KEYS = Object.freeze(['menuScoresClose']);
 
-export const SKINS_PANEL_CONTROL_KEYS = Object.freeze(['menuSkinsPrev', 'menuSkinsNext', 'menuSkinsClose']);
+export const SKINS_PANEL_CONTROL_KEYS = Object.freeze([
+    'menuSkinsPrev',
+    'menuSkinsNext',
+    'menuSkinsClose',
+]);
 
 export const GAME_OVER_CONTROL_KEYS = Object.freeze(['gameOverRestart', 'gameOverMenu']);
 

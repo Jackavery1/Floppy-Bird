@@ -1,10 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { syncShellTheme } from './shellTheme.js';
+import { initAccessibilityLayer, syncAccessibilityLayer } from './uiDomAccessibility.js';
 import {
-    initAccessibilityLayer,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
-import { computeLetterboxSize, computeLetterboxPosition, getLetterboxViewport } from './viewport.js';
+    computeLetterboxSize,
+    computeLetterboxPosition,
+    getLetterboxViewport,
+} from './viewport.js';
 
 /** Seam Playwright : dev ou build explicite `VITE_ENABLE_TEST_SEAM=true` (jamais Pages prod). */
 export function shouldInstallTestSeam() {

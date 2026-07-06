@@ -1,5 +1,10 @@
 import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, hexVersPhaser, MEDAILLE_COLORS_PHASER, menuTextStyle } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    MEDAILLE_COLORS_PHASER,
+    menuTextStyle,
+} from './designTokens.js';
 import { deathCauseLabel } from './device.js';
 import { Utils } from './utils.js';
 import { getSkin, isSpecialSkin } from './skins/index.js';
@@ -66,8 +71,8 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
     }
 
     elements.push(
-        scene
-            .add.rectangle(cx, y(42), 90, 2, hexVersPhaser(DESIGN_TOKENS.liseréGameOver), 0.8)
+        scene.add
+            .rectangle(cx, y(42), 90, 2, hexVersPhaser(DESIGN_TOKENS.liseréGameOver), 0.8)
             .setDepth(DEPTH.MENU_RAISED)
     );
 

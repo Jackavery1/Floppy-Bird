@@ -91,7 +91,7 @@ describe('uiMenu', () => {
         expect(ui.highScore).toBe(42);
     });
 
-    it('la rangée SCORES/OPTIONS/SKINS se cache quand un panneau s\'ouvre (anti-chevauchement)', () => {
+    it("la rangée SCORES/OPTIONS/SKINS se cache quand un panneau s'ouvre (anti-chevauchement)", () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
 
         expect(ui._menuChromeElements).toContain(ui._scoresBtnBg);
@@ -111,8 +111,9 @@ describe('uiMenu', () => {
         ui._optionsPanelController.setOpen(true);
         expect(ui._optionsOpen).toBe(true);
 
-        const closeHandler = ui._optionsCloseHit.on.mock.calls
-            .find(([evt]) => evt === 'pointerdown')?.[1];
+        const closeHandler = ui._optionsCloseHit.on.mock.calls.find(
+            ([evt]) => evt === 'pointerdown'
+        )?.[1];
         expect(closeHandler).toBeTypeOf('function');
         closeHandler({}, 0, 0, {});
         expect(ui._optionsOpen).toBe(false);

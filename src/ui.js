@@ -2,7 +2,13 @@ import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
 import { buildGameOverUI } from './uiGameOver.js';
-import { DEPTH, GAME_OVER_RESTART_BTN_COLOR, GAME_OVER_RESTART_BTN_WIDTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import {
+    DEPTH,
+    GAME_OVER_RESTART_BTN_COLOR,
+    GAME_OVER_RESTART_BTN_WIDTH,
+    MENU_BTN_COLOR,
+    UI_LAYOUT,
+} from './uiLayout.js';
 import {
     createScoreDisplay,
     hideInGameScore,

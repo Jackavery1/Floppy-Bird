@@ -167,7 +167,10 @@ test.describe('jeu chargé', () => {
     });
 
     test('conserve le ratio après rotation en cours de partie', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        test.skip(
+            testInfo.project.name !== 'chromium-mobile-portrait',
+            'mobile portrait uniquement'
+        );
         await waitForGameReady(page);
         await startPlayingFromMenu(page, true);
         await expectGameState(page, 'playing');

@@ -1,15 +1,18 @@
+/** Game state constants for scene and input handling */
 export const GAME_STATE = Object.freeze({
-    MENU: 'menu',
-    PLAYING: 'playing',
-    DYING: 'dying',
-    PAUSED: 'paused',
-    GAME_OVER: 'gameover',
+    MENU: 'menu', // Main menu screen
+    PLAYING: 'playing', // Active gameplay
+    DYING: 'dying', // Death animation in progress
+    PAUSED: 'paused', // Game paused by player
+    GAME_OVER: 'gameover', // Game over screen
 });
 
+/** Can player perform primary action (space/tap) in current state? */
 export function canHandlePrimaryAction(state) {
     return state !== GAME_STATE.PAUSED && state !== GAME_STATE.DYING;
 }
 
+/** Should primary action start new game? */
 export function shouldStartGameOnPrimary(state) {
     return state === GAME_STATE.MENU || state === GAME_STATE.GAME_OVER;
 }

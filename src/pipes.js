@@ -1,5 +1,9 @@
 import { GAME_CONFIG } from './config.js';
-import { maxGapDeltaForScore, effectivePipeGapForScore, speedBoostMultiplierForScore } from './gapDifficulty.js';
+import {
+    maxGapDeltaForScore,
+    effectivePipeGapForScore,
+    speedBoostMultiplierForScore,
+} from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
 import { collidesWithPipeGroup, isBirdInPipeGap } from './pipeCollision.js';
 import { spawnPipePairAtGap } from './pipeSpawn.js';

@@ -13,7 +13,16 @@ import {
     isSpecialSkin,
 } from './skins/index.js';
 import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_HINT, MENU_BTN_COLOR, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import {
+    addCenteredText,
+    DEPTH,
+    FONT_SIZE_COMPACT,
+    FONT_SIZE_HINT,
+    MENU_BTN_COLOR,
+    MIN_TOUCH,
+    stopUiEvent,
+    UI_LAYOUT,
+} from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { announceAccessibility } from './uiDomAccessibility.js';
 
@@ -205,7 +214,9 @@ export function refreshSkinsTab(ui) {
         nameLabel.setText(isUnlocked ? getSkin(skinId).label : '???');
         frame.setStrokeStyle(
             2,
-            isSelected ? hexVersPhaser(DESIGN_TOKENS.accent) : hexVersPhaser(DESIGN_TOKENS.cadreSkinContour)
+            isSelected
+                ? hexVersPhaser(DESIGN_TOKENS.accent)
+                : hexVersPhaser(DESIGN_TOKENS.cadreSkinContour)
         );
         if (!isUnlocked) {
             nameLabel.setText('???');

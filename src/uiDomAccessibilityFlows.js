@@ -24,31 +24,49 @@ export function setupMenuAccessibility(scene) {
     bindAccessibilityAction('menuDiffNormal', () => scene.changeDifficulty(DIFFICULTY.NORMAL));
     bindAccessibilityAction('menuDiffHard', () => scene.changeDifficulty(DIFFICULTY.HARD));
     for (const key of MENU_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), true);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            true
+        );
     }
     syncAccessibilityLayer(scene.game);
 }
 
 function hideAllSubPanelControls() {
     for (const key of OPTIONS_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), false);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            false
+        );
     }
     for (const key of SCORES_PANEL_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), false);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            false
+        );
     }
     for (const key of SKINS_PANEL_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), false);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            false
+        );
     }
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {boolean} open */
 export function setScoresPanelAccessibility(scene, open) {
     for (const key of MENU_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), !open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            !open
+        );
     }
     hideAllSubPanelControls();
     for (const key of SCORES_PANEL_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            open
+        );
     }
     syncAccessibilityLayer(scene.game);
     if (open) announceAccessibility('Panneau scores ouvert');
@@ -57,11 +75,17 @@ export function setScoresPanelAccessibility(scene, open) {
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {boolean} open */
 export function setSkinsPanelAccessibility(scene, open) {
     for (const key of MENU_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), !open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            !open
+        );
     }
     hideAllSubPanelControls();
     for (const key of SKINS_PANEL_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            open
+        );
     }
     syncAccessibilityLayer(scene.game);
     if (open) announceAccessibility('Panneau skins ouvert');
@@ -77,11 +101,17 @@ export function bindSkinsAccessibility(scene) {
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {boolean} open */
 export function setOptionsPanelAccessibility(scene, open) {
     for (const key of MENU_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), !open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            !open
+        );
     }
     hideAllSubPanelControls();
     for (const key of OPTIONS_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), open);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            open
+        );
     }
     syncAccessibilityLayer(scene.game);
 }
@@ -103,7 +133,10 @@ export function setupGameOverAccessibility(scene, { score, isDaily = false }) {
     bindAccessibilityAction('gameOverRestart', () => scene.handlePrimaryAction());
     bindAccessibilityAction('gameOverMenu', () => scene.returnToMenu());
     for (const key of GAME_OVER_CONTROL_KEYS) {
-        setAccessibilityControlVisible(/** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key), true);
+        setAccessibilityControlVisible(
+            /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
+            true
+        );
     }
     syncAccessibilityLayer(scene.game);
     const mode = isDaily ? 'défi du jour' : 'partie';

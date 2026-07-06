@@ -1,8 +1,4 @@
-import {
-    CONFETTI_COLORS_PHASER,
-    DESIGN_TOKENS,
-    hexVersPhaser,
-} from './designTokens.js';
+import { CONFETTI_COLORS_PHASER, DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { Utils } from './utils.js';
 import { DEPTH } from './uiLayout.js';

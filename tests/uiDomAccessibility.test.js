@@ -22,9 +22,8 @@ describe('uiDomAccessibility', () => {
             getElementById: vi.fn((id) => (id === 'a11y-pause' ? btn : null)),
         });
 
-        const { setAccessibilityControlVisible, syncAccessibilityLayer } = await import(
-            '../src/uiDomAccessibility.js'
-        );
+        const { setAccessibilityControlVisible, syncAccessibilityLayer } =
+            await import('../src/uiDomAccessibility.js');
         setAccessibilityControlVisible('pause', true);
         syncAccessibilityLayer({
             canvas: {
@@ -196,7 +195,13 @@ describe('uiDomAccessibility', () => {
     });
 
     it('setSkinsPanelAccessibility affiche prev/next skins et masque la rangée menu', async () => {
-        const ids = ['a11y-start', 'a11y-skins', 'a11y-skin-prev', 'a11y-skin-next', 'a11y-skins-close'];
+        const ids = [
+            'a11y-start',
+            'a11y-skins',
+            'a11y-skin-prev',
+            'a11y-skin-next',
+            'a11y-skins-close',
+        ];
         const buttons = Object.fromEntries(ids.map((id) => [id, { hidden: true, style: {} }]));
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => buttons[id] ?? null),

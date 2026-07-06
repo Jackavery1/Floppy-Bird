@@ -49,7 +49,9 @@ describe('designTokens', () => {
     });
 
     it('texte HUD blanc atteint AA sur fond nuit (contour noir en jeu)', () => {
-        expect(contrastRatio(DESIGN_TOKENS.texteHud, DESIGN_TOKENS.fondNuit)).toBeGreaterThanOrEqual(4.5);
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteHud, DESIGN_TOKENS.fondNuit)
+        ).toBeGreaterThanOrEqual(4.5);
     });
 
     it('texte HUD blanc seul sous AA sur fond jour — contour noir requis', () => {
@@ -58,7 +60,9 @@ describe('designTokens', () => {
     });
 
     it('accent record atteint AA sur fond nuit', () => {
-        expect(contrastRatio(DESIGN_TOKENS.accent, DESIGN_TOKENS.fondNuit)).toBeGreaterThanOrEqual(4.5);
+        expect(contrastRatio(DESIGN_TOKENS.accent, DESIGN_TOKENS.fondNuit)).toBeGreaterThanOrEqual(
+            4.5
+        );
     });
 
     it('texteHintFaible reste lisible sur fond panneau game over', () => {
@@ -68,18 +72,21 @@ describe('designTokens', () => {
     });
 
     it('contour badge daily atteint AA sur fond jour', () => {
-        expect(contrastRatio(DESIGN_TOKENS.badgeDailyContour, DESIGN_TOKENS.fondJour)).toBeGreaterThanOrEqual(
-            4.5
-        );
+        expect(
+            contrastRatio(DESIGN_TOKENS.badgeDailyContour, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
     });
 
     it('badges HUD utilisent un contour sombre (lisibilité mode jour)', () => {
         expect(hudTextStyle({ fill: DESIGN_TOKENS.badgeDaily }).stroke).toBe(
             DESIGN_TOKENS.contourHud
         );
-        expect(hudTextStyle({ fill: DESIGN_TOKENS.badgeDaily, stroke: DESIGN_TOKENS.badgeDailyContour }).stroke).toBe(
-            DESIGN_TOKENS.badgeDailyContour
-        );
+        expect(
+            hudTextStyle({
+                fill: DESIGN_TOKENS.badgeDaily,
+                stroke: DESIGN_TOKENS.badgeDailyContour,
+            }).stroke
+        ).toBe(DESIGN_TOKENS.badgeDailyContour);
     });
 
     it('texteVerrouille atteint AA sur cadre skin', () => {
@@ -89,9 +96,8 @@ describe('designTokens', () => {
     });
 
     it('expose les couleurs Phaser médailles et confettis', async () => {
-        const { MEDAILLE_COLORS_PHASER, CONFETTI_COLORS_PHASER, hexVersPhaser } = await import(
-            '../src/designTokens.js'
-        );
+        const { MEDAILLE_COLORS_PHASER, CONFETTI_COLORS_PHASER, hexVersPhaser } =
+            await import('../src/designTokens.js');
         expect(MEDAILLE_COLORS_PHASER.or).toBe(hexVersPhaser(DESIGN_TOKENS.medailleOr));
         expect(CONFETTI_COLORS_PHASER.length).toBe(5);
     });

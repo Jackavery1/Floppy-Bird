@@ -42,7 +42,10 @@ describe('uiLayout menu', () => {
     });
 
     it('les boutons RETOUR des panneaux sont hors de la bande tactile de menuRow', () => {
-        const band = [UI_LAYOUT.menu.menuRow - MIN_TOUCH / 2, UI_LAYOUT.menu.menuRow + MIN_TOUCH / 2];
+        const band = [
+            UI_LAYOUT.menu.menuRow - MIN_TOUCH / 2,
+            UI_LAYOUT.menu.menuRow + MIN_TOUCH / 2,
+        ];
         const closeButtons = [
             UI_LAYOUT.optionsPanel.closeBtn,
             UI_LAYOUT.scoresPanel.closeBtn,

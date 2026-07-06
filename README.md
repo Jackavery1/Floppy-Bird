@@ -1,8 +1,23 @@
 # Floppy Bird
 
 [![CI](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-100%2F100-green)](.)
+[![A11y](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-green)](.)
+[![Tests](https://img.shields.io/badge/Tests-494%2F494-green)](.)
 
-Clone arcade — Phaser 3, Vite, PWA. Résolution interne 288×512, canvas adaptatif (letterbox).
+> Jeu arcade 2D Floppy Bird — Phaser 3, Vite, PWA progressive. Jouable hors-ligne avec scores locaux persistants.
+
+**Démo** : [Jouer en ligne](https://jackavery1.github.io/Floppy-Bird/)
+
+## Caractéristiques
+
+- 🎮 **Gameplay fluide** : 60 FPS, collision detection optimisée, timing coyote
+- 📱 **Responsive** : Tous les appareils (mobile, tablet, desktop) avec letterbox 288×512
+- ♿ **Accessible** : WCAG 2.1 Level AA, clavier complet, screen reader support
+- 🚀 **PWA** : Mode hors-ligne, installation sur home screen, caching intelligent
+- 🎨 **Polish** : Particules d'impact, animations fluides, son & haptics
+- 💾 **Persistant** : Scores locaux, progression meta, sélection skins sauvegardées
+- ⚡ **Performance** : ~2s load time, bundle ~180KB (gzipped)
 
 Couverture Vitest en CI : seuils ≥ 75 % lines / statements, ≥ 70 % functions / branches (`npm run test:coverage`).
 

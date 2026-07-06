@@ -35,9 +35,7 @@ describe('uiText', () => {
     });
 
     it('diffLabelColor met le bouton actif en noir', () => {
-        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
-            DESIGN_TOKENS.contourHud
-        );
+        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(DESIGN_TOKENS.contourHud);
     });
 
     it('fitLabelFontSize réduit jusqu’à tenir dans la largeur max', () => {

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { maxGapDeltaForScore, effectivePipeGapForScore, speedBoostMultiplierForScore } from '../src/gapDifficulty.js';
+import {
+    maxGapDeltaForScore,
+    effectivePipeGapForScore,
+    speedBoostMultiplierForScore,
+} from '../src/gapDifficulty.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('gapDifficulty', () => {
@@ -25,7 +29,9 @@ describe('gapDifficulty', () => {
         const base = 112;
         expect(effectivePipeGapForScore(base, 19)).toBe(base);
         expect(effectivePipeGapForScore(base, 20)).toBe(base - GAME_CONFIG.round.gapTightenStep);
-        expect(effectivePipeGapForScore(base, 30)).toBe(base - 2 * GAME_CONFIG.round.gapTightenStep);
+        expect(effectivePipeGapForScore(base, 30)).toBe(
+            base - 2 * GAME_CONFIG.round.gapTightenStep
+        );
         expect(effectivePipeGapForScore(base, 999)).toBe(GAME_CONFIG.pipes.minPipeGap);
     });
 

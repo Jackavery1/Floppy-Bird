@@ -15,12 +15,14 @@ test.describe('score HUD', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, projectUsesTouch(testInfo));
 
-        await expect.poll(() => getScoreHud(page)).toMatchObject({
-            visible: true,
-            alpha: 1,
-            text: '0',
-            depth: DEPTH.SCORE_HUD,
-        });
+        await expect
+            .poll(() => getScoreHud(page))
+            .toMatchObject({
+                visible: true,
+                alpha: 1,
+                text: '0',
+                depth: DEPTH.SCORE_HUD,
+            });
         const hud = await getScoreHud(page);
         expect(hud.y).toBeGreaterThanOrEqual(TOUCH_TARGETS.scoreHud.y - 2);
         expect(hud.y).toBeGreaterThanOrEqual(UI_LAYOUT.scoreHud - 2);

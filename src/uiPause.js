@@ -1,10 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { pauseResumeHint } from './device.js';
-import {
-    bindAccessibilityAction,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
+import { bindAccessibilityAction, syncAccessibilityLayer } from './uiDomAccessibility.js';
 import {
     addCenteredText,
     DEPTH,

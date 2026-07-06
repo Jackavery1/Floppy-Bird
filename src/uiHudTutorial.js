@@ -10,13 +10,7 @@ import {
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
 import { sceneTween } from './motion.js';
-import {
-    addCenteredText,
-    DEPTH,
-    FONT_SIZE_HINT,
-    MIN_TOUCH,
-    stopUiEvent,
-} from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 function dismissSkipTutorialControl(ui) {
     ui._tutorialSkipLabel?.destroy();

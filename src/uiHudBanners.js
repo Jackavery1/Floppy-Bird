@@ -54,11 +54,17 @@ export function showRecordBroken(ui) {
 }
 
 export function showDifficultyEscalation(ui) {
-    showTransientBanner(ui, '_escalationBanner', 'GAPS RESSERRÉS', 104, hudTextStyle({
-        fontSize: '13px',
-        fill: DESIGN_TOKENS.bannerEscalation,
-        fontStyle: 'bold',
-    }));
+    showTransientBanner(
+        ui,
+        '_escalationBanner',
+        'GAPS RESSERRÉS',
+        104,
+        hudTextStyle({
+            fontSize: '13px',
+            fill: DESIGN_TOKENS.bannerEscalation,
+            fontStyle: 'bold',
+        })
+    );
     showFlash(ui, hexVersPhaser(DESIGN_TOKENS.bannerEscalation), 0.22);
 }
 
@@ -72,11 +78,17 @@ export function showScoreStreak(ui, score) {
         50: 'MAÎTRE !',
     };
     const label = labels[score] ?? `SÉRIE ×${score}`;
-    showTransientBanner(ui, '_streakBanner', label, 112, hudTextStyle({
-        fontSize: '14px',
-        fill: DESIGN_TOKENS.bannerStreak,
-        fontStyle: 'bold',
-    }));
+    showTransientBanner(
+        ui,
+        '_streakBanner',
+        label,
+        112,
+        hudTextStyle({
+            fontSize: '14px',
+            fill: DESIGN_TOKENS.bannerStreak,
+            fontStyle: 'bold',
+        })
+    );
 }
 
 export function showDailyGoalBrief(ui, goal) {
@@ -167,11 +179,17 @@ export function showDifficultyEscalationPreview(ui) {
 }
 
 export function showCoyoteHint(ui) {
-    showTransientBanner(ui, '_coyoteHintBanner', coyoteHintText(), 118, hudTextStyle({
-        fontSize: '11px',
-        fill: DESIGN_TOKENS.bannerCoyote,
-        fontStyle: 'italic',
-    }));
+    showTransientBanner(
+        ui,
+        '_coyoteHintBanner',
+        coyoteHintText(),
+        118,
+        hudTextStyle({
+            fontSize: '11px',
+            fill: DESIGN_TOKENS.bannerCoyote,
+            fontStyle: 'italic',
+        })
+    );
 }
 
 export function showHardcoreInvincibilityHint(ui, durationMs) {

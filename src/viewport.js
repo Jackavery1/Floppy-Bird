@@ -31,7 +31,14 @@ export function computeLetterboxSize(windowW, windowH, gameW, gameH, insets = nu
 }
 
 /** Position fixed du conteneur jeu dans le visualViewport (letterbox centré). */
-export function computeLetterboxPosition(viewportW, viewportH, targetW, targetH, offsetTop = 0, offsetLeft = 0) {
+export function computeLetterboxPosition(
+    viewportW,
+    viewportH,
+    targetW,
+    targetH,
+    offsetTop = 0,
+    offsetLeft = 0
+) {
     return {
         left: offsetLeft + Math.max(0, (viewportW - targetW) / 2),
         top: offsetTop + Math.max(0, (viewportH - targetH) / 2),
