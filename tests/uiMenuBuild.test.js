@@ -51,7 +51,7 @@ describe('uiMenuBuild', () => {
         expect(ui._diffBtnGraphics).toBeTruthy();
     });
 
-    it('buildMenuFooter ajoute start, zone tactile 44 px et hint', async () => {
+    it('buildMenuFooter ajoute start et zone tactile 44 px', async () => {
         const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
         const start = buildMenuFooter(ui, elements, layout);
         expect(start).toBe(ui._startText);
@@ -65,7 +65,7 @@ describe('uiMenuBuild', () => {
             expect.any(Number),
             expect.any(Number)
         );
-        expect(ui._hint1).toBeTruthy();
+        expect(ui._hint1).toBeUndefined();
         expect(ui._muteHit).toBeUndefined();
     });
 

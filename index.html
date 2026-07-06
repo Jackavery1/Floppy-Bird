@@ -50,7 +50,10 @@
             <div id="landscape-hint" role="status" aria-live="polite">
                 Tourne ton téléphone en portrait pour jouer
             </div>
-            <div id="game-container" role="application" aria-label="Floppy Bird — jeu arcade"></div>
+            <p id="game-description" class="visually-hidden">
+                Jeu arcade Floppy Bird. Tab pour les contrôles clavier ; tap ou espace pour jouer.
+            </p>
+            <div id="game-container" role="img" aria-labelledby="game-description"></div>
         </main>
         <script>
             (function () {

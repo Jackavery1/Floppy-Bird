@@ -21,6 +21,14 @@ export function setupSceneInput(scene) {
     });
 
     scene.input.keyboard.on('keydown-ESC', () => {
+        if (scene.state === GAME_STATE.MENU) {
+            const panelOpen =
+                scene.ui?._optionsOpen || scene.ui?._scoresOpen || scene.ui?._skinsOpen;
+            if (panelOpen) {
+                scene.ui._closeAllMenuPanels?.();
+                return;
+            }
+        }
         if (canTogglePause(scene.state)) scene.togglePause();
     });
 

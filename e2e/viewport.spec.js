@@ -166,6 +166,22 @@ test.describe('jeu chargé', () => {
         await expectGameState(page, 'menu');
     });
 
+    test('conserve le ratio après rotation en cours de partie', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-mobile-portrait', 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await expectGameState(page, 'playing');
+
+        const ratio = GAME_CONFIG.width / GAME_CONFIG.height;
+        await page.setViewportSize({ width: 844, height: 390 });
+        await page.waitForTimeout(200);
+
+        const box = await page.locator('#game-container canvas').boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width / box.height).toBeCloseTo(ratio, 1);
+        await expectGameState(page, 'playing');
+    });
+
     test('expose og:image et twitter:card pour le partage social', async ({ page }) => {
         await page.goto('/', { waitUntil: 'domcontentloaded' });
         await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
@@ -176,7 +192,11 @@ test.describe('jeu chargé', () => {
             'content',
             'summary_large_image'
         );
-        await expect(page.locator('#game-container')).toHaveAttribute('role', 'application');
+        await expect(page.locator('#game-container')).toHaveAttribute('role', 'img');
+        await expect(page.locator('#game-container')).toHaveAttribute(
+            'aria-labelledby',
+            'game-description'
+        );
         await expect(page.locator('main#app')).toHaveAttribute('aria-label', 'Floppy Bird');
     });
 

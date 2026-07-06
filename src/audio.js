@@ -1,4 +1,4 @@
-import { SOUND } from './config.js';
+import { SOUND, GAME_CONFIG } from './config.js';
 import {
     getVolume,
     cycleSoundLevel as cycleVolumeLevel,
@@ -168,6 +168,10 @@ function isScoreMilestone(score) {
     return score > 0 && score % 10 === 0;
 }
 
+function isStreakMilestone(score) {
+    return GAME_CONFIG.round.streakMilestones.includes(score);
+}
+
 export function getScoreToneType(score) {
     const variants = ['sine', 'triangle', 'square'];
     return variants[score % variants.length];
@@ -199,6 +203,16 @@ function playScore(ctx, score = 1) {
             duration: 0.22,
             peakGain: 0.28,
             delay: 0.1,
+        });
+    } else if (isStreakMilestone(score)) {
+        const idx = GAME_CONFIG.round.streakMilestones.indexOf(score);
+        playTone(ctx, {
+            type: 'triangle',
+            freqAt: 740 + idx * 40,
+            freqRamp: 980 + idx * 40,
+            duration: 0.18,
+            peakGain: 0.24,
+            delay: 0.08,
         });
     }
 }

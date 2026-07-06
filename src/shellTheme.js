@@ -1,4 +1,5 @@
 import { DESIGN_TOKENS } from './designTokens.js';
+import { SPACING } from './uiLayoutConstants.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
 
 const CSS_VARS = Object.freeze({
@@ -8,6 +9,11 @@ const CSS_VARS = Object.freeze({
     '--couleur-accent': () => DESIGN_TOKENS.accent,
     '--police-interface': () => DESIGN_TOKENS.policeInterface,
     '--police-titre': () => DESIGN_TOKENS.policeTitre,
+    '--spacing-xs': () => `${SPACING.xs}px`,
+    '--spacing-sm': () => `${SPACING.sm}px`,
+    '--spacing-md': () => `${SPACING.md}px`,
+    '--spacing-lg': () => `${SPACING.lg}px`,
+    '--spacing-xl': () => `${SPACING.xl}px`,
 });
 
 /** Aligne fond letterbox, theme-color et variables CSS sur la période jour/nuit. */

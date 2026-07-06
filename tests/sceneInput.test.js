@@ -55,6 +55,20 @@ describe('sceneInput', () => {
         expect(scene.togglePause).toHaveBeenCalled();
     });
 
+    it('ESC ferme le panneau menu ouvert au lieu de pauser', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = {
+            _optionsOpen: true,
+            _scoresOpen: false,
+            _skinsOpen: false,
+            _closeAllMenuPanels: vi.fn(),
+        };
+        setupSceneInput(scene);
+        scene._handlers['keydown-ESC']();
+        expect(scene.ui._closeAllMenuPanels).toHaveBeenCalled();
+        expect(scene.togglePause).not.toHaveBeenCalled();
+    });
+
     it('M retourne au menu depuis la pause', () => {
         const scene = makeScene(GAME_STATE.PAUSED);
         setupSceneInput(scene);

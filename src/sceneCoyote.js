@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
 import { loadCoyoteHintSeen, markCoyoteHintSeen } from './tutorialStorage.js';
+import { updateCoyoteHudBadge } from './uiHudCoyoteBadge.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -30,6 +31,7 @@ export function updateCoyoteVisual(scene) {
     if (!sprite) return;
     if (scene.state !== GAME_STATE.PLAYING || scene.round.spawnInvincible) {
         sprite.clearTint();
+        updateCoyoteHudBadge(scene.ui, false);
         return;
     }
     if (hasCoyoteGrace(scene)) {
@@ -37,6 +39,7 @@ export function updateCoyoteVisual(scene) {
     } else {
         sprite.clearTint();
     }
+    updateCoyoteHudBadge(scene.ui, hasCoyoteGrace(scene));
 }
 
 /** @param {SceneContext} scene */

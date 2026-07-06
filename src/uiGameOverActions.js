@@ -1,11 +1,14 @@
 import { sceneTween } from './motion.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { restartHintForMode, menuHint } from './device.js';
+import { menuHint, restartHintForMode } from './device.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
     DEPTH,
     FONT_SIZE_HINT,
+    GAME_OVER_RESTART_BTN_COLOR,
+    GAME_OVER_RESTART_BTN_HOVER,
+    GAME_OVER_RESTART_BTN_WIDTH,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
     MIN_TOUCH,
@@ -14,7 +17,7 @@ import {
 } from './uiLayout.js';
 
 /**
- * Pied de panneau game over : hint rejouer, bouton menu et animation d’apparition.
+ * Pied de panneau game over : bouton rejouer, bouton menu et animation d’apparition.
  * @param {import('phaser').Scene} scene
  * @param {import('./ui.js').UI} ui
  * @param {number} cx
@@ -26,21 +29,56 @@ import {
 export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
     const { isDaily } = opts;
     const elements = [];
+    const restartBtnY = y(252);
+    const restartLabel = isDaily ? 'REJOUER DÉFI' : 'REJOUER';
 
-    elements.push(
-        addCenteredText(
-            scene,
-            cx,
-            y(252),
-            restartHintForMode(isDaily),
-            menuTextStyle({
-                fontSize: FONT_SIZE_HINT,
-                fill: DESIGN_TOKENS.texteMenu,
-                fontStyle: 'italic',
-            }),
-            DEPTH.MENU_RAISED
-        )
+    const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
+    restartBtnShadow.fillStyle(0x000000, 0.35);
+    restartBtnShadow.fillRoundedRect(
+        cx - GAME_OVER_RESTART_BTN_WIDTH / 2,
+        restartBtnY - UI_LAYOUT.menuBtn.height / 2 + 3,
+        GAME_OVER_RESTART_BTN_WIDTH,
+        UI_LAYOUT.menuBtn.height,
+        UI_LAYOUT.menuBtn.radius
     );
+    ui._restartBtnGraphics = scene.add.graphics().setDepth(DEPTH.MENU_BTN_BG);
+    ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_COLOR);
+
+    const restartBtnText = addCenteredText(
+        scene,
+        cx,
+        restartBtnY,
+        restartLabel,
+        menuTextStyle({
+            fontSize: '13px',
+            fill: DESIGN_TOKENS.contourMenu,
+            fontStyle: 'bold',
+        }),
+        DEPTH.MENU_BTN_BG
+    );
+
+    const restartHitZone = scene.add.rectangle(
+        cx,
+        restartBtnY,
+        GAME_OVER_RESTART_BTN_WIDTH,
+        MIN_TOUCH,
+        0x000000,
+        0
+    );
+    restartHitZone.setDepth(DEPTH.MENU_HIT);
+    restartHitZone.setInteractive({ useHandCursor: true });
+    restartHitZone.on('pointerover', () =>
+        ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_HOVER)
+    );
+    restartHitZone.on('pointerout', () =>
+        ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_COLOR)
+    );
+    restartHitZone.on('pointerdown', (_p, _lx, _ly, event) => {
+        stopUiEvent(event);
+        scene.handlePrimaryAction();
+    });
+
+    elements.push(restartBtnShadow, ui._restartBtnGraphics, restartBtnText, restartHitZone);
 
     const menuBtnY = y(285);
     const menuBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
@@ -88,7 +126,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
             scene,
             cx,
             y(308),
-            menuHint(),
+            `${restartHintForMode(isDaily)} · ${menuHint()}`,
             menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.texteHintFaible }),
             DEPTH.MENU_RAISED
         )

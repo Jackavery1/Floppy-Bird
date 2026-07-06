@@ -1,8 +1,7 @@
 import { GAME_CONFIG } from './config.js';
-import { menuControlsHint } from './device.js';
 import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
-import { addCenteredText, DEPTH, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 const START_HIT_WIDTH = 240;
 
@@ -40,19 +39,6 @@ export function buildMenuFooter(ui, elements, layout) {
         ui.scene.handlePrimaryAction();
     });
     elements.push(ui._startHit);
-    ui._hint1 = addCenteredText(
-        ui.scene,
-        GAME_CONFIG.centerX,
-        layout.hint1,
-        menuControlsHint(),
-        hudTextStyle({
-            fontSize: FONT_SIZE_HINT,
-            fill: DESIGN_TOKENS.texteHintMenu,
-            align: 'center',
-        }),
-        DEPTH.MENU_RAISED
-    );
-    elements.push(ui._hint1);
 
     return ui._startText;
 }

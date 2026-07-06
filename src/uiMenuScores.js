@@ -1,9 +1,10 @@
 import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
-import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
 import { loadHighScore } from './storage.js';
 import { loadUnlockedAchievements } from './metaStorage.js';
 import { ACHIEVEMENTS } from './achievements.js';
-import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { buildMenuToggleButton } from './uiMenuPanel.js';
 
 /** @typedef {'easy'|'normal'|'hard'} DifficultyId */
 
@@ -76,6 +77,21 @@ export function buildScoresTab(ui, elements, panelElements) {
     panelElements.push(ui._achievementsScoreLine);
     elements.push(ui._achievementsScoreLine);
     ui._scoresTabElements.push(ui._achievementsScoreLine);
+
+    const closeBtn = buildMenuToggleButton(scene, elements, {
+        cx: GAME_CONFIG.centerX,
+        cy: panel.closeBtn,
+        width: 160,
+        depth: DEPTH.PANEL_FRAME,
+        color: MENU_BTN_COLOR,
+        stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
+        labelText: '◂ RETOUR',
+        labelStroke: DESIGN_TOKENS.contourOptions,
+        onToggle: () => ui._scoresPanelController?.setOpen(false),
+    });
+    panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
+    ui._scoresTabElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
+    ui._scoresCloseHit = closeBtn.hit;
 }
 
 /** @param {DifficultyId} diff @param {boolean} hardcore */

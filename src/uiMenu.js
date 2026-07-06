@@ -80,7 +80,15 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._dailyBtnHit,
         ui._startText,
         ui._startHit,
-        ui._hint1,
+        ui._scoresBtnBg,
+        ui._scoresBtnLabel,
+        ui._scoresBtnHit,
+        ui._optionsBtnBg,
+        ui._optionsBtnLabel,
+        ui._optionsBtnHit,
+        ui._skinsBtnBg,
+        ui._skinsBtnLabel,
+        ui._skinsBtnHit,
     ].filter(Boolean);
     syncMenuChromeVisibility(ui);
     playMenuIntroTween(ui, title);

@@ -9,7 +9,9 @@ function makeUi(overrides = {}) {
         highScore: 20,
         _currentDifficulty: 'normal',
         drawGameOverMenuButton: vi.fn(),
+        drawGameOverRestartButton: vi.fn(),
         _menuBtnGraphics: { destroy: vi.fn() },
+        _restartBtnGraphics: { destroy: vi.fn() },
         ...overrides,
     };
 }
@@ -27,6 +29,7 @@ describe('uiGameOver', () => {
             false
         );
         expect(elements.length).toBeGreaterThan(5);
+        expect(ui.drawGameOverRestartButton).toHaveBeenCalled();
         expect(ui.drawGameOverMenuButton).toHaveBeenCalled();
     });
 

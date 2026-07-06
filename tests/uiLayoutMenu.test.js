@@ -40,4 +40,17 @@ describe('uiLayout menu', () => {
         expect(scoresBtn - half).toBeGreaterThanOrEqual(0);
         expect(skinsBtn + half).toBeLessThanOrEqual(GAME_CONFIG.width);
     });
+
+    it('les boutons RETOUR des panneaux sont hors de la bande tactile de menuRow', () => {
+        const band = [UI_LAYOUT.menu.menuRow - MIN_TOUCH / 2, UI_LAYOUT.menu.menuRow + MIN_TOUCH / 2];
+        const closeButtons = [
+            UI_LAYOUT.optionsPanel.closeBtn,
+            UI_LAYOUT.scoresPanel.closeBtn,
+            UI_LAYOUT.skinsPanel.closeBtn,
+        ];
+        closeButtons.forEach((y) => {
+            const outside = y + MIN_TOUCH / 2 < band[0] || y - MIN_TOUCH / 2 > band[1];
+            expect(outside).toBe(true);
+        });
+    });
 });

@@ -70,7 +70,7 @@ describe('training', () => {
     it('GhostReplay enregistre les sauts et sauvegarde un meilleur run', () => {
         saveGhostData(3, [{ t: 0, y: 256 }], { difficulty: 'normal', hardcore: false });
         const sprite = {
-            setDisplaySize: vi.fn(),
+            setScale: vi.fn(),
             setAlpha: vi.fn(),
             setDepth: vi.fn(),
             setTint: vi.fn(),
@@ -106,7 +106,7 @@ describe('training', () => {
     it('GhostReplay rejoue en daily sans enregistrer', () => {
         saveGhostData(3, [{ t: 0, y: 256 }], { difficulty: 'normal', hardcore: false });
         const sprite = {
-            setDisplaySize: vi.fn(),
+            setScale: vi.fn(),
             setAlpha: vi.fn(),
             setDepth: vi.fn(),
             setTint: vi.fn(),

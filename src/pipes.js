@@ -1,9 +1,8 @@
 import { GAME_CONFIG } from './config.js';
-import { ensurePipeTextures } from './textures/pipeTextures.js';
-import { DEPTH } from './uiDepth.js';
 import { maxGapDeltaForScore, effectivePipeGapForScore, speedBoostMultiplierForScore } from './gapDifficulty.js';
 import { resolveNextGapY } from './pipeGaps.js';
 import { collidesWithPipeGroup, isBirdInPipeGap } from './pipeCollision.js';
+import { spawnPipePairAtGap } from './pipeSpawn.js';
 import { Utils } from './utils.js';
 
 export class Pipes {
@@ -54,24 +53,8 @@ export class Pipes {
         return next.gapY;
     }
 
-    _createPipe(texture, originY, y) {
-        ensurePipeTextures(this.scene);
-        const pipe = this.scene.add.sprite(GAME_CONFIG.width + this.pipeWidth, y, texture);
-        pipe.setDisplaySize(this.pipeWidth, this.pipeHeight);
-        pipe.setOrigin(0.5, originY);
-        pipe.setDepth(DEPTH.PIPES);
-        pipe.setVisible(true);
-        pipe.setActive(true);
-        return pipe;
-    }
-
     spawnPipePair(gapY) {
-        const topPipe = this._createPipe('pipe-top', 1, gapY - this.pipeGap / 2);
-        topPipe.scored = false;
-        this.topPipes.push(topPipe);
-
-        const bottomPipe = this._createPipe('pipe-bottom', 0, gapY + this.pipeGap / 2);
-        this.bottomPipes.push(bottomPipe);
+        spawnPipePairAtGap(this.scene, this, gapY);
     }
 
     spawn() {

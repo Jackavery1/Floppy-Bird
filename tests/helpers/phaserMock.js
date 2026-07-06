@@ -89,6 +89,7 @@ export function createSpriteMock() {
         setPosition: vi.fn().mockReturnThis(),
         setRotation: vi.fn().mockReturnThis(),
         setVisible: vi.fn().mockReturnThis(),
+        setActive: vi.fn().mockReturnThis(),
         setScale: vi.fn().mockReturnThis(),
         setTint: vi.fn().mockReturnThis(),
         tilePositionX: 0,

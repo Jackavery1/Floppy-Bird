@@ -1,6 +1,6 @@
 import { scoresButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
-import { setScoresPanelAccessibility } from './uiDomAccessibility.js';
+import { bindScoresAccessibility, setScoresPanelAccessibility } from './uiDomAccessibility.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
@@ -24,6 +24,7 @@ const controllerCfg = {
     ...PANEL_CFG,
     onOpen: (targetUi) => {
         refreshScoresTab(targetUi);
+        bindScoresAccessibility(targetUi.scene);
         setScoresPanelAccessibility(targetUi.scene, true);
     },
     onClose: (targetUi) => setScoresPanelAccessibility(targetUi.scene, false),

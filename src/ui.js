@@ -2,7 +2,7 @@ import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
 import { buildGameOverUI } from './uiGameOver.js';
-import { DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { DEPTH, GAME_OVER_RESTART_BTN_COLOR, GAME_OVER_RESTART_BTN_WIDTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import {
     createScoreDisplay,
     hideInGameScore,
@@ -182,6 +182,20 @@ export class UI {
         refreshHardcoreLockState(this);
     }
 
+    drawGameOverRestartButton(restartBtnY, fillColor = GAME_OVER_RESTART_BTN_COLOR) {
+        const g = this._restartBtnGraphics;
+        if (!g) return;
+        g.clear();
+        g.fillStyle(fillColor, 1);
+        g.fillRoundedRect(
+            GAME_CONFIG.centerX - GAME_OVER_RESTART_BTN_WIDTH / 2,
+            restartBtnY - UI_LAYOUT.menuBtn.height / 2,
+            GAME_OVER_RESTART_BTN_WIDTH,
+            UI_LAYOUT.menuBtn.height,
+            UI_LAYOUT.menuBtn.radius
+        );
+    }
+
     drawGameOverMenuButton(menuBtnY, fillColor = MENU_BTN_COLOR) {
         const { menuBtn } = UI_LAYOUT;
         const g = this._menuBtnGraphics;
@@ -229,6 +243,7 @@ export class UI {
         this.clearOverlay('gameOver');
         if (this._diffBtnGraphics) this._diffBtnGraphics.destroy();
         if (this._menuBtnGraphics) this._menuBtnGraphics.destroy();
+        if (this._restartBtnGraphics) this._restartBtnGraphics.destroy();
         this._diffBtnLabels = [];
     }
 }

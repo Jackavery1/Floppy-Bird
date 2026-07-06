@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Bird } from '../src/bird.js';
 import { GAME_CONFIG } from '../src/config.js';
+import { birdSpriteScale } from '../src/textures/birdTextures.js';
 
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
@@ -8,7 +9,7 @@ vi.mock('../src/metaStorage.js', () => ({
 
 function createMockScene() {
     const sprite = {
-        setDisplaySize: vi.fn(),
+        setScale: vi.fn(),
         setDepth: vi.fn(),
         setPosition: vi.fn(),
         setRotation: vi.fn(),
@@ -35,6 +36,10 @@ describe('Bird', () => {
     });
 
     describe('getBounds', () => {
+        it('applique un scale uniforme pour conserver le ratio texture', () => {
+            expect(scene._sprite.setScale).toHaveBeenCalledWith(birdSpriteScale(GAME_CONFIG.bird.width));
+        });
+
         it('retourne une hitbox légèrement réduite par rapport au sprite', () => {
             bird.x = 100;
             bird.y = 200;

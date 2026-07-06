@@ -1,7 +1,8 @@
 import { GAME_CONFIG } from './config.js';
-import { modesHintLine } from './device.js';
-import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_HINT, UI_LAYOUT } from './uiLayout.js';
+import { optionsControlsHint } from './device.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
+import { addCenteredText, DEPTH, FONT_SIZE_HINT, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { buildModeControls } from './uiMenuOptionsModes.js';
 import { buildMuteControls } from './uiMenuOptionsMute.js';
 
@@ -24,7 +25,7 @@ export function buildOptionsContent(ui, elements) {
         scene,
         GAME_CONFIG.centerX,
         panel.hint2,
-        modesHintLine(),
+        optionsControlsHint(),
         menuTextStyle({
             fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteSecondaire,
@@ -34,4 +35,18 @@ export function buildOptionsContent(ui, elements) {
     );
     ui._optionsPanelElements.push(ui._hint2);
     elements.push(ui._hint2);
+
+    const closeBtn = buildMenuToggleButton(scene, elements, {
+        cx: GAME_CONFIG.centerX,
+        cy: panel.closeBtn,
+        width: 160,
+        depth: DEPTH.PANEL_FRAME,
+        color: MENU_BTN_COLOR,
+        stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
+        labelText: '◂ RETOUR',
+        labelStroke: DESIGN_TOKENS.contourOptions,
+        onToggle: () => ui._optionsPanelController?.setOpen(false),
+    });
+    ui._optionsPanelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
+    ui._optionsCloseHit = closeBtn.hit;
 }

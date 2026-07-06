@@ -8,6 +8,7 @@ import {
 import { GAME_CONFIG } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createRoundState } from '../src/roundState.js';
+import { createBaseScene } from './helpers/phaserMock.js';
 
 describe('sceneCoyote', () => {
     function makeScene(inGap) {
@@ -73,9 +74,16 @@ describe('sceneCoyote', () => {
         const scene = makeScene(false);
         scene.state = GAME_STATE.PLAYING;
         scene.bird.sprite = { setTint: vi.fn(), clearTint: vi.fn() };
+        scene.ui = {
+            scene: createBaseScene(),
+            scoreText: { y: 68 },
+            _inGameControlElements: [],
+            _coyoteHudBadge: { setVisible: vi.fn(), setY: vi.fn() },
+        };
         scene.round.coyoteFrames = 2;
         updateCoyoteVisual(scene);
         expect(scene.bird.sprite.setTint).toHaveBeenCalledWith(0xffeeaa);
+        expect(scene.ui._coyoteHudBadge.setVisible).toHaveBeenCalledWith(true);
 
         scene.round.coyoteFrames = 0;
         updateCoyoteVisual(scene);

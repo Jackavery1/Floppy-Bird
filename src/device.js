@@ -69,13 +69,20 @@ export function dailyChallengeHint() {
 }
 
 export function menuControlsHint() {
-    if (isCoarsePointer()) return 'Scores · Options · Skins';
-    return `${jumpHint()} · ${dailyChallengeHint()}\n${optionsHint()}`;
+    return optionsControlsHint();
 }
 
+/** Commandes complètes affichées dans le panneau OPTIONS. */
+export function optionsControlsHint() {
+    if (isCoarsePointer()) {
+        return `${jumpHint()} · ${dailyChallengeHint()}\n${difficultyHint()}\nScores · Skins`;
+    }
+    return `${jumpHint()} · ${dailyChallengeHint()} · ${difficultyHint()}\n${trainingHint()} · ${hardcoreHint()} · ESC : pause · M : menu\nS scores · K skins · ESC : retour`;
+}
+
+/** @deprecated Utiliser {@link optionsControlsHint} */
 export function modesHintLine() {
-    if (isCoarsePointer()) return `${difficultyHint()}\ntap OPTIONS`;
-    return `${trainingHint()} · ${hardcoreHint()}\n${dailyChallengeHint()} · O : options`;
+    return optionsControlsHint();
 }
 
 export function optionsButtonLabel(open) {

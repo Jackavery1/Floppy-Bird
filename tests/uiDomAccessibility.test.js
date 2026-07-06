@@ -70,7 +70,7 @@ describe('uiDomAccessibility', () => {
         const { initAccessibilityLayer } = await import('../src/uiDomAccessibility.js');
         initAccessibilityLayer(document);
 
-        expect(stored['a11y-controls']?.children.length).toBe(18);
+        expect(stored['a11y-controls']?.children.length).toBe(21);
         expect(stored['ui-announcer']).toBeTruthy();
     });
 
@@ -161,12 +161,13 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-training'].hidden).toBe(true);
     });
 
-    it('setScoresPanelAccessibility ne garde que le bouton scores', async () => {
+    it('setScoresPanelAccessibility masque toute la rangée menu et affiche le retour dédié', async () => {
         const ids = [
             'a11y-start',
             'a11y-scores',
             'a11y-options',
             'a11y-skin-prev',
+            'a11y-scores-close',
         ];
         const buttons = Object.fromEntries(ids.map((id) => [id, { hidden: true, style: {} }]));
         vi.stubGlobal('document', {
@@ -189,12 +190,13 @@ describe('uiDomAccessibility', () => {
 
         setScoresPanelAccessibility(scene, true);
         expect(buttons['a11y-start'].hidden).toBe(true);
-        expect(buttons['a11y-scores'].hidden).toBe(false);
+        expect(buttons['a11y-scores'].hidden).toBe(true);
         expect(buttons['a11y-skin-prev'].hidden).toBe(true);
+        expect(buttons['a11y-scores-close'].hidden).toBe(false);
     });
 
-    it('setSkinsPanelAccessibility affiche prev/next skins', async () => {
-        const ids = ['a11y-start', 'a11y-skins', 'a11y-skin-prev', 'a11y-skin-next'];
+    it('setSkinsPanelAccessibility affiche prev/next skins et masque la rangée menu', async () => {
+        const ids = ['a11y-start', 'a11y-skins', 'a11y-skin-prev', 'a11y-skin-next', 'a11y-skins-close'];
         const buttons = Object.fromEntries(ids.map((id) => [id, { hidden: true, style: {} }]));
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => buttons[id] ?? null),
@@ -216,9 +218,10 @@ describe('uiDomAccessibility', () => {
 
         setSkinsPanelAccessibility(scene, true);
         expect(buttons['a11y-start'].hidden).toBe(true);
-        expect(buttons['a11y-skins'].hidden).toBe(false);
+        expect(buttons['a11y-skins'].hidden).toBe(true);
         expect(buttons['a11y-skin-prev'].hidden).toBe(false);
         expect(buttons['a11y-skin-next'].hidden).toBe(false);
+        expect(buttons['a11y-skins-close'].hidden).toBe(false);
     });
 
     it('setupGameOverAccessibility active rejouer et menu', async () => {

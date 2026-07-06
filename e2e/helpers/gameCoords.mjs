@@ -99,8 +99,8 @@ export async function startPlayingFromMenu(page, usesTouch) {
 /** @param {boolean} usesTouch */
 export async function replayFromGameOver(page, usesTouch) {
     if (usesTouch) {
-        const { menuStart } = TOUCH_TARGETS;
-        await pointerGameCoord(page, menuStart.x, menuStart.y, true);
+        const { gameOverRestart } = TOUCH_TARGETS;
+        await pointerGameCoord(page, gameOverRestart.x, gameOverRestart.y, true);
     } else {
         await page.keyboard.press('Space');
     }

@@ -13,7 +13,8 @@ import {
     isSpecialSkin,
 } from './skins/index.js';
 import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_BADGE, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_HINT, MENU_BTN_COLOR, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import { buildMenuToggleButton } from './uiMenuPanel.js';
 
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
@@ -148,6 +149,21 @@ export function buildSkinsTab(ui, elements, panelElements) {
     panelElements.push(ui._skinHint);
     elements.push(ui._skinHint);
     ui._skinsTabElements.push(ui._skinHint);
+
+    const closeBtn = buildMenuToggleButton(scene, elements, {
+        cx: GAME_CONFIG.centerX,
+        cy: panel.closeBtn,
+        width: 160,
+        depth: DEPTH.PANEL_FRAME,
+        color: MENU_BTN_COLOR,
+        stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
+        labelText: '◂ RETOUR',
+        labelStroke: DESIGN_TOKENS.contourOptions,
+        onToggle: () => ui._skinsPanelController?.setOpen(false),
+    });
+    panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
+    ui._skinsTabElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
+    ui._skinsCloseHit = closeBtn.hit;
 
     refreshSkinsTab(ui);
 }

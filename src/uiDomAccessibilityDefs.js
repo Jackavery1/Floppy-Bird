@@ -11,9 +11,11 @@ export const MENU_CONTROL_KEYS = Object.freeze([
     'menuSkins',
 ]);
 
-export const OPTIONS_CONTROL_KEYS = Object.freeze(['menuTraining', 'menuHardcore', 'menuMute']);
+export const OPTIONS_CONTROL_KEYS = Object.freeze(['menuTraining', 'menuHardcore', 'menuMute', 'menuOptionsClose']);
 
-export const SKINS_PANEL_CONTROL_KEYS = Object.freeze(['menuSkinsPrev', 'menuSkinsNext']);
+export const SCORES_PANEL_CONTROL_KEYS = Object.freeze(['menuScoresClose']);
+
+export const SKINS_PANEL_CONTROL_KEYS = Object.freeze(['menuSkinsPrev', 'menuSkinsNext', 'menuSkinsClose']);
 
 export const GAME_OVER_CONTROL_KEYS = Object.freeze(['gameOverRestart', 'gameOverMenu']);
 
@@ -141,6 +143,30 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.menuSkinsNext.x,
         y: TOUCH_TARGETS.menuSkinsNext.y,
         width: MIN_TOUCH,
+        height: MIN_TOUCH,
+    },
+    menuOptionsClose: {
+        id: 'a11y-options-close',
+        label: 'Fermer les options',
+        x: TOUCH_TARGETS.menuOptionsClose.x,
+        y: TOUCH_TARGETS.menuOptionsClose.y,
+        width: 160,
+        height: MIN_TOUCH,
+    },
+    menuScoresClose: {
+        id: 'a11y-scores-close',
+        label: 'Fermer les scores',
+        x: TOUCH_TARGETS.menuScoresClose.x,
+        y: TOUCH_TARGETS.menuScoresClose.y,
+        width: 160,
+        height: MIN_TOUCH,
+    },
+    menuSkinsClose: {
+        id: 'a11y-skins-close',
+        label: 'Fermer les skins',
+        x: TOUCH_TARGETS.menuSkinsClose.x,
+        y: TOUCH_TARGETS.menuSkinsClose.y,
+        width: 160,
         height: MIN_TOUCH,
     },
     gameOverRestart: {

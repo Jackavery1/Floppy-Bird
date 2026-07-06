@@ -24,6 +24,16 @@ test.describe('touch mobile portrait', () => {
         await openPauseFromPlaying(page, usesTouch);
     });
 
+    test('ouvre la pause via bouton a11y DOM', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await expect(page.locator('#a11y-pause')).toBeVisible();
+        await page.locator('#a11y-pause').tap({ force: true });
+        await expectGameState(page, 'paused');
+    });
+
     test('pause → reprendre via tap', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
@@ -31,6 +41,16 @@ test.describe('touch mobile portrait', () => {
         await enterPausedFromPlaying(page, usesTouch);
         const { pauseResume } = TOUCH_TARGETS;
         await pointerGameCoord(page, pauseResume.x, pauseResume.y, usesTouch);
+        await expectGameState(page, 'playing');
+    });
+
+    test('pause → reprendre via bouton a11y DOM', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await enterPausedFromPlaying(page, usesTouch);
+        await expect(page.locator('#a11y-resume')).toBeVisible();
+        await page.locator('#a11y-resume').tap({ force: true });
         await expectGameState(page, 'playing');
     });
 
@@ -42,6 +62,16 @@ test.describe('touch mobile portrait', () => {
         await returnToMenuFromPause(page, usesTouch);
     });
 
+    test('pause → menu via bouton a11y DOM', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await enterPausedFromPlaying(page, usesTouch);
+        await expect(page.locator('#a11y-menu')).toBeVisible();
+        await page.locator('#a11y-menu').tap({ force: true });
+        await expectGameState(page, 'menu');
+    });
+
     test('ouvre le panneau scores via tap', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
@@ -49,6 +79,17 @@ test.describe('touch mobile portrait', () => {
         const { menuScores } = TOUCH_TARGETS;
         await pointerGameCoord(page, menuScores.x, menuScores.y, usesTouch);
         await expect.poll(() => getMenuPanels(page).then((p) => p?.scores)).toBe(true);
+    });
+
+    test('le bouton RETOUR referme le panneau scores (sans repasser par la rangée du menu)', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        const { menuScores, menuScoresClose } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuScores.x, menuScores.y, usesTouch);
+        await expect.poll(() => getMenuPanels(page).then((p) => p?.scores)).toBe(true);
+        await pointerGameCoord(page, menuScoresClose.x, menuScoresClose.y, usesTouch);
+        await expect.poll(() => getMenuPanels(page).then((p) => p?.scores)).toBe(false);
     });
 
     test('ouvre le panneau options via tap', async ({ page }, testInfo) => {
@@ -139,13 +180,23 @@ test.describe('touch mobile portrait', () => {
         await expectGameState(page, 'playing');
     });
 
-    test('rejoue via tap depuis le game over', async ({ page }, testInfo) => {
+    test('rejoue via tap sur le bouton REJOUER', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         await forceGameOver(page);
         await expectGameState(page, 'gameover');
         await replayFromGameOver(page, usesTouch);
+    });
+
+    test('rejoue via bouton a11y DOM game over', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await forceGameOver(page);
+        await expectGameState(page, 'gameover');
+        await expect(page.locator('#a11y-gameover-restart')).toBeVisible();
+        await page.locator('#a11y-gameover-restart').tap({ force: true });
+        await expectGameState(page, 'playing');
     });
 
     test('bouton pause ≥ 44 px écran après letterbox', async ({ page }, testInfo) => {

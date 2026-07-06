@@ -44,7 +44,6 @@ export function applyMenuLayout(ui, difficulty) {
     });
 
     ui._startText?.setY(layout.start);
-    ui._hint1?.setY(layout.hint1);
     ui._dailyBtnLabel?.setY(layout.dailyBtn);
     ui._dailyBtnBg?.setY(layout.dailyBtn);
     ui._dailyBtnHit?.setY(layout.dailyBtn);

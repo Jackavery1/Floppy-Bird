@@ -89,4 +89,31 @@ describe('uiMenu', () => {
         refreshHighScore(ui, DIFFICULTY.NORMAL, false);
         expect(ui.highScore).toBe(42);
     });
+
+    it('la rangée SCORES/OPTIONS/SKINS se cache quand un panneau s\'ouvre (anti-chevauchement)', () => {
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
+
+        expect(ui._menuChromeElements).toContain(ui._scoresBtnBg);
+        expect(ui._menuChromeElements).toContain(ui._optionsBtnBg);
+        expect(ui._menuChromeElements).toContain(ui._skinsBtnBg);
+
+        ui._optionsPanelController.setOpen(true);
+
+        expect(ui._scoresBtnBg.setVisible).toHaveBeenLastCalledWith(false);
+        expect(ui._optionsBtnBg.setVisible).toHaveBeenLastCalledWith(false);
+        expect(ui._skinsBtnBg.setVisible).toHaveBeenLastCalledWith(false);
+    });
+
+    it('un bouton RETOUR dans chaque panneau referme celui-ci', () => {
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
+
+        ui._optionsPanelController.setOpen(true);
+        expect(ui._optionsOpen).toBe(true);
+
+        const closeHandler = ui._optionsCloseHit.on.mock.calls
+            .find(([evt]) => evt === 'pointerdown')?.[1];
+        expect(closeHandler).toBeTypeOf('function');
+        closeHandler({}, 0, 0, {});
+        expect(ui._optionsOpen).toBe(false);
+    });
 });

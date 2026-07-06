@@ -51,6 +51,7 @@ export const UI_LAYOUT = {
         hardcore: 296,
         mute: 336,
         hint2: 376,
+        closeBtn: 414,
     },
     scoresPanel: {
         panelTop: 188,
@@ -61,15 +62,17 @@ export const UI_LAYOUT = {
         scoresGap: 28,
         scoresHardcore: 332,
         scoresAchievements: 360,
+        closeBtn: 424,
     },
     skinsPanel: {
         panelTop: 132,
-        panelH: 286,
+        panelH: 352,
         w: 252,
         skinsTitle: 156,
         skinsSubtitle: 172,
         skinsRow1: 208,
         skinsHint: 408,
+        closeBtn: 452,
     },
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {
@@ -92,6 +95,9 @@ export const TOUCH_TARGETS = Object.freeze({
     menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.mute },
     menuTraining: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.training },
     menuHardcore: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.hardcore },
+    menuOptionsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.closeBtn },
+    menuScoresClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoresPanel.closeBtn },
+    menuSkinsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.skinsPanel.closeBtn },
     menuDiffEasy: { x: diffButtonCenter(0), y: UI_LAYOUT.menu.difficulty },
     menuDiffNormal: { x: diffButtonCenter(1), y: UI_LAYOUT.menu.difficulty },
     menuDiffHard: { x: diffButtonCenter(2), y: UI_LAYOUT.menu.difficulty },
@@ -105,6 +111,9 @@ export const TOUCH_TARGETS = Object.freeze({
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 
+export const GAME_OVER_RESTART_BTN_WIDTH = 240;
+export const GAME_OVER_RESTART_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accent);
+export const GAME_OVER_RESTART_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentTitre);
 export const PAUSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonPause);
 export const PAUSE_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonPauseHover);
 export const MENU_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonMenu);

@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS } from './storageKeys.js';
 import { birdTextureKey } from './skins/index.js';
+import { birdSpriteScale } from './textures/birdTextures.js';
 import { DEPTH } from './uiDepth.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
@@ -111,7 +112,7 @@ export class GhostReplay {
             birdTextureKey(skinId),
             1
         );
-        this.sprite.setDisplaySize(GAME_CONFIG.bird.width, GAME_CONFIG.bird.height);
+        this.sprite.setScale(birdSpriteScale(GAME_CONFIG.bird.width));
         this.sprite.setAlpha(GAME_CONFIG.training.ghostAlpha);
         this.sprite.setDepth(DEPTH.GHOST);
         this.sprite.setTint(0xaaddff);

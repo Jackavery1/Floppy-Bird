@@ -5,6 +5,14 @@ import { getSkin } from '../skins/index.js';
 const FRAME_W = 38;
 const FRAME_H = 28;
 
+export const BIRD_FRAME_W = FRAME_W;
+export const BIRD_FRAME_H = FRAME_H;
+
+/** Scale uniforme : conserve le ratio texture (38×28) pour la largeur gameplay cible. */
+export function birdSpriteScale(targetWidth) {
+    return targetWidth / FRAME_W;
+}
+
 /** @param {import('phaser').GameObjects.Graphics} g */
 function drawOutline(g, ox, oy, alpha) {
     g.fillStyle(0x000000, alpha);

@@ -2,6 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { birdAnimKey, birdTextureKey } from './skins/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { DEPTH } from './uiDepth.js';
+import { birdSpriteScale } from './textures/birdTextures.js';
 
 export class Bird {
     constructor(scene, x, y, skinId = loadSelectedSkin()) {
@@ -21,7 +22,7 @@ export class Bird {
         this._jumpBuffered = false;
 
         this.sprite = scene.add.sprite(x, y, birdTextureKey(skinId), 1);
-        this.sprite.setDisplaySize(this.width, this.height);
+        this.sprite.setScale(birdSpriteScale(this.width));
         this.sprite.setDepth(DEPTH.BIRD);
     }
 
@@ -64,6 +65,7 @@ export class Bird {
     setSkin(skinId) {
         this._skinId = skinId;
         this.sprite.setTexture(birdTextureKey(skinId), 1);
+        this.sprite.setScale(birdSpriteScale(this.width));
         this.sprite.stop();
         this.sprite.setFrame(1);
     }

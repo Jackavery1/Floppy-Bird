@@ -9,6 +9,7 @@ import {
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
 import { destroyGapHudBadge } from './uiHudGapBadge.js';
+import { destroyCoyoteHudBadge } from './uiHudCoyoteBadge.js';
 import {
     addCenteredText,
     DEPTH,
@@ -31,6 +32,7 @@ export function destroyInGameControls(ui) {
     ui._trainingBadge = null;
     ui._hardcoreBadge = null;
     destroyGapHudBadge(ui);
+    destroyCoyoteHudBadge(ui);
     setAccessibilityControlVisible('pause', false);
     dismissJumpTutorial(ui);
 }

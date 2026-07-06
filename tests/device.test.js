@@ -98,9 +98,20 @@ describe('device', () => {
         expect(hardcoreInvincibilityHintText(625)).toContain('625 ms');
     });
 
-    it('modesHintLine renvoie vers OPTIONS', async () => {
-        const { modesHintLine } = await loadDevice(false);
-        expect(modesHintLine().toLowerCase()).toContain('options');
+    it('optionsControlsHint regroupe les commandes du jeu', async () => {
+        const { optionsControlsHint } = await loadDevice(false);
+        const hint = optionsControlsHint();
+        expect(hint).toContain('ESPACE : sauter');
+        expect(hint).toContain('D : défi du jour');
+        expect(hint).toContain('T : entraînement');
+        expect(hint).toContain('S scores');
+    });
+
+    it('optionsControlsHint adapte le tactile', async () => {
+        const { optionsControlsHint } = await loadDevice(true);
+        const hint = optionsControlsHint();
+        expect(hint).toContain('TAP : sauter');
+        expect(hint).toContain('Scores · Skins');
     });
 
     it('dailyReplayHint et restartHintForMode distinguent le mode daily', async () => {
