@@ -25,7 +25,7 @@ export const PAUSE_BTN_INSET = 12;
 /** Marge haute minimale (px jeu) pour HUD pause / score sous encoche visuelle. */
 export const HUD_SAFE_TOP = 16;
 
-export const GAME_OVER_PANEL = { x: 24, y: 80, w: 240, h: 340, radius: 12 };
+export const GAME_OVER_PANEL = { x: 24, y: 60, w: 240, h: 400, radius: 12 };
 
 export const UI_LAYOUT = {
     scoreHud: 68,
@@ -111,7 +111,7 @@ export const TOUCH_TARGETS = Object.freeze({
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 
-export const GAME_OVER_RESTART_BTN_WIDTH = 240;
+export const GAME_OVER_RESTART_BTN_WIDTH = 100;
 export const GAME_OVER_RESTART_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accent);
 export const GAME_OVER_RESTART_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentTitre);
 export const PAUSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonPause);

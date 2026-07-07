@@ -6,33 +6,49 @@ import { prefersReducedMotion } from './motion.js';
 
 /** @param {import('phaser').GameObjects.GameObject[]} elements @param {boolean} visible @param {import('phaser').Scene} [scene] */
 export function setMenuPanelVisible(elements, visible, scene) {
-    if (!elements) return;
-    if (!scene || prefersReducedMotion()) {
-        elements.forEach((el) => el?.setVisible?.(visible));
-        return;
-    }
+    if (!elements || elements.length === 0) return;
+    const animateWithTween = scene && !prefersReducedMotion();
+
     if (visible) {
+        // Make all elements visible immediately
         elements.forEach((el) => {
             if (!el?.setVisible) return;
-            el.setAlpha(0);
             el.setVisible(true);
+            if (animateWithTween && el.setAlpha) el.setAlpha(0);
         });
-        sceneTween(scene, {
-            targets: elements.filter((el) => el?.setAlpha),
-            alpha: 1,
-            duration: 250,
-            ease: 'Cubic.easeOut',
-        });
+
+        // Animate opacity if tweening is enabled
+        if (animateWithTween) {
+            const tweenTargets = elements.filter((el) => el?.setAlpha);
+            if (tweenTargets.length > 0) {
+                sceneTween(scene, {
+                    targets: tweenTargets,
+                    alpha: 1,
+                    duration: 250,
+                    ease: 'Cubic.easeOut',
+                });
+            }
+        }
     } else {
-        sceneTween(scene, {
-            targets: elements.filter((el) => el?.setAlpha),
-            alpha: 0,
-            duration: 200,
-            ease: 'Cubic.easeIn',
-            onComplete: () => {
-                elements.forEach((el) => el?.setVisible?.(false));
-            },
-        });
+        // Hide elements - optionally animate
+        if (animateWithTween) {
+            const tweenTargets = elements.filter((el) => el?.setAlpha);
+            if (tweenTargets.length > 0) {
+                sceneTween(scene, {
+                    targets: tweenTargets,
+                    alpha: 0,
+                    duration: 200,
+                    ease: 'Cubic.easeIn',
+                    onComplete: () => {
+                        elements.forEach((el) => el?.setVisible?.(false));
+                    },
+                });
+                return; // Exit early, visibility is handled in tween completion
+            }
+        }
+
+        // Fallback: hide immediately if no tween
+        elements.forEach((el) => el?.setVisible?.(false));
     }
 }
 

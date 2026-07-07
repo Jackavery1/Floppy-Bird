@@ -121,15 +121,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
         menuBtnShadow,
         ui._menuBtnGraphics,
         menuBtnText,
-        menuHitZone,
-        addCenteredText(
-            scene,
-            cx,
-            y(308),
-            `${restartHintForMode(isDaily)} · ${menuHint()}`,
-            menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.texteHintFaible }),
-            DEPTH.MENU_RAISED
-        )
+        menuHitZone
     );
 
     return elements;
