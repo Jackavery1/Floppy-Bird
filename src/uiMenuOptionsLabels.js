@@ -22,7 +22,7 @@ function hardcoreFill(active, unlocked) {
 
 /** @param {import('./ui.js').UI} ui @param {boolean} visible */
 export function setOptionsContentVisible(ui, visible) {
-    setMenuPanelVisible(ui._optionsPanelElements, visible);
+    setMenuPanelVisible(ui._optionsPanelElements, visible, ui.scene);
 }
 
 export function applyTrainingLabel(ui, trainingMode) {

@@ -32,15 +32,15 @@ export const UI_LAYOUT = {
     menu: {
         title: 108,
         difficulty: 142,
-        dailyBtn: 186,
-        dailySubtitle: 212,
-        start: 248,
-        menuRow: 292,
+        dailyBtn: 320,
+        dailySubtitle: 346,
+        start: 370,
+        menuRow: 420,
         scoresBtn: 56,
         optionsBtn: 144,
         skinsBtn: 232,
         menuBtnW: MIN_TOUCH * 2,
-        hint1: 336,
+        hint1: 480,
     },
     optionsPanel: {
         panelTop: 200,
@@ -51,7 +51,7 @@ export const UI_LAYOUT = {
         hardcore: 296,
         mute: 336,
         hint2: 376,
-        closeBtn: 414,
+        closeBtn: 466,
     },
     scoresPanel: {
         panelTop: 188,
@@ -62,7 +62,7 @@ export const UI_LAYOUT = {
         scoresGap: 28,
         scoresHardcore: 332,
         scoresAchievements: 360,
-        closeBtn: 424,
+        closeBtn: 468,
     },
     skinsPanel: {
         panelTop: 132,
@@ -72,7 +72,7 @@ export const UI_LAYOUT = {
         skinsSubtitle: 172,
         skinsRow1: 208,
         skinsHint: 408,
-        closeBtn: 452,
+        closeBtn: 470,
     },
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {

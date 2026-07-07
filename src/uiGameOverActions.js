@@ -29,7 +29,7 @@ import {
 export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
     const { isDaily } = opts;
     const elements = [];
-    const restartBtnY = y(252);
+    const restartBtnY = y(300);
     const restartLabel = isDaily ? 'REJOUER DÉFI' : 'REJOUER';
 
     const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
@@ -80,7 +80,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
 
     elements.push(restartBtnShadow, ui._restartBtnGraphics, restartBtnText, restartHitZone);
 
-    const menuBtnY = y(285);
+    const menuBtnY = y(360);
     const menuBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     const { menuBtn } = UI_LAYOUT;
     menuBtnShadow.fillStyle(0x000000, 0.35);

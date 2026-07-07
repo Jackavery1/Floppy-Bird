@@ -3,8 +3,11 @@ import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
 import { loadHighScore } from './storage.js';
 import { loadUnlockedAchievements } from './metaStorage.js';
 import { ACHIEVEMENTS } from './achievements.js';
-import { addCenteredText, DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
+
+const SCORES_CLOSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accentScoreHardcore);
+const SCORES_CLOSE_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.accentGap);
 
 /** @typedef {'easy'|'normal'|'hard'} DifficultyId */
 
@@ -83,10 +86,10 @@ export function buildScoresTab(ui, elements, panelElements) {
         cy: panel.closeBtn,
         width: 160,
         depth: DEPTH.PANEL_FRAME,
-        color: MENU_BTN_COLOR,
-        stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
+        color: SCORES_CLOSE_BTN_COLOR,
+        stroke: SCORES_CLOSE_BTN_STROKE,
         labelText: '◂ RETOUR',
-        labelStroke: DESIGN_TOKENS.contourOptions,
+        labelStroke: DESIGN_TOKENS.accentScoreHardcore,
         onToggle: () => ui._scoresPanelController?.setOpen(false),
     });
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
