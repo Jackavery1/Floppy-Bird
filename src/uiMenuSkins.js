@@ -12,8 +12,21 @@ import {
     birdTextureKey,
     isSpecialSkin,
 } from './skins/index.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    menuTextStyle,
+    panelChromeTextStyle,
+} from './designTokens.js';
+import {
+    addCenteredText,
+    DEPTH,
+    FONT_SIZE_COMPACT,
+    FONT_SIZE_HINT,
+    MIN_TOUCH,
+    stopUiEvent,
+    UI_LAYOUT,
+} from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { announceAccessibility } from './uiDomAccessibility.js';
 

@@ -117,12 +117,7 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         scene.returnToMenu();
     });
 
-    elements.push(
-        menuBtnShadow,
-        ui._menuBtnGraphics,
-        menuBtnText,
-        menuHitZone
-    );
+    elements.push(menuBtnShadow, ui._menuBtnGraphics, menuBtnText, menuHitZone);
 
     return elements;
 }

@@ -13,7 +13,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { forceGameOver, getMenuPanels } from './helpers/testSeam.mjs';
+import { forceGameOver, getMenuPanels, getOptionsPanel } from './helpers/testSeam.mjs';
 
 test.describe('touch mobile portrait', () => {
     test('ouvre la pause via tap sur le bouton pause', async ({ page }, testInfo) => {
@@ -170,6 +170,67 @@ test.describe('touch mobile portrait', () => {
         await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
         await pointerGameCoord(page, menuHardcore.x, menuHardcore.y, usesTouch);
         await expect.poll(() => getMenuPanels(page).then((p) => p?.options)).toBe(true);
+    });
+
+    test('navigue les onglets Options puis ferme sans bleed contrôles', async ({
+        page,
+    }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        const {
+            menuOptions,
+            menuOptionsTabControls,
+            menuOptionsTabSettings,
+            menuOptionsTabModes,
+            menuOptionsClose,
+        } = TOUCH_TARGETS;
+
+        await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({ open: true, tab: 'modes', modes: true });
+
+        await pointerGameCoord(page, menuOptionsTabControls.x, menuOptionsTabControls.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({
+                open: true,
+                tab: 'controls',
+                controls: true,
+                settings: false,
+                modes: false,
+            });
+
+        await pointerGameCoord(page, menuOptionsTabSettings.x, menuOptionsTabSettings.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({
+                tab: 'settings',
+                controls: false,
+                settings: true,
+                modes: false,
+            });
+
+        await pointerGameCoord(page, menuOptionsTabModes.x, menuOptionsTabModes.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({
+                tab: 'modes',
+                controls: false,
+                settings: false,
+                modes: true,
+            });
+
+        await pointerGameCoord(page, menuOptionsClose.x, menuOptionsClose.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({
+                open: false,
+                controls: false,
+                settings: false,
+                modes: false,
+            });
     });
 
     test('change la difficulté via tap', async ({ page }, testInfo) => {

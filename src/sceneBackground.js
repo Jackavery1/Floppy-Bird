@@ -53,7 +53,13 @@ export function createHills(scene) {
     const groundTop = GAME_CONFIG.groundY - GROUND_BLADE_H;
     const cx = GAME_CONFIG.centerX;
 
-    const far = scene.add.tileSprite(cx, groundTop - 10, GAME_CONFIG.width, HILLS_FAR_H, 'hills_far');
+    const far = scene.add.tileSprite(
+        cx,
+        groundTop - 10,
+        GAME_CONFIG.width,
+        HILLS_FAR_H,
+        'hills_far'
+    );
     far.setOrigin(0.5, 1);
     far.setDepth(DEPTH.HILLS_FAR);
 

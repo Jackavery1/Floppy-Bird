@@ -1,7 +1,7 @@
 import { scoresButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { bindScoresAccessibility, setScoresPanelAccessibility } from './uiDomAccessibility.js';
-import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
 

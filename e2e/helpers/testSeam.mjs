@@ -36,6 +36,26 @@ export function getMenuPanels(page) {
 }
 
 /** @param {import('@playwright/test').Page} page */
+export function getOptionsPanel(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getOptionsPanel?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getGameplayEquity(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function requestJump(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.requestJump?.());
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [frames] */
+export function grantCoyoteGrace(page, frames) {
+    return page.evaluate((n) => window.__FLOPPY_TEST__?.grantCoyoteGrace?.(n), frames);
+}
+
+/** @param {import('@playwright/test').Page} page */
 export function forceGameOver(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.forceGameOver?.());
 }

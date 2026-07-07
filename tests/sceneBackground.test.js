@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
 import { GAME_CONFIG } from '../src/config.js';
 import {

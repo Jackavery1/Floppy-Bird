@@ -89,6 +89,22 @@ test.describe('clavier desktop', () => {
         await expect(page.locator('#a11y-training')).toBeFocused();
     });
 
+    test('bouton a11y affiche un contour focus-visible', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-start').focus();
+        const outline = await page.locator('#a11y-start').evaluate((el) => {
+            const style = getComputedStyle(el);
+            return {
+                outlineWidth: style.outlineWidth,
+                outlineColor: style.outlineColor,
+                opacity: style.opacity,
+            };
+        });
+        expect(outline.opacity).not.toBe('0');
+        expect(outline.outlineWidth).not.toBe('0px');
+    });
+
     test('Tab ouvre skins puis focus skin suivant', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);

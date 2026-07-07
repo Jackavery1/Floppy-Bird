@@ -31,21 +31,21 @@ describe('GAME_CONFIG.getDifficulty', () => {
         const n = GAME_CONFIG.getDifficulty('normal');
         expect(n.gravity).toBe(GAME_CONFIG.bird.gravity);
         expect(n.jumpPower).toBe(GAME_CONFIG.bird.jumpPower);
-        expect(n.speed).toBe(2.9);
-        expect(n.gap).toBe(106);
-        expect(n.pipeInterval).toBe(72);
+        expect(n.speed).toBe(2.75);
+        expect(n.gap).toBe(112);
+        expect(n.pipeInterval).toBe(76);
     });
 
     it('easy applique des overrides', () => {
         const e = GAME_CONFIG.getDifficulty('easy');
         expect(e.gravity).toBe(0.3);
-        expect(e.gap).toBe(136);
-        expect(e.pipeInterval).toBe(88);
+        expect(e.gap).toBe(140);
+        expect(e.pipeInterval).toBe(92);
     });
 
     it('retombe sur normal pour une clé invalide', () => {
         const x = GAME_CONFIG.getDifficulty('invalid');
-        expect(x.speed).toBe(2.9);
+        expect(x.speed).toBe(2.75);
     });
 });
 

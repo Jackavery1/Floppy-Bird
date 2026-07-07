@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
-import { addCenteredText, DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
+import { DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { buildControlsSection } from './uiMenuOptionsControls.js';
 import { buildModeControls } from './uiMenuOptionsModes.js';

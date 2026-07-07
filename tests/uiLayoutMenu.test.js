@@ -1,5 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { computeMenuLayout, UI_LAYOUT, MIN_TOUCH, TOUCH_TARGETS, panelCloseBtnY, PANEL_CLOSE_INSET, SPACING, GAME_OVER_PANEL, gameOverMenuBtnY, gameOverRestartBtnY } from '../src/uiLayout.js';
+import {
+    computeMenuLayout,
+    UI_LAYOUT,
+    MIN_TOUCH,
+    TOUCH_TARGETS,
+    panelCloseBtnY,
+    PANEL_CLOSE_INSET,
+    SPACING,
+    GAME_OVER_PANEL,
+    gameOverMenuBtnY,
+    gameOverRestartBtnY,
+} from '../src/uiLayout.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('uiLayout menu', () => {
@@ -13,10 +24,11 @@ describe('uiLayout menu', () => {
 
     it('les panneaux scores, options et skins tiennent dans le canvas', () => {
         const { optionsPanel, scoresPanel, skinsPanel } = UI_LAYOUT;
-        expect(optionsPanel.panelTop + optionsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(optionsPanel.panelTop + optionsPanel.panelH).toBeLessThanOrEqual(
+            GAME_CONFIG.height - 8
+        );
         expect(optionsPanel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(GAME_CONFIG.height - 4);
-        const lastControlY =
-            optionsPanel.controlsFirst + 7 * optionsPanel.controlsGap;
+        const lastControlY = optionsPanel.controlsFirst + 7 * optionsPanel.controlsGap;
         expect(lastControlY).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(skinsPanel.skinsHint).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
@@ -65,11 +77,7 @@ describe('uiLayout menu', () => {
     });
 
     it('les boutons RETOUR tiennent dans le fond du panneau', () => {
-        for (const panel of [
-            UI_LAYOUT.optionsPanel,
-            UI_LAYOUT.scoresPanel,
-            UI_LAYOUT.skinsPanel,
-        ]) {
+        for (const panel of [UI_LAYOUT.optionsPanel, UI_LAYOUT.scoresPanel, UI_LAYOUT.skinsPanel]) {
             const bottom = panel.panelTop + panel.panelH;
             expect(panel.closeBtn).toBe(panelCloseBtnY(panel.panelTop, panel.panelH));
             expect(panel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
@@ -82,7 +90,9 @@ describe('uiLayout menu', () => {
         const left = GAME_CONFIG.centerX - optionsPanel.w / 2;
         const right = left + optionsPanel.w;
         const half = optionsPanel.tabBtnW / 2;
-        expect(optionsPanel.tabControlsX - half).toBeGreaterThanOrEqual(left + optionsPanel.tabInset);
+        expect(optionsPanel.tabControlsX - half).toBeGreaterThanOrEqual(
+            left + optionsPanel.tabInset
+        );
         expect(optionsPanel.tabModesX + half).toBeLessThanOrEqual(right - optionsPanel.tabInset);
         expect(optionsPanel.tabSettingsX).toBe(GAME_CONFIG.centerX);
     });

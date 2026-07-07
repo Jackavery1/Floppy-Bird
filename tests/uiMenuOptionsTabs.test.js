@@ -49,8 +49,15 @@ describe('uiMenuOptionsTabs', () => {
 
     it('les onglets sont alignés gauche / centre / droite', () => {
         const panel = UI_LAYOUT.optionsPanel;
-        const xs = ui._optionsTabButtons.map(({ id }) =>
-            panel[id === 'controls' ? 'tabControlsX' : id === 'settings' ? 'tabSettingsX' : 'tabModesX']
+        const xs = ui._optionsTabButtons.map(
+            ({ id }) =>
+                panel[
+                    id === 'controls'
+                        ? 'tabControlsX'
+                        : id === 'settings'
+                          ? 'tabSettingsX'
+                          : 'tabModesX'
+                ]
         );
         expect(xs).toEqual([panel.tabControlsX, panel.tabSettingsX, panel.tabModesX]);
     });

@@ -1,6 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { optionsControlRows } from './device.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    menuHomeTextStyle,
+    panelChromeTextStyle,
+} from './designTokens.js';
 import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 import { beginOptionsSection } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';

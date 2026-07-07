@@ -9,9 +9,7 @@ const TILE_W = GAME_CONFIG.width;
 
 /** @param {'day'|'night'} period */
 function hillPalette(period) {
-    return period === 'day'
-        ? { far: 0x6d9f4a, near: 0x4e7c31 }
-        : { far: 0x2a4538, near: 0x1a2e26 };
+    return period === 'day' ? { far: 0x6d9f4a, near: 0x4e7c31 } : { far: 0x2a4538, near: 0x1a2e26 };
 }
 
 /**

@@ -139,8 +139,14 @@ export const TOUCH_TARGETS = Object.freeze({
     menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.settingsMute },
     menuTraining: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.training },
     menuHardcore: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.hardcore },
-    menuOptionsTabControls: { x: UI_LAYOUT.optionsPanel.tabControlsX, y: UI_LAYOUT.optionsPanel.tabRow },
-    menuOptionsTabSettings: { x: UI_LAYOUT.optionsPanel.tabSettingsX, y: UI_LAYOUT.optionsPanel.tabRow },
+    menuOptionsTabControls: {
+        x: UI_LAYOUT.optionsPanel.tabControlsX,
+        y: UI_LAYOUT.optionsPanel.tabRow,
+    },
+    menuOptionsTabSettings: {
+        x: UI_LAYOUT.optionsPanel.tabSettingsX,
+        y: UI_LAYOUT.optionsPanel.tabRow,
+    },
     menuOptionsTabModes: { x: UI_LAYOUT.optionsPanel.tabModesX, y: UI_LAYOUT.optionsPanel.tabRow },
     menuOptionsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.closeBtn },
     menuScoresClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoresPanel.closeBtn },

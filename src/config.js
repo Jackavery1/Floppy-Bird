@@ -81,7 +81,7 @@ export const GAME_CONFIG = {
     },
 
     training: {
-        timeScale: 0.88,
+        timeScale: 0.8,
         ghostAlpha: 0.35,
         sampleEveryFrames: 3,
     },
@@ -94,14 +94,14 @@ export const GAME_CONFIG = {
 
     difficulties: {
         easy: {
-            speed: 1.95,
-            gap: 136,
+            speed: 1.85,
+            gap: 140,
             gravity: 0.3,
             jumpPower: -5.7,
             maxFallSpeed: 10,
-            pipeInterval: 88,
+            pipeInterval: 92,
         },
-        normal: { speed: 2.9, gap: 106, pipeInterval: 72 },
+        normal: { speed: 2.75, gap: 112, pipeInterval: 76 },
         hard: {
             speed: 3.6,
             gap: 92,

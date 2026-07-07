@@ -29,9 +29,9 @@ describe('gameState', () => {
     it('bloque le démarrage si un panneau menu est ouvert', () => {
         const ui = { _optionsOpen: true, _scoresOpen: false, _skinsOpen: false };
         expect(shouldStartGameOnPrimary(GAME_STATE.MENU, ui)).toBe(false);
-        expect(shouldStartGameOnPrimary(GAME_STATE.MENU, { _optionsOpen: false, _scoresOpen: true })).toBe(
-            false
-        );
+        expect(
+            shouldStartGameOnPrimary(GAME_STATE.MENU, { _optionsOpen: false, _scoresOpen: true })
+        ).toBe(false);
     });
 
     it('limite le changement de difficulté au menu', () => {

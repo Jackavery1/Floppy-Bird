@@ -1,5 +1,10 @@
 import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    menuHomeTextStyle,
+    panelChromeTextStyle,
+} from './designTokens.js';
 import { loadHighScore } from './storage.js';
 import { loadUnlockedAchievements } from './metaStorage.js';
 import { ACHIEVEMENTS } from './achievements.js';
@@ -45,7 +50,12 @@ export function buildScoresTab(ui, elements, panelElements) {
 
     const titleRule = scene.add.graphics().setDepth(DEPTH.PANEL_FRAME);
     titleRule.lineStyle(1, SCORES_BTN_STROKE, 0.45);
-    titleRule.lineBetween(GAME_CONFIG.centerX - 88, panel.scoresTitle + 14, GAME_CONFIG.centerX + 88, panel.scoresTitle + 14);
+    titleRule.lineBetween(
+        GAME_CONFIG.centerX - 88,
+        panel.scoresTitle + 14,
+        GAME_CONFIG.centerX + 88,
+        panel.scoresTitle + 14
+    );
     panelElements.push(titleRule);
     elements.push(titleRule);
     ui._scoresTabElements.push(titleRule);

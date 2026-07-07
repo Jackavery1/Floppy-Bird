@@ -1,4 +1,4 @@
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { buildStyledPanelBackdrop, buildPanelPillButton } from './uiMenuPanelChrome.js';
 import { sceneTween } from './motion.js';
