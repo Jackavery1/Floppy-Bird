@@ -60,6 +60,26 @@ export function forceGameOver(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.forceGameOver?.());
 }
 
+/** @param {import('@playwright/test').Page} page @param {'pipe' | 'ground' | 'ceiling'} [cause] */
+export function triggerDeath(page, cause = 'pipe') {
+    return page.evaluate((c) => window.__FLOPPY_TEST__?.triggerDeath?.(c), cause);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getRoundScore(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getRoundScore?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getPipeState(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getPipeState?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function advancePipeForScore(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.advancePipeForScore?.() ?? null);
+}
+
 /** @param {import('@playwright/test').Page} page */
 export function waitForScoreHud(page, timeout = 5_000) {
     return page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, { timeout });

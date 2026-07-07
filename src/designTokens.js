@@ -12,7 +12,7 @@ export const DESIGN_TOKENS = Object.freeze({
     flashPlafond: '#b3e5fc',
     texteHud: '#ffffff',
     contourHud: '#000000',
-    texteSecondaire: '#78909C',
+    texteSecondaire: '#B0BEC5',
     badgeDaily: '#CE93D8',
     badgeDailySecondary: '#B39DDB',
     badgeTraining: '#81D4FA',
@@ -22,7 +22,7 @@ export const DESIGN_TOKENS = Object.freeze({
     bannerSuccess: '#81C784',
     bannerCoyote: '#FFEEAA',
     texteMenu: '#ffffff',
-    texteHintMenu: '#B0BEC5',
+    texteHintMenu: '#ECEFF1',
     contourMenu: '#0d1117',
     accentTitre: '#FDD835',
     accentTitreContour: '#E65100',
@@ -86,10 +86,11 @@ export function menuTextStyle(overrides = {}) {
     };
 }
 
-/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P). */
+/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P), min 12 px. */
 export function panelChromeTextStyle(overrides = {}) {
     return menuTextStyle({
         fontFamily: DESIGN_TOKENS.policeTitre,
+        fontSize: '12px',
         ...overrides,
     });
 }

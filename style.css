@@ -79,15 +79,25 @@ body {
     background: transparent;
     cursor: pointer;
     opacity: 0;
+    box-sizing: border-box;
 }
 
 .a11y-btn:focus-visible {
     opacity: 1;
     border-color: var(--couleur-accent);
-    background: rgba(253, 216, 53, 0.15);
+    background: rgba(253, 216, 53, 0.22);
     outline: 2px solid var(--couleur-accent);
     outline-offset: 2px;
     box-shadow: 0 0 0 4px rgba(253, 216, 53, 0.35);
+}
+
+.a11y-btn:focus-visible::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px dashed var(--couleur-accent);
+    border-radius: 10px;
+    pointer-events: none;
 }
 
 #loading {
@@ -117,6 +127,25 @@ html.game-ready #loading {
 @media (prefers-reduced-motion: reduce) {
     #loading {
         animation: none;
+    }
+}
+
+@media (prefers-contrast: more) {
+    :root {
+        --couleur-texte-chargement: #bbdefb;
+        --couleur-texte-hint: #ffffff;
+        --couleur-accent: #ffeb3b;
+    }
+
+    .a11y-btn:focus-visible {
+        outline-width: 3px;
+        border-width: 3px;
+        background: rgba(253, 216, 53, 0.3);
+        box-shadow: 0 0 0 6px rgba(253, 216, 53, 0.45);
+    }
+
+    *:focus-visible {
+        outline-width: 3px;
     }
 }
 

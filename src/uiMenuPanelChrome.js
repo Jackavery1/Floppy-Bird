@@ -101,7 +101,6 @@ export function buildPanelPillButton(scene, elements, cfg) {
     const labelStyle =
         cfg.labelStyle ??
         panelChromeTextStyle({
-            fontSize: '10px',
             fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'bold',
             stroke: cfg.labelStroke,

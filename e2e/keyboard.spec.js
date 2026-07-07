@@ -1,13 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { forceGameOver, getDailyChallengeMode } from './helpers/testSeam.mjs';
 import {
     enterPausedFromPlaying,
     expectGameState,
+    isMobilePortraitProject,
     openPauseFromPlaying,
     projectUsesTouch,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { forceGameOver, getDailyChallengeMode } from './helpers/testSeam.mjs';
 
 test.describe('clavier desktop', () => {
     test('ESPACE démarre puis ESC ouvre la pause', async ({ page }, testInfo) => {
@@ -138,5 +139,81 @@ test.describe('clavier desktop', () => {
         await page.keyboard.press('ArrowRight');
         await page.keyboard.press('ArrowLeft');
         await expectGameState(page, 'menu');
+    });
+});
+
+test.describe('clavier mobile portrait (couche a11y)', () => {
+    test('Tab puis Entrée sur jouer démarre la partie', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        for (let i = 0; i < 12; i++) {
+            const id = await page.evaluate(() => document.activeElement?.id ?? '');
+            if (id === 'a11y-start') break;
+            await page.keyboard.press('Tab');
+        }
+        await expect(page.locator('#a11y-start')).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'playing');
+    });
+
+    test('bouton a11y affiche un contour focus-visible', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-start').focus();
+        const outline = await page.locator('#a11y-start').evaluate((el) => {
+            const style = getComputedStyle(el);
+            return {
+                outlineWidth: style.outlineWidth,
+                opacity: style.opacity,
+            };
+        });
+        expect(outline.opacity).not.toBe('0');
+        expect(outline.outlineWidth).not.toBe('0px');
+    });
+
+    test('Tab ouvre options puis focus entraînement', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-options').focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#a11y-training')).toBeVisible();
+        await page.locator('#a11y-training').focus();
+        await expect(page.locator('#a11y-training')).toBeFocused();
+    });
+
+    test('bouton saut a11y démarre une action en jeu', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await page.locator('#a11y-jump').focus();
+        await page.keyboard.press('Enter');
+        const equity = await page.evaluate(
+            () => window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null
+        );
+        expect(equity?.jumpBufferFrames).toBeGreaterThan(0);
+    });
+});
+
+test.describe('clavier webkit mobile portrait', () => {
+    test('Tab puis Entrée sur jouer', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'webkit-mobile-portrait', 'webkit portrait uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-start').focus();
+        await page.keyboard.press('Enter');
+        await expect
+            .poll(async () => page.evaluate(() => window.__FLOPPY_TEST__?.getState?.()))
+            .toBe('playing');
+    });
+
+    test('Tab ouvre options et onglet modes', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'webkit-mobile-portrait', 'webkit portrait uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-options').focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#a11y-options-tab-modes')).toBeVisible();
+        await page.locator('#a11y-options-tab-controls').focus();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#a11y-training')).toBeVisible();
     });
 });

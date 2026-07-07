@@ -20,6 +20,7 @@ import {
     setupMenuAccessibility,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
+import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -125,14 +126,21 @@ export function togglePause(scene) {
         });
         scene.ui.setOverlay('pause', pauseUI.elements);
         setAccessibilityControlVisible('pause', false);
-        setAccessibilityControlVisible('pauseResume', true);
-        setAccessibilityControlVisible('pauseMenu', true);
+        for (const key of PLAYING_CONTROL_KEYS) {
+            if (key !== 'pause') setAccessibilityControlVisible(key, false);
+        }
+        for (const key of PAUSE_OVERLAY_CONTROL_KEYS) {
+            setAccessibilityControlVisible(key, true);
+        }
         syncAccessibilityLayer(scene.game);
         announceAccessibility('Partie en pause');
     } else if (scene.state === GAME_STATE.PAUSED) {
         applyPlayingState(scene);
         clearPauseOverlay(scene);
         setAccessibilityControlVisible('pause', true);
+        for (const key of PLAYING_CONTROL_KEYS) {
+            if (key !== 'pause') setAccessibilityControlVisible(key, true);
+        }
         syncAccessibilityLayer(scene.game);
         announceAccessibility('Partie reprise');
     }

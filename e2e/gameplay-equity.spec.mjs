@@ -1,12 +1,21 @@
 import { test, expect } from '@playwright/test';
 import { GAME_CONFIG } from '../src/config.js';
 import {
+    expectGameState,
     isMobilePortraitProject,
     projectUsesTouch,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { getGameplayEquity, grantCoyoteGrace, requestJump } from './helpers/testSeam.mjs';
+import {
+    bumpScore,
+    getGameplayEquity,
+    getRoundScore,
+    getScoreHud,
+    grantCoyoteGrace,
+    requestJump,
+    triggerDeath,
+} from './helpers/testSeam.mjs';
 
 test.describe('gameplay equity via test seam', () => {
     test('expose buffer, coyote et invincibilité spawn au démarrage', async ({
@@ -68,6 +77,39 @@ test.describe('gameplay equity via test seam', () => {
         expect(equity?.spawnInvincibilityMs).toBe(GAME_CONFIG.round.spawnInvincibilityMs);
         expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThan(equity?.spawnInvincibilityMs);
     });
+
+    test('sauts répétés maintiennent la partie active', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+
+        for (let i = 0; i < 8; i++) {
+            await requestJump(page);
+            await page.waitForTimeout(250);
+        }
+        await expectGameState(page, 'playing');
+    });
+
+    test('score 3 points via seam reflète le HUD', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await bumpScore(page, 3);
+        await expect.poll(async () => getScoreHud(page)).toMatchObject({ text: '3' });
+        expect(await getRoundScore(page)).toBe(3);
+    });
+
+    test('collision tuyau déclenche la mort', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await triggerDeath(page, 'pipe');
+        await expectGameState(page, 'dying', 5_000);
+        await expectGameState(page, 'gameover', 15_000);
+    });
 });
 
 test.describe('gameplay equity mobile portrait', () => {
@@ -80,5 +122,16 @@ test.describe('gameplay equity mobile portrait', () => {
         await requestJump(page);
         const equity = await getGameplayEquity(page);
         expect(equity?.jumpBufferMax).toBe(4);
+    });
+
+    test('invincibilité spawn active en mobile portrait', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+
+        await expect
+            .poll(async () => getGameplayEquity(page))
+            .toMatchObject({ spawnInvincible: true });
     });
 });

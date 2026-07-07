@@ -46,5 +46,6 @@ describe('testSeam', () => {
         expect(scene.round.score).toBe(2);
         expect(ui.updateScore).toHaveBeenCalledWith(2);
         expect(scoreText.text).toBe('2');
+        expect(window.__FLOPPY_TEST__.getRoundScore()).toBe(2);
     });
 });

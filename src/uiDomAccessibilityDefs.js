@@ -1,4 +1,5 @@
 import { MIN_TOUCH, TOUCH_TARGETS, UI_LAYOUT } from './uiLayoutConstants.js';
+import { GAME_CONFIG } from './config.js';
 
 export const MENU_CONTROL_KEYS = Object.freeze([
     'menuDiffEasy',
@@ -11,7 +12,14 @@ export const MENU_CONTROL_KEYS = Object.freeze([
     'menuSkins',
 ]);
 
+export const OPTIONS_TAB_CONTROL_KEYS = Object.freeze([
+    'menuOptionsTabControls',
+    'menuOptionsTabSettings',
+    'menuOptionsTabModes',
+]);
+
 export const OPTIONS_CONTROL_KEYS = Object.freeze([
+    ...OPTIONS_TAB_CONTROL_KEYS,
     'menuTraining',
     'menuHardcore',
     'menuMute',
@@ -28,6 +36,10 @@ export const SKINS_PANEL_CONTROL_KEYS = Object.freeze([
 
 export const GAME_OVER_CONTROL_KEYS = Object.freeze(['gameOverRestart', 'gameOverMenu']);
 
+export const PLAYING_CONTROL_KEYS = Object.freeze(['pause', 'playJump']);
+
+export const PAUSE_OVERLAY_CONTROL_KEYS = Object.freeze(['pauseResume', 'pauseMenu']);
+
 export const CONTROL_DEFS = Object.freeze({
     pause: {
         id: 'a11y-pause',
@@ -35,6 +47,14 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.pauseButton.x,
         y: TOUCH_TARGETS.pauseButton.y,
         size: 44,
+    },
+    playJump: {
+        id: 'a11y-jump',
+        label: 'Sauter',
+        x: GAME_CONFIG.centerX,
+        y: GAME_CONFIG.centerY,
+        width: MIN_TOUCH * 2,
+        height: MIN_TOUCH * 2,
     },
     pauseResume: {
         id: 'a11y-resume',
@@ -128,6 +148,30 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.menuHardcore.x,
         y: TOUCH_TARGETS.menuHardcore.y,
         width: 220,
+        height: MIN_TOUCH,
+    },
+    menuOptionsTabControls: {
+        id: 'a11y-options-tab-controls',
+        label: 'Onglet contrôles',
+        x: TOUCH_TARGETS.menuOptionsTabControls.x,
+        y: TOUCH_TARGETS.menuOptionsTabControls.y,
+        width: UI_LAYOUT.optionsPanel.tabBtnW,
+        height: MIN_TOUCH,
+    },
+    menuOptionsTabSettings: {
+        id: 'a11y-options-tab-settings',
+        label: 'Onglet réglages',
+        x: TOUCH_TARGETS.menuOptionsTabSettings.x,
+        y: TOUCH_TARGETS.menuOptionsTabSettings.y,
+        width: UI_LAYOUT.optionsPanel.tabBtnW,
+        height: MIN_TOUCH,
+    },
+    menuOptionsTabModes: {
+        id: 'a11y-options-tab-modes',
+        label: 'Onglet modes',
+        x: TOUCH_TARGETS.menuOptionsTabModes.x,
+        y: TOUCH_TARGETS.menuOptionsTabModes.y,
+        width: UI_LAYOUT.optionsPanel.tabBtnW,
         height: MIN_TOUCH,
     },
     menuMute: {

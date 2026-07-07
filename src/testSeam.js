@@ -1,5 +1,8 @@
 import { GAME_CONFIG } from './config.js';
 import { requestJump } from './sceneJumpBuffer.js';
+import { triggerDeath } from './sceneDeath.js';
+import { checkScorePipes } from './sceneRound.js';
+import { loadTutorialComplete, loadTutorialProgress } from './tutorialStorage.js';
 
 /** API d’observation Playwright — chargée dynamiquement (voir appBootstrap.shouldInstallTestSeam). */
 /** @param {import('phaser').Game} game */
@@ -102,5 +105,40 @@ export function installTestSeam(game) {
             if (!scene?.round) return;
             scene.round.coyoteFrames = frames;
         },
+        getRoundScore: () => getScene()?.round?.score ?? null,
+        triggerDeath: (cause = 'pipe') => {
+            const scene = getScene();
+            if (!scene) return;
+            triggerDeath(scene, cause);
+        },
+        getPipeState: () => {
+            const scene = getScene();
+            if (!scene?.pipes) return null;
+            const pipe = scene.pipes.topPipes?.[0];
+            return {
+                pipeCount: scene.pipes.topPipes?.length ?? 0,
+                score: scene.round?.score ?? 0,
+                birdX: scene.bird?.x ?? 0,
+                firstPipeX: pipe?.x ?? null,
+                pipeWidth: scene.pipes.pipeWidth,
+            };
+        },
+        advancePipeForScore: () => {
+            const scene = getScene();
+            if (!scene?.pipes || !scene.bird || !scene.round) return null;
+            let pipe = scene.pipes.topPipes.find((p) => !p.scored);
+            if (!pipe) {
+                scene.pipes.spawn();
+                pipe = scene.pipes.topPipes.find((p) => !p.scored);
+            }
+            if (!pipe) return scene.round.score;
+            scene.bird.x = pipe.x + scene.pipes.pipeWidth / 2 + 2;
+            checkScorePipes(scene);
+            return scene.round.score;
+        },
+        getTutorialState: () => ({
+            step: loadTutorialProgress(),
+            complete: loadTutorialComplete(),
+        }),
     };
 }

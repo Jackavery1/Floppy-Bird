@@ -99,8 +99,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.scoresAchievements,
         formatAchievementsLine(),
-        panelChromeTextStyle({
-            fontSize: '11px',
+        menuHomeTextStyle({
             fill: DESIGN_TOKENS.medailleOr,
             stroke: DESIGN_TOKENS.contourMenu,
         }),

@@ -8,6 +8,7 @@ import {
     setAccessibilityControlVisible,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
+import { PLAYING_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
 import { destroyGapHudBadge } from './uiHudGapBadge.js';
 import { destroyCoyoteHudBadge } from './uiHudCoyoteBadge.js';
 import { resetHudBannerSlots } from './uiHudBannerStack.js';
@@ -37,13 +38,15 @@ export function destroyInGameControls(ui) {
     destroyGapHudBadge(ui);
     destroyCoyoteHudBadge(ui);
     resetHudBannerSlots(ui);
-    setAccessibilityControlVisible('pause', false);
+    for (const key of PLAYING_CONTROL_KEYS) {
+        setAccessibilityControlVisible(key, false);
+    }
     dismissJumpTutorial(ui);
 }
 
 export function createInGameControls(
     ui,
-    { trainingMode, hardcoreMode, dailyMode, dailyGoal, activeSkinId, onPause }
+    { trainingMode, hardcoreMode, dailyMode, dailyGoal, activeSkinId, onPause, onJump }
 ) {
     destroyInGameControls(ui);
     const elements = [];
@@ -144,6 +147,10 @@ export function createInGameControls(
 
     bindAccessibilityAction('pause', onPause);
     setAccessibilityControlVisible('pause', true);
+    if (onJump) {
+        bindAccessibilityAction('playJump', onJump);
+        setAccessibilityControlVisible('playJump', true);
+    }
     syncAccessibilityLayer(ui.scene.game);
 
     ui._inGameControlElements = elements;

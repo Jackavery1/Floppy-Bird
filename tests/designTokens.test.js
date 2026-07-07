@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle, menuTextStyle } from '../src/designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle, menuTextStyle, panelChromeTextStyle } from '../src/designTokens.js';
 
 function hexToRgb(hex) {
     const n = Number.parseInt(hex.replace('#', ''), 16);
@@ -93,6 +93,22 @@ describe('designTokens', () => {
         expect(
             contrastRatio(DESIGN_TOKENS.texteVerrouille, DESIGN_TOKENS.cadreSkinFond)
         ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('texteSecondaire atteint AA sur fond nuit', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteSecondaire, DESIGN_TOKENS.fondNuit)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('texteHintMenu atteint AA sur fond nuit', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteHintMenu, DESIGN_TOKENS.fondNuit)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('panelChromeTextStyle impose 12 px minimum', () => {
+        expect(panelChromeTextStyle().fontSize).toBe('12px');
     });
 
     it('expose les couleurs Phaser médailles et confettis', async () => {

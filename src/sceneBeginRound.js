@@ -79,6 +79,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
         dailyGoal: scene.dailyGoal,
         activeSkinId: skinId,
         onPause: () => scene.togglePause(),
+        onJump: () => scene.handlePrimaryAction(),
     });
 
     ensurePipeTextures(scene);

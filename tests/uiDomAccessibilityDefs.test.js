@@ -3,14 +3,27 @@ import {
     CONTROL_DEFS,
     MENU_CONTROL_KEYS,
     OPTIONS_CONTROL_KEYS,
+    PLAYING_CONTROL_KEYS,
+    PAUSE_OVERLAY_CONTROL_KEYS,
     SCORES_PANEL_CONTROL_KEYS,
     SKINS_PANEL_CONTROL_KEYS,
     GAME_OVER_CONTROL_KEYS,
 } from '../src/uiDomAccessibilityDefs.js';
 
 describe('uiDomAccessibilityDefs', () => {
-    it('expose 21 contrôles avec id et label', () => {
-        expect(Object.keys(CONTROL_DEFS)).toHaveLength(21);
+    it('expose tous les contrôles avec id et label', () => {
+        const keys = Object.keys(CONTROL_DEFS);
+        const registries = [
+            ...MENU_CONTROL_KEYS,
+            ...OPTIONS_CONTROL_KEYS,
+            ...SCORES_PANEL_CONTROL_KEYS,
+            ...SKINS_PANEL_CONTROL_KEYS,
+            ...GAME_OVER_CONTROL_KEYS,
+            ...PLAYING_CONTROL_KEYS,
+            ...PAUSE_OVERLAY_CONTROL_KEYS,
+        ];
+        expect(new Set(registries)).toEqual(new Set(keys));
+        expect(keys.length).toBe(registries.length);
         for (const def of Object.values(CONTROL_DEFS)) {
             expect(def.id).toMatch(/^a11y-/);
             expect(def.label.length).toBeGreaterThan(2);

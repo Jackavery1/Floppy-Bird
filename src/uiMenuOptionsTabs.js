@@ -24,7 +24,7 @@ const TABS = Object.freeze([
 ]);
 
 const TAB_LABEL_STYLE = menuHomeTextStyle({
-    fontSize: '11px',
+    fontSize: '12px',
     stroke: DESIGN_TOKENS.contourOptions,
 });
 

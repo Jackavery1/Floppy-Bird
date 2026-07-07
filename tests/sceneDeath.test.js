@@ -22,6 +22,12 @@ vi.mock('../src/uiDomAccessibility.js', () => ({
 vi.mock('../src/tutorialStorage.js', () => ({
     recordPipeDeathForCoyoteHint: vi.fn(),
 }));
+vi.mock('../src/dailyChallengeProgress.js', () => ({
+    saveDailyCompletion: vi.fn(),
+}));
+vi.mock('../src/dailyChallenge.js', () => ({
+    getDailyChallengeSkin: vi.fn(() => 'classic'),
+}));
 
 describe('sceneDeath', () => {
     it('triggerDeath passe en DYING et enregistre le score', async () => {
@@ -100,5 +106,52 @@ describe('sceneDeath', () => {
             score: 2,
             isDaily: false,
         });
+    });
+
+    it('updateDying daily sauvegarde la complétion', async () => {
+        const { saveDailyCompletion } = await import('../src/dailyChallengeProgress.js');
+        const round = createRoundState();
+        round.score = 12;
+        round.dyingFalling = true;
+        round.leaderboardData = { entries: [], highlightId: null };
+        round.roundHighScore = 7;
+        const scene = {
+            state: GAME_STATE.DYING,
+            playMode: 'daily',
+            dailyGoal: 10,
+            difficulty: 'normal',
+            activeSkinId: 'classic',
+            round,
+            hardcoreMode: false,
+            game: { loop: { delta: 16.67 } },
+            bird: {
+                y: 489,
+                x: 50,
+                velocityY: 5,
+                sprite: { setPosition: vi.fn() },
+                applyFall: vi.fn(),
+            },
+            ui: {
+                highScore: 0,
+                showGameOver: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
+                setOverlay: vi.fn(),
+            },
+        };
+        updateDying(scene);
+        expect(saveDailyCompletion).toHaveBeenCalled();
+        expect(scene.state).toBe(GAME_STATE.GAME_OVER);
+    });
+
+    it('triggerDeath planifie la chute après 166 ms', () => {
+        const round = createRoundState();
+        const scene = {
+            state: GAME_STATE.PLAYING,
+            round,
+            bird: { velocityY: 5 },
+            ghost: { finishRound: vi.fn() },
+            time: { delayedCall: vi.fn() },
+        };
+        triggerDeath(scene, 'pipe');
+        expect(scene.time.delayedCall).toHaveBeenCalledWith(166, expect.any(Function));
     });
 });

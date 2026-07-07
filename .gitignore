@@ -1,6 +1,7 @@
 # Dépendances et artefacts de build — ne jamais committer
 node_modules/
 dist/
+dev-dist/
 coverage/
 test-results/
 playwright-report/

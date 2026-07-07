@@ -109,6 +109,7 @@ export default defineConfig(({ mode }) => {
                     'src/skins/skinIds.js',
                     'src/phaser-shim.js',
                     'src/testSeam.js',
+                    'src/sceneTypes.js',
                 ],
                 reporter: ['text', 'html', 'lcov'],
                 thresholds: { lines: 75, functions: 70, branches: 70, statements: 75 },

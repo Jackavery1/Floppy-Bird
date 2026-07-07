@@ -35,6 +35,19 @@ Si `npm run test:e2e` ou `npx playwright install chromium` échoue avec `UNABLE_
 
 Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 
+### Matrice viewports E2E (Playwright)
+
+| Projet | Viewport | Touch | Tests clés |
+|--------|----------|-------|------------|
+| `chromium-desktop` | Desktop Chrome | non | `keyboard.spec.js`, `gameplay-equity.spec.mjs` |
+| `chromium-mobile-portrait` | 390×844 | oui | `touch.spec.js`, `keyboard.spec.js`, `tutorial.spec.mjs`, `gameplay-equity` |
+| `chromium-mobile-landscape` | 844×390 | oui | `viewport.spec.js` (hint paysage) |
+| `webkit-mobile-portrait` | iPhone 13 | oui | touch + chargement |
+| `webkit-mobile-landscape` | 844×390 | oui | hint paysage |
+| `chromium-tablet-landscape` | 1024×768 | oui | jeu sans hint bloquant |
+
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touch.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`).
+
 ## Artefacts générés (ne pas committer)
 
 Ces dossiers sont produits localement ou en CI et listés dans [`.gitignore`](.gitignore) :
@@ -43,6 +56,7 @@ Ces dossiers sont produits localement ou en CI et listés dans [`.gitignore`](.g
 |---------|---------|
 | `node_modules/` | `npm install` |
 | `dist/` | `npm run build` |
+| `dev-dist/` | service worker Vite PWA en mode dev |
 | `coverage/` | `npm run test:coverage` |
 | `test-results/`, `playwright-report/` | `npm run test:e2e` |
 | `public/vendor/`, `public/icons/` | scripts build (copiés dans `dist/` en prod) |

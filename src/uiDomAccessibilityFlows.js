@@ -11,6 +11,7 @@ import {
     SCORES_PANEL_CONTROL_KEYS,
     SKINS_PANEL_CONTROL_KEYS,
 } from './uiDomAccessibilityDefs.js';
+import { setOptionsTab } from './uiMenuOptionsTabs.js';
 import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
@@ -118,6 +119,9 @@ export function setOptionsPanelAccessibility(scene, open) {
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function bindOptionsAccessibility(scene) {
+    bindAccessibilityAction('menuOptionsTabControls', () => setOptionsTab(scene.ui, 'controls'));
+    bindAccessibilityAction('menuOptionsTabSettings', () => setOptionsTab(scene.ui, 'settings'));
+    bindAccessibilityAction('menuOptionsTabModes', () => setOptionsTab(scene.ui, 'modes'));
     bindAccessibilityAction('menuTraining', () => scene.toggleTraining());
     bindAccessibilityAction('menuHardcore', () => scene.toggleHardcore());
     bindAccessibilityAction('menuOptionsClose', () => scene.ui.toggleMenuOptionsPanel());

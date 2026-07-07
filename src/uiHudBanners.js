@@ -9,7 +9,7 @@ import {
     releaseHudBannerSlot,
 } from './uiHudBannerStack.js';
 
-function showTransientBanner(ui, key, text, style, fadeOffset = 18) {
+function showTransientBanner(ui, key, text, style, fadeOffset = 18, holdMs = 500, fadeMs = 1200) {
     if (ui[key]) return;
     const slot = acquireHudBannerSlot(ui);
     const y = slot.y;
@@ -36,8 +36,8 @@ function showTransientBanner(ui, key, text, style, fadeOffset = 18) {
         targets: banner,
         alpha: { from: 1, to: 0 },
         y: y - fadeOffset,
-        duration: 1200,
-        delay: 500,
+        duration: fadeMs,
+        delay: holdMs,
         ease: 'Power2',
         onComplete: () => {
             releaseHudBannerSlot(ui, slot.row);
@@ -191,10 +191,13 @@ export function showCoyoteHint(ui) {
         '_coyoteHintBanner',
         coyoteHintText(),
         hudTextStyle({
-            fontSize: '11px',
+            fontSize: '13px',
             fill: DESIGN_TOKENS.bannerCoyote,
-            fontStyle: 'italic',
-        })
+            fontStyle: 'bold',
+        }),
+        22,
+        900,
+        1800
     );
 }
 

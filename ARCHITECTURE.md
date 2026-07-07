@@ -184,13 +184,13 @@ Menu principal (input restart/menu)
 
 ## Testing Strategy
 
-### Unit Tests (518 tests)
+### Unit Tests (551 tests)
 - **Gameplay** : Physics, collision, scoring
 - **UI** : Menu navigation, state updates
 - **Storage** : Persistence, data integrity
 - **Accessibility** : ARIA, keyboard
 
-### E2E Tests (55 scénarios, 6 projets viewport)
+### E2E Tests (9 specs, 6 projets viewport)
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
 - **Responsive** : All viewports
@@ -216,7 +216,7 @@ Menu principal (input restart/menu)
 ### Future-Proof
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
-- **Design Tokens** : Consistent styling
+- **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `style.css` (shell synchronisé via `shellTheme.js`)
 - **Test Coverage** : seuils CI 75 % lignes / 70 % branches (`vite.config.js`)
 
 ### Potential Extensions
@@ -230,7 +230,8 @@ Menu principal (input restart/menu)
 ### Local Development
 ```bash
 npm run dev              # http://localhost:5173
-npm test                # Watch mode
+npm run test:watch      # Vitest watch
+npm test                # Vitest une passe (CI)
 npm run test:e2e        # E2E tests
 npm run lint            # ESLint
 npm run format          # Prettier
@@ -259,8 +260,21 @@ git push                # CI/CD GitHub Actions
 
 - **ESLint** : 0 errors
 - **Prettier** : 100% formatted
-- **Tests** : 518/518 passing
+- **Tests** : 551/551 passing
 - **Coverage** : seuils CI 75/70/70/75 % (lines/branches/functions/statements)
+
+### Exclusions coverage (justifiées)
+
+| Fichier | Raison |
+|---------|--------|
+| `src/phaser-shim.js` | Alias build vendor Phaser — pas de logique applicative |
+| `src/testSeam.js` | API Playwright E2E uniquement (`VITE_ENABLE_TEST_SEAM`) |
+| `src/skins/skinIds.js` | Constantes d’identifiants |
+| `src/skins/skinTypes.js` | Typedef JSDoc sans runtime |
+| `src/sceneTypes.js` | Contrat JSDoc `SceneContext` — documenté, non exécuté |
+
+Couverture globale actuelle : ~95 % lignes, ~84 % branches (`npm run test:coverage`).
+
 - **Types** : JSDoc comments
 - **Accessibility** : 100/100 Lighthouse
 

@@ -15,6 +15,7 @@ import {
 import {
     DESIGN_TOKENS,
     hexVersPhaser,
+    menuHomeTextStyle,
     menuTextStyle,
     panelChromeTextStyle,
 } from './designTokens.js';
@@ -70,7 +71,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.skinsSubtitle,
         '',
-        menuTextStyle({ fontSize: '11px', fill: DESIGN_TOKENS.texteHintMenu }),
+        menuHomeTextStyle({ fill: DESIGN_TOKENS.texteClair }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._skinsCountLine);

@@ -57,4 +57,34 @@ describe('UI', () => {
         ui.refreshHighScore(DIFFICULTY.HARD);
         expect(loadHighScore).toHaveBeenLastCalledWith(DIFFICULTY.HARD, false, null);
     });
+
+    it('createOverlay crée un rectangle plein écran', () => {
+        const overlay = ui.createOverlay(0.5);
+        expect(overlay).toBeTruthy();
+        expect(scene.add.rectangle).toHaveBeenCalled();
+    });
+
+    it('setOverlay et clearOverlay gèrent les éléments', () => {
+        const el = { destroy: vi.fn() };
+        ui.setOverlay('menu', [el]);
+        expect(ui._overlays.menu).toContain(el);
+        ui.clearOverlay('menu');
+        expect(el.destroy).toHaveBeenCalled();
+        expect(ui._overlays.menu).toHaveLength(0);
+    });
+
+    it('showFlash crée un flash plein écran', () => {
+        ui.showFlash();
+        expect(scene.add.rectangle).toHaveBeenCalled();
+        expect(scene.tweens.add).toHaveBeenCalled();
+    });
+
+    it('destroy nettoie score et overlays', () => {
+        ui.scoreText = { destroy: vi.fn() };
+        ui._diffBtnGraphics = { destroy: vi.fn() };
+        ui.setOverlay('pause', [{ destroy: vi.fn() }]);
+        ui.destroy();
+        expect(ui.scoreText.destroy).toHaveBeenCalled();
+        expect(ui._diffBtnLabels).toEqual([]);
+    });
 });

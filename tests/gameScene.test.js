@@ -261,4 +261,37 @@ describe('GameScene', () => {
 
         expect(triggerDeath).toHaveBeenCalledWith(scene, 'ground');
     });
+
+    it('update délègue updateDying en état DYING', async () => {
+        const { updateDying } = await import('../src/sceneDeath.js');
+        const scene = new GameScene();
+        scene.state = GAME_STATE.DYING;
+        scene.game = { loop: { delta: 16.67, actualFps: 60 } };
+        scene._clouds = [];
+        scene._hills = [];
+        scene._groundSprite = {};
+        scene.pipes = { pipeSpeed: 0, update: vi.fn() };
+
+        scene.update();
+
+        expect(updateDying).toHaveBeenCalledWith(scene);
+    });
+
+    it('shutdown nettoie les ressources', async () => {
+        const { cancelPipeSpawnTimer, clearSpawnInvincibility } =
+            await import('../src/sceneRound.js');
+        const scene = new GameScene();
+        scene.ghost = { destroy: vi.fn() };
+        scene.bird = { destroy: vi.fn() };
+        scene.pipes = { destroy: vi.fn() };
+        scene.scoreEffects = { destroy: vi.fn() };
+        scene.ui = { destroy: vi.fn() };
+
+        scene.shutdown();
+
+        expect(cancelPipeSpawnTimer).toHaveBeenCalledWith(scene);
+        expect(clearSpawnInvincibility).toHaveBeenCalledWith(scene);
+        expect(scene.ghost.destroy).toHaveBeenCalled();
+        expect(scene.ui.destroy).toHaveBeenCalled();
+    });
 });

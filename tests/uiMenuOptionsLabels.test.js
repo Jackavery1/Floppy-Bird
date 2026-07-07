@@ -34,12 +34,12 @@ describe('uiMenuOptionsLabels', () => {
         applyTrainingLabel(ui, true);
         expect(ui._trainingLabel.setColor).toHaveBeenCalledWith('#81D4FA');
         applyTrainingLabel(ui, false);
-        expect(ui._trainingLabel.setColor).toHaveBeenCalledWith('#B0BEC5');
+        expect(ui._trainingLabel.setColor).toHaveBeenCalledWith('#ECEFF1');
     });
 
     it('applyHardcoreLabel grise le mode verrouillé', () => {
         applyHardcoreLabel(ui, false, false);
-        expect(ui._hardcoreLabel.setColor).toHaveBeenCalledWith('#78909C');
+        expect(ui._hardcoreLabel.setColor).toHaveBeenCalledWith('#B0BEC5');
         applyHardcoreLabel(ui, true, true);
         expect(ui._hardcoreLabel.setColor).toHaveBeenCalledWith('#FF8A80');
     });

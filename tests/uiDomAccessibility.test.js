@@ -1,29 +1,39 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
+import { CONTROL_DEFS } from '../src/uiDomAccessibilityDefs.js';
+import {
+    initAccessibilityLayer,
+    setAccessibilityControlDisabled,
+    setAccessibilityControlVisible,
+    setOptionsPanelAccessibility,
+    setScoresPanelAccessibility,
+    setSkinsPanelAccessibility,
+    setupGameOverAccessibility,
+    setupMenuAccessibility,
+    syncAccessibilityLayer,
+} from '../src/uiDomAccessibility.js';
+
+const CONTROL_COUNT = Object.keys(CONTROL_DEFS).length;
 
 describe('uiDomAccessibility', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
-    it('setAccessibilityControlVisible est no-op sans DOM', async () => {
-        const { setAccessibilityControlVisible } = await import('../src/uiDomAccessibility.js');
+    it('setAccessibilityControlVisible est no-op sans DOM', () => {
         expect(() => setAccessibilityControlVisible('pause', true)).not.toThrow();
     });
 
-    it('syncAccessibilityLayer ignore un canvas sans getBoundingClientRect', async () => {
-        const { syncAccessibilityLayer } = await import('../src/uiDomAccessibility.js');
+    it('syncAccessibilityLayer ignore un canvas sans getBoundingClientRect', () => {
         expect(() => syncAccessibilityLayer({ canvas: {} })).not.toThrow();
     });
 
-    it('syncAccessibilityLayer positionne un bouton visible', async () => {
+    it('syncAccessibilityLayer positionne un bouton visible', () => {
         const btn = { hidden: true, style: {} };
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => (id === 'a11y-pause' ? btn : null)),
         });
 
-        const { setAccessibilityControlVisible, syncAccessibilityLayer } =
-            await import('../src/uiDomAccessibility.js');
         setAccessibilityControlVisible('pause', true);
         syncAccessibilityLayer({
             canvas: {
@@ -40,7 +50,7 @@ describe('uiDomAccessibility', () => {
         expect(btn.style.width).toBeTruthy();
     });
 
-    it('initAccessibilityLayer crée la couche et l’announcer', async () => {
+    it('initAccessibilityLayer crée la couche et l’announcer', () => {
         const stored = {};
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => stored[id] ?? null),
@@ -66,14 +76,13 @@ describe('uiDomAccessibility', () => {
             },
         });
 
-        const { initAccessibilityLayer } = await import('../src/uiDomAccessibility.js');
         initAccessibilityLayer(document);
 
-        expect(stored['a11y-controls']?.children.length).toBe(21);
+        expect(stored['a11y-controls']?.children.length).toBe(CONTROL_COUNT);
         expect(stored['ui-announcer']).toBeTruthy();
     });
 
-    it('setupMenuAccessibility active les contrôles menu et difficulté', async () => {
+    it('setupMenuAccessibility active les contrôles menu et difficulté', () => {
         const buttons = Object.fromEntries(
             [
                 'a11y-start',
@@ -90,7 +99,6 @@ describe('uiDomAccessibility', () => {
             getElementById: vi.fn((id) => buttons[id] ?? null),
         });
 
-        const { setupMenuAccessibility } = await import('../src/uiDomAccessibility.js');
         const scene = {
             handlePrimaryAction: vi.fn(),
             launchDailyChallenge: vi.fn(),
@@ -118,7 +126,7 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-start'].style.width).toBeTruthy();
     });
 
-    it('setOptionsPanelAccessibility bascule menu et options', async () => {
+    it('setOptionsPanelAccessibility bascule menu et options', () => {
         const ids = [
             'a11y-start',
             'a11y-daily',
@@ -128,16 +136,19 @@ describe('uiDomAccessibility', () => {
             'a11y-diff-easy',
             'a11y-diff-normal',
             'a11y-diff-hard',
+            'a11y-options-tab-controls',
+            'a11y-options-tab-settings',
+            'a11y-options-tab-modes',
             'a11y-training',
             'a11y-hardcore',
             'a11y-mute',
+            'a11y-options-close',
         ];
         const buttons = Object.fromEntries(ids.map((id) => [id, { hidden: true, style: {} }]));
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => buttons[id] ?? null),
         });
 
-        const { setOptionsPanelAccessibility } = await import('../src/uiDomAccessibility.js');
         const scene = {
             game: {
                 canvas: {
@@ -160,7 +171,7 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-training'].hidden).toBe(true);
     });
 
-    it('setScoresPanelAccessibility masque toute la rangée menu et affiche le retour dédié', async () => {
+    it('setScoresPanelAccessibility masque toute la rangée menu et affiche le retour dédié', () => {
         const ids = [
             'a11y-start',
             'a11y-scores',
@@ -173,7 +184,6 @@ describe('uiDomAccessibility', () => {
             getElementById: vi.fn((id) => buttons[id] ?? null),
         });
 
-        const { setScoresPanelAccessibility } = await import('../src/uiDomAccessibility.js');
         const scene = {
             game: {
                 canvas: {
@@ -194,7 +204,7 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-scores-close'].hidden).toBe(false);
     });
 
-    it('setSkinsPanelAccessibility affiche prev/next skins et masque la rangée menu', async () => {
+    it('setSkinsPanelAccessibility affiche prev/next skins et masque la rangée menu', () => {
         const ids = [
             'a11y-start',
             'a11y-skins',
@@ -207,7 +217,6 @@ describe('uiDomAccessibility', () => {
             getElementById: vi.fn((id) => buttons[id] ?? null),
         });
 
-        const { setSkinsPanelAccessibility } = await import('../src/uiDomAccessibility.js');
         const scene = {
             game: {
                 canvas: {
@@ -229,7 +238,7 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-skins-close'].hidden).toBe(false);
     });
 
-    it('setupGameOverAccessibility active rejouer et menu', async () => {
+    it('setupGameOverAccessibility active rejouer et menu', () => {
         const buttons = Object.fromEntries(
             ['a11y-gameover-restart', 'a11y-gameover-menu'].map((id) => [
                 id,
@@ -244,7 +253,6 @@ describe('uiDomAccessibility', () => {
             }),
         });
 
-        const { setupGameOverAccessibility } = await import('../src/uiDomAccessibility.js');
         const scene = {
             handlePrimaryAction: vi.fn(),
             returnToMenu: vi.fn(),
@@ -266,7 +274,7 @@ describe('uiDomAccessibility', () => {
         expect(announcer.textContent).toContain('12');
     });
 
-    it('setAccessibilityControlDisabled marque le bouton hardcore verrouillé', async () => {
+    it('setAccessibilityControlDisabled marque le bouton hardcore verrouillé', () => {
         const btn = {
             hidden: false,
             disabled: false,
@@ -283,7 +291,6 @@ describe('uiDomAccessibility', () => {
             getElementById: vi.fn((id) => (id === 'a11y-hardcore' ? btn : null)),
         });
 
-        const { setAccessibilityControlDisabled } = await import('../src/uiDomAccessibility.js');
         setAccessibilityControlDisabled('menuHardcore', true);
         expect(btn.disabled).toBe(true);
         expect(btn.tabIndex).toBe(-1);

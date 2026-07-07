@@ -3,7 +3,7 @@
 [![CI](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-100%2F100-green)](.)
 [![A11y](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-green)](.)
-[![Tests](https://img.shields.io/badge/Tests-494%2F494-green)](.)
+[![Tests](https://img.shields.io/badge/Tests-551%2F551-green)](.)
 
 > Jeu arcade 2D Floppy Bird — Phaser 3, Vite, PWA progressive. Jouable hors-ligne avec scores locaux persistants.
 
@@ -69,7 +69,7 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
 - **Preview gaps** au score 15 (« GAPS ↓ + VITESSE +3 % au score 20 ») puis bannière « GAPS RESSERRÉS » au score 20
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
-- **Mode entraînement** : ralenti (×0,65), fantôme enregistré (meilleur parcours par difficulté/hardcore), scores non enregistrés
+- **Mode entraînement** : ralenti (×0,8), fantôme enregistré (meilleur parcours par difficulté/hardcore), scores non enregistrés
 - **Défi du jour** (D) : séquence partagée, skin/objectif imposés, fantôme replay sans ralenti, **hors TOP 5 classique**, rejouable depuis le game over
 - Escalade : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; preview vitesse au score 9 ; gaps resserrés après 20 ; preview combinée au score 15 ; séries à 10, 15, 20, 30, 40, 50 pts
 - Hint coyote : réaffiché après chaque 3e mort sur tuyau
@@ -92,7 +92,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 
 **UI** : [`src/uiIndex.js`](src/uiIndex.js) réexporte la façade (`UI`, HUD, menu, pause, game over). `sceneSetup.js` l’utilise comme point d’entrée ; les sous-modules (`uiMenuOptionsLabels.js`, etc.) restent importables directement.
 
-**Artefacts locaux** (`dist/`, `test-results/`, `coverage/`, `playwright-report/`) : générés par build/tests, ignorés par git — ne pas les committer.
+**Artefacts locaux** (`dist/`, `dev-dist/`, `test-results/`, `coverage/`, `playwright-report/`) : générés par build/tests, ignorés par git — ne pas les committer.
 
 ## Build & perf
 
@@ -100,7 +100,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
 - **Mobile paysage** : `#landscape-hint` bloque le jeu sur téléphone tactile (hauteur ≤520 px) — choix assumé ; **tablette paysage** (hauteur >520 px) autorisée
-- **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`) — pause, menu, game over (rejouer / menu) et **boutons difficulté** (Tab + Entrée)
+- **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`, 25 boutons) — pause, saut, menu, game over, difficultés, onglets options (Tab + Entrée)
 - **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (`maximum-scale=3.0` dans le viewport) pour l’accessibilité visuelle ; le canvas reste centré via `visualViewport` (position `fixed`, recalcul au resize/scroll clavier virtuel) ; le letterbox préserve le ratio 288×512
 - **PWA** : `orientation: portrait-primary` (portrait recommandé sur téléphone) ; 1ère visite hors ligne → `offline.html`
 - **UI** : titres menu/pause/game over en **Press Start 2P** ; métadonnées Open Graph / Twitter (`og:image` 512 px en prod)

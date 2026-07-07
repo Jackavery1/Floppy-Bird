@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
+import { CONTROL_DEFS } from '../src/uiDomAccessibilityDefs.js';
+
+const CONTROL_COUNT = Object.keys(CONTROL_DEFS).length;
 
 describe('appBootstrap a11y', () => {
     afterEach(() => {
@@ -60,7 +63,7 @@ describe('appBootstrap a11y', () => {
         const { onGameReady } = await import('../src/appBootstrap.js');
         onGameReady(game);
 
-        expect(stored['a11y-controls']?.children.length).toBe(21);
+        expect(stored['a11y-controls']?.children.length).toBe(CONTROL_COUNT);
         expect(stored['ui-announcer']).toBeTruthy();
         expect(game.canvas.width).toBe(GAME_CONFIG.width);
     });

@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { CONTROL_DEFS } from './uiDomAccessibilityDefs.js';
+import { announceAccessibility } from './uiDomAccessibilityControls.js';
 import { getDocument, handlers, visibleControls } from './uiDomAccessibilityState.js';
 
 function scaledSize(def, scaleX, scaleY) {
@@ -30,6 +31,9 @@ export function initAccessibilityLayer(doc = getDocument()) {
         btn.addEventListener('click', (event) => {
             event.stopPropagation();
             handlers[def.id]?.();
+        });
+        btn.addEventListener('focus', () => {
+            announceAccessibility(def.label, doc);
         });
         layer.appendChild(btn);
     }
