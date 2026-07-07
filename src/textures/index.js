@@ -2,7 +2,9 @@ import { createBirdSpriteSheet } from './birdTextures.js';
 import { birdAnimKey, SKIN_IDS } from '../skins/index.js';
 import { createPipeSprites, ensurePipeTextures } from './pipeTextures.js';
 import { createBackgroundSprite } from './backgroundTextures.js';
+import { createCelestialTextures } from './celestialTextures.js';
 import { createCloudTexture } from './cloudTextures.js';
+import { createHillTextures } from './hillTextures.js';
 import { createStarTexture } from './starTextures.js';
 import { createGroundTexture } from './groundTextures.js';
 
@@ -12,10 +14,14 @@ export {
     getBackgroundCanvasColor,
 } from './backgroundTextures.js';
 export { GROUND_BLADE_H, GROUND_TILE_H } from './groundTextures.js';
+export { HILLS_FAR_H, HILLS_NEAR_H } from './hillTextures.js';
+export { CELESTIAL_ANCHOR } from './celestialTextures.js';
 
 export function preloadTextures(scene) {
     createPipeSprites(scene);
     createBackgroundSprite(scene);
+    createCelestialTextures(scene);
+    createHillTextures(scene);
     createCloudTexture(scene);
     createStarTexture(scene);
     createGroundTexture(scene);

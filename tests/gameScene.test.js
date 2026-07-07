@@ -46,6 +46,7 @@ vi.mock('../src/storage.js', () => ({
 
 vi.mock('../src/sceneBackground.js', () => ({
     updateClouds: vi.fn(),
+    updateHills: vi.fn(),
     updateGround: vi.fn(),
 }));
 

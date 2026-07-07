@@ -141,7 +141,7 @@ describe('sceneRound', () => {
         it('respecte le timeScale en mode entraînement', () => {
             const scene = {
                 state: GAME_STATE.PLAYING,
-                time: { timeScale: 0.65 },
+                time: { timeScale: 0.88 },
                 round: createRoundState(),
                 pipes: {
                     topPipes: [],
@@ -150,7 +150,7 @@ describe('sceneRound', () => {
                 },
             };
             tickPipeSpawnFallback(scene, 1000);
-            expect(scene.round._pipeSpawnWaitMs).toBe(650);
+            expect(scene.round._pipeSpawnWaitMs).toBe(880);
         });
 
         it('n’agit pas si des tuyaux sont déjà présents', () => {

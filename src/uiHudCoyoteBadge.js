@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS } from './designTokens.js';
+import { layoutHudSecondaryBadges } from './uiHudBadgeLayout.js';
 import { addCenteredText, DEPTH, FONT_SIZE_BADGE } from './uiLayout.js';
 
 /** @param {import('./ui.js').UI} ui @param {boolean} active */
@@ -9,13 +10,11 @@ export function updateCoyoteHudBadge(ui, active) {
         return;
     }
 
-    const y = (ui.scoreText?.y ?? ui._scoreHudY ?? 68) + 28;
-
     if (!ui._coyoteHudBadge) {
         ui._coyoteHudBadge = addCenteredText(
             ui.scene,
             GAME_CONFIG.centerX,
-            y,
+            0,
             'GRÂCE',
             {
                 fontSize: FONT_SIZE_BADGE,
@@ -29,8 +28,8 @@ export function updateCoyoteHudBadge(ui, active) {
         ui._inGameControlElements?.push(ui._coyoteHudBadge);
     }
 
-    ui._coyoteHudBadge.setY(y);
     ui._coyoteHudBadge.setVisible(true);
+    layoutHudSecondaryBadges(ui);
 }
 
 /** @param {import('./ui.js').UI} ui */

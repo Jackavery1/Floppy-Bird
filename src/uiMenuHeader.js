@@ -1,5 +1,5 @@
 import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
-import { DESIGN_TOKENS } from './designTokens.js';
+import { DESIGN_TOKENS, menuHomeTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     DEPTH,
@@ -8,7 +8,6 @@ import {
     fitTitleFontSize,
     GAME_TITLE,
     FONT_TITLE,
-    FONT_SIZE_HINT,
     MIN_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
@@ -55,11 +54,10 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
             btnCx,
             layout.difficulty,
             GAME_CONFIG.difficultyLabels[diff],
-            {
-                fontSize: FONT_SIZE_HINT,
+            menuHomeTextStyle({
+                fontSize: '12px',
                 fill: diffLabelColor(ui._currentDifficulty, diff),
-                fontStyle: 'bold',
-            },
+            }),
             DEPTH.MENU_BTN_BG
         );
         elements.push(label);

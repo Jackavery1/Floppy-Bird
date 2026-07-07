@@ -67,7 +67,7 @@ export function getDailyChallengeSummary(difficulty, date = new Date()) {
 export function formatDailyMenuButtonLabel(difficulty, date = new Date()) {
     const s = getDailyChallengeSummary(difficulty, date);
     const done = s.completed ? ' ✓' : '';
-    return `DÉFI DU JOUR${done}`;
+    return `Défi du jour${done}`;
 }
 
 export function formatDailyMenuSubtitle(difficulty, date = new Date()) {

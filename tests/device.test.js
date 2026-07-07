@@ -104,14 +104,14 @@ describe('device', () => {
         expect(hint).toContain('ESPACE : sauter');
         expect(hint).toContain('D : défi du jour');
         expect(hint).toContain('T : entraînement');
-        expect(hint).toContain('S scores');
+        expect(hint).toContain('scores · skins');
     });
 
     it('optionsControlsHint adapte le tactile', async () => {
         const { optionsControlsHint } = await loadDevice(true);
         const hint = optionsControlsHint();
         expect(hint).toContain('TAP : sauter');
-        expect(hint).toContain('Scores · Skins');
+        expect(hint).toContain('scores · skins');
     });
 
     it('dailyReplayHint et restartHintForMode distinguent le mode daily', async () => {

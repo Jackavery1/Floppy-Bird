@@ -36,7 +36,7 @@ function sceneWithGraphicsList() {
 describe('textures', () => {
     it('exporte les constantes sol', () => {
         expect(GROUND_BLADE_H).toBe(10);
-        expect(GROUND_TILE_H).toBe(30);
+        expect(GROUND_TILE_H).toBe(36);
     });
 
     it('getBackgroundPeriod retourne day ou night', () => {
@@ -157,7 +157,7 @@ describe('textures', () => {
     it('createGroundTexture génère ground', () => {
         const scene = createTextureScene();
         createGroundTexture(scene);
-        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('ground', 288, 30);
+        expect(scene._graphics.generateTexture).toHaveBeenCalledWith('ground', 288, 36);
     });
 
     it('createBirdAnimations enregistre les animations via le barrel', () => {
@@ -201,6 +201,10 @@ describe('textures', () => {
                 'pipe-top',
                 'pipe-bottom',
                 'background',
+                'sun',
+                'moon',
+                'hills_far',
+                'hills_near',
                 'cloud',
                 'star',
                 'ground',

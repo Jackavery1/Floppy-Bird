@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { GAME_CONFIG } from './config.js';
 import { shouldUpdateDying, shouldUpdateGameplay, shouldAnimateBackground } from './gameState.js';
 import { preloadTextures } from './textures/index.js';
-import { updateClouds, updateGround } from './sceneBackground.js';
+import { updateClouds, updateGround, updateHills } from './sceneBackground.js';
 import {
     checkScorePipes,
     cancelPipeSpawnTimer,
@@ -49,6 +49,7 @@ export class GameScene extends Phaser.Scene {
 
         if (shouldAnimateBackground(this.state)) {
             updateClouds(this._clouds);
+            updateHills(this.state, this._hills, this.pipes?.pipeSpeed ?? 0, step);
         }
         updateGround(this.state, this._groundSprite, this.pipes?.pipeSpeed ?? 0, step);
 

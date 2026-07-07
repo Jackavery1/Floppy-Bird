@@ -47,7 +47,6 @@ export function applyMenuLayout(ui, difficulty) {
     ui._dailyBtnLabel?.setY(layout.dailyBtn);
     ui._dailyBtnBg?.setY(layout.dailyBtn);
     ui._dailyBtnHit?.setY(layout.dailyBtn);
-    ui._dailyMenuSubtitle?.setY(layout.dailySubtitle);
     const rowY = layout.menuRow;
     ui._scoresBtnLabel?.setY(rowY);
     ui._scoresBtnHit?.setY(rowY);

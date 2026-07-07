@@ -57,6 +57,9 @@ export const DESIGN_TOKENS = Object.freeze({
     boutonDailyHover: '#9c27b0',
     boutonSkins: '#00897b',
     boutonSkinsStroke: '#4db6ac',
+    boutonScores: '#5e35b1',
+    boutonScoresHover: '#7e57c2',
+    boutonScoresStroke: '#b39ddb',
     boutonOptionsStroke: '#42a5f5',
     toggleTrainingInner: '#e3f2fd',
     toggleHardcoreOn: '#e53935',
@@ -81,6 +84,24 @@ export function menuTextStyle(overrides = {}) {
         strokeThickness: 2,
         ...overrides,
     };
+}
+
+/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P). */
+export function panelChromeTextStyle(overrides = {}) {
+    return menuTextStyle({
+        fontFamily: DESIGN_TOKENS.policeTitre,
+        ...overrides,
+    });
+}
+
+/** Texte lisible de l'écran d'accueil (hors titre du jeu). */
+export function menuHomeTextStyle(overrides = {}) {
+    return hudTextStyle({
+        fontSize: '12px',
+        fill: DESIGN_TOKENS.texteMenu,
+        fontStyle: 'bold',
+        ...overrides,
+    });
 }
 
 /** @param {string} hex Ex. `#fdd835` */

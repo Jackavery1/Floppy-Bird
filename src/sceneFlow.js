@@ -155,7 +155,7 @@ export function handlePrimaryAction(scene) {
     }
     if (!canHandlePrimaryAction(scene.state)) return;
 
-    if (shouldStartGameOnPrimary(scene.state)) {
+    if (shouldStartGameOnPrimary(scene.state, scene.ui)) {
         restartFromPrimary(scene);
         requestJump(scene);
     } else if (scene.state === GAME_STATE.PLAYING) {

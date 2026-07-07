@@ -33,7 +33,7 @@ describe('uiMenuScoresPanel', () => {
 
     it('le bouton SCORES reste au-dessus du fond du panneau (pas de bleed-through)', () => {
         const btnDepth = ui._scoresBtnBg.setDepth.mock.calls.at(-1)?.[0];
-        const backdropDepth = ui._scoresBackdrop.setDepth.mock.calls.at(-1)?.[0];
+        const backdropDepth = ui._scoresBackdrop.frame.setDepth.mock.calls.at(-1)?.[0];
         expect(btnDepth).toBeGreaterThan(backdropDepth);
     });
 });

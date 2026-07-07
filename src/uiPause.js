@@ -1,6 +1,5 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { pauseResumeHint } from './device.js';
 import { bindAccessibilityAction, syncAccessibilityLayer } from './uiDomAccessibility.js';
 import {
     addCenteredText,
@@ -124,17 +123,6 @@ export function showPause(ui, { onResume, onMenu }) {
     bindAccessibilityAction('pauseResume', onResume);
     bindAccessibilityAction('pauseMenu', onMenu);
     syncAccessibilityLayer(ui.scene.game);
-
-    elements.push(
-        addCenteredText(
-            ui.scene,
-            GAME_CONFIG.centerX,
-            pause.menuBtn + 40,
-            pauseResumeHint(),
-            menuTextStyle({ fontSize: '11px', fill: DESIGN_TOKENS.texteMuted }),
-            DEPTH.PAUSE_TITLE
-        )
-    );
 
     return { elements };
 }

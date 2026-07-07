@@ -12,19 +12,13 @@ import {
     birdTextureKey,
     isSpecialSkin,
 } from './skins/index.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from './designTokens.js';
-import {
-    addCenteredText,
-    DEPTH,
-    FONT_SIZE_COMPACT,
-    FONT_SIZE_HINT,
-    MENU_BTN_COLOR,
-    MIN_TOUCH,
-    stopUiEvent,
-    UI_LAYOUT,
-} from './uiLayout.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { addCenteredText, DEPTH, FONT_SIZE_COMPACT, FONT_SIZE_HINT, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { announceAccessibility } from './uiDomAccessibility.js';
+
+const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
+const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
@@ -46,10 +40,11 @@ export function buildSkinsTab(ui, elements, panelElements) {
         GAME_CONFIG.centerX,
         panel.skinsTitle,
         'APPARENCE',
-        menuTextStyle({
+        panelChromeTextStyle({
             fontSize: '12px',
             fill: DESIGN_TOKENS.texteChargement,
             fontStyle: 'bold',
+            stroke: DESIGN_TOKENS.contourSkins,
         }),
         DEPTH.PANEL_FRAME
     );
@@ -165,10 +160,12 @@ export function buildSkinsTab(ui, elements, panelElements) {
         cy: panel.closeBtn,
         width: 160,
         depth: DEPTH.PANEL_FRAME,
-        color: MENU_BTN_COLOR,
-        stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
+        color: SKINS_BTN_COLOR,
+        stroke: SKINS_BTN_STROKE,
+        hoverColor: hexVersPhaser(DESIGN_TOKENS.boutonSkins),
         labelText: '◂ RETOUR',
-        labelStroke: DESIGN_TOKENS.contourOptions,
+        labelStroke: DESIGN_TOKENS.contourSkins,
+        rounded: true,
         onToggle: () => ui._skinsPanelController?.setOpen(false),
     });
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);

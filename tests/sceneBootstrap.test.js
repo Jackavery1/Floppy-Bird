@@ -10,7 +10,7 @@ describe('sceneBootstrap', () => {
 
     it('frameStep ralentit en mode entraînement', () => {
         const scene = { game: { loop: { delta: 16.67 } }, trainingMode: true };
-        expect(frameStep(scene)).toBeCloseTo(0.65, 2);
+        expect(frameStep(scene)).toBeCloseTo(0.88, 2);
     });
 
     it('splitPhysicsSteps découpe les gros deltas en sous-étapes', () => {

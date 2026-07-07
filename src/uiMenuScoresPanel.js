@@ -5,9 +5,8 @@ import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
 
-const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accentScoreHardcore);
-const SCORES_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentGap);
-const SCORES_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke);
+const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonScores);
+const SCORES_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonScoresStroke);
 
 const PANEL_CFG = {
     openKey: '_scoresOpen',
@@ -19,7 +18,7 @@ const PANEL_CFG = {
     buttonLabelFn: scoresButtonLabel,
     btnColor: SCORES_BTN_COLOR,
     btnStroke: SCORES_BTN_STROKE,
-    labelStroke: DESIGN_TOKENS.contourOptions,
+    labelStroke: DESIGN_TOKENS.contourSkins,
 };
 
 const controllerCfg = {
@@ -55,6 +54,10 @@ export function buildMenuScoresPanel(ui, elements, layout) {
         ...PANEL_CFG,
         btnLayout: { cx: layout.scoresBtn, cy: layout.menuRow, width: layout.menuBtnW },
         panelLayout: panel,
+        panelTheme: {
+            fill: DESIGN_TOKENS.fondPanneauGameOver,
+            stroke: DESIGN_TOKENS.boutonScoresStroke,
+        },
         buildContent: (targetUi, targetElements, panelElements) => {
             buildScoresTab(targetUi, targetElements, panelElements);
         },

@@ -41,26 +41,22 @@ const DAY_BANDS = [
 
 /** @type {[number, number][]} */
 const STAR_POSITIONS = [
-    [38, 28],
-    [88, 14],
-    [148, 48],
-    [198, 22],
-    [258, 38],
-    [308, 9],
-    [358, 54],
-    [418, 33],
-    [68, 78],
-    [178, 68],
-    [278, 82],
-    [388, 58],
-    [448, 88],
-    [118, 118],
-    [348, 98],
-    [458, 42],
-    [28, 128],
-    [218, 108],
-    [408, 112],
-    [158, 142],
+    [22, 28],
+    [58, 14],
+    [104, 48],
+    [148, 22],
+    [192, 38],
+    [236, 12],
+    [268, 54],
+    [42, 72],
+    [118, 68],
+    [178, 82],
+    [224, 58],
+    [72, 108],
+    [162, 98],
+    [248, 112],
+    [32, 128],
+    [200, 118],
 ];
 
 /** @param {import('phaser').GameObjects.Graphics} g @param {SkyBand[]} bands */
@@ -80,24 +76,6 @@ function drawStars(g) {
     });
 }
 
-/** @param {import('phaser').GameObjects.Graphics} g */
-function drawSun(g) {
-    g.fillStyle(0xffd54f, 0.22);
-    g.fillCircle(380, 80, 46);
-    g.fillStyle(0xffd54f, 0.35);
-    g.fillCircle(380, 80, 34);
-    g.fillStyle(0xffeb3b, 1);
-    g.fillCircle(380, 80, 26);
-}
-
-/** @param {import('phaser').GameObjects.Graphics} g */
-function drawMoon(g) {
-    g.fillStyle(0xfffde7, 1);
-    g.fillCircle(380, 80, 24);
-    g.fillStyle(0x1e3a6e, 1);
-    g.fillCircle(392, 72, 20);
-}
-
 export function createBackgroundSprite(scene) {
     const period = getBackgroundPeriod();
     if (cachedBackgroundPeriod === period && scene.textures.exists('background')) {
@@ -115,9 +93,6 @@ export function createBackgroundSprite(scene) {
 
     if (period === 'night') {
         drawStars(g);
-        drawMoon(g);
-    } else {
-        drawSun(g);
     }
 
     g.generateTexture('background', W, H);

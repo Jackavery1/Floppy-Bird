@@ -5,6 +5,8 @@ import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/sceneBackground.js', () => ({
     initClouds: vi.fn(() => []),
+    initCelestial: vi.fn(() => ({ setDepth: vi.fn() })),
+    createHills: vi.fn(() => ({ far: {}, near: {} })),
     createGround: vi.fn(() => ({ setDepth: vi.fn() })),
 }));
 

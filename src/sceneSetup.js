@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import { initClouds, createGround } from './sceneBackground.js';
+import { initClouds, initCelestial, createHills, createGround } from './sceneBackground.js';
 import { setupSceneInput } from './sceneInput.js';
 import { syncShellTheme } from './shellTheme.js';
 import { Bird } from './bird.js';
@@ -27,6 +27,8 @@ export function setupSceneWorld(scene) {
     bg.setDisplaySize(GAME_CONFIG.width, GAME_CONFIG.height);
     bg.setDepth(DEPTH.WORLD_BG);
 
+    scene._celestial = initCelestial(scene);
+    scene._hills = createHills(scene);
     scene._clouds = initClouds(scene);
     scene._groundSprite = createGround(scene);
 

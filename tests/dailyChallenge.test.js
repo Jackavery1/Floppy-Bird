@@ -31,9 +31,9 @@ describe('dailyChallenge', () => {
         expect(hard).toBeGreaterThan(easy);
     });
 
-    it('formatDailyMenuButtonLabel affiche DÉFI DU JOUR', () => {
+    it('formatDailyMenuButtonLabel affiche Défi du jour', () => {
         const label = formatDailyMenuButtonLabel(DIFFICULTY.NORMAL, date);
-        expect(label).toBe('DÉFI DU JOUR');
+        expect(label).toBe('Défi du jour');
     });
 
     it('formatDailyMenuSubtitle décrit le pattern', () => {

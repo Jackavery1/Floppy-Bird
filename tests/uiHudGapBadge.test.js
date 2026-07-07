@@ -37,7 +37,7 @@ describe('uiHudGapBadge', () => {
         updateGapHudBadge(ui, 20);
 
         expect(ui._gapHudBadge).toBeTruthy();
-        expect(ui._gapHudBadge.setText).toHaveBeenCalledWith('ÉCART 104px');
+        expect(ui._gapHudBadge.setText).toHaveBeenCalledWith('ÉCART 98px');
         expect(ui._inGameControlElements).toContain(ui._gapHudBadge);
     });
 

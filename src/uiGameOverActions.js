@@ -1,14 +1,14 @@
 import { sceneTween } from './motion.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { menuHint, restartHintForMode } from './device.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
     DEPTH,
-    FONT_SIZE_HINT,
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_HOVER,
     GAME_OVER_RESTART_BTN_WIDTH,
+    gameOverMenuBtnY,
+    gameOverRestartBtnY,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
     MIN_TOUCH,
@@ -26,10 +26,10 @@ import {
  * @param {{ isDaily: boolean, fadeIn: boolean, finalScore: number, isNewRecord: boolean }} opts
  * @param {import('phaser').GameObjects.Text} scoreText
  */
-export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
+export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     const { isDaily } = opts;
     const elements = [];
-    const restartBtnY = y(300);
+    const restartBtnY = gameOverRestartBtnY(P);
     const restartLabel = isDaily ? 'REJOUER DÉFI' : 'REJOUER';
 
     const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
@@ -80,7 +80,7 @@ export function buildGameOverActions(scene, ui, cx, y, _P, opts, _scoreText) {
 
     elements.push(restartBtnShadow, ui._restartBtnGraphics, restartBtnText, restartHitZone);
 
-    const menuBtnY = y(360);
+    const menuBtnY = gameOverMenuBtnY(P);
     const menuBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     const { menuBtn } = UI_LAYOUT;
     menuBtnShadow.fillStyle(0x000000, 0.35);

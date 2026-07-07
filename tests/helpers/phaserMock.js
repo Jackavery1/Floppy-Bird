@@ -12,6 +12,7 @@ export function createGraphicsMock() {
         destroy: vi.fn(),
         clear: vi.fn(),
         lineStyle: vi.fn(),
+        lineBetween: vi.fn(),
         strokeRect: vi.fn(),
         strokeRoundedRect: vi.fn(),
         strokeCircle: vi.fn(),
@@ -131,8 +132,28 @@ export function createInteractable() {
         setFillStyle: vi.fn().mockReturnThis(),
         setStrokeStyle: vi.fn().mockReturnThis(),
         disableInteractive: vi.fn().mockReturnThis(),
+        add: vi.fn().mockReturnThis(),
     };
     return obj;
+}
+
+export function createContainerMock() {
+    const container = createInteractable();
+    container.list = [];
+    container.add = vi.fn(function (...children) {
+        for (const child of children.flat()) {
+            container.list.push(child);
+        }
+        return container;
+    });
+    container.setVisible = vi.fn(function (v) {
+        container.visible = v;
+        for (const child of container.list) {
+            child.setVisible?.(v);
+        }
+        return container;
+    });
+    return container;
 }
 
 export function createBaseScene(overrides = {}) {
@@ -146,6 +167,7 @@ export function createBaseScene(overrides = {}) {
             text: vi.fn(makeInteractable),
             graphics: vi.fn(() => createGraphicsMock()),
             tileSprite: vi.fn(() => sprite),
+            container: vi.fn(() => createContainerMock()),
         },
         make: {
             graphics: vi.fn(() => createGraphicsMock()),

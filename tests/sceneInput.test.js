@@ -91,6 +91,14 @@ describe('sceneInput', () => {
         expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
     });
 
+    it('pointerdown ignore les taps vides quand un panneau menu est ouvert', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.ui = { _optionsOpen: true, _scoresOpen: false, _skinsOpen: false };
+        setupSceneInput(scene);
+        scene._pointerHandlers[0]({});
+        expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
+    });
+
     it('H bascule le hardcore', () => {
         const scene = makeScene();
         setupSceneInput(scene);
@@ -100,6 +108,13 @@ describe('sceneInput', () => {
 
     it('D lance le défi du jour au menu', () => {
         const scene = makeScene(GAME_STATE.MENU);
+        setupSceneInput(scene);
+        scene._handlers['keydown-D']();
+        expect(scene.launchDailyChallenge).toHaveBeenCalled();
+    });
+
+    it('D lance le défi depuis le game over', () => {
+        const scene = makeScene(GAME_STATE.GAME_OVER);
         setupSceneInput(scene);
         scene._handlers['keydown-D']();
         expect(scene.launchDailyChallenge).toHaveBeenCalled();

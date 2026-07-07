@@ -38,6 +38,12 @@ describe('uiHudBanners', () => {
         expect(ui.scene.add.text).toHaveBeenCalledTimes(1);
     });
 
+    it('deux bannières distinctes utilisent des lignes différentes', () => {
+        showRecordBroken(ui);
+        showScoreStreak(ui, 10);
+        expect(ui._recordBanner.__bannerRow).not.toBe(ui._streakBanner.__bannerRow);
+    });
+
     it('showDifficultyEscalation crée une bannière', () => {
         showDifficultyEscalation(ui);
         expect(ui._escalationBanner).toBeTruthy();

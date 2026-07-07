@@ -1,23 +1,34 @@
-import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import { buildStyledPanelBackdrop, buildPanelPillButton } from './uiMenuPanelChrome.js';
 import { sceneTween } from './motion.js';
 import { prefersReducedMotion } from './motion.js';
+
+/** @param {import('phaser').Scene} [scene] @param {import('phaser').GameObjects.GameObject[]} elements */
+function killPanelTweens(scene, elements) {
+    if (!scene?.tweens?.killTweensOf || !elements?.length) return;
+    for (const el of elements) {
+        if (el) scene.tweens.killTweensOf(el);
+    }
+}
 
 /** @param {import('phaser').GameObjects.GameObject[]} elements @param {boolean} visible @param {import('phaser').Scene} [scene] */
 export function setMenuPanelVisible(elements, visible, scene) {
     if (!elements || elements.length === 0) return;
+    killPanelTweens(scene, elements);
     const animateWithTween = scene && !prefersReducedMotion();
 
     if (visible) {
-        // Make all elements visible immediately
         elements.forEach((el) => {
             if (!el?.setVisible) return;
             el.setVisible(true);
-            if (animateWithTween && el.setAlpha) el.setAlpha(0);
+            if (animateWithTween && el.setAlpha) {
+                el.setAlpha(0);
+            } else {
+                el.setAlpha?.(1);
+            }
         });
 
-        // Animate opacity if tweening is enabled
         if (animateWithTween) {
             const tweenTargets = elements.filter((el) => el?.setAlpha);
             if (tweenTargets.length > 0) {
@@ -30,25 +41,10 @@ export function setMenuPanelVisible(elements, visible, scene) {
             }
         }
     } else {
-        // Hide elements - optionally animate
-        if (animateWithTween) {
-            const tweenTargets = elements.filter((el) => el?.setAlpha);
-            if (tweenTargets.length > 0) {
-                sceneTween(scene, {
-                    targets: tweenTargets,
-                    alpha: 0,
-                    duration: 200,
-                    ease: 'Cubic.easeIn',
-                    onComplete: () => {
-                        elements.forEach((el) => el?.setVisible?.(false));
-                    },
-                });
-                return; // Exit early, visibility is handled in tween completion
-            }
-        }
-
-        // Fallback: hide immediately if no tween
-        elements.forEach((el) => el?.setVisible?.(false));
+        elements.forEach((el) => {
+            el?.setVisible?.(false);
+            el?.setAlpha?.(1);
+        });
     }
 }
 
@@ -61,47 +57,40 @@ export function syncMenuChromeVisibility(ui) {
 /**
  * @param {import('phaser').Scene} scene
  * @param {{ panelTop: number, panelH: number, w: number }} panel
+ * @param {{ fill?: string, stroke?: string }} [theme]
  */
-export function buildMenuPanelBackdrop(scene, panel) {
-    const backdrop = scene.add.rectangle(
-        GAME_CONFIG.centerX,
-        panel.panelTop + panel.panelH / 2,
-        panel.w,
-        panel.panelH,
-        hexVersPhaser(DESIGN_TOKENS.contourMenu),
-        0.94
-    );
-    backdrop.setDepth(DEPTH.PANEL_BACKDROP);
-    backdrop.setStrokeStyle(2, hexVersPhaser(DESIGN_TOKENS.boutonPause), 0.9);
-    backdrop.setVisible(false);
-    return backdrop;
+export function buildMenuPanelBackdrop(scene, panel, theme) {
+    return buildStyledPanelBackdrop(scene, panel, {
+        fill: theme?.fill ?? DESIGN_TOKENS.fondPanneauGameOver,
+        stroke: theme?.stroke ?? DESIGN_TOKENS.boutonPause,
+    });
 }
 
 /**
  * @param {import('phaser').Scene} scene
  * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {{ cx: number, cy: number, width: number, depth: number, color: number, stroke: number, labelText: string, labelStroke: string, onToggle: () => void }} cfg
+ * @param {{ cx: number, cy: number, width: number, depth: number, color: number, stroke: number, labelText: string, labelStroke: string, labelStyle?: Phaser.Types.GameObjects.Text.TextStyle, rounded?: boolean, hoverColor?: number, onToggle: () => void }} cfg
  */
 export function buildMenuToggleButton(scene, elements, cfg) {
+    if (cfg.rounded) {
+        return buildPanelPillButton(scene, elements, cfg);
+    }
+
     const touchW = Math.max(cfg.width, MIN_TOUCH);
     const bg = scene.add.rectangle(cfg.cx, cfg.cy, cfg.width, MIN_TOUCH, cfg.color, 0.88);
     bg.setDepth(cfg.depth);
     bg.setStrokeStyle(2, cfg.stroke, 0.6);
     elements.push(bg);
 
-    const label = addCenteredText(
-        scene,
-        cfg.cx,
-        cfg.cy,
-        cfg.labelText,
-        hudTextStyle({
+    const labelStyle =
+        cfg.labelStyle ??
+        panelChromeTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'bold',
             stroke: cfg.labelStroke,
-        }),
-        cfg.depth + 1
-    );
+        });
+    const label = addCenteredText(scene, cfg.cx, cfg.cy, cfg.labelText, labelStyle, cfg.depth + 1);
     elements.push(label);
 
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, MIN_TOUCH, 0x000000, 0);
@@ -143,6 +132,7 @@ export function createMenuPanelController(ui, cfg) {
 
     function setOpen(open) {
         const wasOpen = ui[cfg.openKey];
+        if (wasOpen === open) return;
         ui[cfg.openKey] = open;
         ui[cfg.backdropKey]?.setVisible(open);
         if (cfg.setContentVisible) {
@@ -185,6 +175,7 @@ export function createMenuPanelController(ui, cfg) {
  *   btnColor: number,
  *   btnStroke: number,
  *   labelStroke: string,
+ *   panelTheme?: { fill: string, stroke: string },
  *   buildContent: (ui: import('./ui.js').UI, elements: import('phaser').GameObjects.GameObject[], panelElements: import('phaser').GameObjects.GameObject[]) => void,
  * }} cfg
  */
@@ -202,15 +193,18 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
         stroke: cfg.btnStroke,
         labelText: cfg.buttonLabelFn(false),
         labelStroke: cfg.labelStroke,
+        labelStyle: menuHomeTextStyle(),
         onToggle: () => controller.toggle(),
     });
     ui[cfg.btnBgKey] = btn.bg;
     ui[cfg.btnLabelKey] = btn.label;
     ui[cfg.btnHitKey] = btn.hit;
 
-    ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout);
-    elements.push(ui[cfg.backdropKey]);
+    ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout, cfg.panelTheme);
+    elements.push(ui[cfg.backdropKey].frame, ui[cfg.backdropKey].hit);
 
     cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
-    controller.setOpen(false);
+    setMenuPanelVisible(ui[cfg.panelElementsKey], false);
+    ui[cfg.backdropKey]?.setVisible(false);
+    ui[cfg.openKey] = false;
 }

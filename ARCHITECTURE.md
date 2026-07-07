@@ -184,13 +184,13 @@ Menu principal (input restart/menu)
 
 ## Testing Strategy
 
-### Unit Tests (494 tests)
+### Unit Tests (518 tests)
 - **Gameplay** : Physics, collision, scoring
 - **UI** : Menu navigation, state updates
 - **Storage** : Persistence, data integrity
 - **Accessibility** : ARIA, keyboard
 
-### E2E Tests (330+ scenarios)
+### E2E Tests (55 scénarios, 6 projets viewport)
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
 - **Responsive** : All viewports
@@ -217,7 +217,7 @@ Menu principal (input restart/menu)
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
 - **Design Tokens** : Consistent styling
-- **Test Coverage** : >90% maintained
+- **Test Coverage** : seuils CI 75 % lignes / 70 % branches (`vite.config.js`)
 
 ### Potential Extensions
 - **Multiplayer** : Leaderboard sync
@@ -259,8 +259,8 @@ git push                # CI/CD GitHub Actions
 
 - **ESLint** : 0 errors
 - **Prettier** : 100% formatted
-- **Tests** : 494/494 passing
-- **Coverage** : >90% lines
+- **Tests** : 518/518 passing
+- **Coverage** : seuils CI 75/70/70/75 % (lines/branches/functions/statements)
 - **Types** : JSDoc comments
 - **Accessibility** : 100/100 Lighthouse
 

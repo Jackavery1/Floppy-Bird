@@ -1,7 +1,15 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
 import { GAME_CONFIG } from '../src/config.js';
-import { initClouds, updateClouds, createGround, updateGround } from '../src/sceneBackground.js';
+import {
+    initClouds,
+    initCelestial,
+    updateClouds,
+    createHills,
+    updateHills,
+    createGround,
+    updateGround,
+} from '../src/sceneBackground.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 describe('sceneBackground', () => {
@@ -12,10 +20,40 @@ describe('sceneBackground', () => {
         expect(scene.add.sprite).toHaveBeenCalledTimes(5);
     });
 
+    it('initCelestial crée un sprite soleil ou lune', () => {
+        const scene = createBaseScene();
+        const celestial = initCelestial(scene);
+        expect(scene.add.sprite).toHaveBeenCalled();
+        expect(celestial).toBe(scene._sprite);
+    });
+
+    it('createHills crée deux tileSprites parallax', () => {
+        const scene = createBaseScene();
+        const hills = createHills(scene);
+        expect(scene.add.tileSprite).toHaveBeenCalledTimes(2);
+        expect(hills.far).toBeTruthy();
+        expect(hills.near).toBeTruthy();
+    });
+
     it('updateClouds fait défiler et recycle les nuages', () => {
         const clouds = [{ x: -100, y: 80, _speed: 1 }];
         updateClouds(clouds);
         expect(clouds[0].x).toBe(GAME_CONFIG.width + 96);
+    });
+
+    it('updateHills défile en jeu et au menu', () => {
+        const hills = {
+            far: { tilePositionX: 0 },
+            near: { tilePositionX: 0 },
+        };
+        updateHills(GAME_STATE.PLAYING, hills, 2, 1);
+        expect(hills.far.tilePositionX).toBeCloseTo(0.36);
+        expect(hills.near.tilePositionX).toBeCloseTo(0.84);
+        hills.far.tilePositionX = 0;
+        hills.near.tilePositionX = 0;
+        updateHills(GAME_STATE.MENU, hills, 0, 1);
+        expect(hills.far.tilePositionX).toBeCloseTo(0.0396);
+        expect(hills.near.tilePositionX).toBeCloseTo(0.0924);
     });
 
     it('createGround crée un tileSprite', () => {

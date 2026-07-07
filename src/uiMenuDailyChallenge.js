@@ -1,32 +1,21 @@
 import { GAME_CONFIG } from './config.js';
-import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
-import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
+import { formatDailyMenuButtonLabel } from './dailyChallenge.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
     DAILY_BTN_TEXT_MAX_WIDTH,
     DEPTH,
-    FONT_SIZE_BADGE,
-    FONT_SIZE_HINT,
     MIN_TOUCH,
-    PANEL_TEXT_MAX_WIDTH,
     stopUiEvent,
 } from './uiLayout.js';
 
 const DAILY_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonDaily);
 const DAILY_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonDailyHover);
 
-const DAILY_BTN_STYLE = hudTextStyle({
-    fontSize: FONT_SIZE_BADGE,
-    fill: DESIGN_TOKENS.texteMenu,
-    fontStyle: 'bold',
+const DAILY_BTN_STYLE = menuHomeTextStyle({
+    fontSize: '12px',
     stroke: DESIGN_TOKENS.badgeDailyContour,
-});
-
-const DAILY_SUBTITLE_STYLE = hudTextStyle({
-    fontSize: FONT_SIZE_HINT,
-    fill: DESIGN_TOKENS.badgeDaily,
-    stroke: DESIGN_TOKENS.contourMenu,
 });
 
 export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
@@ -58,24 +47,6 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
         DAILY_BTN_TEXT_MAX_WIDTH
     );
     elements.push(ui._dailyBtnLabel);
-
-    ui._dailyMenuSubtitle = addCenteredText(
-        ui.scene,
-        GAME_CONFIG.centerX,
-        layout.dailySubtitle,
-        formatDailyMenuSubtitle(difficulty),
-        DAILY_SUBTITLE_STYLE,
-        DEPTH.MENU_RAISED
-    );
-    ui._dailyMenuSubtitle.setVisible(false);
-    applyFittedLabel(
-        ui.scene,
-        ui._dailyMenuSubtitle,
-        formatDailyMenuSubtitle(difficulty),
-        DAILY_SUBTITLE_STYLE,
-        PANEL_TEXT_MAX_WIDTH
-    );
-    elements.push(ui._dailyMenuSubtitle);
 
     ui._dailyBtnHit = ui.scene.add.rectangle(
         GAME_CONFIG.centerX,
@@ -109,13 +80,4 @@ export function refreshDailyChallengeButton(ui, difficulty) {
         DAILY_BTN_STYLE,
         DAILY_BTN_TEXT_MAX_WIDTH
     );
-    if (ui._dailyMenuSubtitle) {
-        applyFittedLabel(
-            ui.scene,
-            ui._dailyMenuSubtitle,
-            formatDailyMenuSubtitle(difficulty),
-            DAILY_SUBTITLE_STYLE,
-            PANEL_TEXT_MAX_WIDTH
-        );
-    }
 }

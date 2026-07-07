@@ -25,55 +25,99 @@ export const PAUSE_BTN_INSET = 12;
 /** Marge haute minimale (px jeu) pour HUD pause / score sous encoche visuelle. */
 export const HUD_SAFE_TOP = 16;
 
+/** Marge entre le bas du panneau et le bouton RETOUR. */
+export const PANEL_CLOSE_INSET = SPACING.md;
+
+/** @param {number} panelTop @param {number} panelH @param {number} [inset] */
+export function panelCloseBtnY(panelTop, panelH, inset = PANEL_CLOSE_INSET) {
+    return panelTop + panelH - inset - MIN_TOUCH / 2;
+}
+
+/** @param {{ y: number, h: number }} [panel] */
+export function gameOverMenuBtnY(panel = GAME_OVER_PANEL) {
+    return panelCloseBtnY(panel.y, panel.h);
+}
+
+/** @param {{ y: number, h: number }} [panel] */
+export function gameOverRestartBtnY(panel = GAME_OVER_PANEL) {
+    return gameOverMenuBtnY(panel) - MIN_TOUCH - SPACING.sm;
+}
+
+/** @param {{ panelTop: number, panelH: number }} panel */
+function withPanelCloseBtn(panel) {
+    return { ...panel, closeBtn: panelCloseBtnY(panel.panelTop, panel.panelH) };
+}
+
+const OPTIONS_TAB_INSET = 10;
+const OPTIONS_TAB_GAP = 6;
+
+/** @param {{ w: number }} panel */
+function withOptionsTabs(panel) {
+    const panelLeft = GAME_CONFIG.centerX - panel.w / 2;
+    const innerW = panel.w - OPTIONS_TAB_INSET * 2;
+    const tabBtnW = Math.floor((innerW - OPTIONS_TAB_GAP * 2) / 3);
+    const tabControlsX = panelLeft + OPTIONS_TAB_INSET + tabBtnW / 2;
+    const tabSettingsX = tabControlsX + tabBtnW + OPTIONS_TAB_GAP;
+    const tabModesX = tabSettingsX + tabBtnW + OPTIONS_TAB_GAP;
+    return {
+        ...panel,
+        tabBtnW,
+        tabControlsX,
+        tabSettingsX,
+        tabModesX,
+        tabInset: OPTIONS_TAB_INSET,
+    };
+}
+
 export const GAME_OVER_PANEL = { x: 24, y: 60, w: 240, h: 400, radius: 12 };
 
 export const UI_LAYOUT = {
     scoreHud: 68,
     menu: {
         title: 108,
-        difficulty: 142,
-        dailyBtn: 320,
-        dailySubtitle: 346,
-        start: 370,
-        menuRow: 420,
+        difficulty: 200,
+        start: 278,
+        dailyBtn: 318,
+        menuRow: 378,
         scoresBtn: 56,
         optionsBtn: 144,
         skinsBtn: 232,
         menuBtnW: MIN_TOUCH * 2,
-        hint1: 480,
+        hint1: 424,
     },
-    optionsPanel: {
-        panelTop: 200,
-        panelH: 252,
-        w: 252,
-        hintLine: 218,
-        training: 256,
-        hardcore: 296,
-        mute: 336,
-        hint2: 376,
-        closeBtn: 466,
-    },
-    scoresPanel: {
-        panelTop: 188,
-        panelH: 292,
-        w: 252,
-        scoresTitle: 212,
-        scoresFirst: 244,
-        scoresGap: 28,
-        scoresHardcore: 332,
-        scoresAchievements: 360,
-        closeBtn: 468,
-    },
-    skinsPanel: {
+    optionsPanel: withPanelCloseBtn(
+        withOptionsTabs({
+            panelTop: 100,
+            panelH: 380,
+            w: 260,
+            tabRow: 120,
+            controlsTitle: 162,
+            controlsFirst: 196,
+            controlsGap: 22,
+            training: 212,
+            hardcore: 264,
+            settingsMute: 240,
+        })
+    ),
+    scoresPanel: withPanelCloseBtn({
+        panelTop: 108,
+        panelH: 356,
+        w: 260,
+        scoresTitle: 140,
+        scoresFirst: 176,
+        scoresGap: 30,
+        scoresHardcore: 272,
+        scoresAchievements: 306,
+    }),
+    skinsPanel: withPanelCloseBtn({
         panelTop: 132,
-        panelH: 352,
+        panelH: 372,
         w: 252,
         skinsTitle: 156,
         skinsSubtitle: 172,
         skinsRow1: 208,
         skinsHint: 408,
-        closeBtn: 470,
-    },
+    }),
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {
         trainingBadgeY: 30,
@@ -92,9 +136,12 @@ export const TOUCH_TARGETS = Object.freeze({
     menuScores: { x: UI_LAYOUT.menu.scoresBtn, y: UI_LAYOUT.menu.menuRow },
     menuOptions: { x: UI_LAYOUT.menu.optionsBtn, y: UI_LAYOUT.menu.menuRow },
     menuSkins: { x: UI_LAYOUT.menu.skinsBtn, y: UI_LAYOUT.menu.menuRow },
-    menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.mute },
+    menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.settingsMute },
     menuTraining: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.training },
     menuHardcore: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.hardcore },
+    menuOptionsTabControls: { x: UI_LAYOUT.optionsPanel.tabControlsX, y: UI_LAYOUT.optionsPanel.tabRow },
+    menuOptionsTabSettings: { x: UI_LAYOUT.optionsPanel.tabSettingsX, y: UI_LAYOUT.optionsPanel.tabRow },
+    menuOptionsTabModes: { x: UI_LAYOUT.optionsPanel.tabModesX, y: UI_LAYOUT.optionsPanel.tabRow },
     menuOptionsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.closeBtn },
     menuScoresClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoresPanel.closeBtn },
     menuSkinsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.skinsPanel.closeBtn },
@@ -106,8 +153,8 @@ export const TOUCH_TARGETS = Object.freeze({
     pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
     pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
     pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
-    gameOverRestart: { x: GAME_CONFIG.centerX, y: GAME_OVER_PANEL.y + 252 },
-    gameOverMenu: { x: GAME_CONFIG.centerX, y: GAME_OVER_PANEL.y + 285 },
+    gameOverRestart: { x: GAME_CONFIG.centerX, y: gameOverRestartBtnY() },
+    gameOverMenu: { x: GAME_CONFIG.centerX, y: gameOverMenuBtnY() },
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },
 });
 

@@ -29,7 +29,7 @@ describe('uiMenuOptionsModes', () => {
         expect(ui._trainingHit).toBeTruthy();
         expect(ui._hardcoreLabel).toBeTruthy();
         expect(ui._hardcoreHit).toBeTruthy();
-        expect(ui._classicHint).toBeTruthy();
+        expect(ui._classicHint).toBeUndefined();
     });
 
     it('refléte le mode entraînement actif', () => {

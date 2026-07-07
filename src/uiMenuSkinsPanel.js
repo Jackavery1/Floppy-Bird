@@ -54,6 +54,10 @@ export function buildMenuSkinsPanel(ui, elements, layout) {
         ...PANEL_CFG,
         btnLayout: { cx: layout.skinsBtn, cy: layout.menuRow, width: layout.menuBtnW },
         panelLayout: panel,
+        panelTheme: {
+            fill: DESIGN_TOKENS.fondPanneauGameOver,
+            stroke: DESIGN_TOKENS.boutonSkinsStroke,
+        },
         buildContent: (targetUi, targetElements, panelElements) => {
             buildSkinsTab(targetUi, targetElements, panelElements);
         },

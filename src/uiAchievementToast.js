@@ -2,13 +2,18 @@ import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
+import { acquireHudBannerSlot, releaseHudBannerSlot } from './uiHudBannerStack.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {{ title: string }} achievement */
 function showAchievementToast(scene, achievement) {
+    const ui = scene.ui;
+    if (!ui) return;
+    const slot = acquireHudBannerSlot(ui);
+    const y = slot.y;
     const toast = addCenteredText(
         scene,
         GAME_CONFIG.centerX,
-        118,
+        y,
         `🏆 ${achievement.title}`,
         menuTextStyle({
             fontSize: '14px',
@@ -18,18 +23,26 @@ function showAchievementToast(scene, achievement) {
         }),
         DEPTH.ACHIEVEMENT_TOAST
     );
+    toast.__bannerRow = slot.row;
     sceneTween(scene, {
         targets: toast,
         alpha: { from: 1, to: 0 },
-        y: 100,
+        y: y - 18,
         duration: 1800,
         delay: 400,
         ease: 'Power2',
-        onComplete: () => toast.destroy(),
+        onComplete: () => {
+            releaseHudBannerSlot(ui, slot.row);
+            toast.destroy();
+        },
     });
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {Array<{ title: string }>} achievements */
 export function showAchievementToasts(scene, achievements) {
-    achievements.forEach((a) => showAchievementToast(scene, a));
+    achievements.forEach((achievement, index) => {
+        scene.time.delayedCall(index * 450, () => {
+            showAchievementToast(scene, achievement);
+        });
+    });
 }

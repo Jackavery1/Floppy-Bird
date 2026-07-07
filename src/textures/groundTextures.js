@@ -2,7 +2,8 @@ import { GAME_CONFIG } from '../config.js';
 
 export const GROUND_BLADE_H = 10;
 const GRASS_H = 20;
-export const GROUND_TILE_H = GROUND_BLADE_H + GRASS_H;
+const DIRT_H = 6;
+export const GROUND_TILE_H = GROUND_BLADE_H + GRASS_H + DIRT_H;
 
 export function createGroundTexture(scene) {
     const W = GAME_CONFIG.width;
@@ -23,6 +24,11 @@ export function createGroundTexture(scene) {
     g.fillRect(0, GROUND_BLADE_H + GRASS_H - 2, W, 2);
     g.fillRect(0, GROUND_BLADE_H, W, 2);
 
+    g.fillStyle(0x6d4c2e, 1);
+    g.fillRect(0, GROUND_BLADE_H + GRASS_H, W, DIRT_H);
+    g.fillStyle(0x5a3d24, 1);
+    g.fillRect(0, GROUND_BLADE_H + GRASS_H, W, 2);
+
     const bladeColors = [0x5aad23, 0x68cc2a];
     for (let x = 0; x < W; x += 6) {
         const h = randInt(4, 10);
@@ -35,8 +41,8 @@ export function createGroundTexture(scene) {
     const flowers = [
         { x: 48, color: 0xffeb3b },
         { x: 130, color: 0xff7043 },
-        { x: 252, color: 0xffeb3b },
-        { x: 390, color: 0xff7043 },
+        { x: 210, color: 0xffeb3b },
+        { x: 268, color: 0xff7043 },
     ];
     flowers.forEach(({ x: fx, color }) => {
         const fy = GROUND_BLADE_H - 4;

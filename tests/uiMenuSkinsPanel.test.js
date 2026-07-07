@@ -33,7 +33,7 @@ describe('uiMenuSkinsPanel', () => {
 
     it('le bouton SKINS reste au-dessus du fond du panneau (pas de bleed-through)', () => {
         const btnDepth = ui._skinsBtnBg.setDepth.mock.calls.at(-1)?.[0];
-        const backdropDepth = ui._skinsBackdrop.setDepth.mock.calls.at(-1)?.[0];
+        const backdropDepth = ui._skinsBackdrop.frame.setDepth.mock.calls.at(-1)?.[0];
         expect(btnDepth).toBeGreaterThan(backdropDepth);
     });
 });

@@ -2,6 +2,8 @@ import { hardcoreToggleLabel, trainingToggleLabel } from './device.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { applyFittedLabel, PANEL_TEXT_MAX_WIDTH } from './uiLayout.js';
 import { setMenuPanelVisible } from './uiMenuPanel.js';
+import { setOptionsTab } from './uiMenuOptionsTabs.js';
+import { setOptionsSectionVisible } from './uiMenuOptionsSection.js';
 import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from './uiToggleIcons.js';
 
 export const TOGGLE_ICON_X_OFFSET = -98;
@@ -20,9 +22,26 @@ function hardcoreFill(active, unlocked) {
     return active ? DESIGN_TOKENS.badgeHardcore : DESIGN_TOKENS.texteHintMenu;
 }
 
+function hideAllOptionsSections(ui) {
+    for (const section of [
+        ui._optionsControlsElements,
+        ui._optionsSettingsElements,
+        ui._optionsModesElements,
+    ]) {
+        setOptionsSectionVisible(section, false);
+    }
+}
+
 /** @param {import('./ui.js').UI} ui @param {boolean} visible */
 export function setOptionsContentVisible(ui, visible) {
-    setMenuPanelVisible(ui._optionsPanelElements, visible, ui.scene);
+    if (!visible) {
+        hideAllOptionsSections(ui);
+        setMenuPanelVisible(ui._optionsChromeElements, false, ui.scene);
+        setMenuPanelVisible(ui._optionsPanelElements, false, ui.scene);
+        return;
+    }
+    setMenuPanelVisible(ui._optionsChromeElements, true, ui.scene);
+    setOptionsTab(ui, ui._optionsActiveTab ?? 'modes');
 }
 
 export function applyTrainingLabel(ui, trainingMode) {

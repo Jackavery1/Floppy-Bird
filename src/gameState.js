@@ -12,8 +12,14 @@ export function canHandlePrimaryAction(state) {
     return state !== GAME_STATE.PAUSED && state !== GAME_STATE.DYING;
 }
 
+/** Un panneau secondaire du menu bloque le lancement par tap/espace. */
+export function isMenuPanelOpen(ui) {
+    return Boolean(ui?._optionsOpen || ui?._scoresOpen || ui?._skinsOpen);
+}
+
 /** Should primary action start new game? */
-export function shouldStartGameOnPrimary(state) {
+export function shouldStartGameOnPrimary(state, ui = null) {
+    if (state === GAME_STATE.MENU && isMenuPanelOpen(ui)) return false;
     return state === GAME_STATE.MENU || state === GAME_STATE.GAME_OVER;
 }
 

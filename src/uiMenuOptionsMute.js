@@ -23,10 +23,10 @@ function cycleMuteLabel(ui) {
 
 /**
  * @param {import('./ui.js').UI} ui
- * @param {import('phaser').GameObjects.GameObject[]} elements
+ * @param {(...objs: import('phaser').GameObjects.GameObject[]) => void} add
  * @param {number} y
  */
-export function buildMuteControls(ui, elements, y) {
+export function buildMuteControls(ui, add, y) {
     const scene = ui.scene;
 
     ui._muteText = addCenteredText(
@@ -37,8 +37,7 @@ export function buildMuteControls(ui, elements, y) {
         menuTextStyle({ fontSize: '12px', fill: DESIGN_TOKENS.texteClair }),
         DEPTH.PANEL_FRAME
     );
-    ui._optionsPanelElements.push(ui._muteText);
-    elements.push(ui._muteText);
+    add(ui._muteText);
 
     ui._muteHit = scene.add.rectangle(GAME_CONFIG.centerX, y, 160, MIN_TOUCH, 0x000000, 0);
     ui._muteHit.setDepth(DEPTH.PANEL_HIT);
@@ -50,6 +49,5 @@ export function buildMuteControls(ui, elements, y) {
         });
         bindAccessibilityAction('menuMute', () => cycleMuteLabel(ui));
     }
-    ui._optionsPanelElements.push(ui._muteHit);
-    elements.push(ui._muteHit);
+    add(ui._muteHit);
 }

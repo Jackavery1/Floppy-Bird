@@ -45,7 +45,22 @@ describe('uiMenuOptionsLabels', () => {
     });
 
     it('setOptionsContentVisible bascule la visibilité du panneau', () => {
+        ui._optionsOpen = true;
+        const chrome = { setVisible: vi.fn(), setAlpha: vi.fn() };
+        ui._optionsChromeElements = [chrome];
+        ui._optionsModesElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
         setOptionsContentVisible(ui, true);
-        expect(ui._optionsPanelElements[0].setVisible).toHaveBeenCalledWith(true);
+        expect(chrome.setVisible).toHaveBeenCalledWith(true);
+    });
+
+    it('setOptionsContentVisible masque les sections à la fermeture', () => {
+        const controlRoot = { setVisible: vi.fn(), setAlpha: vi.fn() };
+        const controlChild = { setVisible: vi.fn(), setAlpha: vi.fn() };
+        ui._optionsControlsElements = [controlRoot, controlChild];
+        ui._optionsChromeElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
+        ui._optionsPanelElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
+        setOptionsContentVisible(ui, false);
+        expect(controlRoot.setVisible).toHaveBeenCalledWith(false);
+        expect(controlChild.setVisible).toHaveBeenCalledWith(false);
     });
 });

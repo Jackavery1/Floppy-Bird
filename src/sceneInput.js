@@ -1,5 +1,5 @@
 import { DIFFICULTY } from './config.js';
-import { GAME_STATE, canReturnToMenu, canTogglePause } from './gameState.js';
+import { GAME_STATE, canReturnToMenu, canTogglePause, isMenuPanelOpen } from './gameState.js';
 import { resumeAudio } from './audio.js';
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
@@ -17,6 +17,7 @@ export function setupSceneInput(scene) {
         resumeAudio();
         const hits = scene.input.hitTestPointer(pointer);
         if (hits.some((obj) => obj.input?.enabled)) return;
+        if (scene.state === GAME_STATE.MENU && isMenuPanelOpen(scene.ui)) return;
         scene.handlePrimaryAction();
     });
 

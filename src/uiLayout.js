@@ -28,6 +28,10 @@ export {
     FONT_TITLE,
     computeMenuLayout,
     diffButtonCenter,
+    panelCloseBtnY,
+    PANEL_CLOSE_INSET,
+    gameOverMenuBtnY,
+    gameOverRestartBtnY,
     stopUiEvent,
 } from './uiLayoutConstants.js';
 

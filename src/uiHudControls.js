@@ -10,6 +10,7 @@ import {
 } from './uiDomAccessibility.js';
 import { destroyGapHudBadge } from './uiHudGapBadge.js';
 import { destroyCoyoteHudBadge } from './uiHudCoyoteBadge.js';
+import { resetHudBannerSlots } from './uiHudBannerStack.js';
 import {
     addCenteredText,
     DEPTH,
@@ -31,8 +32,11 @@ export function destroyInGameControls(ui) {
     ui._pauseBtnGraphics = null;
     ui._trainingBadge = null;
     ui._hardcoreBadge = null;
+    ui._dailyBadge = null;
+    ui._dailyPatternBadge = null;
     destroyGapHudBadge(ui);
     destroyCoyoteHudBadge(ui);
+    resetHudBannerSlots(ui);
     setAccessibilityControlVisible('pause', false);
     dismissJumpTutorial(ui);
 }
@@ -75,20 +79,6 @@ export function createInGameControls(
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyPatternBadge);
-        badgeY += 14;
-        ui._dailyRecordBadge = addCenteredText(
-            ui.scene,
-            GAME_CONFIG.centerX,
-            badgeY,
-            'DÉFI · hors record classique',
-            hudTextStyle({
-                fontSize: FONT_SIZE_BADGE,
-                fill: DESIGN_TOKENS.badgeDaily,
-                fontStyle: 'bold',
-            }),
-            DEPTH.HUD_BADGE
-        );
-        elements.push(ui._dailyRecordBadge);
         badgeY += 14;
     }
 

@@ -9,6 +9,16 @@ describe('uiDepth', () => {
         expect(DEPTH.FLASH).toBeGreaterThan(DEPTH.SCORE_HUD);
     });
 
+    it('ordonne les couches du monde (fond → collines → ciel → gameplay)', () => {
+        expect(DEPTH.HILLS_FAR).toBeGreaterThan(DEPTH.WORLD_BG);
+        expect(DEPTH.HILLS_NEAR).toBeGreaterThan(DEPTH.HILLS_FAR);
+        expect(DEPTH.CELESTIAL).toBeGreaterThan(DEPTH.HILLS_NEAR);
+        expect(DEPTH.CLOUDS).toBeGreaterThan(DEPTH.CELESTIAL);
+        expect(DEPTH.GROUND).toBeGreaterThan(DEPTH.CLOUDS);
+        expect(DEPTH.PIPES).toBeGreaterThan(DEPTH.GROUND);
+        expect(DEPTH.BIRD).toBeGreaterThan(DEPTH.PIPES);
+    });
+
     it('ordonne les couches de panneau menu', () => {
         expect(DEPTH.PANEL_BACKDROP).toBeGreaterThan(DEPTH.MENU_BTN_BG);
         expect(DEPTH.PANEL_HIT).toBeGreaterThan(DEPTH.PANEL_PREVIEW);

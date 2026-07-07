@@ -76,7 +76,6 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ...(ui._diffBtnLabels ?? []).flatMap(({ label, hitZone }) => [label, hitZone]),
         ui._dailyBtnBg,
         ui._dailyBtnLabel,
-        ui._dailyMenuSubtitle,
         ui._dailyBtnHit,
         ui._startText,
         ui._startHit,

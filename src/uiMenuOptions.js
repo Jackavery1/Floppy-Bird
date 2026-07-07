@@ -79,6 +79,10 @@ export function buildMenuOptions(ui, elements, layout) {
         ...PANEL_CFG,
         btnLayout: { cx: layout.optionsBtn, cy: layout.menuRow, width: layout.menuBtnW },
         panelLayout: panel,
+        panelTheme: {
+            fill: DESIGN_TOKENS.fondPanneauGameOver,
+            stroke: DESIGN_TOKENS.boutonOptionsStroke,
+        },
         buildContent: (targetUi, targetElements) => {
             buildOptionsContent(targetUi, targetElements);
         },

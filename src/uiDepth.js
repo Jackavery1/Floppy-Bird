@@ -1,7 +1,10 @@
 /** Profondeurs d'affichage Phaser (z-order) — monde puis UI. */
 export const DEPTH = Object.freeze({
     WORLD_BG: 0,
-    CLOUDS: 1,
+    HILLS_FAR: 1,
+    HILLS_NEAR: 2,
+    CELESTIAL: 3,
+    CLOUDS: 4,
     GROUND: 8,
     PIPES: 9,
     GHOST: 9,

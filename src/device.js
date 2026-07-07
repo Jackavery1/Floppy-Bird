@@ -43,7 +43,7 @@ export function trainingToggleLabel(enabled) {
     if (enabled) {
         return isCoarsePointer() ? '🟦 ENTR. ON' : '🟦 ENTRAÎNEMENT : ON (ralenti + fantôme)';
     }
-    return isCoarsePointer() ? '⬜ ENTR. OFF · tap' : '⬜ ENTRAÎNEMENT : OFF (T pour activer)';
+    return isCoarsePointer() ? '⬜ ENTR. OFF' : '⬜ ENTRAÎNEMENT : OFF';
 }
 
 export function hardcoreHint() {
@@ -61,23 +61,44 @@ export function hardcoreToggleLabel(enabled, unlocked = true) {
             ? '🟥 HARD ON · inv. / tuyau'
             : '🟥 HARDCORE : ON (invinc. / tuyau, 700→325 ms)';
     }
-    return isCoarsePointer() ? '⬜ HARD OFF · tap' : '⬜ HARDCORE : OFF (H pour activer)';
+    return isCoarsePointer() ? '⬜ HARD OFF' : '⬜ HARDCORE : OFF';
 }
 
 export function dailyChallengeHint() {
-    return isCoarsePointer() ? 'Tap DÉFI DU JOUR' : 'D : défi du jour';
+    return isCoarsePointer() ? 'Tap Défi du jour' : 'D : défi du jour';
 }
 
 export function menuControlsHint() {
     return optionsControlsHint();
 }
 
+/** Commandes structurées pour le panneau OPTIONS (onglet Contrôles). */
+export function optionsControlRows() {
+    if (isCoarsePointer()) {
+        return [
+            { key: 'TAP', action: 'sauter' },
+            { key: 'DÉFI', action: 'défi du jour' },
+            { key: '1·2·3', action: 'difficulté' },
+            { key: '···', action: 'scores · skins' },
+        ];
+    }
+    return [
+        { key: 'ESPACE', action: 'sauter' },
+        { key: 'D', action: 'défi du jour' },
+        { key: '1·2·3', action: 'difficulté' },
+        { key: 'T', action: 'entraînement' },
+        { key: 'H', action: 'hardcore' },
+        { key: 'ESC', action: 'pause / retour' },
+        { key: 'M', action: 'menu' },
+        { key: 'S·K', action: 'scores · skins' },
+    ];
+}
+
 /** Commandes complètes affichées dans le panneau OPTIONS. */
 export function optionsControlsHint() {
-    if (isCoarsePointer()) {
-        return `${jumpHint()} · ${dailyChallengeHint()}\n${difficultyHint()}\nScores · Skins`;
-    }
-    return `${jumpHint()} · ${dailyChallengeHint()} · ${difficultyHint()}\n${trainingHint()} · ${hardcoreHint()} · ESC : pause · M : menu\nS scores · K skins · ESC : retour`;
+    return optionsControlRows()
+        .map(({ key, action }) => `${key} : ${action}`)
+        .join(' · ');
 }
 
 /** @deprecated Utiliser {@link optionsControlsHint} */
@@ -104,7 +125,7 @@ export function skinsCycleHint() {
 export function skinsPanelHint() {
     return isCoarsePointer()
         ? 'Scores · hardcore · défi · entraînement · néon = collection'
-        : `${skinsCycleHint()} · débloqués via scores et modes`;
+        : 'Débloqués via scores, modes et collection';
 }
 
 export function optionsHint() {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeMenuLayout, UI_LAYOUT, MIN_TOUCH } from '../src/uiLayout.js';
+import { computeMenuLayout, UI_LAYOUT, MIN_TOUCH, TOUCH_TARGETS, panelCloseBtnY, PANEL_CLOSE_INSET, SPACING, GAME_OVER_PANEL, gameOverMenuBtnY, gameOverRestartBtnY } from '../src/uiLayout.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('uiLayout menu', () => {
@@ -13,18 +13,25 @@ describe('uiLayout menu', () => {
 
     it('les panneaux scores, options et skins tiennent dans le canvas', () => {
         const { optionsPanel, scoresPanel, skinsPanel } = UI_LAYOUT;
-        expect(optionsPanel.hint2).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(optionsPanel.panelTop + optionsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(optionsPanel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(GAME_CONFIG.height - 4);
+        const lastControlY =
+            optionsPanel.controlsFirst + 7 * optionsPanel.controlsGap;
+        expect(lastControlY).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(skinsPanel.skinsHint).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
-        expect(optionsPanel.training - optionsPanel.hintLine).toBeGreaterThanOrEqual(32);
+        expect(optionsPanel.hardcore - optionsPanel.training).toBeGreaterThanOrEqual(44);
         expect(skinsPanel.panelTop + skinsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
     });
 
     it('les zones tactiles du menu ne se chevauchent pas', () => {
         const { menu } = UI_LAYOUT;
         const diffBottom = menu.difficulty + MIN_TOUCH / 2;
-        const dailyTop = menu.dailyBtn - MIN_TOUCH / 2;
-        expect(dailyTop).toBeGreaterThanOrEqual(diffBottom);
+        const startTop = menu.start - MIN_TOUCH / 2;
+        expect(startTop).toBeGreaterThanOrEqual(diffBottom);
+        const dailyBottom = menu.dailyBtn + MIN_TOUCH / 2;
+        const menuRowTop = menu.menuRow - MIN_TOUCH / 2;
+        expect(menuRowTop).toBeGreaterThanOrEqual(dailyBottom + 8);
         const menuRowBottom = menu.menuRow + MIN_TOUCH / 2;
         const hintTop = menu.hint1 - 16;
         expect(hintTop).toBeGreaterThanOrEqual(menuRowBottom);
@@ -41,6 +48,45 @@ describe('uiLayout menu', () => {
         expect(skinsBtn + half).toBeLessThanOrEqual(GAME_CONFIG.width);
     });
 
+    it('les boutons RETOUR des panneaux sont centrés en bas', () => {
+        const { optionsPanel, scoresPanel, skinsPanel } = UI_LAYOUT;
+        expect(TOUCH_TARGETS.menuOptionsClose).toEqual({
+            x: GAME_CONFIG.centerX,
+            y: optionsPanel.closeBtn,
+        });
+        expect(TOUCH_TARGETS.menuScoresClose).toEqual({
+            x: GAME_CONFIG.centerX,
+            y: scoresPanel.closeBtn,
+        });
+        expect(TOUCH_TARGETS.menuSkinsClose).toEqual({
+            x: GAME_CONFIG.centerX,
+            y: skinsPanel.closeBtn,
+        });
+    });
+
+    it('les boutons RETOUR tiennent dans le fond du panneau', () => {
+        for (const panel of [
+            UI_LAYOUT.optionsPanel,
+            UI_LAYOUT.scoresPanel,
+            UI_LAYOUT.skinsPanel,
+        ]) {
+            const bottom = panel.panelTop + panel.panelH;
+            expect(panel.closeBtn).toBe(panelCloseBtnY(panel.panelTop, panel.panelH));
+            expect(panel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
+            expect(panel.closeBtn - MIN_TOUCH / 2).toBeGreaterThan(panel.panelTop + SPACING.sm);
+        }
+    });
+
+    it('les onglets options tiennent dans le panneau', () => {
+        const { optionsPanel } = UI_LAYOUT;
+        const left = GAME_CONFIG.centerX - optionsPanel.w / 2;
+        const right = left + optionsPanel.w;
+        const half = optionsPanel.tabBtnW / 2;
+        expect(optionsPanel.tabControlsX - half).toBeGreaterThanOrEqual(left + optionsPanel.tabInset);
+        expect(optionsPanel.tabModesX + half).toBeLessThanOrEqual(right - optionsPanel.tabInset);
+        expect(optionsPanel.tabSettingsX).toBe(GAME_CONFIG.centerX);
+    });
+
     it('les boutons RETOUR des panneaux sont hors de la bande tactile de menuRow', () => {
         const band = [
             UI_LAYOUT.menu.menuRow - MIN_TOUCH / 2,
@@ -55,5 +101,15 @@ describe('uiLayout menu', () => {
             const outside = y + MIN_TOUCH / 2 < band[0] || y - MIN_TOUCH / 2 > band[1];
             expect(outside).toBe(true);
         });
+    });
+
+    it('les boutons game over tiennent dans le panneau', () => {
+        const bottom = GAME_OVER_PANEL.y + GAME_OVER_PANEL.h;
+        const menuY = gameOverMenuBtnY();
+        const restartY = gameOverRestartBtnY();
+        expect(menuY + MIN_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
+        expect(restartY + MIN_TOUCH / 2).toBeLessThanOrEqual(menuY - MIN_TOUCH / 2 - SPACING.sm);
+        expect(TOUCH_TARGETS.gameOverMenu.y).toBe(menuY);
+        expect(TOUCH_TARGETS.gameOverRestart.y).toBe(restartY);
     });
 });

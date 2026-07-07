@@ -3,9 +3,16 @@ import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import { coyoteHintText, hardcoreInvincibilityHintText } from './device.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
+import {
+    acquireHudBannerSlot,
+    destroyHudBanner,
+    releaseHudBannerSlot,
+} from './uiHudBannerStack.js';
 
-function showTransientBanner(ui, key, text, y, style, fadeY = y - 18) {
+function showTransientBanner(ui, key, text, style, fadeOffset = 18) {
     if (ui[key]) return;
+    const slot = acquireHudBannerSlot(ui);
+    const y = slot.y;
     const banner = addCenteredText(
         ui.scene,
         GAME_CONFIG.centerX,
@@ -14,6 +21,7 @@ function showTransientBanner(ui, key, text, y, style, fadeY = y - 18) {
         style,
         DEPTH.RECORD_BANNER
     );
+    banner.__bannerRow = slot.row;
     ui[key] = banner;
     sceneTween(ui.scene, {
         targets: banner,
@@ -27,15 +35,17 @@ function showTransientBanner(ui, key, text, y, style, fadeY = y - 18) {
     sceneTween(ui.scene, {
         targets: banner,
         alpha: { from: 1, to: 0 },
-        y: fadeY,
+        y: y - fadeOffset,
         duration: 1200,
         delay: 500,
         ease: 'Power2',
         onComplete: () => {
+            releaseHudBannerSlot(ui, slot.row);
             banner.destroy();
             if (ui[key] === banner) ui[key] = null;
         },
     });
+    return banner;
 }
 
 export function showRecordBroken(ui) {
@@ -43,13 +53,12 @@ export function showRecordBroken(ui) {
         ui,
         '_recordBanner',
         'NOUVEAU RECORD !',
-        90,
         hudTextStyle({
             fontSize: '16px',
             fill: DESIGN_TOKENS.accent,
             fontStyle: 'bold',
         }),
-        72
+        18
     );
 }
 
@@ -58,7 +67,6 @@ export function showDifficultyEscalation(ui) {
         ui,
         '_escalationBanner',
         'GAPS RESSERRÉS',
-        104,
         hudTextStyle({
             fontSize: '13px',
             fill: DESIGN_TOKENS.bannerEscalation,
@@ -82,7 +90,6 @@ export function showScoreStreak(ui, score) {
         ui,
         '_streakBanner',
         label,
-        112,
         hudTextStyle({
             fontSize: '14px',
             fill: DESIGN_TOKENS.bannerStreak,
@@ -96,22 +103,22 @@ export function showDailyGoalBrief(ui, goal) {
         ui,
         '_dailyBriefBanner',
         `OBJECTIF : ${goal} pts`,
-        148,
         hudTextStyle({
             fontSize: '13px',
             fill: DESIGN_TOKENS.badgeDaily,
             fontStyle: 'bold',
-        }),
-        130
+        })
     );
 }
 
 export function showDailyGoalReached(ui) {
     if (ui._dailyGoalBanner) return;
+    const slot = acquireHudBannerSlot(ui);
+    const y = slot.y;
     const banner = addCenteredText(
         ui.scene,
         GAME_CONFIG.centerX,
-        118,
+        y,
         'OBJECTIF ATTEINT !',
         hudTextStyle({
             fontSize: '15px',
@@ -120,6 +127,7 @@ export function showDailyGoalReached(ui) {
         }),
         DEPTH.RECORD_BANNER
     );
+    banner.__bannerRow = slot.row;
     ui._dailyGoalBanner = banner;
     sceneTween(ui.scene, {
         targets: banner,
@@ -133,11 +141,12 @@ export function showDailyGoalReached(ui) {
     sceneTween(ui.scene, {
         targets: banner,
         alpha: { from: 1, to: 0 },
-        y: 100,
+        y: y - 18,
         duration: 1200,
         delay: 700,
         ease: 'Power2',
         onComplete: () => {
+            releaseHudBannerSlot(ui, slot.row);
             banner.destroy();
             if (ui._dailyGoalBanner === banner) ui._dailyGoalBanner = null;
         },
@@ -152,7 +161,6 @@ export function showSpeedBoostPreview(ui) {
         ui,
         '_speedBoostPreviewBanner',
         `VITESSE +${speedPct}% au score ${at}`,
-        96,
         hudTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.bannerStreak,
@@ -169,7 +177,6 @@ export function showDifficultyEscalationPreview(ui) {
         ui,
         '_escalationPreviewBanner',
         `GAPS ↓ + VITESSE +${speedPct}% au score ${at} (−${step}px)`,
-        104,
         hudTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.accentGap,
@@ -183,7 +190,6 @@ export function showCoyoteHint(ui) {
         ui,
         '_coyoteHintBanner',
         coyoteHintText(),
-        118,
         hudTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.bannerCoyote,
@@ -193,21 +199,16 @@ export function showCoyoteHint(ui) {
 }
 
 export function showHardcoreInvincibilityHint(ui, durationMs) {
-    if (ui._hardcoreInvBanner) {
-        ui._hardcoreInvBanner.destroy();
-        ui._hardcoreInvBanner = null;
-    }
+    destroyHudBanner(ui, '_hardcoreInvBanner');
     showTransientBanner(
         ui,
         '_hardcoreInvBanner',
         hardcoreInvincibilityHintText(durationMs),
-        132,
         hudTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.badgeHardcore,
             fontStyle: 'bold',
-        }),
-        116
+        })
     );
 }
 
