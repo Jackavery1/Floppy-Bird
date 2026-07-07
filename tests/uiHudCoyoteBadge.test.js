@@ -1,9 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createBaseScene } from './helpers/phaserMock.js';
-import {
-    updateCoyoteHudBadge,
-    destroyCoyoteHudBadge,
-} from '../src/uiHudCoyoteBadge.js';
+import { updateCoyoteHudBadge, destroyCoyoteHudBadge } from '../src/uiHudCoyoteBadge.js';
 
 vi.mock('../src/uiHudBadgeLayout.js', () => ({
     layoutHudSecondaryBadges: vi.fn(),

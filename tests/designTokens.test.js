@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle, menuTextStyle, panelChromeTextStyle } from '../src/designTokens.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    hudTextStyle,
+    menuTextStyle,
+    panelChromeTextStyle,
+} from '../src/designTokens.js';
 
 function hexToRgb(hex) {
     const n = Number.parseInt(hex.replace('#', ''), 16);
