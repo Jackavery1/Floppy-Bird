@@ -31,10 +31,9 @@ describe('dailyChallenge', () => {
         expect(hard).toBeGreaterThan(easy);
     });
 
-    it('formatDailyMenuButtonLabel inclut skin et objectif', () => {
+    it('formatDailyMenuButtonLabel affiche DÉFI DU JOUR', () => {
         const label = formatDailyMenuButtonLabel(DIFFICULTY.NORMAL, date);
-        expect(label).toMatch(/DÉFI #\d{4}/);
-        expect(label).toMatch(/pts/);
+        expect(label).toBe('DÉFI DU JOUR');
     });
 
     it('formatDailyMenuSubtitle décrit le pattern', () => {

@@ -5,6 +5,8 @@ import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
 
+const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accentScoreHardcore);
+const SCORES_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentGap);
 const SCORES_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke);
 
 const PANEL_CFG = {
@@ -15,7 +17,7 @@ const PANEL_CFG = {
     btnLabelKey: '_scoresBtnLabel',
     btnHitKey: '_scoresBtnHit',
     buttonLabelFn: scoresButtonLabel,
-    btnColor: MENU_BTN_COLOR,
+    btnColor: SCORES_BTN_COLOR,
     btnStroke: SCORES_BTN_STROKE,
     labelStroke: DESIGN_TOKENS.contourOptions,
 };

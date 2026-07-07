@@ -67,6 +67,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
         DAILY_SUBTITLE_STYLE,
         DEPTH.MENU_RAISED
     );
+    ui._dailyMenuSubtitle.setVisible(false);
     applyFittedLabel(
         ui.scene,
         ui._dailyMenuSubtitle,
