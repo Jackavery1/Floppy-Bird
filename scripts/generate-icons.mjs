@@ -7,7 +7,6 @@ import { BIRD_W, BIRD_H, getBirdPixelRects } from './birdIconPixels.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outDir = path.join(__dirname, '..', 'public', 'icons');
 
-// Gradient matching the new game background (dark night → sky blue)
 const SKY_BANDS = [
     { y: 0.0, h: 0.18, c: '#1a1a4e' },
     { y: 0.18, h: 0.18, c: '#1e3a6e' },
@@ -17,20 +16,38 @@ const SKY_BANDS = [
     { y: 0.92, h: 0.08, c: '#87CEEB' },
 ];
 
-// Soleil (coin supérieur droit de l'icône)
+/** @param {number} size @param {{ widthFill?: number, heightFill?: number, yCenter?: number }} [opts] */
+function birdLayout(size, opts = {}) {
+    const widthFill = opts.widthFill ?? 0.82;
+    const heightFill = opts.heightFill ?? 0.66;
+    const yCenter = opts.yCenter ?? 0.52;
+    const scale = Math.min((size * widthFill) / BIRD_W, (size * heightFill) / BIRD_H);
+    const birdPxW = BIRD_W * scale;
+    const birdPxH = BIRD_H * scale;
+    const bx = (size - birdPxW) / 2;
+    const by = yCenter * size - birdPxH / 2;
+    return { scale, bx, by };
+}
+
+function birdGroupSvg(layout) {
+    const rects = getBirdPixelRects()
+        .map((r) => `<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="${r.c}"/>`)
+        .join('\n    ');
+    return `<g transform="translate(${layout.bx},${layout.by}) scale(${layout.scale})" shape-rendering="crispEdges">
+    ${rects}
+  </g>`;
+}
+
 function sunSvg(size) {
     const r = Math.max(4, Math.round(size * 0.11));
     const cx = Math.round(size * 0.78);
     const cy = Math.round(size * 0.16);
     return [
-        // Halo
         `<circle cx="${cx}" cy="${cy}" r="${Math.round(r * 1.45)}" fill="#FFD700" opacity="0.18"/>`,
-        // Disque
         `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#FFD700"/>`,
     ].join('\n  ');
 }
 
-// Quelques étoiles dans la zone sombre
 function starsSvg(size) {
     const positions = [
         [0.1, 0.07],
@@ -49,75 +66,71 @@ function starsSvg(size) {
         .join('\n  ');
 }
 
-function iconSvg(size) {
-    // Scale de l'oiseau : occupe ~70% de la largeur et ~55% de la hauteur
-    const scale = Math.max(6, Math.floor(Math.min((size * 0.72) / BIRD_W, (size * 0.55) / BIRD_H)));
-    const birdPxW = BIRD_W * scale;
-    const birdPxH = BIRD_H * scale;
-    const bx = Math.round((size - birdPxW) / 2);
-    // Légèrement en dessous du centre pour laisser de la place au ciel
-    const by = Math.round(size * 0.52 - birdPxH / 2);
-
-    const skyRects = SKY_BANDS.map((b) => {
+function skyRectsSvg(size) {
+    return SKY_BANDS.map((b) => {
         const y = Math.round(b.y * size);
         const h = Math.max(1, Math.round(b.h * size));
         return `<rect x="0" y="${y}" width="${size}" height="${h}" fill="${b.c}"/>`;
     }).join('\n  ');
+}
 
-    const birdRects = getBirdPixelRects()
-        .map(
-            (r) =>
-                `<rect x="${bx + r.x * scale}" y="${by + r.y * scale}" width="${r.w * scale}" height="${r.h * scale}" fill="${r.c}"/>`
-        )
-        .join('\n  ');
-
+/** Icône d’app : ciel plein cadre, oiseau large (écran d’accueil / apple-touch). */
+function appIconSvg(size) {
+    const layout = birdLayout(size);
     return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-  ${skyRects}
+  ${skyRectsSvg(size)}
   ${starsSvg(size)}
   ${sunSvg(size)}
-  <g shape-rendering="crispEdges">
-  ${birdRects}
-  </g>
+  ${birdGroupSvg(layout)}
 </svg>`;
 }
 
-async function writePng(name, size) {
-    const buf = Buffer.from(iconSvg(size));
-    await sharp(buf, { density: 144 })
-        .resize(size, size, { kernel: sharp.kernel.nearest })
-        .png({ compressionLevel: 9 })
-        .toFile(path.join(outDir, name));
+/** Favicon navigateur : fond uni, oiseau seul, remplit ~92 % du carré. */
+function faviconSvg(size) {
+    const inset = size * 0.04;
+    const avail = size - inset * 2;
+    const scale = Math.min(avail / BIRD_W, avail / BIRD_H);
+    const birdPxW = BIRD_W * scale;
+    const birdPxH = BIRD_H * scale;
+    const bx = (size - birdPxW) / 2;
+    const by = (size - birdPxH) / 2;
+    const layout = { scale, bx, by };
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+  <rect width="${size}" height="${size}" fill="#1a1a4e"/>
+  ${birdGroupSvg(layout)}
+</svg>`;
 }
 
-/** Icône maskable : contenu à ~64 % avec zone de sécurité Android. */
-async function writeMaskablePng(name, size) {
-    const inner = Math.round(size * 0.64);
-    const pad = Math.floor((size - inner) / 2);
-    const buf = Buffer.from(iconSvg(inner));
-    await sharp(buf, { density: 144 })
-        .resize(inner, inner, { kernel: sharp.kernel.nearest })
-        .extend({
-            top: pad,
-            bottom: size - inner - pad,
-            left: pad,
-            right: size - inner - pad,
-            background: '#1a1a2e',
-        })
+async function writePngFromSvg(svg, name, size) {
+    const buf = Buffer.from(svg);
+    await sharp(buf, { density: 192 })
+        .resize(size, size, { kernel: sharp.kernel.nearest })
         .png({ compressionLevel: 9 })
         .toFile(path.join(outDir, name));
 }
 
 fs.mkdirSync(outDir, { recursive: true });
 
-await writePng('icon-512.png', 512);
-await writePng('icon-192.png', 192);
-await writePng('icon-180.png', 180);
-await writePng('favicon-32.png', 32);
-await writeMaskablePng('icon-maskable-192.png', 192);
-await writeMaskablePng('icon-maskable-512.png', 512);
+await writePngFromSvg(appIconSvg(512), 'icon-512.png', 512);
+await writePngFromSvg(appIconSvg(192), 'icon-192.png', 192);
+await writePngFromSvg(appIconSvg(180), 'icon-180.png', 180);
+await writePngFromSvg(appIconSvg(512), 'icon-maskable-512.png', 512);
+await writePngFromSvg(appIconSvg(192), 'icon-maskable-192.png', 192);
+await writePngFromSvg(faviconSvg(48), 'favicon-48.png', 48);
+await writePngFromSvg(faviconSvg(32), 'favicon-32.png', 32);
+await writePngFromSvg(faviconSvg(16), 'favicon-16.png', 16);
+
+const faviconSvgFile = faviconSvg(32).replace(
+    'width="32" height="32"',
+    'width="32" height="32" role="img" aria-label="Floppy Bird"'
+);
+fs.writeFileSync(path.join(outDir, 'favicon.svg'), faviconSvgFile, 'utf8');
 
 for (const f of [
+    'favicon.svg',
+    'favicon-16.png',
     'favicon-32.png',
+    'favicon-48.png',
     'icon-180.png',
     'icon-192.png',
     'icon-512.png',

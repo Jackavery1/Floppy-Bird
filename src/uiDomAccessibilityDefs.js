@@ -14,8 +14,7 @@ export const MENU_CONTROL_KEYS = Object.freeze([
 
 export const OPTIONS_TAB_CONTROL_KEYS = Object.freeze([
     'menuOptionsTabControls',
-    'menuOptionsTabSettings',
-    'menuOptionsTabModes',
+    'menuOptionsTabPreferences',
 ]);
 
 export const OPTIONS_CONTROL_KEYS = Object.freeze([
@@ -158,19 +157,11 @@ export const CONTROL_DEFS = Object.freeze({
         width: UI_LAYOUT.optionsPanel.tabBtnW,
         height: MIN_TOUCH,
     },
-    menuOptionsTabSettings: {
-        id: 'a11y-options-tab-settings',
+    menuOptionsTabPreferences: {
+        id: 'a11y-options-tab-preferences',
         label: 'Onglet réglages',
-        x: TOUCH_TARGETS.menuOptionsTabSettings.x,
-        y: TOUCH_TARGETS.menuOptionsTabSettings.y,
-        width: UI_LAYOUT.optionsPanel.tabBtnW,
-        height: MIN_TOUCH,
-    },
-    menuOptionsTabModes: {
-        id: 'a11y-options-tab-modes',
-        label: 'Onglet modes',
-        x: TOUCH_TARGETS.menuOptionsTabModes.x,
-        y: TOUCH_TARGETS.menuOptionsTabModes.y,
+        x: TOUCH_TARGETS.menuOptionsTabPreferences.x,
+        y: TOUCH_TARGETS.menuOptionsTabPreferences.y,
         width: UI_LAYOUT.optionsPanel.tabBtnW,
         height: MIN_TOUCH,
     },

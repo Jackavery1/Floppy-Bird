@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { setupSceneInput } from '../src/sceneInput.js';
 import { DIFFICULTY } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
+import { UI_LAYOUT } from '../src/uiLayout.js';
 
 vi.mock('../src/audio.js', () => ({ resumeAudio: vi.fn() }));
 
@@ -96,6 +97,13 @@ describe('sceneInput', () => {
         scene.ui = { _optionsOpen: true, _scoresOpen: false, _skinsOpen: false };
         setupSceneInput(scene);
         scene._pointerHandlers[0]({});
+        expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
+    });
+
+    it('pointerdown ignore la rangée secondaire du menu si le hit-test rate', () => {
+        const scene = makeScene(GAME_STATE.MENU);
+        setupSceneInput(scene);
+        scene._pointerHandlers[0]({ y: UI_LAYOUT.menu.menuRow });
         expect(scene.handlePrimaryAction).not.toHaveBeenCalled();
     });
 

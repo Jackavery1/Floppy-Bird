@@ -1,5 +1,5 @@
 import { sceneTween } from './motion.js';
-import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
@@ -49,10 +49,9 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         cx,
         restartBtnY,
         restartLabel,
-        menuTextStyle({
+        panelChromeTextStyle({
             fontSize: '13px',
             fill: DESIGN_TOKENS.contourMenu,
-            fontStyle: 'bold',
         }),
         DEPTH.MENU_BTN_BG
     );
@@ -99,10 +98,9 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         cx,
         menuBtnY,
         'MENU',
-        menuTextStyle({
+        panelChromeTextStyle({
             fontSize: '13px',
             fill: DESIGN_TOKENS.texteMenu,
-            fontStyle: 'bold',
         }),
         DEPTH.MENU_BTN_BG
     );

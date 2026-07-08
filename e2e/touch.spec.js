@@ -181,15 +181,14 @@ test.describe('touch mobile portrait', () => {
         const {
             menuOptions,
             menuOptionsTabControls,
-            menuOptionsTabSettings,
-            menuOptionsTabModes,
+            menuOptionsTabPreferences,
             menuOptionsClose,
         } = TOUCH_TARGETS;
 
         await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
         await expect
             .poll(() => getOptionsPanel(page))
-            .toMatchObject({ open: true, tab: 'modes', modes: true });
+            .toMatchObject({ open: true, tab: 'preferences', preferences: true });
 
         await pointerGameCoord(page, menuOptionsTabControls.x, menuOptionsTabControls.y, usesTouch);
         await expect
@@ -198,28 +197,21 @@ test.describe('touch mobile portrait', () => {
                 open: true,
                 tab: 'controls',
                 controls: true,
-                settings: false,
-                modes: false,
+                preferences: false,
             });
 
-        await pointerGameCoord(page, menuOptionsTabSettings.x, menuOptionsTabSettings.y, usesTouch);
+        await pointerGameCoord(
+            page,
+            menuOptionsTabPreferences.x,
+            menuOptionsTabPreferences.y,
+            usesTouch
+        );
         await expect
             .poll(() => getOptionsPanel(page))
             .toMatchObject({
-                tab: 'settings',
+                tab: 'preferences',
                 controls: false,
-                settings: true,
-                modes: false,
-            });
-
-        await pointerGameCoord(page, menuOptionsTabModes.x, menuOptionsTabModes.y, usesTouch);
-        await expect
-            .poll(() => getOptionsPanel(page))
-            .toMatchObject({
-                tab: 'modes',
-                controls: false,
-                settings: false,
-                modes: true,
+                preferences: true,
             });
 
         await pointerGameCoord(page, menuOptionsClose.x, menuOptionsClose.y, usesTouch);
@@ -228,8 +220,7 @@ test.describe('touch mobile portrait', () => {
             .toMatchObject({
                 open: false,
                 controls: false,
-                settings: false,
-                modes: false,
+                preferences: false,
             });
     });
 

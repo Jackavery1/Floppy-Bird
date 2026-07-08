@@ -1,4 +1,4 @@
-import { DESIGN_TOKENS, menuHomeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { buildStyledPanelBackdrop, buildPanelPillButton } from './uiMenuPanelChrome.js';
 import { sceneTween } from './motion.js';
@@ -84,9 +84,8 @@ export function buildMenuToggleButton(scene, elements, cfg) {
 
     const labelStyle =
         cfg.labelStyle ??
-        menuHomeTextStyle({
+        panelChromeTextStyle({
             fill: DESIGN_TOKENS.texteMenu,
-            fontStyle: 'bold',
             stroke: cfg.labelStroke,
         });
     const label = addCenteredText(scene, cfg.cx, cfg.cy, cfg.labelText, labelStyle, cfg.depth + 1);
@@ -192,7 +191,7 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
         stroke: cfg.btnStroke,
         labelText: cfg.buttonLabelFn(false),
         labelStroke: cfg.labelStroke,
-        labelStyle: menuHomeTextStyle(),
+        labelStyle: panelChromeTextStyle({ fill: DESIGN_TOKENS.texteMenu, stroke: cfg.labelStroke }),
         onToggle: () => controller.toggle(),
     });
     ui[cfg.btnBgKey] = btn.bg;

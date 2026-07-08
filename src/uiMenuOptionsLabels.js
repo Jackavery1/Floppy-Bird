@@ -41,7 +41,7 @@ export function setOptionsContentVisible(ui, visible) {
         return;
     }
     setMenuPanelVisible(ui._optionsChromeElements, true, ui.scene);
-    setOptionsTab(ui, ui._optionsActiveTab ?? 'modes');
+    setOptionsTab(ui, ui._optionsActiveTab ?? 'preferences');
 }
 
 export function applyTrainingLabel(ui, trainingMode) {

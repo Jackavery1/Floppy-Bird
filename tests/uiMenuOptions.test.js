@@ -37,16 +37,17 @@ describe('uiMenuOptions', () => {
     it('crée un bouton OPTIONS et un panneau à onglets', () => {
         expect(ui._optionsBtnLabel).toBeTruthy();
         expect(ui._optionsBtnBg).toBeTruthy();
-        expect(ui._optionsTabButtons).toHaveLength(3);
+        expect(ui._optionsTabButtons).toHaveLength(2);
         expect(ui._trainingLabel).toBeTruthy();
         expect(ui._optionsOpen).toBe(false);
     });
 
-    it('toggleMenuOptions ouvre sur l’onglet modes par défaut', () => {
+    it('toggleMenuOptions ouvre sur l’onglet réglages par défaut', () => {
         toggleMenuOptions(ui);
         expect(ui._optionsOpen).toBe(true);
-        expect(ui._optionsActiveTab).toBe('modes');
+        expect(ui._optionsActiveTab).toBe('preferences');
         expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(true);
+        expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(true);
         toggleMenuOptions(ui);
         expect(ui._optionsOpen).toBe(false);
     });

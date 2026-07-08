@@ -82,6 +82,7 @@ export default defineConfig(({ mode }) => {
                 registerType: 'autoUpdate',
                 includeAssets: [
                     'icons/*.png',
+                    'icons/*.svg',
                     'vendor/*.js',
                     'manifest.webmanifest',
                     'offline.html',

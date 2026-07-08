@@ -206,12 +206,12 @@ test.describe('clavier webkit mobile portrait', () => {
             .toBe('playing');
     });
 
-    test('Tab ouvre options et onglet modes', async ({ page }, testInfo) => {
+    test('Tab ouvre options et onglet réglages', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'webkit-mobile-portrait', 'webkit portrait uniquement');
         await waitForGameReady(page);
         await page.locator('#a11y-options').focus();
         await page.keyboard.press('Enter');
-        await expect(page.locator('#a11y-options-tab-modes')).toBeVisible();
+        await expect(page.locator('#a11y-options-tab-preferences')).toBeVisible();
         await page.locator('#a11y-options-tab-controls').focus();
         await page.keyboard.press('Enter');
         await expect(page.locator('#a11y-training')).toBeVisible();

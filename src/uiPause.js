@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
 import { bindAccessibilityAction, syncAccessibilityLayer } from './uiDomAccessibility.js';
 import {
     addCenteredText,
@@ -53,7 +53,7 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         resumeBtnY,
         'REPRENDRE',
-        menuTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu, fontStyle: 'bold' }),
+        panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
         DEPTH.PAUSE_BTN_LABEL
     );
     elements.push(resumeText);
@@ -97,7 +97,7 @@ export function showPause(ui, { onResume, onMenu }) {
         GAME_CONFIG.centerX,
         menuBtnY,
         'MENU',
-        menuTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu, fontStyle: 'bold' }),
+        panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
         DEPTH.PAUSE_BTN_LABEL
     );
     elements.push(menuText);

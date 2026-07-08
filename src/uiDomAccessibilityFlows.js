@@ -120,8 +120,9 @@ export function setOptionsPanelAccessibility(scene, open) {
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function bindOptionsAccessibility(scene) {
     bindAccessibilityAction('menuOptionsTabControls', () => setOptionsTab(scene.ui, 'controls'));
-    bindAccessibilityAction('menuOptionsTabSettings', () => setOptionsTab(scene.ui, 'settings'));
-    bindAccessibilityAction('menuOptionsTabModes', () => setOptionsTab(scene.ui, 'modes'));
+    bindAccessibilityAction('menuOptionsTabPreferences', () =>
+        setOptionsTab(scene.ui, 'preferences')
+    );
     bindAccessibilityAction('menuTraining', () => scene.toggleTraining());
     bindAccessibilityAction('menuHardcore', () => scene.toggleHardcore());
     bindAccessibilityAction('menuOptionsClose', () => scene.ui.toggleMenuOptionsPanel());

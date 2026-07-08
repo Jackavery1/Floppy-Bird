@@ -74,12 +74,15 @@ export function installTestSeam(game) {
             const ui = getScene()?.ui;
             if (!ui) return null;
             const sectionVisible = (section) => Boolean(section?.[0]?.visible);
+            const settings = sectionVisible(ui._optionsSettingsElements);
+            const modes = sectionVisible(ui._optionsModesElements);
             return {
                 open: Boolean(ui._optionsOpen),
                 tab: ui._optionsActiveTab ?? null,
                 controls: sectionVisible(ui._optionsControlsElements),
-                settings: sectionVisible(ui._optionsSettingsElements),
-                modes: sectionVisible(ui._optionsModesElements),
+                preferences: settings && modes,
+                settings,
+                modes,
             };
         },
         getGameplayEquity: () => {

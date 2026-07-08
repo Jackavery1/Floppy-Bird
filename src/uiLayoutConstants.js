@@ -55,16 +55,14 @@ const OPTIONS_TAB_GAP = 6;
 function withOptionsTabs(panel) {
     const panelLeft = GAME_CONFIG.centerX - panel.w / 2;
     const innerW = panel.w - OPTIONS_TAB_INSET * 2;
-    const tabBtnW = Math.floor((innerW - OPTIONS_TAB_GAP * 2) / 3);
+    const tabBtnW = Math.floor((innerW - OPTIONS_TAB_GAP) / 2);
     const tabControlsX = panelLeft + OPTIONS_TAB_INSET + tabBtnW / 2;
-    const tabSettingsX = tabControlsX + tabBtnW + OPTIONS_TAB_GAP;
-    const tabModesX = tabSettingsX + tabBtnW + OPTIONS_TAB_GAP;
+    const tabPreferencesX = tabControlsX + tabBtnW + OPTIONS_TAB_GAP;
     return {
         ...panel,
         tabBtnW,
         tabControlsX,
-        tabSettingsX,
-        tabModesX,
+        tabPreferencesX,
         tabInset: OPTIONS_TAB_INSET,
     };
 }
@@ -79,44 +77,44 @@ export const UI_LAYOUT = {
         start: 278,
         dailyBtn: 318,
         menuRow: 378,
-        scoresBtn: 56,
+        scoresBtn: 52,
         optionsBtn: 144,
-        skinsBtn: 232,
-        menuBtnW: MIN_TOUCH * 2,
+        skinsBtn: 236,
+        menuBtnW: 80,
         hint1: 424,
     },
     optionsPanel: withPanelCloseBtn(
         withOptionsTabs({
-            panelTop: 100,
-            panelH: 380,
+            panelTop: 96,
+            panelH: 388,
             w: 260,
             tabRow: 120,
-            controlsTitle: 162,
-            controlsFirst: 196,
-            controlsGap: 22,
-            training: 212,
-            hardcore: 264,
-            settingsMute: 240,
+            controlsTitle: 164,
+            controlsFirst: 200,
+            controlsGap: 24,
+            settingsMute: 188,
+            training: 232,
+            hardcore: 276,
         })
     ),
     scoresPanel: withPanelCloseBtn({
-        panelTop: 108,
-        panelH: 356,
+        panelTop: 104,
+        panelH: 364,
         w: 260,
-        scoresTitle: 140,
-        scoresFirst: 176,
-        scoresGap: 30,
-        scoresHardcore: 272,
-        scoresAchievements: 306,
+        scoresTitle: 142,
+        scoresFirst: 180,
+        scoresGap: 34,
+        scoresHardcore: 292,
+        scoresAchievements: 330,
     }),
     skinsPanel: withPanelCloseBtn({
-        panelTop: 132,
-        panelH: 372,
+        panelTop: 128,
+        panelH: 376,
         w: 252,
-        skinsTitle: 156,
-        skinsSubtitle: 172,
-        skinsRow1: 208,
-        skinsHint: 408,
+        skinsTitle: 158,
+        skinsSubtitle: 178,
+        skinsRow1: 220,
+        skinsHint: 420,
     }),
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {
@@ -143,11 +141,10 @@ export const TOUCH_TARGETS = Object.freeze({
         x: UI_LAYOUT.optionsPanel.tabControlsX,
         y: UI_LAYOUT.optionsPanel.tabRow,
     },
-    menuOptionsTabSettings: {
-        x: UI_LAYOUT.optionsPanel.tabSettingsX,
+    menuOptionsTabPreferences: {
+        x: UI_LAYOUT.optionsPanel.tabPreferencesX,
         y: UI_LAYOUT.optionsPanel.tabRow,
     },
-    menuOptionsTabModes: { x: UI_LAYOUT.optionsPanel.tabModesX, y: UI_LAYOUT.optionsPanel.tabRow },
     menuOptionsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.closeBtn },
     menuScoresClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoresPanel.closeBtn },
     menuSkinsClose: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.skinsPanel.closeBtn },

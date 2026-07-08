@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyMenuButtonLabel } from './dailyChallenge.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
@@ -13,8 +13,10 @@ import {
 const DAILY_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonDaily);
 const DAILY_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonDailyHover);
 
-const DAILY_BTN_STYLE = menuHomeTextStyle({
+const DAILY_BTN_STYLE = panelChromeTextStyle({
     fontSize: '12px',
+    fill: DESIGN_TOKENS.texteMenu,
+    fontStyle: 'bold',
     stroke: DESIGN_TOKENS.badgeDailyContour,
 });
 

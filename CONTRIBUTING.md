@@ -95,7 +95,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` du workflow CI pousse `dist/` sur **`gh-pages`** à chaque push sur `main`.
+Le job `deploy` du workflow CI pousse `dist/` sur **`gh-pages`** à chaque push sur `main` (après `check` + `lighthouse`). Le job `e2e` tourne en parallèle mais ne bloque pas le déploiement.
 
 **Pages** (Settings → Pages) : source **GitHub Actions** (recommandé) ou branche **`gh-pages`** / **`/ (root)`** si tu utilises peaceiris.
 

@@ -1,9 +1,14 @@
 import { GAME_CONFIG } from '../config.js';
+import { getBackgroundPeriod } from './backgroundTextures.js';
 
 export const GROUND_BLADE_H = 10;
 const GRASS_H = 20;
 const DIRT_H = 6;
 export const GROUND_TILE_H = GROUND_BLADE_H + GRASS_H + DIRT_H;
+
+function hillUnderlayColor() {
+    return getBackgroundPeriod() === 'day' ? 0x4e7c31 : 0x1a2e26;
+}
 
 export function createGroundTexture(scene) {
     const W = GAME_CONFIG.width;
@@ -16,6 +21,9 @@ export function createGroundTexture(scene) {
     const randInt = (lo, hi) => Math.floor(rand() * (hi - lo + 1)) + lo;
 
     const g = scene.make.graphics({ x: 0, y: 0, add: false });
+
+    g.fillStyle(hillUnderlayColor(), 1);
+    g.fillRect(0, 0, W, GROUND_BLADE_H);
 
     g.fillStyle(0x74bf2e, 1);
     g.fillRect(0, GROUND_BLADE_H, W, GRASS_H);

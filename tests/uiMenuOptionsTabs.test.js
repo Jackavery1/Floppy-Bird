@@ -27,9 +27,9 @@ describe('uiMenuOptionsTabs', () => {
         buildOptionsTabs(ui, elements, pushChrome);
     });
 
-    it('crée trois onglets en haut du panneau', () => {
-        expect(ui._optionsTabButtons).toHaveLength(3);
-        expect(ui._optionsActiveTab).toBe('modes');
+    it('crée deux onglets en haut du panneau', () => {
+        expect(ui._optionsTabButtons).toHaveLength(2);
+        expect(ui._optionsActiveTab).toBe('preferences');
     });
 
     it('setOptionsTab affiche uniquement la section active quand le panneau est ouvert', () => {
@@ -40,6 +40,14 @@ describe('uiMenuOptionsTabs', () => {
         expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(false);
     });
 
+    it('setOptionsTab affiche réglages et modes sur l’onglet préférences', () => {
+        ui._optionsOpen = true;
+        setOptionsTab(ui, 'preferences');
+        expect(ui._optionsControlsElements[0].setVisible).toHaveBeenCalledWith(false);
+        expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(true);
+        expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(true);
+    });
+
     it('setOptionsTab masque les sections quand le panneau est fermé', () => {
         ui._optionsOpen = false;
         setOptionsTab(ui, 'controls');
@@ -47,18 +55,11 @@ describe('uiMenuOptionsTabs', () => {
         expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(false);
     });
 
-    it('les onglets sont alignés gauche / centre / droite', () => {
+    it('les onglets sont alignés gauche / droite', () => {
         const panel = UI_LAYOUT.optionsPanel;
         const xs = ui._optionsTabButtons.map(
-            ({ id }) =>
-                panel[
-                    id === 'controls'
-                        ? 'tabControlsX'
-                        : id === 'settings'
-                          ? 'tabSettingsX'
-                          : 'tabModesX'
-                ]
+            ({ id }) => panel[id === 'controls' ? 'tabControlsX' : 'tabPreferencesX']
         );
-        expect(xs).toEqual([panel.tabControlsX, panel.tabSettingsX, panel.tabModesX]);
+        expect(xs).toEqual([panel.tabControlsX, panel.tabPreferencesX]);
     });
 });

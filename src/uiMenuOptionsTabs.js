@@ -1,4 +1,4 @@
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
 import {
     DEPTH,
     MENU_BTN_COLOR,
@@ -11,7 +11,7 @@ import {
 import { setOptionsSectionVisible } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';
 
-/** @typedef {'controls' | 'settings' | 'modes'} OptionsTabId */
+/** @typedef {'controls' | 'preferences'} OptionsTabId */
 
 const TAB_INACTIVE = hexVersPhaser(DESIGN_TOKENS.boutonPause);
 const TAB_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke);
@@ -19,12 +19,13 @@ const TAB_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonMenuHover);
 
 const TABS = Object.freeze([
     { id: 'controls', label: 'CONTR.', cxKey: 'tabControlsX' },
-    { id: 'settings', label: 'RÉGL.', cxKey: 'tabSettingsX' },
-    { id: 'modes', label: 'MODES', cxKey: 'tabModesX' },
+    { id: 'preferences', label: 'RÉGL.', cxKey: 'tabPreferencesX' },
 ]);
 
-const TAB_LABEL_STYLE = menuHomeTextStyle({
+const TAB_LABEL_STYLE = panelChromeTextStyle({
     fontSize: '12px',
+    fill: DESIGN_TOKENS.texteMenu,
+    fontStyle: 'bold',
     stroke: DESIGN_TOKENS.contourOptions,
 });
 
@@ -32,14 +33,10 @@ const TAB_LABEL_STYLE = menuHomeTextStyle({
 export function setOptionsTab(ui, tab) {
     ui._optionsActiveTab = tab;
     const panelOpen = ui._optionsOpen === true;
-    const sections = {
-        controls: ui._optionsControlsElements,
-        settings: ui._optionsSettingsElements,
-        modes: ui._optionsModesElements,
-    };
-    for (const [id, els] of Object.entries(sections)) {
-        setOptionsSectionVisible(els, panelOpen && id === tab);
-    }
+    setOptionsSectionVisible(ui._optionsControlsElements, panelOpen && tab === 'controls');
+    const preferencesVisible = panelOpen && tab === 'preferences';
+    setOptionsSectionVisible(ui._optionsSettingsElements, preferencesVisible);
+    setOptionsSectionVisible(ui._optionsModesElements, preferencesVisible);
     ui._optionsTabButtons?.forEach(({ id, paint, label }) => {
         const active = id === tab;
         paint(active ? MENU_BTN_COLOR : TAB_INACTIVE, active ? 0.95 : 0.78);
@@ -56,7 +53,7 @@ export function buildOptionsTabs(ui, elements, pushChrome) {
     const scene = ui.scene;
     const panel = UI_LAYOUT.optionsPanel;
     ui._optionsTabButtons = [];
-    ui._optionsActiveTab = 'modes';
+    ui._optionsActiveTab = 'preferences';
 
     const pushTab = (el) => pushChrome(ui, elements, el);
 
@@ -96,5 +93,5 @@ export function buildOptionsTabs(ui, elements, pushChrome) {
         ui._optionsTabButtons.push({ id, bg, label: text, hit, paint });
     });
 
-    setOptionsTab(ui, 'modes');
+    setOptionsTab(ui, 'preferences');
 }

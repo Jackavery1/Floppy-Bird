@@ -54,10 +54,12 @@ describe('uiLayout menu', () => {
         expect(optionsBtn).toBe(GAME_CONFIG.centerX);
         expect(scoresBtn).toBeLessThan(optionsBtn);
         expect(skinsBtn).toBeGreaterThan(optionsBtn);
-        expect(menuBtnW).toBe(MIN_TOUCH * 2);
+        expect(menuBtnW).toBeGreaterThanOrEqual(MIN_TOUCH);
         const half = menuBtnW / 2;
         expect(scoresBtn - half).toBeGreaterThanOrEqual(0);
         expect(skinsBtn + half).toBeLessThanOrEqual(GAME_CONFIG.width);
+        expect(optionsBtn - scoresBtn).toBeGreaterThan(menuBtnW);
+        expect(skinsBtn - optionsBtn).toBeGreaterThan(menuBtnW);
     });
 
     it('les boutons RETOUR des panneaux sont centrés en bas', () => {
@@ -93,8 +95,8 @@ describe('uiLayout menu', () => {
         expect(optionsPanel.tabControlsX - half).toBeGreaterThanOrEqual(
             left + optionsPanel.tabInset
         );
-        expect(optionsPanel.tabModesX + half).toBeLessThanOrEqual(right - optionsPanel.tabInset);
-        expect(optionsPanel.tabSettingsX).toBe(GAME_CONFIG.centerX);
+        expect(optionsPanel.tabPreferencesX + half).toBeLessThanOrEqual(right - optionsPanel.tabInset);
+        expect(optionsPanel.tabPreferencesX).toBeGreaterThan(optionsPanel.tabControlsX);
     });
 
     it('les boutons RETOUR des panneaux sont hors de la bande tactile de menuRow', () => {

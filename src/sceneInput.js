@@ -3,8 +3,16 @@ import { GAME_STATE, canReturnToMenu, canTogglePause, isMenuPanelOpen } from './
 import { resumeAudio } from './audio.js';
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
+import { MIN_TOUCH, UI_LAYOUT } from './uiLayout.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @param {{ y?: number, worldY?: number }} pointer */
+function isMenuSecondaryRowPointer(pointer) {
+    const y = pointer?.worldY ?? pointer?.y;
+    if (typeof y !== 'number') return false;
+    return y >= UI_LAYOUT.menu.menuRow - MIN_TOUCH;
+}
 
 /** @param {SceneContext} scene */
 export function setupSceneInput(scene) {
@@ -18,6 +26,7 @@ export function setupSceneInput(scene) {
         const hits = scene.input.hitTestPointer(pointer);
         if (hits.some((obj) => obj.input?.enabled)) return;
         if (scene.state === GAME_STATE.MENU && isMenuPanelOpen(scene.ui)) return;
+        if (scene.state === GAME_STATE.MENU && isMenuSecondaryRowPointer(pointer)) return;
         scene.handlePrimaryAction();
     });
 

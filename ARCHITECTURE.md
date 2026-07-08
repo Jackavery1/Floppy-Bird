@@ -190,20 +190,30 @@ Menu principal (input restart/menu)
 - **Storage** : Persistence, data integrity
 - **Accessibility** : ARIA, keyboard
 
-### E2E Tests (9 specs, 6 projets viewport)
+### E2E Tests (9 specs, ~76 cas, 6 projets viewport)
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
 - **Responsive** : All viewports
 - **PWA** : Offline mode, precache
 
+### CI / déploiement (`.github/workflows/ci.yml`)
+
+```
+check ──┬──► e2e (parallèle, timeout 120 min, non bloquant deploy)
+        └──► lighthouse
+check + lighthouse ──► deploy → gh-pages
+```
+
+Le job `deploy` ne attend pas `e2e` (matrice 6 viewports en série ≈ 1–3 h). Les e2e restent obligatoires en CI mais n’empêchent plus la mise en ligne.
+
 ## Accessibility Implementation
 
-### WCAG 2.1 Level AA
-- **Keyboard Navigation** : Full keyboard control
-- **Screen Readers** : ARIA labels
-- **Color Contrast** : AAA (100%)
-- **Motion** : `prefers-reduced-motion` respected
-- **Focus** : Visible outline 2px
+### WCAG 2.1 Level AA (cible)
+- **Keyboard Navigation** : 25 boutons DOM overlay + canvas
+- **Screen Readers** : `#ui-announcer`, labels ARIA
+- **Color Contrast** : tokens testés AA sur fond nuit ; HUD jour compensé par contour noir (`designTokens.test.js`)
+- **Motion** : `prefers-reduced-motion` respecté
+- **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`)
 
 ### Implementation Files
 - `uiDomAccessibility*.js` : A11y layer
@@ -261,7 +271,7 @@ git push                # CI/CD GitHub Actions
 - **ESLint** : 0 errors
 - **Prettier** : 100% formatted
 - **Tests** : 551/551 passing
-- **Coverage** : seuils CI 75/70/70/75 % (lines/branches/functions/statements)
+- **Coverage** : ~95 % lignes / ~85 % branches (seuils CI 75/70 %)
 
 ### Exclusions coverage (justifiées)
 

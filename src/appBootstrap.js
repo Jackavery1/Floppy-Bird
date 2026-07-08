@@ -17,6 +17,23 @@ function loadTestSeam(game) {
     import('./testSeam.js').then(({ installTestSeam }) => installTestSeam(game));
 }
 
+function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function ensureTitleFontLoaded(doc = document) {
+    const fonts = doc?.fonts;
+    if (!fonts?.load) return;
+    await Promise.race([
+        Promise.all([
+            fonts.load('12px "Press Start 2P"'),
+            fonts.load('16px "Press Start 2P"'),
+            fonts.ready,
+        ]),
+        wait(1500),
+    ]);
+}
+
 export function resizeGameCanvas(game) {
     const canvas = game?.canvas;
     if (!canvas) return null;

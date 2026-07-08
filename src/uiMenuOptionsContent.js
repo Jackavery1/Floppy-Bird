@@ -52,5 +52,5 @@ export function buildOptionsContent(ui, elements) {
     ui._optionsChromeElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
     ui._optionsCloseHit = closeBtn.hit;
 
-    setOptionsTab(ui, ui._optionsActiveTab ?? 'modes');
+    setOptionsTab(ui, ui._optionsActiveTab ?? 'preferences');
 }

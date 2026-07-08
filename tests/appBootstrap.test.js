@@ -166,4 +166,13 @@ describe('appBootstrap', () => {
         const { shouldInstallTestSeam } = await import('../src/appBootstrap.js');
         expect(shouldInstallTestSeam()).toBe(true);
     });
+
+    it('ensureTitleFontLoaded attend le chargement de Press Start 2P si disponible', async () => {
+        const load = vi.fn(() => Promise.resolve([]));
+        const ready = Promise.resolve();
+        const { ensureTitleFontLoaded } = await import('../src/appBootstrap.js');
+        await ensureTitleFontLoaded({ fonts: { load, ready } });
+        expect(load).toHaveBeenCalledWith('12px "Press Start 2P"');
+        expect(load).toHaveBeenCalledWith('16px "Press Start 2P"');
+    });
 });

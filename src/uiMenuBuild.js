@@ -1,5 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import { menuHomeTextStyle } from './designTokens.js';
+import { panelChromeTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
@@ -11,7 +11,7 @@ export function buildMenuFooter(ui, elements, layout) {
         GAME_CONFIG.centerX,
         layout.start,
         'APPUYER POUR JOUER',
-        menuHomeTextStyle({ fontSize: '15px' }),
+        panelChromeTextStyle({ fontSize: '15px' }),
         DEPTH.MENU_PANEL
     );
     sceneTween(ui.scene, {
