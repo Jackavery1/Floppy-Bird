@@ -10,6 +10,11 @@ vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
 }));
 
+vi.mock('../src/textures/index.js', () => ({
+    ensureBirdTexture: vi.fn(),
+    ensureBirdTextures: vi.fn(),
+}));
+
 vi.mock('../src/metaContext.js', () => ({
     buildMetaContext: vi.fn(() => ({
         unlockedSkinCount: 16,

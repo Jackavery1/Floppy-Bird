@@ -1,5 +1,5 @@
 import { sceneTween } from './motion.js';
-import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,

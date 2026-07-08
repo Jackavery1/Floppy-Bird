@@ -8,6 +8,10 @@ import {
 } from '../src/training.js';
 import { GAME_CONFIG } from '../src/config.js';
 
+vi.mock('../src/textures/index.js', () => ({
+    ensureBirdTexture: vi.fn(),
+}));
+
 describe('training', () => {
     let store;
 

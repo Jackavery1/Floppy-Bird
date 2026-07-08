@@ -1,0 +1,8 @@
+{
+    "generated": "2026-07-08",
+    "distKo": 1386,
+    "iconsKo": 23.2,
+    "vendorPhaserKo": 1168.1,
+    "appJsGzipKo": 42.3,
+    "note": "Référence locale — régénérer avec npm run build && npm run measure"
+}

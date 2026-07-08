@@ -201,12 +201,12 @@ export function showCoyoteHint(ui) {
     );
 }
 
-export function showHardcoreInvincibilityHint(ui, durationMs) {
+export function showHardcoreInvincibilityHint(ui, durationMs, pipeIndex = 1) {
     destroyHudBanner(ui, '_hardcoreInvBanner');
     showTransientBanner(
         ui,
         '_hardcoreInvBanner',
-        hardcoreInvincibilityHintText(durationMs),
+        hardcoreInvincibilityHintText(durationMs, pipeIndex),
         hudTextStyle({
             fontSize: '11px',
             fill: DESIGN_TOKENS.badgeHardcore,

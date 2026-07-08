@@ -2,6 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS } from './storageKeys.js';
 import { birdTextureKey } from './skins/index.js';
 import { birdSpriteScale } from './textures/birdTextures.js';
+import { ensureBirdTexture } from './textures/index.js';
 import { DEPTH } from './uiDepth.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
@@ -106,6 +107,7 @@ export class GhostReplay {
             return;
         }
         const skinId = 'fantome';
+        ensureBirdTexture(this.scene, skinId);
         this.sprite = this.scene.add.sprite(
             GAME_CONFIG.bird.startX,
             GAME_CONFIG.centerY,

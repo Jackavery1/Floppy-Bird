@@ -5,6 +5,7 @@ import { createRoundState } from '../src/roundState.js';
 vi.mock('../src/tutorialProgress.js', () => ({
     onTutorialJump: vi.fn(),
     onHardcoreTutorialJump: vi.fn(),
+    onTrainingTutorialJump: vi.fn(),
 }));
 
 vi.mock('../src/sceneFeedback.js', () => ({

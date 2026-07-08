@@ -37,14 +37,14 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 
 ### Matrice viewports E2E (Playwright)
 
-| Projet | Viewport | Touch | Tests clés |
-|--------|----------|-------|------------|
-| `chromium-desktop` | Desktop Chrome | non | `keyboard.spec.js`, `gameplay-equity.spec.mjs` |
-| `chromium-mobile-portrait` | 390×844 | oui | `touch.spec.js`, `keyboard.spec.js`, `tutorial.spec.mjs`, `gameplay-equity` |
-| `chromium-mobile-landscape` | 844×390 | oui | `viewport.spec.js` (hint paysage) |
-| `webkit-mobile-portrait` | iPhone 13 | oui | touch + chargement |
-| `webkit-mobile-landscape` | 844×390 | oui | hint paysage |
-| `chromium-tablet-landscape` | 1024×768 | oui | jeu sans hint bloquant |
+| Projet                      | Viewport       | Touch | Tests clés                                                                  |
+| --------------------------- | -------------- | ----- | --------------------------------------------------------------------------- |
+| `chromium-desktop`          | Desktop Chrome | non   | `keyboard.spec.js`, `gameplay-equity.spec.mjs`, `visual-font.spec.js`       |
+| `chromium-mobile-portrait`  | 390×844        | oui   | `touch.spec.js`, `keyboard.spec.js`, `tutorial.spec.mjs`, `gameplay-equity` |
+| `chromium-mobile-landscape` | 844×390        | oui   | `viewport.spec.js`, `touch.spec.js`, `keyboard.spec.js` (smoke)             |
+| `webkit-mobile-portrait`    | iPhone 13      | oui   | touch + chargement                                                          |
+| `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
+| `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
 
 Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touch.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`).
 
@@ -52,14 +52,14 @@ Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`vie
 
 Ces dossiers sont produits localement ou en CI et listés dans [`.gitignore`](.gitignore) :
 
-| Dossier | Origine |
-|---------|---------|
-| `node_modules/` | `npm install` |
-| `dist/` | `npm run build` |
-| `dev-dist/` | service worker Vite PWA en mode dev |
-| `coverage/` | `npm run test:coverage` |
-| `test-results/`, `playwright-report/` | `npm run test:e2e` |
-| `public/vendor/`, `public/icons/` | scripts build (copiés dans `dist/` en prod) |
+| Dossier                               | Origine                                     |
+| ------------------------------------- | ------------------------------------------- |
+| `node_modules/`                       | `npm install`                               |
+| `dist/`                               | `npm run build`                             |
+| `dev-dist/`                           | service worker Vite PWA en mode dev         |
+| `coverage/`                           | `npm run test:coverage`                     |
+| `test-results/`, `playwright-report/` | `npm run test:e2e`                          |
+| `public/vendor/`, `public/icons/`     | scripts build (copiés dans `dist/` en prod) |
 
 Le déploiement GitHub Pages pousse **`dist/`** sur la branche **`gh-pages`** via CI — pas sur `main`.
 
@@ -70,10 +70,12 @@ Si `git status` les affiche encore, vérifie qu’ils ne sont pas forcés : `git
 Générées avant chaque build de production :
 
 ```bash
-npm run icons        # public/icons/ (optionnel : npm run icons:optimize)
+npm run icons           # génère public/icons/
+npm run icons:optimize  # recompression PNG (exécuté en CI après icons)
+npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
-La CI exécute `npm run icons` automatiquement.
+La CI exécute `npm run icons` puis `npm run icons:optimize` automatiquement.
 
 ## Problème certificat npm
 
@@ -95,7 +97,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` du workflow CI pousse `dist/` sur **`gh-pages`** à chaque push sur `main` (après `check` + `lighthouse`). Le job `e2e` tourne en parallèle mais ne bloque pas le déploiement.
+Le job `deploy` du workflow CI pousse `dist/` sur **`gh-pages`** à chaque push sur `main` (après `check` + `lighthouse` + **`e2e`**). Le déploiement est bloqué si les tests Playwright échouent.
 
 **Pages** (Settings → Pages) : source **GitHub Actions** (recommandé) ou branche **`gh-pages`** / **`/ (root)`** si tu utilises peaceiris.
 

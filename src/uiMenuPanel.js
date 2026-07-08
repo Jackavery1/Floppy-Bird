@@ -1,8 +1,7 @@
-import { DESIGN_TOKENS, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
 import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { buildStyledPanelBackdrop, buildPanelPillButton } from './uiMenuPanelChrome.js';
-import { sceneTween } from './motion.js';
-import { prefersReducedMotion } from './motion.js';
+import { prefersReducedMotion, sceneTween } from './motion.js';
 
 /** @param {import('phaser').Scene} [scene] @param {import('phaser').GameObjects.GameObject[]} elements */
 function killPanelTweens(scene, elements) {
@@ -191,7 +190,10 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
         stroke: cfg.btnStroke,
         labelText: cfg.buttonLabelFn(false),
         labelStroke: cfg.labelStroke,
-        labelStyle: panelChromeTextStyle({ fill: DESIGN_TOKENS.texteMenu, stroke: cfg.labelStroke }),
+        labelStyle: panelChromeTextStyle({
+            fill: DESIGN_TOKENS.texteMenu,
+            stroke: cfg.labelStroke,
+        }),
         onToggle: () => controller.toggle(),
     });
     ui[cfg.btnBgKey] = btn.bg;

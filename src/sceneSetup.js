@@ -10,7 +10,7 @@ import { GhostReplay } from './training.js';
 import { warnFileProtocol, primeAudio, applyTrainingTimeScale } from './sceneBootstrap.js';
 import { showMenu } from './sceneFlow.js';
 import { resumeAudio } from './audio.js';
-import { createBirdAnimations, ensurePipeTextures } from './textures/index.js';
+import { ensurePipeTextures } from './textures/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { wireSceneBindings } from './sceneBindings.js';
 import { DEPTH } from './uiDepth.js';
@@ -33,7 +33,6 @@ export function setupSceneWorld(scene) {
     scene._groundSprite = createGround(scene);
 
     ensurePipeTextures(scene);
-    createBirdAnimations(scene);
 
     scene.bird = new Bird(scene, GAME_CONFIG.bird.startX, GAME_CONFIG.centerY, loadSelectedSkin());
     scene.pipes = new Pipes(scene);

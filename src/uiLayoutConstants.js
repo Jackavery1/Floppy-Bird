@@ -13,12 +13,12 @@ export const SPACING = Object.freeze({
     xl: 24,
     touch: MIN_TOUCH,
 });
-/** Taille minimale des hints secondaires (menu, game over, HUD). */
-export const FONT_SIZE_HINT = '11px';
+/** Taille minimale des hints secondaires (menu, game over, HUD) — alignée panelChrome 12 px. */
+export const FONT_SIZE_HINT = '12px';
 /** Petits badges in-game (mode, objectif). */
-export const FONT_SIZE_BADGE = '11px';
+export const FONT_SIZE_BADGE = '12px';
 /** Petits labels compacts (grille skins). */
-export const FONT_SIZE_COMPACT = '10px';
+export const FONT_SIZE_COMPACT = '12px';
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
 /** Marge droite (px jeu) pour le bouton pause — évite les taps ratés au bord letterbox. */
 export const PAUSE_BTN_INSET = 12;
@@ -80,6 +80,7 @@ export const UI_LAYOUT = {
         scoresBtn: 52,
         optionsBtn: 144,
         skinsBtn: 236,
+        /** Largeur visuelle des boutons menu (scores/options/skins) ; hauteur = MIN_TOUCH (44 px). */
         menuBtnW: 80,
         hint1: 424,
     },

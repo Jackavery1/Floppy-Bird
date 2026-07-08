@@ -1,6 +1,16 @@
 /**
  * Tokens visuels partagés entre le shell HTML (`style.css`) et l’UI Phaser.
  * Les variables CSS `:root` sont synchronisées via {@link syncShellTheme}.
+ *
+ * Matrice typo (Phaser + shell) :
+ * | Rôle              | Taille   | Police              | Style helper           |
+ * |-------------------|----------|---------------------|------------------------|
+ * | Titre jeu / chrome| 12 px min| Press Start 2P      | panelChromeTextStyle   |
+ * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle      |
+ * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle           |
+ * | Bannières HUD     | 11 px    | Segoe UI            | hudTextStyle           |
+ * | Grille skins      | 11 px    | Segoe UI            | menuTextStyle          |
+ * | Chargement shell  | 14–16 px | policeInterface     | CSS `#loading`         |
  */
 export const DESIGN_TOKENS = Object.freeze({
     fondNuit: '#1a1a2e',
@@ -68,11 +78,21 @@ export const DESIGN_TOKENS = Object.freeze({
     policeTitre: '"Press Start 2P", "Courier New", monospace',
 });
 
+/** Contraste renforcé OS (`prefers-contrast: more`) — aligné sur `style.css`. */
+export function prefersHighContrast() {
+    if (typeof matchMedia === 'undefined') return false;
+    return matchMedia('(prefers-contrast: more)').matches;
+}
+
+function epaisseurContourHud() {
+    return prefersHighContrast() ? 3 : 2;
+}
+
 /** Style Phaser texte HUD (contour noir systématique). */
 export function hudTextStyle(overrides = {}) {
     return {
         stroke: DESIGN_TOKENS.contourHud,
-        strokeThickness: 2,
+        strokeThickness: epaisseurContourHud(),
         ...overrides,
     };
 }
@@ -81,7 +101,7 @@ export function hudTextStyle(overrides = {}) {
 export function menuTextStyle(overrides = {}) {
     return {
         stroke: DESIGN_TOKENS.contourMenu,
-        strokeThickness: 2,
+        strokeThickness: epaisseurContourHud(),
         ...overrides,
     };
 }

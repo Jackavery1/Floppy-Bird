@@ -3,6 +3,7 @@ import { forceGameOver, getDailyChallengeMode } from './helpers/testSeam.mjs';
 import {
     enterPausedFromPlaying,
     expectGameState,
+    isMobileLandscapeProject,
     isMobilePortraitProject,
     openPauseFromPlaying,
     projectUsesTouch,
@@ -215,5 +216,38 @@ test.describe('clavier webkit mobile portrait', () => {
         await page.locator('#a11y-options-tab-controls').focus();
         await page.keyboard.press('Enter');
         await expect(page.locator('#a11y-training')).toBeVisible();
+    });
+});
+
+test.describe('clavier paysage et tablette (smoke)', () => {
+    test('mobile landscape — Tab Entrée démarre (hint masqué e2e)', async ({ page }, testInfo) => {
+        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
+        await waitForGameReady(page, { hideLandscapeHint: true });
+        await page.locator('#a11y-start').focus();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'playing');
+    });
+
+    test('webkit mobile landscape — Tab Entrée démarre', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'webkit-mobile-landscape',
+            'webkit landscape uniquement'
+        );
+        await waitForGameReady(page, { hideLandscapeHint: true });
+        await page.locator('#a11y-start').focus();
+        await page.keyboard.press('Enter');
+        await expectGameState(page, 'playing');
+    });
+
+    test('tablette paysage — ESPACE démarre et ESC ouvre la pause', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-tablet-landscape',
+            'tablette paysage uniquement'
+        );
+        await waitForGameReady(page);
+        await page.keyboard.press('Space');
+        await expectGameState(page, 'playing');
+        await page.keyboard.press('Escape');
+        await expectGameState(page, 'paused', 10_000);
     });
 });

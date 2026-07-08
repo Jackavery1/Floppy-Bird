@@ -6,6 +6,7 @@ import {
     gapTutorialText,
     scoreTutorialText,
     hardcoreTutorialText,
+    trainingTutorialText,
 } from './device.js';
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
@@ -94,9 +95,20 @@ export function showHardcoreTutorial(ui) {
     showPulsingTutorialHint(ui, hardcoreTutorialText());
 }
 
+export function showTrainingTutorial(ui) {
+    ui._trainingTutorialActive = true;
+    showPulsingTutorialHint(ui, trainingTutorialText());
+}
+
 export function dismissHardcoreTutorial(ui) {
     if (!ui._hardcoreTutorialActive) return false;
     ui._hardcoreTutorialActive = false;
+    return dismissGameplayTutorial(ui);
+}
+
+export function dismissTrainingTutorial(ui) {
+    if (!ui._trainingTutorialActive) return false;
+    ui._trainingTutorialActive = false;
     return dismissGameplayTutorial(ui);
 }
 

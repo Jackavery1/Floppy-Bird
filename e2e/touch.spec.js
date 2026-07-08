@@ -178,12 +178,8 @@ test.describe('touch mobile portrait', () => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        const {
-            menuOptions,
-            menuOptionsTabControls,
-            menuOptionsTabPreferences,
-            menuOptionsClose,
-        } = TOUCH_TARGETS;
+        const { menuOptions, menuOptionsTabControls, menuOptionsTabPreferences, menuOptionsClose } =
+            TOUCH_TARGETS;
 
         await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
         await expect

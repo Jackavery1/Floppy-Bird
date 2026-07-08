@@ -91,7 +91,7 @@ describe('UI façade — délégation', () => {
 
         expect(hud.createScoreDisplay).toHaveBeenCalledWith(ui);
         expect(hud.showCoyoteHint).toHaveBeenCalledWith(ui);
-        expect(hud.showHardcoreInvincibilityHint).toHaveBeenCalledWith(ui, 700);
+        expect(hud.showHardcoreInvincibilityHint).toHaveBeenCalledWith(ui, 700, 1);
         expect(hud.showFlash).toHaveBeenCalledWith(ui);
     });
 

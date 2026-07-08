@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
     DESIGN_TOKENS,
     hexVersPhaser,
@@ -46,6 +46,22 @@ describe('designTokens', () => {
         });
     });
 
+    it('hudTextStyle épaissit le contour en prefers-contrast: more', async () => {
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn((query) => ({
+                matches: query.includes('prefers-contrast: more'),
+                media: query,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+            }))
+        );
+        vi.resetModules();
+        const { hudTextStyle: hudContraste } = await import('../src/designTokens.js');
+        expect(hudContraste().strokeThickness).toBe(3);
+        vi.unstubAllGlobals();
+    });
+
     it('menuTextStyle applique le contour menu', () => {
         expect(menuTextStyle({ fill: DESIGN_TOKENS.texteMenu })).toEqual({
             stroke: DESIGN_TOKENS.contourMenu,
@@ -63,6 +79,9 @@ describe('designTokens', () => {
     it('texte HUD blanc seul sous AA sur fond jour — contour noir requis', () => {
         expect(contrastRatio(DESIGN_TOKENS.texteHud, DESIGN_TOKENS.fondJour)).toBeLessThan(4.5);
         expect(hudTextStyle().stroke).toBe(DESIGN_TOKENS.contourHud);
+        expect(
+            contrastRatio(DESIGN_TOKENS.contourHud, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
     });
 
     it('accent record atteint AA sur fond nuit', () => {

@@ -63,7 +63,7 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1200,
         spawnInvincibilityMs: 900,
-        hardcoreSpawnInvincibilitySteps: [700, 625, 550, 475, 400, 325],
+        hardcoreSpawnInvincibilitySteps: [700, 625, 550, 475, 425, 375, 325],
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         /** Plafond d’accélération (+3 % / palier) — score 50+ sans montée supplémentaire. */

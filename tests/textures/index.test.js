@@ -1,5 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
-import { preloadTextures, createBirdAnimations } from '../../src/textures/index.js';
+import {
+    preloadTextures,
+    createBirdAnimations,
+    ensureBirdTexture,
+} from '../../src/textures/index.js';
 import { createBirdSpriteSheet } from '../../src/textures/birdTextures.js';
 import { createPipeSprites, ensurePipeTextures } from '../../src/textures/pipeTextures.js';
 import { createCloudTexture } from '../../src/textures/cloudTextures.js';
@@ -162,11 +166,10 @@ describe('textures', () => {
 
     it('createBirdAnimations enregistre les animations via le barrel', () => {
         const created = [];
-        const scene = {
-            anims: {
-                exists: vi.fn(() => false),
-                create: vi.fn((cfg) => created.push(cfg.key)),
-            },
+        const scene = sceneWithGraphicsList();
+        scene.anims = {
+            exists: vi.fn(() => false),
+            create: vi.fn((cfg) => created.push(cfg.key)),
         };
         createBirdAnimations(scene);
         expect(created).toHaveLength(SKIN_IDS.length);
@@ -174,30 +177,17 @@ describe('textures', () => {
         expect(scene.anims.create).toHaveBeenCalledTimes(SKIN_IDS.length);
     });
 
-    it('preloadTextures génère toutes les textures', () => {
+    it('preloadTextures génère le monde et les skins initiaux seulement', () => {
         const scene = sceneWithGraphicsList();
+        scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
         preloadTextures(scene);
         const keys = scene._graphicsList.flatMap((g) =>
             g.generateTexture.mock.calls.map((c) => c[0])
         );
+        const birdSheets = keys.filter((k) => k.startsWith('bird-sheet-'));
+        expect(birdSheets).toEqual(['bird-sheet-classic']);
         expect(keys).toEqual(
             expect.arrayContaining([
-                'bird-sheet-classic',
-                'bird-sheet-lavande',
-                'bird-sheet-ruby',
-                'bird-sheet-ambre',
-                'bird-sheet-ocean',
-                'bird-sheet-corail',
-                'bird-sheet-forest',
-                'bird-sheet-minuit',
-                'bird-sheet-armure',
-                'bird-sheet-mushu',
-                'bird-sheet-phoenix',
-                'bird-sheet-fantome',
-                'bird-sheet-glace',
-                'bird-sheet-tempete',
-                'bird-sheet-cosmos',
-                'bird-sheet-neon',
                 'pipe-top',
                 'pipe-bottom',
                 'background',
@@ -210,6 +200,38 @@ describe('textures', () => {
                 'ground',
             ])
         );
+        resetBackgroundCache();
+    });
+
+    it('ensureBirdTexture charge un skin à la demande', () => {
+        const scene = sceneWithGraphicsList();
+        scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
+        ensureBirdTexture(scene, 'neon');
+        const keys = scene._graphicsList.flatMap((g) =>
+            g.generateTexture.mock.calls.map((c) => c[0])
+        );
+        expect(keys).toContain('bird-sheet-neon');
+        expect(scene.anims.create).toHaveBeenCalledWith(
+            expect.objectContaining({ key: birdAnimKey('neon') })
+        );
+    });
+
+    it('preloadTextures inclut le skin sélectionné hors classic', async () => {
+        vi.resetModules();
+        vi.doMock('../../src/metaStorage.js', () => ({
+            loadSelectedSkin: () => 'ocean',
+        }));
+        const { preloadTextures: preloadAvecOcean } = await import('../../src/textures/index.js');
+        const scene = sceneWithGraphicsList();
+        scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
+        preloadAvecOcean(scene);
+        const keys = scene._graphicsList.flatMap((g) =>
+            g.generateTexture.mock.calls.map((c) => c[0])
+        );
+        const birdSheets = keys.filter((k) => k.startsWith('bird-sheet-'));
+        expect(birdSheets.sort()).toEqual(['bird-sheet-classic', 'bird-sheet-ocean']);
+        vi.doUnmock('../../src/metaStorage.js');
+        vi.resetModules();
         resetBackgroundCache();
     });
 });

@@ -88,4 +88,36 @@ describe('metaProgress achievements', () => {
         const newly = evaluateAchievements(scene);
         expect(newly.some((a) => a.id === 'first_flight')).toBe(false);
     });
+
+    it('ne débloque rien en mode entraînement', () => {
+        const round = createRoundState();
+        round.score = 25;
+        const scene = { round, trainingMode: true, hardcoreMode: false };
+        expect(evaluateAchievements(scene)).toEqual([]);
+    });
+
+    it('débloque hardcore_hero en hardcore à 5 points', () => {
+        const round = createRoundState();
+        round.score = 5;
+        const scene = { round, trainingMode: false, hardcoreMode: true };
+        const newly = evaluateAchievements(scene);
+        expect(newly.some((a) => a.id === 'hardcore_hero')).toBe(true);
+    });
+
+    it('respecte le filtre timing roundEnd', () => {
+        const round = createRoundState();
+        round.score = 25;
+        const scene = {
+            round,
+            trainingMode: false,
+            hardcoreMode: false,
+            dailyChallengeMode: false,
+            dailyGoal: 0,
+            dailyGoalCelebrated: false,
+        };
+        const atScore = evaluateAchievements(scene, { timing: 'score' });
+        expect(atScore.some((a) => a.id === 'daily_flyer')).toBe(false);
+        const atRoundEnd = evaluateAchievements(scene, { timing: 'roundEnd' });
+        expect(atRoundEnd.every((a) => (a.timing ?? 'score') === 'roundEnd')).toBe(true);
+    });
 });

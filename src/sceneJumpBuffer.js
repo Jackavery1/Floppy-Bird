@@ -1,5 +1,9 @@
 import { GAME_CONFIG } from './config.js';
-import { onTutorialJump, onHardcoreTutorialJump } from './tutorialProgress.js';
+import {
+    onTutorialJump,
+    onHardcoreTutorialJump,
+    onTrainingTutorialJump,
+} from './tutorialProgress.js';
 import { playJumpFeedback } from './sceneFeedback.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -8,6 +12,7 @@ import { playJumpFeedback } from './sceneFeedback.js';
 export function requestJump(scene) {
     onTutorialJump(scene);
     onHardcoreTutorialJump(scene);
+    onTrainingTutorialJump(scene);
     scene.round.jumpBufferFrames = Math.max(
         scene.round.jumpBufferFrames,
         GAME_CONFIG.bird.jumpBufferFrames

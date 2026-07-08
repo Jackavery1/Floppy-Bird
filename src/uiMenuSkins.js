@@ -4,6 +4,7 @@ import { loadSelectedSkin } from './metaStorage.js';
 import { loadHighScore } from './storage.js';
 import { skinsPanelHint } from './device.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
+import { ensureBirdTextures } from './textures/index.js';
 import {
     getSkin,
     listUnlockedSkins,
@@ -38,6 +39,20 @@ const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
 const SKIN_CELL_H = 56;
 
+/** Charge les textures oiseau par lots pour ne pas bloquer l’ouverture du panneau. */
+function scheduleRemainingBirdTextures(scene, skinIds) {
+    const queue = skinIds.filter((id) => !scene.textures.exists(`bird-sheet-${id}`));
+    if (!queue.length) return;
+
+    const batchSize = 4;
+    const step = () => {
+        const batch = queue.splice(0, batchSize);
+        if (batch.length) ensureBirdTextures(scene, batch);
+        if (queue.length) scene.time.delayedCall(16, step);
+    };
+    step();
+}
+
 /**
  * @param {import('./ui.js').UI} ui
  * @param {import('phaser').GameObjects.GameObject[]} elements
@@ -45,6 +60,13 @@ const SKIN_CELL_H = 56;
  */
 export function buildSkinsTab(ui, elements, panelElements) {
     const scene = ui.scene;
+    const selected = loadSelectedSkin();
+    const priority = selected === 'classic' ? ['classic'] : ['classic', selected];
+    ensureBirdTextures(scene, priority);
+    scheduleRemainingBirdTextures(
+        scene,
+        SKIN_IDS.filter((id) => !priority.includes(id))
+    );
     const panel = UI_LAYOUT.skinsPanel;
     ui._skinsTabElements = [];
     ui._skinCells = [];

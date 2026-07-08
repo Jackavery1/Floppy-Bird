@@ -184,7 +184,7 @@ describe('sceneRound', () => {
         };
         onPipeSpawned(scene, 2);
         expect(scene.round.spawnInvincible).toBe(true);
-        expect(scene.ui.showHardcoreInvincibilityHint).toHaveBeenCalledWith(625);
+        expect(scene.ui.showHardcoreInvincibilityHint).toHaveBeenCalledWith(625, 2);
     });
 
     it('onPipeSpawned ignore le mode normal', () => {

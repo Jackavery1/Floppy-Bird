@@ -31,6 +31,8 @@ import {
     showHardcoreInvincibilityHint,
     showHardcoreTutorial,
     dismissHardcoreTutorial,
+    showTrainingTutorial,
+    dismissTrainingTutorial,
     showScoreStreak,
 } from './uiHud.js';
 import {
@@ -151,14 +153,20 @@ export class UI {
     showCoyoteHint() {
         showCoyoteHint(this);
     }
-    showHardcoreInvincibilityHint(durationMs) {
-        showHardcoreInvincibilityHint(this, durationMs);
+    showHardcoreInvincibilityHint(durationMs, pipeIndex = 1) {
+        showHardcoreInvincibilityHint(this, durationMs, pipeIndex);
     }
     showHardcoreTutorial() {
         showHardcoreTutorial(this);
     }
     dismissHardcoreTutorial() {
         return dismissHardcoreTutorial(this);
+    }
+    showTrainingTutorial() {
+        showTrainingTutorial(this);
+    }
+    dismissTrainingTutorial() {
+        return dismissTrainingTutorial(this);
     }
     updateDifficultyButtons(difficulty) {
         updateDifficultyButtons(this, difficulty);

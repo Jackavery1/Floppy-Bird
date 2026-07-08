@@ -95,7 +95,9 @@ describe('uiLayout menu', () => {
         expect(optionsPanel.tabControlsX - half).toBeGreaterThanOrEqual(
             left + optionsPanel.tabInset
         );
-        expect(optionsPanel.tabPreferencesX + half).toBeLessThanOrEqual(right - optionsPanel.tabInset);
+        expect(optionsPanel.tabPreferencesX + half).toBeLessThanOrEqual(
+            right - optionsPanel.tabInset
+        );
         expect(optionsPanel.tabPreferencesX).toBeGreaterThan(optionsPanel.tabControlsX);
     });
 

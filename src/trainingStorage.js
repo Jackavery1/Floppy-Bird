@@ -10,6 +10,14 @@ export function saveTrainingEnabled(enabled) {
     saveBoolFlag(STORAGE_KEYS.training, enabled);
 }
 
+export function loadTrainingTutorialSeen() {
+    return loadBoolFlag(STORAGE_KEYS.trainingTutorialSeen);
+}
+
+export function markTrainingTutorialSeen() {
+    saveBoolFlag(STORAGE_KEYS.trainingTutorialSeen, true);
+}
+
 export function loadBestTrainingScore(skinId = null) {
     try {
         const raw = localStorage.getItem(trainingBestKey(routedSkinId(skinId)));

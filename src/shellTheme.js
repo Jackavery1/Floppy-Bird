@@ -1,6 +1,12 @@
-import { DESIGN_TOKENS } from './designTokens.js';
+import { DESIGN_TOKENS, prefersHighContrast } from './designTokens.js';
 import { SPACING } from './uiLayoutConstants.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
+
+const CONTRAST_CSS_VARS = Object.freeze({
+    '--couleur-texte-chargement': '#bbdefb',
+    '--couleur-texte-hint': '#ffffff',
+    '--couleur-accent': '#ffeb3b',
+});
 
 const CSS_VARS = Object.freeze({
     '--couleur-fond': () => getBackgroundCanvasColor(),
@@ -23,6 +29,17 @@ export function syncShellTheme(doc = document) {
 
     for (const [name, resolve] of Object.entries(CSS_VARS)) {
         root.style.setProperty(name, resolve());
+    }
+
+    if (prefersHighContrast()) {
+        for (const [name, value] of Object.entries(CONTRAST_CSS_VARS)) {
+            root.style.setProperty(name, value);
+        }
+        if (root.dataset) {
+            root.dataset.contrastHigh = 'true';
+        }
+    } else if (root.dataset) {
+        delete root.dataset.contrastHigh;
     }
 
     const fond = getBackgroundCanvasColor();

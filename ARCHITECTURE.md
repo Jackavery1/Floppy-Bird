@@ -80,34 +80,41 @@ tests/
 ## Patterns & Conventions
 
 ### 1. Scenes (Phaser)
+
 Chaque scene gère une responsabilité :
+
 - `sceneBootstrap` : Initialisation
 - `sceneRound` : Gameplay principal
 - `sceneDeath` : Game over
 - `sceneFeedback` : Effets visuels/sonores
 
 ### 2. State Management
+
 - **gameState.js** : État global (difficulté, mode hardcore, etc)
 - **roundState.js** : État de la manche courante
 - **storage.js** : Persistance LocalStorage
 
 ### 3. Input Handling
+
 - **sceneInput.js** : Normalization clavier/tactile
 - **uiDomAccessibility.js** : Accessibilité clavier
 
 ### 4. Physics
+
 - **bird.js** : Gravity, velocity, coyote timing
 - **pipeCollision.js** : AABB collision detection
 - **pipeGaps.js** : Gestion dynamique des espaces
 
 ### 5. Animations
+
 - **motion.js** : `sceneTween()` pour toutes les animations
 - Respecte `prefers-reduced-motion`
 - Tweens chainés avec onComplete callbacks
 
 ### 6. UI Architecture
+
 ```
-ui.js (orchestration)
+ui.js (orchestration — façade SceneContext)
 ├── Menu Principal
 │   ├── uiMenu.js (navigation)
 │   ├── uiMenuPanel.js (animations)
@@ -120,9 +127,21 @@ ui.js (orchestration)
     └── uiGameOverDecor.js (confetti)
 ```
 
+#### Contrat façade `UI` (`ui.js`)
+
+| Règle              | Détail                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| **Import**         | `import { UI } from './uiIndex.js'` en prod ; `ui.js` direct réservé aux tests de façade |
+| **Responsabilité** | État UI Phaser (menu/HUD/overlays) et pass-through vers sous-modules                     |
+| **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
+| **Extension**      | Nouvelle UI → module `ui*.js` dédié, puis méthode sur `UI` si `scene.ui` doit l’appeler  |
+
+Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés « SCORES / OPTIONS / SKINS ».
+
 ## Data Flow
 
 ### Startup
+
 ```
 main.js
   ↓
@@ -136,6 +155,7 @@ ui.js (menu affiché)
 ```
 
 ### Gameplay
+
 ```
 Input (keyboard/touch)
   ↓
@@ -155,6 +175,7 @@ HUD (affichage)
 ```
 
 ### Death Flow
+
 ```
 Collision detected
   ↓
@@ -172,25 +193,30 @@ Menu principal (input restart/menu)
 ## Performance Considerations
 
 ### Optimization
+
 - **Object Pooling** : Pipes réutilisés
-- **Lazy Loading** : Assets chargés au démarrage
+- **Lazy Loading** : Textures oiseau à la demande (`ensureBirdTexture`) — classic + skin actif au boot, reste au panneau skins
+- **Code splitting** : chunk Vite `skins` (~3 Ko gzip) pour cache PWA distinct
 - **Canvas Rendering** : Phaser optimise le rendu
 - **Event Delegation** : Minimal DOM updates
 
 ### Memory
+
 - **Scene Cleanup** : Destroy() appelé sur transition
 - **Event Listeners** : Unsubscribed on cleanup
 - **Tweens** : Destroyed after completion
 
 ## Testing Strategy
 
-### Unit Tests (551 tests)
+### Unit Tests (574 tests)
+
 - **Gameplay** : Physics, collision, scoring
 - **UI** : Menu navigation, state updates
 - **Storage** : Persistence, data integrity
 - **Accessibility** : ARIA, keyboard
 
-### E2E Tests (9 specs, ~76 cas, 6 projets viewport)
+### E2E Tests (11 specs, ~80 cas, 6 projets viewport)
+
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
 - **Responsive** : All viewports
@@ -199,16 +225,17 @@ Menu principal (input restart/menu)
 ### CI / déploiement (`.github/workflows/ci.yml`)
 
 ```
-check ──┬──► e2e (parallèle, timeout 120 min, non bloquant deploy)
+check ──┬──► e2e (parallèle, timeout 120 min)
         └──► lighthouse
-check + lighthouse ──► deploy → gh-pages
+check + lighthouse + e2e ──► deploy → gh-pages
 ```
 
-Le job `deploy` ne attend pas `e2e` (matrice 6 viewports en série ≈ 1–3 h). Les e2e restent obligatoires en CI mais n’empêchent plus la mise en ligne.
+Le job `deploy` attend `e2e` : aucune mise en ligne si la matrice 6 viewports échoue.
 
 ## Accessibility Implementation
 
 ### WCAG 2.1 Level AA (cible)
+
 - **Keyboard Navigation** : 25 boutons DOM overlay + canvas
 - **Screen Readers** : `#ui-announcer`, labels ARIA
 - **Color Contrast** : tokens testés AA sur fond nuit ; HUD jour compensé par contour noir (`designTokens.test.js`)
@@ -216,6 +243,7 @@ Le job `deploy` ne attend pas `e2e` (matrice 6 viewports en série ≈ 1–3 h).
 - **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`)
 
 ### Implementation Files
+
 - `uiDomAccessibility*.js` : A11y layer
 - `motion.js` : Animation control
 - `style.css` : Focus styles
@@ -224,12 +252,14 @@ Le job `deploy` ne attend pas `e2e` (matrice 6 viewports en série ≈ 1–3 h).
 ## Scalability
 
 ### Future-Proof
+
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
 - **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `style.css` (shell synchronisé via `shellTheme.js`)
 - **Test Coverage** : seuils CI 75 % lignes / 70 % branches (`vite.config.js`)
 
 ### Potential Extensions
+
 - **Multiplayer** : Leaderboard sync
 - **Analytics** : User engagement tracking
 - **Monetization** : Ad integration points
@@ -238,6 +268,7 @@ Le job `deploy` ne attend pas `e2e` (matrice 6 viewports en série ≈ 1–3 h).
 ## Development Workflow
 
 ### Local Development
+
 ```bash
 npm run dev              # http://localhost:5173
 npm run test:watch      # Vitest watch
@@ -248,40 +279,43 @@ npm run format          # Prettier
 ```
 
 ### Build & Deploy
+
 ```bash
-npm run build           # dist/ + PWA
+npm run icons           # public/icons/ (+ icons:optimize en CI)
+npm run build           # dist/ + PWA (police latin/latin-ext uniquement)
+npm run measure         # tailles dist/ après build (incl. appJsGzipKo) ; réf. scripts/bundle-baseline.json
 npm run preview         # Test build locally
 git push                # CI/CD GitHub Actions
 ```
 
 ## Dependencies
 
-| Package | Version | Role |
-|---------|---------|------|
-| phaser | ^3.80.1 | Game engine |
-| vite | ^5.4.11 | Build tool |
+| Package         | Version | Role           |
+| --------------- | ------- | -------------- |
+| phaser          | ^3.80.1 | Game engine    |
+| vite            | ^5.4.11 | Build tool     |
 | vite-plugin-pwa | ^0.21.1 | PWA generation |
-| vitest | ^2.1.6 | Testing |
-| playwright | ^1.49.1 | E2E testing |
-| eslint | ^9.17.0 | Linting |
-| prettier | ^3.4.2 | Formatting |
+| vitest          | ^2.1.6  | Testing        |
+| playwright      | ^1.49.1 | E2E testing    |
+| eslint          | ^9.17.0 | Linting        |
+| prettier        | ^3.4.2  | Formatting     |
 
 ## Code Quality Standards
 
 - **ESLint** : 0 errors
 - **Prettier** : 100% formatted
-- **Tests** : 551/551 passing
+- **Tests** : 574/574 passing
 - **Coverage** : ~95 % lignes / ~85 % branches (seuils CI 75/70 %)
 
 ### Exclusions coverage (justifiées)
 
-| Fichier | Raison |
-|---------|--------|
-| `src/phaser-shim.js` | Alias build vendor Phaser — pas de logique applicative |
-| `src/testSeam.js` | API Playwright E2E uniquement (`VITE_ENABLE_TEST_SEAM`) |
-| `src/skins/skinIds.js` | Constantes d’identifiants |
-| `src/skins/skinTypes.js` | Typedef JSDoc sans runtime |
-| `src/sceneTypes.js` | Contrat JSDoc `SceneContext` — documenté, non exécuté |
+| Fichier                  | Raison                                                  |
+| ------------------------ | ------------------------------------------------------- |
+| `src/phaser-shim.js`     | Alias build vendor Phaser — pas de logique applicative  |
+| `src/testSeam.js`        | API Playwright E2E uniquement (`VITE_ENABLE_TEST_SEAM`) |
+| `src/skins/skinIds.js`   | Constantes d’identifiants                               |
+| `src/skins/skinTypes.js` | Typedef JSDoc sans runtime                              |
+| `src/sceneTypes.js`      | Contrat JSDoc `SceneContext` — documenté, non exécuté   |
 
 Couverture globale actuelle : ~95 % lignes, ~84 % branches (`npm run test:coverage`).
 
@@ -290,4 +324,4 @@ Couverture globale actuelle : ~95 % lignes, ~84 % branches (`npm run test:covera
 
 ---
 
-Last updated: 2026-07-07
+Last updated: 2026-07-08

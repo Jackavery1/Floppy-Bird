@@ -93,9 +93,15 @@ describe('device', () => {
         expect(hardcoreToggleLabel(true)).toContain('700→325 ms');
     });
 
-    it('hardcoreInvincibilityHintText indique la durée', async () => {
+    it('hardcoreInvincibilityHintText indique la durée et le tuyau', async () => {
         const { hardcoreInvincibilityHintText } = await loadDevice(false);
-        expect(hardcoreInvincibilityHintText(625)).toContain('625 ms');
+        expect(hardcoreInvincibilityHintText(625, 2)).toContain('625 ms');
+        expect(hardcoreInvincibilityHintText(625, 2)).toContain('tuyau 2');
+    });
+
+    it('trainingTutorialText mentionne le ralenti', async () => {
+        const { trainingTutorialText } = await loadDevice(false);
+        expect(trainingTutorialText()).toContain('×0.8');
     });
 
     it('optionsControlsHint regroupe les commandes du jeu', async () => {

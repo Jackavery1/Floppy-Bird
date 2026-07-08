@@ -23,6 +23,8 @@ export {
     showScoreTutorial,
     showHardcoreTutorial,
     dismissHardcoreTutorial,
+    showTrainingTutorial,
+    dismissTrainingTutorial,
     dismissJumpTutorial,
     dismissGameplayTutorial,
 } from './uiHudTutorial.js';

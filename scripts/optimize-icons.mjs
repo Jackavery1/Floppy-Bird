@@ -1,29 +1,38 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicIcons = path.join(__dirname, '..', 'public', 'icons');
-const source = path.join(publicIcons, 'icon-512.png');
+const iconsDir = path.join(__dirname, '..', 'public', 'icons');
 
-if (!fs.existsSync(source)) {
-    console.error('Placez une image source dans public/icons/icon-512.png');
+if (!fs.existsSync(iconsDir)) {
+    console.error('Dossier public/icons introuvable — exécutez npm run icons d’abord.');
     process.exit(1);
 }
 
-fs.mkdirSync(publicIcons, { recursive: true });
+const pngFiles = fs.readdirSync(iconsDir).filter((name) => name.endsWith('.png'));
+if (pngFiles.length === 0) {
+    console.error('Aucun PNG dans public/icons.');
+    process.exit(1);
+}
 
-await sharp(source)
-    .resize(512, 512, { fit: 'cover' })
-    .png({ quality: 82, compressionLevel: 9 })
-    .toFile(path.join(publicIcons, 'icon-512.png'));
+let savedBytes = 0;
 
-await sharp(source)
-    .resize(192, 192, { fit: 'cover' })
-    .png({ quality: 80, compressionLevel: 9 })
-    .toFile(path.join(publicIcons, 'icon-192.png'));
+for (const name of pngFiles) {
+    const filePath = path.join(iconsDir, name);
+    const before = fs.statSync(filePath).size;
+    const optimized = await sharp(filePath).png({ compressionLevel: 9 }).toBuffer();
+    if (optimized.length < before) {
+        fs.writeFileSync(filePath, optimized);
+        savedBytes += before - optimized.length;
+    }
+    const after = fs.statSync(filePath).size;
+    console.log(`✓ ${name}: ${(after / 1024).toFixed(1)} Ko`);
+}
 
-const s192 = fs.statSync(path.join(publicIcons, 'icon-192.png')).size;
-const s512 = fs.statSync(path.join(publicIcons, 'icon-512.png')).size;
-console.log(`Icônes : 192px=${(s192 / 1024).toFixed(1)} Ko, 512px=${(s512 / 1024).toFixed(1)} Ko`);
+const total = pngFiles.reduce((sum, name) => sum + fs.statSync(path.join(iconsDir, name)).size, 0);
+console.log(
+    `Icônes PNG : ${pngFiles.length} fichiers, ${(total / 1024).toFixed(1)} Ko total` +
+        (savedBytes > 0 ? ` (−${(savedBytes / 1024).toFixed(1)} Ko)` : '')
+);

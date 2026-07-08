@@ -1,4 +1,5 @@
 import { HARDCORE_UNLOCK_SCORE } from './hardcoreUnlock.js';
+import { GAME_CONFIG } from './config.js';
 
 export function isCoarsePointer() {
     if (typeof matchMedia === 'undefined') return false;
@@ -101,11 +102,6 @@ export function optionsControlsHint() {
         .join(' · ');
 }
 
-/** @deprecated Utiliser {@link optionsControlsHint} */
-export function modesHintLine() {
-    return optionsControlsHint();
-}
-
 export function optionsButtonLabel(open) {
     return open ? '▾ OPTIONS' : '▸ OPTIONS';
 }
@@ -150,15 +146,24 @@ export function coyoteHintText() {
         : 'Grâce dans le gap : ~5 frames après sortie du corridor';
 }
 
-/** @param {number} ms */
-export function hardcoreInvincibilityHintText(ms) {
-    return isCoarsePointer() ? `Invincible ${ms} ms` : `Invincible ${ms} ms · tuyau`;
+/** @param {number} ms @param {number} [pipeIndex] */
+export function hardcoreInvincibilityHintText(ms, pipeIndex = 1) {
+    const suffix = pipeIndex > 0 ? ` · tuyau ${pipeIndex}` : ' · tuyau';
+    return `Invincible ${ms} ms${suffix}`;
+}
+
+export function trainingTutorialText() {
+    const scale = GAME_CONFIG.training.timeScale;
+    const pct = Math.round(scale * 100);
+    return isCoarsePointer()
+        ? `Entraînement : ${pct} % vitesse,\nfantôme de ton meilleur run`
+        : `Entraînement : chronomètre ×${scale},\nfantôme de ton meilleur run`;
 }
 
 export function hardcoreTutorialText() {
     return isCoarsePointer()
         ? 'Hardcore : invincible au 1er tuyau,\npuis moins longtemps à chaque tuyau'
-        : 'Hardcore : invincible 700 ms au 1er tuyau,\npuis 625→325 ms à chaque tuyau passé';
+        : 'Hardcore : invincible 700 ms au 1er tuyau,\npuis 625→375→325 ms (7 tuyaux)';
 }
 
 export function classicModeHint() {

@@ -37,30 +37,33 @@
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-title" content="Floppy Bird" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="keywords" content="Floppy Bird, jeu arcade, Phaser, PWA, jeu gratuit, jeu casual" />
+        <meta
+            name="keywords"
+            content="Floppy Bird, jeu arcade, Phaser, PWA, jeu gratuit, jeu casual"
+        />
         <meta name="author" content="Joris Martinez" />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://jackavery1.github.io/Floppy-Bird/" />
         <title>Floppy bird</title>
         <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "WebApplication",
-          "name": "Floppy Bird",
-          "description": "Jeu arcade arcade 2D avec scores locaux et mode hors-ligne. Évite les tuyaux et bats ton record !",
-          "url": "https://jackavery1.github.io/Floppy-Bird/",
-          "applicationCategory": "Game",
-          "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "EUR"
-          },
-          "author": {
-            "@type": "Person",
-            "name": "Joris Martinez"
-          },
-          "softwareVersion": "1.6.0"
-        }
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "Floppy Bird",
+                "description": "Jeu arcade arcade 2D avec scores locaux et mode hors-ligne. Évite les tuyaux et bats ton record !",
+                "url": "https://jackavery1.github.io/Floppy-Bird/",
+                "applicationCategory": "Game",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                },
+                "author": {
+                    "@type": "Person",
+                    "name": "Joris Martinez"
+                },
+                "softwareVersion": "1.6.0"
+            }
         </script>
         <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
         <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png" />
@@ -73,7 +76,14 @@
     </head>
     <body>
         <main id="app" aria-label="Floppy Bird">
-            <div id="loading" role="status" aria-live="polite">Chargement…</div>
+            <div id="loading" role="status" aria-live="polite">
+                <span class="loading-inner">
+                    <span class="loading-label">Chargement…</span>
+                    <span class="loading-dots" aria-hidden="true"
+                        ><span></span><span></span><span></span
+                    ></span>
+                </span>
+            </div>
             <div id="landscape-hint" role="status" aria-live="polite">
                 Tourne ton téléphone en portrait pour jouer
             </div>

@@ -299,4 +299,32 @@ describe('uiDomAccessibility', () => {
         expect(btn.disabled).toBe(false);
         expect(btn._ariaDisabled).toBeUndefined();
     });
+
+    it('initAccessibilityLayer crée la couche a11y une seule fois', () => {
+        const store = new Map();
+        const doc = {
+            getElementById: (id) => store.get(id) ?? null,
+            createElement: vi.fn(() => ({
+                id: '',
+                className: '',
+                type: '',
+                hidden: false,
+                style: {},
+                setAttribute: vi.fn(),
+                addEventListener: vi.fn(),
+                appendChild: vi.fn(),
+            })),
+            body: {
+                appendChild: vi.fn((el) => {
+                    if (el.id) store.set(el.id, el);
+                }),
+            },
+        };
+        initAccessibilityLayer(doc);
+        const callsAfterFirst = doc.createElement.mock.calls.length;
+        initAccessibilityLayer(doc);
+        expect(doc.createElement.mock.calls.length).toBe(callsAfterFirst);
+        expect(store.has('a11y-controls')).toBe(true);
+        expect(store.has('ui-announcer')).toBe(true);
+    });
 });

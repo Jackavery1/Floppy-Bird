@@ -7,6 +7,11 @@ vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
+vi.mock('../src/textures/index.js', () => ({
+    ensureBirdTexture: vi.fn(),
+    ensureBirdTextures: vi.fn(),
+}));
+
 function createMockScene() {
     const sprite = {
         setScale: vi.fn(),

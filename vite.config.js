@@ -46,7 +46,15 @@ export default defineConfig(({ mode }) => {
         build: {
             rollupOptions: {
                 output: {
-                    manualChunks: useVendorPhaser ? undefined : { phaser: ['phaser'] },
+                    manualChunks(id) {
+                        if (id.includes('node_modules')) {
+                            return useVendorPhaser ? undefined : 'phaser';
+                        }
+                        if (useVendorPhaser && id.includes('/src/skins/')) {
+                            return 'skins';
+                        }
+                        return undefined;
+                    },
                 },
             },
         },

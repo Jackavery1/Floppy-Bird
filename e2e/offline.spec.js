@@ -50,5 +50,7 @@ test.describe('PWA hors ligne', () => {
         const body = await response?.text();
         expect(body).toContain('phaser.min.js');
         expect(body).toContain('index.html');
+        expect(body).toContain('favicon-32.png');
+        expect(body).toContain('icon-192.png');
     });
 });

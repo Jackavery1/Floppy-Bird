@@ -7,6 +7,7 @@ import {
     SKIP_TUTORIAL_AFTER_ROUNDS,
 } from './tutorialStorage.js';
 import { loadHardcoreTutorialSeen, markHardcoreTutorialSeen } from './hardcoreStorage.js';
+import { loadTrainingTutorialSeen, markTrainingTutorialSeen } from './trainingStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -53,8 +54,21 @@ export function showHardcoreTutorialIfNeeded(scene) {
 }
 
 /** @param {SceneContext} scene */
+export function showTrainingTutorialIfNeeded(scene) {
+    if (!scene.trainingMode || !loadTutorialComplete()) return;
+    if (loadTrainingTutorialSeen()) return;
+    scene.ui.showTrainingTutorial?.();
+    markTrainingTutorialSeen();
+}
+
+/** @param {SceneContext} scene */
 export function onHardcoreTutorialJump(scene) {
     scene.ui.dismissHardcoreTutorial?.();
+}
+
+/** @param {SceneContext} scene */
+export function onTrainingTutorialJump(scene) {
+    scene.ui.dismissTrainingTutorial?.();
 }
 
 /** @param {SceneContext} scene */

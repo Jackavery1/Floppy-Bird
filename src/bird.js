@@ -3,6 +3,7 @@ import { birdAnimKey, birdTextureKey } from './skins/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { DEPTH } from './uiDepth.js';
 import { birdSpriteScale } from './textures/birdTextures.js';
+import { ensureBirdTexture } from './textures/index.js';
 
 export class Bird {
     constructor(scene, x, y, skinId = loadSelectedSkin()) {
@@ -21,6 +22,7 @@ export class Bird {
         this.maxFallSpeed = cfg.maxFallSpeed;
         this._jumpBuffered = false;
 
+        ensureBirdTexture(scene, skinId);
         this.sprite = scene.add.sprite(x, y, birdTextureKey(skinId), 1);
         this.sprite.setScale(birdSpriteScale(this.width));
         this.sprite.setDepth(DEPTH.BIRD);
@@ -63,6 +65,7 @@ export class Bird {
     }
 
     setSkin(skinId) {
+        ensureBirdTexture(this.scene, skinId);
         this._skinId = skinId;
         this.sprite.setTexture(birdTextureKey(skinId), 1);
         this.sprite.setScale(birdSpriteScale(this.width));

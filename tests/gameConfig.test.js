@@ -24,6 +24,15 @@ describe('GAME_CONFIG.round', () => {
     it('bufferise les sauts sur plusieurs frames', () => {
         expect(GAME_CONFIG.bird.jumpBufferFrames).toBeGreaterThanOrEqual(2);
     });
+
+    it('hardcore : grace progressive sur 7 tuyaux avec paliers adoucis', () => {
+        const steps = GAME_CONFIG.round.hardcoreSpawnInvincibilitySteps;
+        expect(steps).toHaveLength(7);
+        expect(steps[0]).toBe(700);
+        expect(steps.at(-1)).toBe(325);
+        expect(steps).toContain(425);
+        expect(steps).toContain(375);
+    });
 });
 
 describe('GAME_CONFIG.getDifficulty', () => {
