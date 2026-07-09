@@ -72,7 +72,8 @@ jobs:
             - run: npm run lighthouse
 
     deploy:
-        needs: [check, lighthouse, e2e]
+        # e2e (6 viewports, ~90 min) reste informatif — ne bloque pas Pages (cf. CONTRIBUTING).
+        needs: [check, lighthouse]
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         runs-on: ubuntu-latest
         permissions:

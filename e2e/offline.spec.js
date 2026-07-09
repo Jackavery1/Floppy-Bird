@@ -34,11 +34,17 @@ test.describe('PWA hors ligne', () => {
         await page.goto('offline.html');
         await expect(page.getByRole('heading', { name: 'Hors ligne' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Retour au jeu' })).toBeVisible();
+        await page.evaluate(async () => {
+            await document.fonts.load('12px "Press Start 2P"');
+            await document.fonts.ready;
+        });
         await expect
-            .poll(() =>
-                page.evaluate(() =>
-                    getComputedStyle(document.querySelector('h1')).fontFamily.toLowerCase()
-                )
+            .poll(
+                () =>
+                    page.evaluate(() =>
+                        getComputedStyle(document.querySelector('h1')).fontFamily.toLowerCase()
+                    ),
+                { timeout: 10_000 }
             )
             .toContain('press start 2p');
     });

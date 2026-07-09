@@ -97,7 +97,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` du workflow CI pousse `dist/` sur **`gh-pages`** à chaque push sur `main` (après `check` + `lighthouse` + **`e2e`**). Le déploiement est bloqué si les tests Playwright échouent.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`**. Les **e2e** (6 viewports, ~90 min) tournent en parallèle mais **ne bloquent pas** le déploiement — signal de régression sans retarder Pages.
 
 **Pages** (Settings → Pages) : source **GitHub Actions** (recommandé) ou branche **`gh-pages`** / **`/ (root)`** si tu utilises peaceiris.
 
