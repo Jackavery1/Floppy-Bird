@@ -143,7 +143,13 @@ export function createMenuPanelController(ui, cfg) {
         if (!ui[cfg.btnLabelKey]) return;
         const text = cfg.buttonLabelFn(ui[cfg.openKey]);
         if (labelFit.style != null && labelFit.maxWidth != null) {
-            applyFittedLabel(ui.scene, ui[cfg.btnLabelKey], text, labelFit.style, labelFit.maxWidth);
+            applyFittedLabel(
+                ui.scene,
+                ui[cfg.btnLabelKey],
+                text,
+                labelFit.style,
+                labelFit.maxWidth
+            );
         } else {
             ui[cfg.btnLabelKey].setText(text);
         }
