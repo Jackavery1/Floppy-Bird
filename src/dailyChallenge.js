@@ -22,10 +22,6 @@ export function getDailyChallengeSeed(date = new Date()) {
     return hash >>> 0;
 }
 
-export function getDailyChallengeLabel(date = new Date()) {
-    return `Défi du jour #${getDailyChallengeCode(date)} · séquence partagée`;
-}
-
 /** Skin imposé du jour (aperçu même si verrouillé en classique). */
 export function getDailyChallengeSkin(date = new Date()) {
     const seed = getDailyChallengeSeed(date);

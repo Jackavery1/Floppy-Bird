@@ -23,11 +23,7 @@ function hardcoreFill(active, unlocked) {
 }
 
 function hideAllOptionsSections(ui) {
-    for (const section of [
-        ui._optionsControlsElements,
-        ui._optionsSettingsElements,
-        ui._optionsModesElements,
-    ]) {
+    for (const section of [ui._optionsControlsElements, ui._optionsSettingsElements]) {
         setOptionsSectionVisible(section, false);
     }
 }

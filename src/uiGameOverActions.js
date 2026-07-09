@@ -1,4 +1,4 @@
-import { gameOverRestartLabel, restartHintForMode } from './device.js';
+import { gameOverRestartLabel } from './device.js';
 import { sceneTween } from './motion.js';
 import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
@@ -6,7 +6,6 @@ import {
     addCenteredText,
     applyFittedLabel,
     DEPTH,
-    FONT_SIZE_HINT,
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_HOVER,
     GAME_OVER_RESTART_BTN_WIDTH,
@@ -18,6 +17,11 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
+
+const RESTART_LABEL_STYLE = panelChromeTextStyle({
+    fontSize: '12px',
+    fill: DESIGN_TOKENS.contourMenu,
+});
 
 /**
  * Pied de panneau game over : bouton rejouer, bouton menu et animation d’apparition.
@@ -34,25 +38,6 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     const elements = [];
     const restartBtnY = gameOverRestartBtnY(P);
     const restartLabel = gameOverRestartLabel(isDaily);
-    const restartHintY = restartBtnY - MIN_TOUCH / 2 - 10;
-    const restartLabelStyle = panelChromeTextStyle({
-        fontSize: '12px',
-        fill: DESIGN_TOKENS.contourMenu,
-    });
-    elements.push(
-        addCenteredText(
-            scene,
-            cx,
-            restartHintY,
-            restartHintForMode(isDaily),
-            panelChromeTextStyle({
-                fontSize: FONT_SIZE_HINT,
-                fill: DESIGN_TOKENS.texteSecondaire,
-                fontStyle: 'italic',
-            }),
-            DEPTH.MENU_RAISED
-        )
-    );
 
     const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     restartBtnShadow.fillStyle(0x000000, 0.35);
@@ -71,16 +56,17 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         cx,
         restartBtnY,
         restartLabel,
-        restartLabelStyle,
+        RESTART_LABEL_STYLE,
         DEPTH.MENU_BTN_BG
     );
     applyFittedLabel(
         scene,
         restartBtnText,
         restartLabel,
-        restartLabelStyle,
+        RESTART_LABEL_STYLE,
         GAME_OVER_RESTART_BTN_WIDTH - 12
     );
+    ui._restartBtnText = restartBtnText;
 
     const restartHitZone = scene.add.rectangle(
         cx,

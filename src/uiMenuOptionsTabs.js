@@ -37,7 +37,6 @@ export function setOptionsTab(ui, tab) {
     setOptionsSectionVisible(ui._optionsControlsElements, panelOpen && tab === 'controls');
     const preferencesVisible = panelOpen && tab === 'preferences';
     setOptionsSectionVisible(ui._optionsSettingsElements, preferencesVisible);
-    setOptionsSectionVisible(ui._optionsModesElements, preferencesVisible);
     ui._optionsTabButtons?.forEach(({ id, paint, label }) => {
         const active = id === tab;
         paint(active ? MENU_BTN_COLOR : TAB_INACTIVE, active ? 0.95 : 0.78);

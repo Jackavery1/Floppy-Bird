@@ -8,7 +8,7 @@ import { UI_LAYOUT } from '../src/uiLayout.js';
 describe('uiMenuOptionsModes', () => {
     let scene;
     let ui;
-    let elements;
+    let added;
 
     beforeEach(() => {
         scene = createBaseScene({
@@ -20,8 +20,8 @@ describe('uiMenuOptionsModes', () => {
         });
         ui = new UI(scene);
         ui._optionsPanelElements = [];
-        elements = [];
-        buildModeControls(ui, elements, UI_LAYOUT.optionsPanel);
+        added = [];
+        buildModeControls(ui, (...objs) => added.push(...objs), UI_LAYOUT.optionsPanel);
     });
 
     it('crée les contrôles entraînement et hardcore', () => {
@@ -29,7 +29,7 @@ describe('uiMenuOptionsModes', () => {
         expect(ui._trainingHit).toBeTruthy();
         expect(ui._hardcoreLabel).toBeTruthy();
         expect(ui._hardcoreHit).toBeTruthy();
-        expect(ui._classicHint).toBeUndefined();
+        expect(added.length).toBeGreaterThan(0);
     });
 
     it('refléte le mode entraînement actif', () => {

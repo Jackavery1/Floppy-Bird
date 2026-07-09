@@ -4,7 +4,6 @@ import { DESIGN_TOKENS } from './designTokens.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { buildMetaContext } from './metaContext.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
-import { beginOptionsSection } from './uiMenuOptionsSection.js';
 import { buildTrainingSpeedControl } from './uiMenuOptionsTrainingSpeed.js';
 import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from './uiToggleIcons.js';
 import {
@@ -16,15 +15,14 @@ import {
 
 /**
  * @param {import('./ui.js').UI} ui
- * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {{ training: number; hardcore: number }} panel
+ * @param {( ...objs: import('phaser').GameObjects.GameObject[]) => void} add
+ * @param {{ training: number; hardcore: number; trainingSpeed: number }} panel
  */
-export function buildModeControls(ui, elements, panel) {
+export function buildModeControls(ui, add, panel) {
     const scene = ui.scene;
     const ctx = buildMetaContext(scene);
     const hardcoreUnlocked = isHardcoreUnlocked(ctx);
     const toggleIconX = GAME_CONFIG.centerX + TOGGLE_ICON_X_OFFSET;
-    const { add } = beginOptionsSection(ui, scene, elements, '_optionsModesElements');
 
     ui._trainingIcon = scene.add.graphics();
     ui._trainingIcon.setPosition(toggleIconX, panel.training);
@@ -66,8 +64,6 @@ export function buildModeControls(ui, elements, panel) {
         scene.toggleTraining();
     });
     add(ui._trainingHit);
-
-    buildTrainingSpeedControl(ui, elements, panel);
 
     ui._hardcoreIcon = scene.add.graphics();
     ui._hardcoreIcon.setPosition(toggleIconX, panel.hardcore);
@@ -115,4 +111,6 @@ export function buildModeControls(ui, elements, panel) {
         });
     }
     add(ui._hardcoreHit);
+
+    buildTrainingSpeedControl(ui, add, panel);
 }

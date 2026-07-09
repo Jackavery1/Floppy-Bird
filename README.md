@@ -1,7 +1,7 @@
 # Floppy Bird
 
 [![CI](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-100%2F100-green)](.)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-A11y%2090%2B%20%7C%20BP%2090%2B-green)](.)
 [![A11y](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-green)](.)
 [![Tests](https://img.shields.io/badge/Tests-604%2F604-green)](.)
 
@@ -17,7 +17,7 @@
 - 🚀 **PWA** : Mode hors-ligne, installation sur home screen, caching intelligent
 - 🎨 **Polish** : Particules d'impact, animations fluides, son & haptics
 - 💾 **Persistant** : Scores locaux, progression meta, sélection skins sauvegardées
-- ⚡ **Performance** : ~2s load time, bundle ~180KB (gzipped)
+- ⚡ **Performance** : bundle app ~45 Ko gzip (Phaser vendor ~1,1 Mo, précaché PWA)
 
 Couverture Vitest en CI : seuils ≥ 94 % lines / statements, ≥ 82 % branches, ≥ 91 % functions (`npm run test:coverage`). Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour les artefacts locaux.
 
@@ -38,6 +38,8 @@ npm run lint         # ESLint
 npm run format:check # Prettier (vérif)
 npm run format       # Prettier (appliquer)
 npm run icons        # public/icons/
+npm run measure      # tailles dist/ (après build)
+npm run clean        # supprime dist/, coverage/, rapports e2e locaux
 ```
 
 Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -85,7 +87,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 | --------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `src/`          | gameplay (`bird`, `pipes`, `scene*`), UI (`ui*` — carte : [`uiIndex.js`](src/uiIndex.js)), meta, I/O (`boolStorage`, `*Storage`) |
 | `src/scene*.js` | Orchestration Phaser (flow, round, death, input…) — `GameScene.js` mince                                                         |
-| `tests/`        | Vitest (miroir des modules métier)                                                                                               |
+| `tests/`        | Vitest (miroir des modules métier ; helpers `gameSceneMocks`, `gameSceneHarness`)                                                |
 | `e2e/`          | Playwright (desktop, mobile portrait/paysage Chromium + WebKit, tablette paysage)                                                |
 | `public/`       | manifest PWA, `offline.html`                                                                                                     |
 | `scripts/`      | build (icônes, copie Phaser vendor)                                                                                              |
@@ -99,6 +101,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Dev** : Phaser bundlé par Vite (HMR rapide).
 - **Production** : Phaser servi depuis `vendor/phaser.min.js` (précaché PWA, jouable hors ligne après 1ère visite).
 - **Hors ligne sans visite préalable** : impossible sans cache SW — ouvre le jeu une fois en ligne (ou installe la PWA après cette visite). Voir `public/offline.html`.
+- **Touch targets** : hauteur minimale **44 px** (`MIN_TOUCH`) ; boutons secondaires menu **80×44 px** (`menuBtnW` dans `uiLayoutConstants.js`, fit typo via `applyFittedLabel`)
 - **Mobile paysage** : `#landscape-hint` bloque le jeu sur téléphone tactile (hauteur ≤520 px) — choix assumé ; **tablette paysage** (hauteur >520 px) autorisée
 - **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`, 25 boutons) — pause, saut, menu, game over, difficultés, onglets options (Tab + Entrée)
 - **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (`maximum-scale=3.0` dans le viewport) pour l’accessibilité visuelle ; le canvas reste centré via `visualViewport` (position `fixed`, recalcul au resize/scroll clavier virtuel) ; le letterbox préserve le ratio 288×512

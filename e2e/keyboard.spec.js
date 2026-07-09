@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { forceGameOver, getDailyChallengeMode, getGameplayEquity, getTestState } from './helpers/testSeam.mjs';
+import { forceGameOver, getDailyChallengeMode, getGameOverRestartLabel, getGameplayEquity, getTestState } from './helpers/testSeam.mjs';
 import {
     enterPausedFromPlaying,
     expectGameState,
@@ -56,8 +56,21 @@ test.describe('clavier desktop', () => {
         await waitForGameReady(page);
         await forceGameOver(page);
         await expectGameState(page, 'gameover');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('REJOUER');
         await page.keyboard.press('Space');
         await expectGameState(page, 'playing');
+    });
+
+    test('game over défi quotidien affiche DÉFI', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await forceGameOver(page, { isDaily: true });
+        await expectGameState(page, 'gameover');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('DÉFI');
+        await expect(page.locator('#a11y-gameover-restart')).toHaveAttribute(
+            'aria-label',
+            /défi|rejouer le défi/i
+        );
     });
 
     test('Tab puis Entrée sur jouer démarre la partie', async ({ page }, testInfo) => {

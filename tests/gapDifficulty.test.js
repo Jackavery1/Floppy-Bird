@@ -26,7 +26,7 @@ describe('gapDifficulty', () => {
     });
 
     it('effectivePipeGapForScore resserre le gap physique dès 20 points', () => {
-        const base = 112;
+        const base = GAME_CONFIG.getDifficulty('normal').gap;
         expect(effectivePipeGapForScore(base, 19)).toBe(base);
         expect(effectivePipeGapForScore(base, 20)).toBe(base - GAME_CONFIG.round.gapTightenStep);
         expect(effectivePipeGapForScore(base, 30)).toBe(

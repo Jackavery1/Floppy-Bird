@@ -46,8 +46,8 @@ describe('uiMenuOptions', () => {
         toggleMenuOptions(ui);
         expect(ui._optionsOpen).toBe(true);
         expect(ui._optionsActiveTab).toBe('preferences');
-        expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(true);
         expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(true);
+        expect(ui._hardcoreLabel).toBeTruthy();
         toggleMenuOptions(ui);
         expect(ui._optionsOpen).toBe(false);
     });

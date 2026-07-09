@@ -1,5 +1,5 @@
 import { createBirdSpriteSheet } from './birdTextures.js';
-import { birdAnimKey, SKIN_IDS } from '../skins/index.js';
+import { birdAnimKey } from '../skins/index.js';
 import { loadSelectedSkin } from '../metaStorage.js';
 import { createPipeSprites, ensurePipeTextures } from './pipeTextures.js';
 import { createBackgroundSprite } from './backgroundTextures.js';
@@ -67,7 +67,3 @@ export function preloadTextures(scene) {
 
 export { ensurePipeTextures };
 
-/** Compat tests — précharge toutes les textures oiseau. Préférer {@link ensureBirdTextures}. */
-export function createBirdAnimations(scene) {
-    ensureBirdTextures(scene, SKIN_IDS);
-}

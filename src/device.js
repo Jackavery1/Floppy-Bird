@@ -28,12 +28,17 @@ export function pauseResumeHint() {
     return isCoarsePointer() ? 'TAP : reprendre' : 'ESC : reprendre';
 }
 
-export function difficultyHint() {
-    return isCoarsePointer() ? 'Boutons : difficulté' : '1  2  3 : difficulté';
-}
-
 export function menuHint() {
     return isCoarsePointer() ? 'Bouton MENU ci-dessous' : 'M : menu';
+}
+
+/** @param {'easy' | 'normal' | 'hard'} level */
+export function difficultyA11yLabel(level) {
+    const names = { easy: 'facile', normal: 'normale', hard: 'difficile' };
+    const keys = { easy: '1', normal: '2', hard: '3' };
+    const base = `Difficulté ${names[level]}`;
+    if (isCoarsePointer()) return base;
+    return `${base} — touche ${keys[level]}`;
 }
 
 export function trainingHint() {
@@ -98,13 +103,6 @@ export function optionsControlRows() {
     ];
 }
 
-/** Commandes complètes affichées dans le panneau OPTIONS. */
-export function optionsControlsHint() {
-    return optionsControlRows()
-        .map(({ key, action }) => `${key} : ${action}`)
-        .join(' · ');
-}
-
 export function optionsButtonLabel(_open) {
     return 'OPTS';
 }
@@ -122,7 +120,7 @@ export function skinsButtonLabel(_open) {
 }
 
 export function gameOverRestartLabel(isDaily) {
-    return isDaily ? 'DÉFI' : 'ENCORE';
+    return isDaily ? 'DÉFI' : 'REJOUER';
 }
 
 export function skinsCycleHint() {
@@ -133,10 +131,6 @@ export function skinsPanelHint() {
     return isCoarsePointer()
         ? 'Scores · hardcore · défi · entraînement · néon = collection'
         : 'Débloqués via scores, modes et collection';
-}
-
-export function optionsHint() {
-    return isCoarsePointer() ? 'Scores · Options · Skins' : 'S scores · O options · K skins';
 }
 
 export function jumpTutorialText() {
@@ -181,12 +175,6 @@ export function hardcoreTutorialText() {
     return isCoarsePointer()
         ? 'Hardcore : invincible au 1er tuyau,\npuis moins longtemps à chaque tuyau'
         : 'Hardcore : invincible 700 ms au 1er tuyau,\npuis 625→375→325 ms (7 tuyaux)';
-}
-
-export function classicModeHint() {
-    return isCoarsePointer()
-        ? 'Classique : aléatoire selon difficulté'
-        : 'Classique : gaps aléatoires';
 }
 
 /** @param {'pipe' | 'ground' | 'ceiling' | null | undefined} cause */

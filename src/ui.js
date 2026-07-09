@@ -2,6 +2,7 @@ import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
 import { bindUiFacade } from './uiFacadeBind.js';
+import { closeAllMenuPanels } from './uiMenu.js';
 import {
     DEPTH,
     GAME_OVER_RESTART_BTN_COLOR,
@@ -30,6 +31,7 @@ export class UI {
         this._tutorialHint = null;
         this._inGameControlElements = [];
         this._overlays = { menu: [], pause: [], gameOver: [] };
+        this._closeAllMenuPanels = () => closeAllMenuPanels(this);
     }
 
     /** @param {'menu' | 'pause' | 'gameOver'} key */
@@ -94,6 +96,8 @@ export class UI {
         if (this._diffBtnGraphics) this._diffBtnGraphics.destroy();
         if (this._menuBtnGraphics) this._menuBtnGraphics.destroy();
         if (this._restartBtnGraphics) this._restartBtnGraphics.destroy();
+        this._restartBtnGraphics = null;
+        this._restartBtnText = null;
         this._diffBtnLabels = [];
     }
 }

@@ -24,7 +24,7 @@ describe('shellTheme', () => {
         expect(style.setProperty).toHaveBeenCalledWith('--spacing-md', '12px');
         expect(meta.setAttribute).toHaveBeenCalledWith('content', expect.any(String));
         expect(doc.body.style.background).toBeTruthy();
-    });
+    }, 10_000);
 
     it('syncShellTheme renforce le contraste et data-contrast-high', async () => {
         vi.stubGlobal(

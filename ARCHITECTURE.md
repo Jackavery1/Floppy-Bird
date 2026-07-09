@@ -135,9 +135,10 @@ ui.js (orchestration — façade SceneContext)
 | **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
 | **Extension**      | Implémenter dans `ui*.js`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
+| **Délégation**     | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans `ui.js`      |
 | **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
 
-Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : ligne d’aide en bas du menu (`optionsHint`, `difficultyHint`).
+Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
 ## Data Flow
 
@@ -221,7 +222,7 @@ Vitesse par défaut **80 %** (`training.timeScale: 0.8`), cyclable dans OPTIONS 
 - **Storage** : Persistence, data integrity
 - **Accessibility** : ARIA (`aria-pressed`, `aria-expanded`), annonces, `menuTrainingSpeed`
 
-### E2E Tests (10 specs, 88 cas, 6 projets viewport — ~528 exécutions en matrice CI)
+### E2E Tests (11 specs, 6 projets viewport)
 
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
@@ -266,22 +267,13 @@ Le job `deploy` **n’attend pas** `e2e` : signal de régression sans bloquer Pa
 
 ## Development Workflow
 
-### Local Development
-
-```bash
-npm run dev              # http://localhost:5173
-npm run test:watch      # Vitest watch
-npm test                # Vitest une passe (CI)
-npm run test:e2e        # E2E tests
-npm run lint            # ESLint
-npm run format          # Prettier
-```
+Commandes locales : voir [README.md](README.md). Mesure bundle après build : `npm run measure` (snapshot de référence `scripts/bundle-baseline.json`).
 
 ### Build & Deploy
 
 ```bash
 npm run icons           # public/icons/ (+ icons:optimize en CI)
-npm run build           # dist/ + PWA (police latin/latin-ext uniquement)
+npm run build           # dist/ + PWA (polices latin/latin-ext woff2 uniquement)
 npm run measure         # tailles dist/ après build ; snapshot manuel scripts/bundle-baseline.json
 npm run preview         # Test build locally
 git push                # CI/CD GitHub Actions

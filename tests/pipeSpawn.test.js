@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createPipeSprite, spawnPipePairAtGap } from '../src/pipeSpawn.js';
+import { GAME_CONFIG } from '../src/config.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/textures/pipeTextures.js', () => ({
@@ -24,7 +25,7 @@ describe('pipeSpawn', () => {
     it('spawnPipePairAtGap ajoute une paire haut/bas', () => {
         const scene = createBaseScene();
         const state = {
-            pipeGap: 112,
+            pipeGap: GAME_CONFIG.getDifficulty('normal').gap,
             pipeWidth: 40,
             pipeHeight: 600,
             topPipes: [],

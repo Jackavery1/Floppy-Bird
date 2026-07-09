@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
     preloadTextures,
-    createBirdAnimations,
+    ensureBirdTextures,
     ensureBirdTexture,
 } from '../../src/textures/index.js';
 import { createBirdSpriteSheet } from '../../src/textures/birdTextures.js';
@@ -164,14 +164,14 @@ describe('textures', () => {
         expect(scene._graphics.generateTexture).toHaveBeenCalledWith('ground', 288, 36);
     });
 
-    it('createBirdAnimations enregistre les animations via le barrel', () => {
+    it('ensureBirdTextures enregistre les animations pour tous les skins', () => {
         const created = [];
         const scene = sceneWithGraphicsList();
         scene.anims = {
             exists: vi.fn(() => false),
             create: vi.fn((cfg) => created.push(cfg.key)),
         };
-        createBirdAnimations(scene);
+        ensureBirdTextures(scene, SKIN_IDS);
         expect(created).toHaveLength(SKIN_IDS.length);
         expect(created[0]).toBe(birdAnimKey(SKIN_IDS[0]));
         expect(scene.anims.create).toHaveBeenCalledTimes(SKIN_IDS.length);

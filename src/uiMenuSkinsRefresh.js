@@ -25,16 +25,13 @@ export function refreshSkinsTab(ui) {
                     : DESIGN_TOKENS.texteSkinLabel
                 : DESIGN_TOKENS.texteVerrouille
         );
-        nameLabel.setText(isUnlocked ? getSkin(skinId).label : '???');
+        nameLabel.setText(getSkin(skinId).label);
         frame.setStrokeStyle(
             2,
             isSelected
                 ? hexVersPhaser(DESIGN_TOKENS.accent)
                 : hexVersPhaser(DESIGN_TOKENS.cadreSkinContour)
         );
-        if (!isUnlocked) {
-            nameLabel.setText('???');
-        }
         if (recordLabel) {
             if (isUnlocked) {
                 const best = loadHighScore(scene.difficulty, scene.hardcoreMode, skinId);

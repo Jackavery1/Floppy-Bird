@@ -91,7 +91,7 @@ describe('uiMenu', () => {
         expect(ui.highScore).toBe(42);
     });
 
-    it("la rangée SCORES/OPTIONS/SKINS se cache quand un panneau s'ouvre (anti-chevauchement)", () => {
+    it("la rangée SCORE/OPTS/SKINS se cache quand un panneau s'ouvre (anti-chevauchement)", () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
 
         expect(ui._menuChromeElements).toContain(ui._scoresBtnBg);

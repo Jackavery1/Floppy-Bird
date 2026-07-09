@@ -21,7 +21,8 @@
         "format:check": "prettier --check \"src/**/*.js\" \"tests/**/*.js\" \"e2e/**/*.js\" \"scripts/**/*.mjs\"",
         "icons": "node scripts/generate-icons.mjs",
         "icons:optimize": "node scripts/optimize-icons.mjs",
-        "measure": "node scripts/measure-bundle.mjs"
+        "measure": "node scripts/measure-bundle.mjs",
+        "clean": "node scripts/clean-artifacts.mjs"
     },
     "dependencies": {
         "@fontsource/press-start-2p": "^5.2.7",

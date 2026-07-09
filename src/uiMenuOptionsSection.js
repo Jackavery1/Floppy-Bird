@@ -14,7 +14,7 @@ export function setOptionsSectionVisible(section, visible) {
  * @param {import('./ui.js').UI} ui
  * @param {import('phaser').Scene} scene
  * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {'_optionsControlsElements' | '_optionsSettingsElements' | '_optionsModesElements'} sectionKey
+ * @param {'_optionsControlsElements' | '_optionsSettingsElements'} sectionKey
  */
 export function beginOptionsSection(ui, scene, elements, sectionKey) {
     const container = scene.add.container(0, 0);

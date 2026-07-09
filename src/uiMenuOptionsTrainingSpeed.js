@@ -2,17 +2,15 @@ import { GAME_CONFIG } from './config.js';
 import { trainingSpeedLabel } from './device.js';
 import { DESIGN_TOKENS } from './designTokens.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
-import { beginOptionsSection } from './uiMenuOptionsSection.js';
 import { applyTrainingSpeedLabel, TRAINING_LABEL_STYLE } from './uiMenuOptionsLabels.js';
 
 /**
  * @param {import('./ui.js').UI} ui
- * @param {import('phaser').GameObjects.GameObject[]} elements
+ * @param {( ...objs: import('phaser').GameObjects.GameObject[]) => void} add
  * @param {{ trainingSpeed: number }} panel
  */
-export function buildTrainingSpeedControl(ui, elements, panel) {
+export function buildTrainingSpeedControl(ui, add, panel) {
     const scene = ui.scene;
-    const { add } = beginOptionsSection(ui, scene, elements, '_optionsModesElements');
 
     ui._trainingSpeedLabel = addCenteredText(
         scene,

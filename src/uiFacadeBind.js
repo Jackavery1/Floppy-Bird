@@ -42,56 +42,65 @@ import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
 import { cycleMenuSkin } from './uiMenuSkins.js';
 import { showPause } from './uiPause.js';
 
+const HUD_METHODS = {
+    createScoreDisplay,
+    hideInGameScore,
+    createInGameControls,
+    updateScore,
+    showRecordBroken,
+    showDailyGoalReached,
+    showDailyGoalBrief,
+    showDifficultyEscalation,
+    showScoreStreak,
+    showJumpTutorial,
+    showGapTutorial,
+    showScoreTutorial,
+    dismissJumpTutorial,
+    dismissGameplayTutorial,
+    showDifficultyEscalationPreview,
+    showSpeedBoostPreview,
+    showCoyoteHint,
+    showHardcoreInvincibilityHint,
+    showHardcoreTutorial,
+    dismissHardcoreTutorial,
+    showTrainingTutorial,
+    dismissTrainingTutorial,
+    showFlash,
+};
+
+const MENU_METHODS = {
+    showMenu,
+    updateTrainingLabel,
+    updateTrainingSpeedLabel,
+    updateHardcoreLabel,
+    updateDifficultyButtons,
+    refreshHighScore: refreshMenuHighScore,
+};
+
+const PANEL_METHODS = {
+    toggleMenuOptionsPanel: toggleMenuOptions,
+    toggleMenuScoresPanel: toggleMenuScores,
+    toggleMenuSkinsPanel: toggleMenuSkins,
+    cycleMenuSkin,
+    refreshHardcoreLockState,
+};
+
+const OVERLAY_METHODS = {
+    showPause,
+};
+
+/** Noms des méthodes déléguées sur `scene.ui` (source unique pour tests et doc). */
+export const UI_FACADE_METHODS = Object.freeze([
+    ...Object.keys(HUD_METHODS),
+    ...Object.keys(MENU_METHODS),
+    ...Object.keys(PANEL_METHODS),
+    ...Object.keys(OVERLAY_METHODS),
+    'showGameOver',
+]);
+
 /** @param {typeof import('./ui.js').UI} UiClass */
 export function bindUiFacade(UiClass) {
-    const hud = {
-        createScoreDisplay,
-        hideInGameScore,
-        createInGameControls,
-        updateScore,
-        showRecordBroken,
-        showDailyGoalReached,
-        showDailyGoalBrief,
-        showDifficultyEscalation,
-        showScoreStreak,
-        showJumpTutorial,
-        showGapTutorial,
-        showScoreTutorial,
-        dismissJumpTutorial,
-        dismissGameplayTutorial,
-        showDifficultyEscalationPreview,
-        showSpeedBoostPreview,
-        showCoyoteHint,
-        showHardcoreInvincibilityHint,
-        showHardcoreTutorial,
-        dismissHardcoreTutorial,
-        showTrainingTutorial,
-        dismissTrainingTutorial,
-        showFlash,
-    };
-
-    const menu = {
-        showMenu,
-        updateTrainingLabel,
-        updateTrainingSpeedLabel,
-        updateHardcoreLabel,
-        updateDifficultyButtons,
-        refreshHighScore: refreshMenuHighScore,
-    };
-
-    const panels = {
-        toggleMenuOptionsPanel: toggleMenuOptions,
-        toggleMenuScoresPanel: toggleMenuScores,
-        toggleMenuSkinsPanel: toggleMenuSkins,
-        cycleMenuSkin,
-        refreshHardcoreLockState,
-    };
-
-    const overlays = {
-        showPause,
-    };
-
-    for (const group of [hud, menu, panels, overlays]) {
+    for (const group of [HUD_METHODS, MENU_METHODS, PANEL_METHODS, OVERLAY_METHODS]) {
         for (const [name, fn] of Object.entries(group)) {
             UiClass.prototype[name] = function (...args) {
                 return fn(this, ...args);

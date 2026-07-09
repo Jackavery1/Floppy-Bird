@@ -60,18 +60,18 @@ describe('device', () => {
         expect(pauseResumeHint()).toBe('ESC : reprendre');
     });
 
-    it('difficultyHint adapte le libellé', async () => {
-        const { difficultyHint } = await loadDevice(true);
-        expect(difficultyHint()).toBe('Boutons : difficulté');
-        const { difficultyHint: fine } = await loadDevice(false);
-        expect(fine()).toBe('1  2  3 : difficulté');
-    });
-
     it('menuHint adapte le libellé', async () => {
         const { menuHint } = await loadDevice(true);
         expect(menuHint()).toBe('Bouton MENU ci-dessous');
         const { menuHint: fine } = await loadDevice(false);
         expect(fine()).toBe('M : menu');
+    });
+
+    it('difficultyA11yLabel mentionne les touches clavier', async () => {
+        const { difficultyA11yLabel } = await loadDevice(false);
+        expect(difficultyA11yLabel('normal')).toBe('Difficulté normale — touche 2');
+        const { difficultyA11yLabel: touch } = await loadDevice(true);
+        expect(touch('hard')).toBe('Difficulté difficile');
     });
 
     it('trainingHint adapte le libellé', async () => {
@@ -104,21 +104,23 @@ describe('device', () => {
         expect(trainingTutorialText()).toContain('×0.8');
     });
 
-    it('optionsControlsHint regroupe les commandes du jeu', async () => {
-        const { optionsControlsHint } = await loadDevice(false);
-        const hint = optionsControlsHint();
-        expect(hint).toContain('ESPACE : sauter');
-        expect(hint).toContain('D : défi du jour');
-        expect(hint).toContain('T : entraînement');
-        expect(hint).toContain('scores · skins');
+    it('optionsControlRows liste les commandes du jeu', async () => {
+        const { optionsControlRows } = await loadDevice(false);
+        const rows = optionsControlRows();
+        expect(rows.some((r) => r.key === 'ESPACE' && r.action === 'sauter')).toBe(true);
+        expect(rows.some((r) => r.key === 'D' && r.action === 'défi du jour')).toBe(true);
+        expect(rows.some((r) => r.key === 'T' && r.action === 'entraînement')).toBe(true);
+        expect(rows.some((r) => r.key === 'S·K' && r.action === 'scores · skins')).toBe(true);
     });
 
-    it('optionsControlsHint adapte le tactile', async () => {
-        const { optionsControlsHint } = await loadDevice(true);
-        const hint = optionsControlsHint();
-        expect(hint).toContain('TAP : sauter');
-        expect(hint).toContain('ENTR.');
-        expect(hint).toContain('scores · skins · options');
+    it('optionsControlRows adapte le tactile', async () => {
+        const { optionsControlRows } = await loadDevice(true);
+        const rows = optionsControlRows();
+        expect(rows.some((r) => r.key === 'TAP' && r.action === 'sauter')).toBe(true);
+        expect(rows.some((r) => r.key === 'ENTR.' && r.action === 'entraînement')).toBe(true);
+        expect(rows.some((r) => r.key === '···' && r.action === 'scores · skins · options')).toBe(
+            true
+        );
     });
 
     it('dailyReplayHint et restartHintForMode distinguent le mode daily', async () => {
@@ -126,6 +128,12 @@ describe('device', () => {
         expect(dailyReplayHint()).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(true)).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(false)).toBe('TAP : rejouer');
+    });
+
+    it('gameOverRestartLabel distingue daily et classique', async () => {
+        const { gameOverRestartLabel } = await loadDevice(true);
+        expect(gameOverRestartLabel(false)).toBe('REJOUER');
+        expect(gameOverRestartLabel(true)).toBe('DÉFI');
     });
 
     it('skipTutorialHint adapte le libellé', async () => {

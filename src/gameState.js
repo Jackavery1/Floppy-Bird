@@ -1,13 +1,13 @@
-/** Game state constants for scene and input handling */
+/** Constantes d'état de la scène et du traitement des entrées */
 export const GAME_STATE = Object.freeze({
-    MENU: 'menu', // Main menu screen
-    PLAYING: 'playing', // Active gameplay
-    DYING: 'dying', // Death animation in progress
-    PAUSED: 'paused', // Game paused by player
-    GAME_OVER: 'gameover', // Game over screen
+    MENU: 'menu', // Écran menu principal
+    PLAYING: 'playing', // Partie en cours
+    DYING: 'dying', // Animation de mort
+    PAUSED: 'paused', // Pause joueur
+    GAME_OVER: 'gameover', // Écran game over
 });
 
-/** Can player perform primary action (space/tap) in current state? */
+/** Le joueur peut-il agir (espace/tap) dans cet état ? */
 export function canHandlePrimaryAction(state) {
     return state !== GAME_STATE.PAUSED && state !== GAME_STATE.DYING;
 }
@@ -17,7 +17,7 @@ export function isMenuPanelOpen(ui) {
     return Boolean(ui?._optionsOpen || ui?._scoresOpen || ui?._skinsOpen);
 }
 
-/** Should primary action start new game? */
+/** Faut-il démarrer une partie sur l'action primaire ? */
 export function shouldStartGameOnPrimary(state, ui = null) {
     if (state === GAME_STATE.MENU && isMenuPanelOpen(ui)) return false;
     return state === GAME_STATE.MENU || state === GAME_STATE.GAME_OVER;

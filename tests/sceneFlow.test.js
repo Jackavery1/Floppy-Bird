@@ -14,6 +14,7 @@ import {
     applyPausedState,
     applyPlayingState,
     resumeClock,
+    returnToMenu,
 } from '../src/sceneFlow.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -48,6 +49,14 @@ vi.mock('../src/storage.js', () => ({
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
+
+vi.mock('../src/uiMenu.js', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        prepareMenuRebuild: vi.fn(),
+    };
+});
 
 describe('sceneFlow', () => {
     function makeScene(state = GAME_STATE.MENU) {
@@ -106,9 +115,23 @@ describe('sceneFlow', () => {
         };
     }
 
-    it('showMenu remet l’état MENU', () => {
+    it('showMenu remet l’état MENU', async () => {
+        const { prepareMenuRebuild } = await import('../src/uiMenu.js');
         const scene = makeScene(GAME_STATE.PLAYING);
         showMenu(scene);
+        expect(prepareMenuRebuild).toHaveBeenCalledWith(scene.ui);
+        expect(scene.state).toBe(GAME_STATE.MENU);
+        expect(scene.ui.showMenu).toHaveBeenCalled();
+    });
+
+    it('returnToMenu depuis game over nettoie puis affiche le menu', async () => {
+        const { prepareMenuRebuild } = await import('../src/uiMenu.js');
+        const scene = makeScene(GAME_STATE.GAME_OVER);
+        scene.returnToMenu = function () {
+            returnToMenu(this);
+        };
+        returnToMenu(scene);
+        expect(prepareMenuRebuild).toHaveBeenCalledWith(scene.ui);
         expect(scene.state).toBe(GAME_STATE.MENU);
         expect(scene.ui.showMenu).toHaveBeenCalled();
     });

@@ -7,7 +7,17 @@ import {
     setAccessibilityControlPressed,
     setAccessibilityControlVisible,
 } from './uiDomAccessibilityControls.js';
-import { dailyChallengeHint, optionsAccessibilityLabel, restartHintForMode, trainingHint, hardcoreHint, trainingSpeedLabel } from './device.js';
+import {
+    dailyChallengeHint,
+    difficultyA11yLabel,
+    optionsAccessibilityLabel,
+    restartHintForMode,
+    trainingHint,
+    hardcoreHint,
+    trainingSpeedLabel,
+    skinsCycleHint,
+    skinsPanelHint,
+} from './device.js';
 import {
     GAME_OVER_CONTROL_KEYS,
     MENU_CONTROL_KEYS,
@@ -48,6 +58,9 @@ export function setupMenuAccessibility(scene) {
     bindAccessibilityAction('menuDiffHard', () => scene.changeDifficulty(DIFFICULTY.HARD));
     setAccessibilityControlLabel('menuDaily', dailyChallengeHint());
     setAccessibilityControlLabel('menuOptions', optionsAccessibilityLabel());
+    setAccessibilityControlLabel('menuDiffEasy', difficultyA11yLabel('easy'));
+    setAccessibilityControlLabel('menuDiffNormal', difficultyA11yLabel('normal'));
+    setAccessibilityControlLabel('menuDiffHard', difficultyA11yLabel('hard'));
     for (const key of MENU_CONTROL_KEYS) {
         setAccessibilityControlVisible(
             /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
@@ -114,7 +127,11 @@ export function setSkinsPanelAccessibility(scene, open) {
         );
     }
     syncAccessibilityLayer(scene.game);
-    if (open) announceAccessibility('Panneau skins ouvert');
+    if (open) {
+        announceAccessibility(
+            `Panneau skins ouvert. ${skinsPanelHint()}. ${skinsCycleHint()}`
+        );
+    }
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */

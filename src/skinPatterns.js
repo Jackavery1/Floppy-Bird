@@ -7,7 +7,7 @@
  * }} SkinPattern */
 
 /** @type {Record<string, SkinPattern>} */
-export const SKIN_PATTERNS = Object.freeze({
+const SKIN_PATTERNS = Object.freeze({
     classic: {
         tagline: 'Équilibré',
         goalOffset: 0,

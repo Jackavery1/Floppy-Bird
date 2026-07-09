@@ -13,6 +13,7 @@ import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
+import { prepareMenuRebuild } from './uiMenu.js';
 import {
     announceAccessibility,
     hideAllAccessibilityControls,
@@ -53,12 +54,12 @@ function clearPauseOverlay(scene) {
 /** @param {SceneContext} scene */
 export function showMenu(scene) {
     clearPauseOverlay(scene);
+    prepareMenuRebuild(scene.ui);
     scene.state = GAME_STATE.MENU;
     syncShellGameState(GAME_STATE.MENU);
     scene.playMode = 'classic';
     scene.dailyChallengeMode = false;
     scene.round.score = 0;
-    scene.ui.clearOverlay('menu');
 
     const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
     scene.ui.setOverlay('menu', elements);
@@ -110,9 +111,6 @@ export function returnToMenu(scene) {
     resetCoyoteTime(scene);
     clearPauseOverlay(scene);
     scene.ghost.finishRound(scene.round.score);
-    if (scene.state === GAME_STATE.GAME_OVER) {
-        scene.ui.clearOverlay('gameOver');
-    }
     scene.bird.reset(GAME_CONFIG.bird.startX, GAME_CONFIG.centerY);
     scene.pipes.reset();
     showMenu(scene);

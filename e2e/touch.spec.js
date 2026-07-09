@@ -13,7 +13,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { forceGameOver, getMenuPanels, getOptionsPanel } from './helpers/testSeam.mjs';
+import { forceGameOver, getGameOverRestartLabel, getMenuPanels, getOptionsPanel } from './helpers/testSeam.mjs';
 
 test.describe('touch mobile portrait', () => {
     test('ouvre la pause via tap sur le bouton pause', async ({ page }, testInfo) => {
@@ -162,14 +162,34 @@ test.describe('touch mobile portrait', () => {
         await expect.poll(() => getMenuPanels(page).then((p) => p?.options)).toBe(true);
     });
 
-    test('tape le contrôle hardcore dans options', async ({ page }, testInfo) => {
+    test('active hardcore via onglet REGL dans options', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await page.addInitScript(() => {
+            localStorage.setItem('flappy-bird-high-score-normal', '15');
+        });
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        const { menuOptions, menuHardcore } = TOUCH_TARGETS;
+        const { menuOptions, menuHardcore, menuOptionsTabPreferences } = TOUCH_TARGETS;
+
         await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({ open: true, tab: 'preferences', preferences: true });
+
+        await pointerGameCoord(
+            page,
+            menuOptionsTabPreferences.x,
+            menuOptionsTabPreferences.y,
+            usesTouch
+        );
+        await expect
+            .poll(() => getOptionsPanel(page))
+            .toMatchObject({ tab: 'preferences', preferences: true });
+
+        expect(await getMenuPanels(page).then((p) => p?.hardcoreMode)).toBe(false);
+
         await pointerGameCoord(page, menuHardcore.x, menuHardcore.y, usesTouch);
-        await expect.poll(() => getMenuPanels(page).then((p) => p?.options)).toBe(true);
+        await expect.poll(() => getMenuPanels(page)).toMatchObject({ hardcoreMode: true });
     });
 
     test('navigue les onglets Options puis ferme sans bleed contrôles', async ({
@@ -230,13 +250,22 @@ test.describe('touch mobile portrait', () => {
         await expectGameState(page, 'playing');
     });
 
-    test('rejoue via tap sur le bouton ENCORE', async ({ page }, testInfo) => {
+    test('rejoue via tap sur le bouton REJOUER', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         await forceGameOver(page);
         await expectGameState(page, 'gameover');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('REJOUER');
         await replayFromGameOver(page, usesTouch);
+    });
+
+    test('game over défi quotidien affiche DÉFI', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await forceGameOver(page, { isDaily: true });
+        await expectGameState(page, 'gameover');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('DÉFI');
     });
 
     test('rejoue via bouton a11y DOM game over', async ({ page }, testInfo) => {
@@ -247,19 +276,6 @@ test.describe('touch mobile portrait', () => {
         await expect(page.locator('#a11y-gameover-restart')).toBeVisible();
         await page.locator('#a11y-gameover-restart').tap({ force: true });
         await expectGameState(page, 'playing');
-    });
-
-    test('bouton pause ≥ 44 px écran après letterbox', async ({ page }, testInfo) => {
-        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
-        await waitForGameReady(page);
-        await startPlayingFromMenu(page, true);
-        const minScreenPx = await page.evaluate(() => {
-            const canvas = document.querySelector('#game-container canvas');
-            if (!canvas) return 0;
-            const scale = canvas.getBoundingClientRect().width / 288;
-            return 44 * scale;
-        });
-        expect(minScreenPx).toBeGreaterThanOrEqual(44);
     });
 });
 

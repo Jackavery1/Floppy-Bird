@@ -48,7 +48,7 @@ describe('uiMenuOptionsLabels', () => {
         ui._optionsOpen = true;
         const chrome = { setVisible: vi.fn(), setAlpha: vi.fn() };
         ui._optionsChromeElements = [chrome];
-        ui._optionsModesElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
+        ui._optionsSettingsElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
         setOptionsContentVisible(ui, true);
         expect(chrome.setVisible).toHaveBeenCalledWith(true);
     });

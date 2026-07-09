@@ -1,12 +1,12 @@
 import { GAME_CONFIG } from './config.js';
-import { optionsControlRows, optionsControlsHint } from './device.js';
+import { optionsControlRows } from './device.js';
 import {
     DESIGN_TOKENS,
     hexVersPhaser,
     menuHomeTextStyle,
     panelChromeTextStyle,
 } from './designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_HINT, UI_LAYOUT } from './uiLayout.js';
+import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 import { beginOptionsSection } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';
 
@@ -110,20 +110,4 @@ export function buildControlsSection(ui, elements) {
         action.setOrigin(0, 0.5);
         add(action);
     });
-
-    const summaryY = firstY + rows.length * rowGap + 8;
-    const summary = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        summaryY,
-        optionsControlsHint(),
-        panelChromeTextStyle({
-            fontSize: FONT_SIZE_HINT,
-            fill: DESIGN_TOKENS.texteSecondaire,
-            fontStyle: 'italic',
-        }),
-        DEPTH.PANEL_FRAME
-    );
-    summary.setWordWrapWidth?.(panel.w - 36);
-    add(summary);
 }

@@ -4,6 +4,8 @@ import { smoothGapY } from '../src/pipeGaps.js';
 import { GAME_CONFIG, getScriptedPipeGapY } from '../src/config.js';
 import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
 
+const NORMAL_DIFF = GAME_CONFIG.getDifficulty('normal');
+
 function createMockScene() {
     const scene = {
         bird: null,
@@ -167,13 +169,14 @@ describe('Pipes', () => {
         });
 
         it('resserre le gap physique dès 20 points', () => {
-            pipes.applyRoundDifficulty({ speed: 2.7, gap: 112, pipeInterval: 76 });
+            const { speed, gap, pipeInterval } = NORMAL_DIFF;
+            pipes.applyRoundDifficulty({ speed, gap, pipeInterval });
             pipes.applySpeedForScore(19);
-            expect(pipes.pipeGap).toBe(112);
+            expect(pipes.pipeGap).toBe(gap);
             pipes.applySpeedForScore(20);
-            expect(pipes.pipeGap).toBe(112 - GAME_CONFIG.round.gapTightenStep);
+            expect(pipes.pipeGap).toBe(gap - GAME_CONFIG.round.gapTightenStep);
             pipes.applySpeedForScore(30);
-            expect(pipes.pipeGap).toBe(112 - 2 * GAME_CONFIG.round.gapTightenStep);
+            expect(pipes.pipeGap).toBe(gap - 2 * GAME_CONFIG.round.gapTightenStep);
             expect(maxGapDeltaForScore(30)).toBe(
                 GAME_CONFIG.pipes.maxGapDelta - 2 * GAME_CONFIG.round.gapTightenStep
             );

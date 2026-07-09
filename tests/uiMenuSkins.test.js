@@ -56,11 +56,15 @@ describe('uiMenuSkins', () => {
         ui._optionsPanelElements = [];
     });
 
-    it('buildSkinsTab ajoute une galerie pour chaque skin', () => {
+    it('buildSkinsTab ajoute une galerie pour chaque skin', async () => {
+        const { ensureBirdTextures } = await import('../src/textures/index.js');
         const elements = [];
         buildSkinsTab(ui, elements, ui._optionsPanelElements);
+        expect(ensureBirdTextures).toHaveBeenCalledWith(scene, SKIN_IDS);
         expect(ui._skinCells).toHaveLength(SKIN_IDS.length);
         expect(ui._skinsCountLine).toBeTruthy();
+        expect(ui._skinHint).toBeUndefined();
+        expect(ui._skinCycleHint).toBeUndefined();
         expect(elements.length).toBeGreaterThan(SKIN_IDS.length);
     });
 

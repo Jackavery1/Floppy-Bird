@@ -34,6 +34,21 @@ export function closeAllMenuPanels(ui) {
     setMenuSkinsOpen(ui, false);
 }
 
+/** Nettoie menu / pause / game over avant reconstruction du menu principal. */
+export function prepareMenuRebuild(ui) {
+    closeAllMenuPanels(ui);
+    for (const key of ['menu', 'pause', 'gameOver']) {
+        ui.clearOverlay(key);
+    }
+    destroyInGameControls(ui);
+    if (ui._startText?.scene?.tweens) {
+        ui.scene.tweens.killTweensOf(ui._startText);
+    }
+    ui._restartBtnGraphics = null;
+    ui._restartBtnText = null;
+    ui._menuBtnGraphics = null;
+}
+
 export function refreshBestScore(ui, difficulty, hardcoreMode, skinId = null) {
     ui._currentDifficulty = difficulty;
     ui.highScore = loadHighScore(difficulty, hardcoreMode, skinId);
@@ -54,7 +69,6 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     const elements = [];
     const layout = computeMenuLayout();
     ui._menuLayout = layout;
-    ui._closeAllMenuPanels = () => closeAllMenuPanels(ui);
 
     elements.push(ui.createOverlay(0.22, DEPTH.OVERLAY_DIM));
 
@@ -90,7 +104,6 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._skinsBtnBg,
         ui._skinsBtnLabel,
         ui._skinsBtnHit,
-        ui._menuHint,
     ].filter(Boolean);
     syncMenuChromeVisibility(ui);
     playMenuIntroTween(ui, title);

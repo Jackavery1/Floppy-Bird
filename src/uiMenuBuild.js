@@ -1,14 +1,11 @@
 import { GAME_CONFIG } from './config.js';
-import { panelChromeTextStyle, DESIGN_TOKENS } from './designTokens.js';
-import { difficultyHint, isCoarsePointer, optionsHint } from './device.js';
+import { panelChromeTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import {
     addCenteredText,
     DEPTH,
-    FONT_SIZE_HINT,
     MIN_TOUCH,
     stopUiEvent,
-    UI_LAYOUT,
 } from './uiLayout.js';
 
 const START_HIT_WIDTH = 240;
@@ -47,36 +44,6 @@ export function buildMenuFooter(ui, elements, layout) {
         ui.scene.handlePrimaryAction();
     });
     elements.push(ui._startHit);
-
-    if (!isCoarsePointer()) {
-        ui._menuHint = addCenteredText(
-            ui.scene,
-            GAME_CONFIG.centerX,
-            UI_LAYOUT.menu.hint1,
-            `${difficultyHint()} · ${optionsHint()}`,
-            panelChromeTextStyle({
-                fontSize: FONT_SIZE_HINT,
-                fill: DESIGN_TOKENS.texteSecondaire,
-                fontStyle: 'italic',
-            }),
-            DEPTH.MENU_PANEL
-        );
-        elements.push(ui._menuHint);
-    } else {
-        ui._menuHint = addCenteredText(
-            ui.scene,
-            GAME_CONFIG.centerX,
-            UI_LAYOUT.menu.hint1,
-            optionsHint(),
-            panelChromeTextStyle({
-                fontSize: FONT_SIZE_HINT,
-                fill: DESIGN_TOKENS.texteSecondaire,
-                fontStyle: 'italic',
-            }),
-            DEPTH.MENU_PANEL
-        );
-        elements.push(ui._menuHint);
-    }
 
     return ui._startText;
 }

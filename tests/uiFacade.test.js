@@ -56,6 +56,7 @@ vi.mock('../src/uiGameOverLoader.js', () => ({
 vi.mock('../src/storage.js', () => ({ loadHighScore: vi.fn(() => 0) }));
 
 import { UI } from '../src/ui.js';
+import { UI_FACADE_METHODS } from '../src/uiFacadeBind.js';
 import { toggleMenuOptions, refreshHardcoreLockState } from '../src/uiMenuOptions.js';
 import { toggleMenuScores } from '../src/uiMenuScoresPanel.js';
 import { toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
@@ -144,5 +145,12 @@ describe('UI façade — délégation', () => {
 
     it('drawGameOverRestartButton est no-op sans graphics', () => {
         expect(() => ui.drawGameOverRestartButton(300)).not.toThrow();
+    });
+
+    it('expose les méthodes déléguées via uiFacadeBind', () => {
+        expect(UI_FACADE_METHODS).toHaveLength(36);
+        for (const name of UI_FACADE_METHODS) {
+            expect(typeof ui[name]).toBe('function');
+        }
     });
 });

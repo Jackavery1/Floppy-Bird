@@ -41,13 +41,13 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | Projet                      | Viewport       | Touch | Tests clés                                                                  |
 | --------------------------- | -------------- | ----- | --------------------------------------------------------------------------- |
 | `chromium-desktop`          | Desktop Chrome | non   | `keyboard.spec.js`, `gameplay-equity.spec.mjs`, `visual-font.spec.js`       |
-| `chromium-mobile-portrait`  | 390×844        | oui   | `touch.spec.js`, `keyboard.spec.js`, `tutorial.spec.mjs`, `gameplay-equity` |
+| `chromium-mobile-portrait`  | 390×844        | oui   | `touch.spec.js`, `touchTargets.spec.js`, `keyboard.spec.js`, `tutorial.spec.mjs`, `gameplay-equity` |
 | `chromium-mobile-landscape` | 844×390        | oui   | `viewport.spec.js`, `touch.spec.js`, `keyboard.spec.js` (smoke)             |
 | `webkit-mobile-portrait`    | iPhone 13      | oui   | touch + chargement                                                          |
 | `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
 | `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu, PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touch.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay (`gameplay-equity.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu, PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay (`gameplay-equity.spec.mjs`).
 
 ## Artefacts générés (ne pas committer)
 
@@ -65,6 +65,12 @@ Ces dossiers sont produits localement ou en CI et listés dans [`.gitignore`](.g
 Le déploiement GitHub Pages pousse **`dist/`** sur la branche **`gh-pages`** via CI — pas sur `main`.
 
 Si `git status` les affiche encore, vérifie qu’ils ne sont pas forcés : `git check-ignore -v dist test-results node_modules`.
+
+Pour supprimer localement les artefacts listés ci-dessus :
+
+```bash
+npm run clean
+```
 
 ## Icônes PWA
 

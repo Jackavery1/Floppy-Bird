@@ -1,10 +1,8 @@
 import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin } from './metaStorage.js';
-import { skinsPanelHint, skinsCycleHint } from './device.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
 import { ensureBirdTextures } from './textures/index.js';
-import { scheduleRemainingBirdTextures } from './uiMenuSkinsTextures.js';
 import {
     getSkin,
     listUnlockedSkins,
@@ -49,13 +47,7 @@ const SKIN_CELL_H = 56;
  */
 export function buildSkinsTab(ui, elements, panelElements) {
     const scene = ui.scene;
-    const selected = loadSelectedSkin();
-    const priority = selected === 'classic' ? ['classic'] : ['classic', selected];
-    ensureBirdTextures(scene, priority);
-    scheduleRemainingBirdTextures(
-        scene,
-        SKIN_IDS.filter((id) => !priority.includes(id))
-    );
+    ensureBirdTextures(scene, SKIN_IDS);
     const panel = UI_LAYOUT.skinsPanel;
     ui._skinsTabElements = [];
     ui._skinCells = [];
@@ -163,38 +155,6 @@ export function buildSkinsTab(ui, elements, panelElements) {
 
         ui._skinCells.push({ skinId, frame, preview, nameLabel, recordLabel, hit });
     });
-
-    ui._skinHint = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        panel.skinsHint,
-        skinsPanelHint(),
-        menuTextStyle({
-            fontSize: FONT_SIZE_HINT,
-            fill: DESIGN_TOKENS.texteSecondaire,
-            fontStyle: 'italic',
-        }),
-        DEPTH.PANEL_FRAME
-    );
-    panelElements.push(ui._skinHint);
-    elements.push(ui._skinHint);
-    ui._skinsTabElements.push(ui._skinHint);
-
-    ui._skinCycleHint = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        panel.skinsHint + 16,
-        skinsCycleHint(),
-        menuTextStyle({
-            fontSize: FONT_SIZE_HINT,
-            fill: DESIGN_TOKENS.texteSecondaire,
-            fontStyle: 'italic',
-        }),
-        DEPTH.PANEL_FRAME
-    );
-    panelElements.push(ui._skinCycleHint);
-    elements.push(ui._skinCycleHint);
-    ui._skinsTabElements.push(ui._skinCycleHint);
 
     const closeBtn = buildMenuToggleButton(scene, elements, {
         cx: GAME_CONFIG.centerX,

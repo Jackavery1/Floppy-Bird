@@ -4,6 +4,7 @@ import { triggerDeath } from './sceneDeath.js';
 import { checkScorePipes } from './sceneRound.js';
 import { loadTutorialComplete, loadTutorialProgress } from './tutorialStorage.js';
 import { sampleGapSequence } from './pipeGapSampling.js';
+import { setupGameOverAccessibility } from './uiDomAccessibility.js';
 
 /** API d’observation Playwright — chargée dynamiquement (voir appBootstrap.shouldInstallTestSeam). */
 /** @param {import('phaser').Game} game */
@@ -43,9 +44,11 @@ export function installTestSeam(game) {
         },
         ready: () => getScene()?.state != null,
         getDailyChallengeMode: () => getScene()?.dailyChallengeMode ?? null,
-        forceGameOver: () => {
+        forceGameOver: (opts = {}) => {
+            const { isDaily = false } = opts;
             const scene = getScene();
             if (!scene) return Promise.resolve();
+            const dailyGoal = isDaily ? 5 : 0;
             return import('./uiGameOverLoader.js')
                 .then((m) => m.preloadGameOverUI())
                 .then(() => {
@@ -56,11 +59,17 @@ export function installTestSeam(game) {
                         { entries: [], highlightId: null },
                         false,
                         false,
-                        scene.hardcoreMode
+                        scene.hardcoreMode,
+                        dailyGoal
                     );
                     scene.ui.setOverlay('gameOver', elements);
+                    setupGameOverAccessibility(scene, {
+                        score: scene.round.score,
+                        isDaily,
+                    });
                 });
         },
+        getGameOverRestartLabel: () => getScene()?.ui?._restartBtnText?.text ?? null,
         getMenuPanels: () => {
             const scene = getScene();
             const ui = scene?.ui;
@@ -80,14 +89,12 @@ export function installTestSeam(game) {
             if (!ui) return null;
             const sectionVisible = (section) => Boolean(section?.[0]?.visible);
             const settings = sectionVisible(ui._optionsSettingsElements);
-            const modes = sectionVisible(ui._optionsModesElements);
             return {
                 open: Boolean(ui._optionsOpen),
                 tab: ui._optionsActiveTab ?? null,
                 controls: sectionVisible(ui._optionsControlsElements),
-                preferences: settings && modes,
+                preferences: settings,
                 settings,
-                modes,
             };
         },
         getGameplayEquity: () => {

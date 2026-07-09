@@ -56,8 +56,13 @@ export function grantCoyoteGrace(page, frames) {
 }
 
 /** @param {import('@playwright/test').Page} page */
-export function forceGameOver(page) {
-    return page.evaluate(() => window.__FLOPPY_TEST__?.forceGameOver?.());
+export function forceGameOver(page, opts = {}) {
+    return page.evaluate((o) => window.__FLOPPY_TEST__?.forceGameOver?.(o), opts);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getGameOverRestartLabel(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getGameOverRestartLabel?.() ?? null);
 }
 
 /** @param {import('@playwright/test').Page} page @param {'pipe' | 'ground' | 'ceiling'} [cause] */

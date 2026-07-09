@@ -3,7 +3,6 @@ import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { DEPTH, MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { buildControlsSection } from './uiMenuOptionsControls.js';
-import { buildModeControls } from './uiMenuOptionsModes.js';
 import { buildSettingsSection } from './uiMenuOptionsSettings.js';
 import { buildOptionsTabs, setOptionsTab } from './uiMenuOptionsTabs.js';
 
@@ -28,12 +27,10 @@ export function buildOptionsContent(ui, elements) {
     ui._optionsChromeElements = [];
     ui._optionsControlsElements = [];
     ui._optionsSettingsElements = [];
-    ui._optionsModesElements = [];
 
     buildOptionsTabs(ui, elements, pushOptionsChrome);
     buildControlsSection(ui, elements);
     buildSettingsSection(ui, elements);
-    buildModeControls(ui, elements, panel);
 
     const closeBtn = buildMenuToggleButton(ui.scene, elements, {
         cx: GAME_CONFIG.centerX,

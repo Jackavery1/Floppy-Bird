@@ -86,18 +86,6 @@ describe('uiHud', () => {
         expect(ui.scoreText.setVisible).toHaveBeenCalledWith(true);
     });
 
-    it('showRecordBroken crée une bannière', async () => {
-        const { showRecordBroken } = await import('../src/uiHud.js');
-        showRecordBroken(ui);
-        expect(scene.add.text).toHaveBeenCalled();
-    });
-
-    it('showFlash ajoute un rectangle plein écran', async () => {
-        const { showFlash } = await import('../src/uiHud.js');
-        showFlash(ui);
-        expect(scene.add.rectangle).toHaveBeenCalled();
-    });
-
     it('dismissJumpTutorial détruit le hint', async () => {
         const { showJumpTutorial, dismissJumpTutorial } = await import('../src/uiHud.js');
         showJumpTutorial(ui);

@@ -17,7 +17,6 @@ describe('uiMenuOptionsTabs', () => {
         ui._optionsChromeElements = [];
         ui._optionsControlsElements = [{ setVisible: vi.fn() }];
         ui._optionsSettingsElements = [{ setVisible: vi.fn() }];
-        ui._optionsModesElements = [{ setVisible: vi.fn() }];
         elements = [];
         const pushChrome = (targetUi, targetElements, el) => {
             targetElements.push(el);
@@ -37,22 +36,20 @@ describe('uiMenuOptionsTabs', () => {
         setOptionsTab(ui, 'controls');
         expect(ui._optionsControlsElements[0].setVisible).toHaveBeenCalledWith(true);
         expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(false);
-        expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(false);
     });
 
-    it('setOptionsTab affiche réglages et modes sur l’onglet préférences', () => {
+    it('setOptionsTab affiche les réglages sur l’onglet préférences', () => {
         ui._optionsOpen = true;
         setOptionsTab(ui, 'preferences');
         expect(ui._optionsControlsElements[0].setVisible).toHaveBeenCalledWith(false);
         expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(true);
-        expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(true);
     });
 
     it('setOptionsTab masque les sections quand le panneau est fermé', () => {
         ui._optionsOpen = false;
         setOptionsTab(ui, 'controls');
         expect(ui._optionsControlsElements[0].setVisible).toHaveBeenCalledWith(false);
-        expect(ui._optionsModesElements[0].setVisible).toHaveBeenCalledWith(false);
+        expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(false);
     });
 
     it('les onglets sont alignés gauche / droite', () => {
