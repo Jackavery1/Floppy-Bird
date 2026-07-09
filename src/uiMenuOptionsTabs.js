@@ -18,8 +18,8 @@ const TAB_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke);
 const TAB_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonMenuHover);
 
 const TABS = Object.freeze([
-    { id: 'controls', label: 'CONTR.', cxKey: 'tabControlsX' },
-    { id: 'preferences', label: 'RÉGL.', cxKey: 'tabPreferencesX' },
+    { id: 'controls', label: 'CTRL', cxKey: 'tabControlsX' },
+    { id: 'preferences', label: 'REGL', cxKey: 'tabPreferencesX' },
 ]);
 
 const TAB_LABEL_STYLE = panelChromeTextStyle({
@@ -72,7 +72,7 @@ export function buildOptionsTabs(ui, elements, pushChrome) {
         pushTab(bg);
 
         const text = addCenteredText(scene, cx, cy, label, TAB_LABEL_STYLE, DEPTH.PANEL_FRAME + 1);
-        applyFittedLabel(scene, text, label, TAB_LABEL_STYLE, w - 10);
+        applyFittedLabel(scene, text, label, TAB_LABEL_STYLE, w - 12);
         pushTab(text);
 
         const hit = scene.add.rectangle(cx, cy, w, h, 0x000000, 0);

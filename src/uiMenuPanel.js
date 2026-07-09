@@ -1,5 +1,12 @@
 import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, MENU_BTN_HOVER, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
+import {
+    addCenteredText,
+    applyFittedLabel,
+    DEPTH,
+    MENU_BTN_HOVER,
+    MIN_TOUCH,
+    stopUiEvent,
+} from './uiLayout.js';
 import { buildStyledPanelBackdrop, buildPanelPillButton } from './uiMenuPanelChrome.js';
 import { prefersReducedMotion, sceneTween } from './motion.js';
 
@@ -87,7 +94,9 @@ export function buildMenuToggleButton(scene, elements, cfg) {
             fill: DESIGN_TOKENS.texteMenu,
             stroke: cfg.labelStroke,
         });
+    const labelMaxWidth = cfg.width - 8;
     const label = addCenteredText(scene, cfg.cx, cfg.cy, cfg.labelText, labelStyle, cfg.depth + 1);
+    applyFittedLabel(scene, label, cfg.labelText, labelStyle, labelMaxWidth);
     elements.push(label);
 
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, MIN_TOUCH, 0x000000, 0);
@@ -122,9 +131,22 @@ export function buildMenuToggleButton(scene, elements, cfg) {
  * }} cfg
  */
 export function createMenuPanelController(ui, cfg) {
+    /** @type {{ style?: Phaser.Types.GameObjects.Text.TextStyle, maxWidth?: number }} */
+    const labelFit = {};
+
+    function setLabelFit(style, maxWidth) {
+        labelFit.style = style;
+        labelFit.maxWidth = maxWidth;
+    }
+
     function refreshButtonLabel() {
         if (!ui[cfg.btnLabelKey]) return;
-        ui[cfg.btnLabelKey].setText(cfg.buttonLabelFn(ui[cfg.openKey]));
+        const text = cfg.buttonLabelFn(ui[cfg.openKey]);
+        if (labelFit.style != null && labelFit.maxWidth != null) {
+            applyFittedLabel(ui.scene, ui[cfg.btnLabelKey], text, labelFit.style, labelFit.maxWidth);
+        } else {
+            ui[cfg.btnLabelKey].setText(text);
+        }
     }
 
     function setOpen(open) {
@@ -152,7 +174,7 @@ export function createMenuPanelController(ui, cfg) {
         setOpen(true);
     }
 
-    return { refreshButtonLabel, setOpen, toggle };
+    return { refreshButtonLabel, setOpen, toggle, setLabelFit };
 }
 
 /**
@@ -181,6 +203,13 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
     ui[cfg.openKey] = false;
     ui[cfg.panelElementsKey] = [];
 
+    const labelStyle = panelChromeTextStyle({
+        fill: DESIGN_TOKENS.texteMenu,
+        stroke: cfg.labelStroke,
+    });
+    const labelMaxWidth = cfg.btnLayout.width - 8;
+    controller.setLabelFit?.(labelStyle, labelMaxWidth);
+
     const btn = buildMenuToggleButton(scene, elements, {
         cx: cfg.btnLayout.cx,
         cy: cfg.btnLayout.cy,
@@ -190,10 +219,7 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
         stroke: cfg.btnStroke,
         labelText: cfg.buttonLabelFn(false),
         labelStroke: cfg.labelStroke,
-        labelStyle: panelChromeTextStyle({
-            fill: DESIGN_TOKENS.texteMenu,
-            stroke: cfg.labelStroke,
-        }),
+        labelStyle,
         onToggle: () => controller.toggle(),
     });
     ui[cfg.btnBgKey] = btn.bg;

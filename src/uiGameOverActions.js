@@ -1,8 +1,10 @@
+import { gameOverRestartLabel } from './device.js';
 import { sceneTween } from './motion.js';
 import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
+    applyFittedLabel,
     DEPTH,
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_HOVER,
@@ -30,7 +32,11 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     const { isDaily } = opts;
     const elements = [];
     const restartBtnY = gameOverRestartBtnY(P);
-    const restartLabel = isDaily ? 'REJOUER DÉFI' : 'REJOUER';
+    const restartLabel = gameOverRestartLabel(isDaily);
+    const restartLabelStyle = panelChromeTextStyle({
+        fontSize: '12px',
+        fill: DESIGN_TOKENS.contourMenu,
+    });
 
     const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     restartBtnShadow.fillStyle(0x000000, 0.35);
@@ -49,11 +55,15 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         cx,
         restartBtnY,
         restartLabel,
-        panelChromeTextStyle({
-            fontSize: '13px',
-            fill: DESIGN_TOKENS.contourMenu,
-        }),
+        restartLabelStyle,
         DEPTH.MENU_BTN_BG
+    );
+    applyFittedLabel(
+        scene,
+        restartBtnText,
+        restartLabel,
+        restartLabelStyle,
+        GAME_OVER_RESTART_BTN_WIDTH - 12
     );
 
     const restartHitZone = scene.add.rectangle(

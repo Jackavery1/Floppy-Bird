@@ -102,16 +102,20 @@ export function optionsControlsHint() {
         .join(' · ');
 }
 
-export function optionsButtonLabel(open) {
-    return open ? '▾ OPTIONS' : '▸ OPTIONS';
+export function optionsButtonLabel(_open) {
+    return 'OPTS';
 }
 
-export function scoresButtonLabel(open) {
-    return open ? '▾ SCORES' : '▸ SCORES';
+export function scoresButtonLabel(_open) {
+    return 'SCORE';
 }
 
-export function skinsButtonLabel(open) {
-    return open ? '▾ SKINS' : '▸ SKINS';
+export function skinsButtonLabel(_open) {
+    return 'SKINS';
+}
+
+export function gameOverRestartLabel(isDaily) {
+    return isDaily ? 'DÉFI' : 'ENCORE';
 }
 
 export function skinsCycleHint() {

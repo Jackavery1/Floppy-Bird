@@ -54,7 +54,7 @@ describe('uiMenuPanelChrome', () => {
             depth: 10,
             color: hexVersPhaser(DESIGN_TOKENS.boutonMenu),
             stroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
-            labelText: 'RÉGL.',
+            labelText: 'REGL',
             labelStroke: DESIGN_TOKENS.contourOptions,
             onToggle,
         });

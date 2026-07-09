@@ -10,11 +10,20 @@
         <meta name="theme-color" content="#1a1a2e" />
         <title>Floppy bird</title>
         <style>
+            @font-face {
+                font-family: 'Press Start 2P';
+                font-style: normal;
+                font-display: swap;
+                font-weight: 400;
+                src: url('fonts/press-start-2p-latin-400-normal.woff2') format('woff2');
+            }
+
             :root {
                 --couleur-fond: #1a1a2e;
                 --couleur-texte-chargement: #90caf9;
                 --couleur-accent: #fdd835;
                 --police-interface: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                --police-titre: 'Press Start 2P', 'Courier New', monospace;
             }
             * {
                 margin: 0;
@@ -34,9 +43,11 @@
                     max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
             }
             h1 {
+                font-family: var(--police-titre);
                 color: var(--couleur-accent);
-                font-size: 1.5rem;
-                margin-bottom: 0.75rem;
+                font-size: clamp(12px, 3.6vw, 16px);
+                line-height: 1.6;
+                margin-bottom: 1rem;
             }
             p {
                 line-height: 1.5;

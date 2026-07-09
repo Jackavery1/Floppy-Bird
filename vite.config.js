@@ -91,13 +91,16 @@ export default defineConfig(({ mode }) => {
                 includeAssets: [
                     'icons/*.png',
                     'icons/*.svg',
+                    'fonts/*.woff2',
                     'vendor/*.js',
                     'manifest.webmanifest',
                     'offline.html',
                 ],
                 manifest: pwaManifest,
                 workbox: {
-                    globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg,webmanifest}'],
+                    globPatterns: [
+                        '**/*.{js,css,html,png,json,ico,webp,svg,webmanifest,woff2}',
+                    ],
                     navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
                     navigateFallbackDenylist: [/\/offline\.html$/],
                 },

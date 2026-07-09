@@ -34,6 +34,13 @@ test.describe('PWA hors ligne', () => {
         await page.goto('offline.html');
         await expect(page.getByRole('heading', { name: 'Hors ligne' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Retour au jeu' })).toBeVisible();
+        await expect
+            .poll(() =>
+                page.evaluate(() =>
+                    getComputedStyle(document.querySelector('h1')).fontFamily.toLowerCase()
+                )
+            )
+            .toContain('press start 2p');
     });
 
     test('redirige vers offline.html sans SW ni réseau', async ({ page }) => {
