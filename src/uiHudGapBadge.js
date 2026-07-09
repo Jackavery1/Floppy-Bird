@@ -1,6 +1,6 @@
 import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { effectivePipeGapForScore } from './gapDifficulty.js';
-import { DESIGN_TOKENS } from './designTokens.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { layoutHudSecondaryBadges } from './uiHudBadgeLayout.js';
 import { addCenteredText, DEPTH, FONT_SIZE_BADGE } from './uiLayout.js';
 
@@ -22,13 +22,11 @@ export function updateGapHudBadge(ui, score) {
             GAME_CONFIG.centerX,
             0,
             '',
-            {
+            hudTextStyle({
                 fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.accentGap,
                 fontStyle: 'bold',
-                stroke: DESIGN_TOKENS.contourHud,
-                strokeThickness: 2,
-            },
+            }),
             DEPTH.HUD_BADGE
         );
         ui._inGameControlElements?.push(ui._gapHudBadge);

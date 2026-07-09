@@ -1,3 +1,4 @@
+import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS, trainingBestKey } from './storageKeys.js';
 import { routedSkinId } from './skinStorageRouting.js';
 import { loadBoolFlag, saveBoolFlag } from './boolStorage.js';
@@ -38,4 +39,39 @@ export function saveBestTrainingScore(score, skinId = null) {
     } catch {
         /* quota localStorage */
     }
+}
+
+function normalizeTrainingTimeScale(value) {
+    const steps = GAME_CONFIG.training.timeScaleSteps;
+    const n = typeof value === 'number' ? value : Number.parseFloat(value);
+    if (steps.includes(n)) return n;
+    return GAME_CONFIG.training.timeScale;
+}
+
+export function loadTrainingTimeScale() {
+    try {
+        return normalizeTrainingTimeScale(localStorage.getItem(STORAGE_KEYS.trainingTimeScale));
+    } catch {
+        return GAME_CONFIG.training.timeScale;
+    }
+}
+
+/** @param {number} scale */
+export function saveTrainingTimeScale(scale) {
+    try {
+        localStorage.setItem(
+            STORAGE_KEYS.trainingTimeScale,
+            String(normalizeTrainingTimeScale(scale))
+        );
+    } catch {
+        /* quota localStorage */
+    }
+}
+
+/** @param {number} current */
+export function cycleTrainingTimeScale(current) {
+    const steps = GAME_CONFIG.training.timeScaleSteps;
+    const normalized = normalizeTrainingTimeScale(current);
+    const index = steps.indexOf(normalized);
+    return steps[(index + 1) % steps.length];
 }

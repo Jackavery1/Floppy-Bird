@@ -8,6 +8,8 @@ import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 import { recordPipeDeathForCoyoteHint } from './tutorialStorage.js';
 import { setupGameOverAccessibility } from './uiDomAccessibility.js';
+import { syncShellGameState } from './shellGameState.js';
+import { preloadGameOverUI } from './uiGameOverLoader.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -15,6 +17,7 @@ import { setupGameOverAccessibility } from './uiDomAccessibility.js';
 export function triggerDeath(scene, cause = 'pipe') {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
+    syncShellGameState(GAME_STATE.DYING);
     scene.round.deathCause = cause;
     scene.round.resetDeathAnimation();
 
@@ -65,20 +68,24 @@ function finishDying(scene) {
     }
     notifyEndOfRoundAchievements(scene);
     scene.ui.highScore = round.roundHighScore;
-    scene.state = GAME_STATE.GAME_OVER;
-    const { elements } = scene.ui.showGameOver(
-        round.score,
-        round.leaderboardData,
-        true,
-        round.isNewRecord,
-        scene.hardcoreMode,
-        scene.playMode === 'daily' ? scene.dailyGoal : 0,
-        scene.activeSkinId ?? 'classic',
-        round.deathCause
-    );
-    scene.ui.setOverlay('gameOver', elements);
-    setupGameOverAccessibility(scene, {
-        score: round.score,
-        isDaily: scene.playMode === 'daily',
+    preloadGameOverUI().then(() => {
+        if (scene.state !== GAME_STATE.DYING && scene.state !== GAME_STATE.GAME_OVER) return;
+        scene.state = GAME_STATE.GAME_OVER;
+        syncShellGameState(GAME_STATE.GAME_OVER);
+        const { elements } = scene.ui.showGameOver(
+            round.score,
+            round.leaderboardData,
+            true,
+            round.isNewRecord,
+            scene.hardcoreMode,
+            scene.playMode === 'daily' ? scene.dailyGoal : 0,
+            scene.activeSkinId ?? 'classic',
+            round.deathCause
+        );
+        scene.ui.setOverlay('gameOver', elements);
+        setupGameOverAccessibility(scene, {
+            score: round.score,
+            isDaily: scene.playMode === 'daily',
+        });
     });
 }

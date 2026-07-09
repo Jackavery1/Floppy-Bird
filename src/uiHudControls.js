@@ -3,8 +3,10 @@ import { GAME_CONFIG } from './config.js';
 import { formatDailyHudLabel } from './dailyChallenge.js';
 import { getSkinPattern } from './skinPatterns.js';
 import { getSkin } from './skins/index.js';
+import { jumpHint } from './device.js';
 import {
     bindAccessibilityAction,
+    setAccessibilityControlLabel,
     setAccessibilityControlVisible,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
@@ -150,6 +152,7 @@ export function createInGameControls(
     if (onJump) {
         bindAccessibilityAction('playJump', onJump);
         setAccessibilityControlVisible('playJump', true);
+        setAccessibilityControlLabel('playJump', jumpHint());
     }
     syncAccessibilityLayer(ui.scene.game);
 

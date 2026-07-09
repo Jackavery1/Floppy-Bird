@@ -3,6 +3,7 @@ import { requestJump } from './sceneJumpBuffer.js';
 import { triggerDeath } from './sceneDeath.js';
 import { checkScorePipes } from './sceneRound.js';
 import { loadTutorialComplete, loadTutorialProgress } from './tutorialStorage.js';
+import { sampleGapSequence } from './pipeGapSampling.js';
 
 /** API d’observation Playwright — chargée dynamiquement (voir appBootstrap.shouldInstallTestSeam). */
 /** @param {import('phaser').Game} game */
@@ -44,17 +45,21 @@ export function installTestSeam(game) {
         getDailyChallengeMode: () => getScene()?.dailyChallengeMode ?? null,
         forceGameOver: () => {
             const scene = getScene();
-            if (!scene) return;
-            scene.state = 'gameover';
-            scene.ui.clearOverlay('gameOver');
-            const { elements } = scene.ui.showGameOver(
-                scene.round.score,
-                { entries: [], highlightId: null },
-                false,
-                false,
-                scene.hardcoreMode
-            );
-            scene.ui.setOverlay('gameOver', elements);
+            if (!scene) return Promise.resolve();
+            return import('./uiGameOverLoader.js')
+                .then((m) => m.preloadGameOverUI())
+                .then(() => {
+                    scene.state = 'gameover';
+                    scene.ui.clearOverlay('gameOver');
+                    const { elements } = scene.ui.showGameOver(
+                        scene.round.score,
+                        { entries: [], highlightId: null },
+                        false,
+                        false,
+                        scene.hardcoreMode
+                    );
+                    scene.ui.setOverlay('gameOver', elements);
+                });
         },
         getMenuPanels: () => {
             const scene = getScene();
@@ -95,6 +100,7 @@ export function installTestSeam(game) {
                 jumpBufferMax: GAME_CONFIG.bird.jumpBufferFrames,
                 coyoteMax: GAME_CONFIG.bird.coyoteTimeFrames,
                 spawnInvincibilityMs: GAME_CONFIG.round.spawnInvincibilityMs,
+                pipeSpawnDelayMs: GAME_CONFIG.round.pipeSpawnDelayMs,
                 hasCoyoteGrace: scene.round.coyoteFrames > 0,
             };
         },
@@ -143,5 +149,22 @@ export function installTestSeam(game) {
             step: loadTutorialProgress(),
             complete: loadTutorialComplete(),
         }),
+        getTrainingRuntime: () => {
+            const scene = getScene();
+            if (!scene) return null;
+            return {
+                trainingMode: Boolean(scene.trainingMode),
+                timeScale: scene.time?.timeScale ?? 1,
+                trainingTimeScale: scene.trainingTimeScale ?? GAME_CONFIG.training.timeScale,
+                configTimeScale: GAME_CONFIG.training.timeScale,
+            };
+        },
+        cycleTrainingSpeed: () => {
+            const scene = getScene();
+            if (!scene) return null;
+            scene.cycleTrainingSpeed?.();
+            return scene.trainingTimeScale ?? null;
+        },
+        sampleGapVariance: (count = 24) => sampleGapSequence(count),
     };
 }

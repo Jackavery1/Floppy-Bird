@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GLYPHES_TITRE_UI } from '../src/uiGlyphs.js';
+import { GLYPHES_TITRE_UI } from '../src/designTokens.js';
 
 /** Plages unicode couvertes par latin + latin-ext (@fontsource). */
 const LATIN_RANGES = [
@@ -13,7 +13,7 @@ function isLatinOrLatinExt(codePoint) {
     return LATIN_RANGES.some(([min, max]) => codePoint >= min && codePoint <= max);
 }
 
-describe('uiGlyphs', () => {
+describe('designTokens glyphes titre', () => {
     it('les lettres accentuées titre sont couvertes par latin-ext', () => {
         const letters = GLYPHES_TITRE_UI.replace(/[^A-Za-zÀ-ÿ]/g, '');
         const missing = [];

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { frameStep, splitPhysicsSteps, checkCollisions } from '../src/sceneBootstrap.js';
+import { frameStep, splitPhysicsSteps, checkCollisions, warnFileProtocol, primeAudio, applyTrainingTimeScale } from '../src/sceneBootstrap.js';
 import { createRoundState } from '../src/roundState.js';
 
 describe('sceneBootstrap', () => {
@@ -9,7 +9,7 @@ describe('sceneBootstrap', () => {
     });
 
     it('frameStep ralentit en mode entraînement', () => {
-        const scene = { game: { loop: { delta: 16.67 } }, trainingMode: true };
+        const scene = { game: { loop: { delta: 16.67 } }, trainingMode: true, trainingTimeScale: 0.8 };
         expect(frameStep(scene)).toBeCloseTo(0.8, 2);
     });
 
@@ -53,5 +53,41 @@ describe('sceneBootstrap', () => {
         };
         checkCollisions(scene);
         expect(scene.triggerDeath).not.toHaveBeenCalled();
+    });
+
+    it('warnFileProtocol ajoute un avertissement en file://', () => {
+        const stored = {};
+        vi.stubGlobal('location', { protocol: 'file:' });
+        vi.stubGlobal('document', {
+            getElementById: vi.fn(() => null),
+            createElement: vi.fn(() => ({
+                id: '',
+                textContent: '',
+            })),
+            body: { prepend: vi.fn((el) => { stored.warn = el; }) },
+        });
+        warnFileProtocol();
+        expect(stored.warn?.textContent).toMatch(/serveur requis/i);
+        vi.unstubAllGlobals();
+    });
+
+    it('primeAudio enregistre reprise sur pointer et clavier', () => {
+        const resume = vi.fn();
+        const scene = {
+            input: {
+                once: vi.fn((event, cb) => {
+                    if (event === 'pointerdown' || event === 'keydown') cb();
+                }),
+                keyboard: { once: vi.fn((event, cb) => cb()) },
+            },
+        };
+        primeAudio(scene, resume);
+        expect(resume).toHaveBeenCalledTimes(2);
+    });
+
+    it('applyTrainingTimeScale reflète le timeScale entraînement', () => {
+        const scene = { trainingMode: true, trainingTimeScale: 0.6, time: { timeScale: 1 } };
+        applyTrainingTimeScale(scene);
+        expect(scene.time.timeScale).toBe(0.6);
     });
 });

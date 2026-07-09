@@ -1,7 +1,7 @@
 import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
-import { buildGameOverUI } from './uiGameOver.js';
+import { bindUiFacade } from './uiFacadeBind.js';
 import {
     DEPTH,
     GAME_OVER_RESTART_BTN_COLOR,
@@ -9,44 +9,7 @@ import {
     MENU_BTN_COLOR,
     UI_LAYOUT,
 } from './uiLayout.js';
-import {
-    createScoreDisplay,
-    hideInGameScore,
-    createInGameControls,
-    updateScore,
-    showRecordBroken,
-    showFlash,
-    destroyInGameControls,
-    showJumpTutorial,
-    dismissJumpTutorial,
-    showGapTutorial,
-    showScoreTutorial,
-    dismissGameplayTutorial,
-    showDailyGoalReached,
-    showDailyGoalBrief,
-    showDifficultyEscalation,
-    showDifficultyEscalationPreview,
-    showSpeedBoostPreview,
-    showCoyoteHint,
-    showHardcoreInvincibilityHint,
-    showHardcoreTutorial,
-    dismissHardcoreTutorial,
-    showTrainingTutorial,
-    dismissTrainingTutorial,
-    showScoreStreak,
-} from './uiHud.js';
-import {
-    showMenu,
-    updateTrainingLabel,
-    updateHardcoreLabel,
-    updateDifficultyButtons,
-    refreshHighScore as refreshMenuHighScore,
-} from './uiMenu.js';
-import { toggleMenuOptions, refreshHardcoreLockState } from './uiMenuOptions.js';
-import { toggleMenuScores } from './uiMenuScoresPanel.js';
-import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
-import { cycleMenuSkin } from './uiMenuSkins.js';
-import { showPause } from './uiPause.js';
+import { destroyInGameControls } from './uiHud.js';
 
 export class UI {
     constructor(scene) {
@@ -93,109 +56,6 @@ export class UI {
             .setDepth(depth);
     }
 
-    createScoreDisplay() {
-        createScoreDisplay(this);
-    }
-    hideInGameScore() {
-        hideInGameScore(this);
-    }
-    createInGameControls(opts) {
-        return createInGameControls(this, opts);
-    }
-    updateScore(newScore) {
-        updateScore(this, newScore);
-    }
-    showRecordBroken() {
-        showRecordBroken(this);
-    }
-    showDailyGoalReached() {
-        showDailyGoalReached(this);
-    }
-    showDailyGoalBrief(goal) {
-        showDailyGoalBrief(this, goal);
-    }
-    showDifficultyEscalation() {
-        showDifficultyEscalation(this);
-    }
-    showScoreStreak(score) {
-        showScoreStreak(this, score);
-    }
-    showMenu(difficulty, trainingMode, hardcoreMode) {
-        return showMenu(this, difficulty, trainingMode, hardcoreMode);
-    }
-    updateTrainingLabel(trainingMode) {
-        updateTrainingLabel(this, trainingMode);
-    }
-    updateHardcoreLabel(hardcoreMode) {
-        updateHardcoreLabel(this, hardcoreMode);
-    }
-    showJumpTutorial() {
-        showJumpTutorial(this);
-    }
-    showGapTutorial() {
-        showGapTutorial(this);
-    }
-    showScoreTutorial() {
-        showScoreTutorial(this);
-    }
-    dismissJumpTutorial() {
-        return dismissJumpTutorial(this);
-    }
-    dismissGameplayTutorial() {
-        return dismissGameplayTutorial(this);
-    }
-    showDifficultyEscalationPreview() {
-        showDifficultyEscalationPreview(this);
-    }
-    showSpeedBoostPreview() {
-        showSpeedBoostPreview(this);
-    }
-    showCoyoteHint() {
-        showCoyoteHint(this);
-    }
-    showHardcoreInvincibilityHint(durationMs, pipeIndex = 1) {
-        showHardcoreInvincibilityHint(this, durationMs, pipeIndex);
-    }
-    showHardcoreTutorial() {
-        showHardcoreTutorial(this);
-    }
-    dismissHardcoreTutorial() {
-        return dismissHardcoreTutorial(this);
-    }
-    showTrainingTutorial() {
-        showTrainingTutorial(this);
-    }
-    dismissTrainingTutorial() {
-        return dismissTrainingTutorial(this);
-    }
-    updateDifficultyButtons(difficulty) {
-        updateDifficultyButtons(this, difficulty);
-    }
-    refreshHighScore(difficulty, hardcoreMode = false, skinId = null) {
-        refreshMenuHighScore(this, difficulty, hardcoreMode, skinId);
-    }
-    toggleMenuOptionsPanel() {
-        toggleMenuOptions(this);
-    }
-    toggleMenuScoresPanel() {
-        toggleMenuScores(this);
-    }
-    toggleMenuSkinsPanel() {
-        toggleMenuSkins(this);
-    }
-    cycleMenuSkin(step) {
-        cycleMenuSkin(this, step);
-    }
-    showPause(opts) {
-        return showPause(this, opts);
-    }
-    showFlash() {
-        showFlash(this);
-    }
-    refreshHardcoreLockState() {
-        refreshHardcoreLockState(this);
-    }
-
     drawGameOverRestartButton(restartBtnY, fillColor = GAME_OVER_RESTART_BTN_COLOR) {
         const g = this._restartBtnGraphics;
         if (!g) return;
@@ -225,30 +85,6 @@ export class UI {
         );
     }
 
-    showGameOver(
-        finalScore,
-        leaderboardData,
-        fadeIn = false,
-        isNewRecord = false,
-        hardcoreMode = false,
-        dailyGoal = 0,
-        activeSkinId = 'classic',
-        deathCause = null
-    ) {
-        return buildGameOverUI(
-            this.scene,
-            this,
-            finalScore,
-            leaderboardData,
-            fadeIn,
-            isNewRecord,
-            hardcoreMode,
-            dailyGoal,
-            activeSkinId,
-            deathCause
-        );
-    }
-
     destroy() {
         if (this.scoreText) this.scoreText.destroy();
         destroyInGameControls(this);
@@ -261,3 +97,5 @@ export class UI {
         this._diffBtnLabels = [];
     }
 }
+
+bindUiFacade(UI);

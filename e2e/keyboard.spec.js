@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { forceGameOver, getDailyChallengeMode } from './helpers/testSeam.mjs';
+import { forceGameOver, getDailyChallengeMode, getGameplayEquity, getTestState } from './helpers/testSeam.mjs';
 import {
     enterPausedFromPlaying,
     expectGameState,
@@ -189,9 +189,7 @@ test.describe('clavier mobile portrait (couche a11y)', () => {
         await startPlayingFromMenu(page, usesTouch);
         await page.locator('#a11y-jump').focus();
         await page.keyboard.press('Enter');
-        const equity = await page.evaluate(
-            () => window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null
-        );
+        const equity = await getGameplayEquity(page);
         expect(equity?.jumpBufferFrames).toBeGreaterThan(0);
     });
 });
@@ -202,9 +200,7 @@ test.describe('clavier webkit mobile portrait', () => {
         await waitForGameReady(page);
         await page.locator('#a11y-start').focus();
         await page.keyboard.press('Enter');
-        await expect
-            .poll(async () => page.evaluate(() => window.__FLOPPY_TEST__?.getState?.()))
-            .toBe('playing');
+        await expect.poll(async () => getTestState(page)).toBe('playing');
     });
 
     test('Tab ouvre options et onglet réglages', async ({ page }, testInfo) => {

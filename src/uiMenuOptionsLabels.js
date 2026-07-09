@@ -1,4 +1,4 @@
-import { hardcoreToggleLabel, trainingToggleLabel } from './device.js';
+import { hardcoreToggleLabel, trainingSpeedLabel, trainingToggleLabel } from './device.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
 import { applyFittedLabel, PANEL_TEXT_MAX_WIDTH } from './uiLayout.js';
 import { setMenuPanelVisible } from './uiMenuPanel.js';
@@ -72,4 +72,25 @@ export function applyHardcoreLabel(ui, hardcoreMode, unlocked) {
     );
     ui._hardcoreLabel.setColor(fill);
     if (ui._hardcoreIcon) drawHardcoreToggleIcon(ui._hardcoreIcon, hardcoreMode, unlocked);
+}
+
+/** @param {import('./ui.js').UI} ui @param {number} scale @param {boolean} [trainingMode] */
+export function applyTrainingSpeedLabel(ui, scale, trainingMode = ui.scene?.trainingMode) {
+    if (!ui._trainingSpeedLabel) return;
+    const active = Boolean(trainingMode);
+    const fill = active ? DESIGN_TOKENS.badgeTraining : DESIGN_TOKENS.texteSecondaire;
+    const text = trainingSpeedLabel(scale);
+    applyFittedLabel(
+        ui.scene,
+        ui._trainingSpeedLabel,
+        text,
+        { ...TRAINING_LABEL_STYLE, fill },
+        PANEL_TEXT_MAX_WIDTH
+    );
+    ui._trainingSpeedLabel.setColor(fill);
+    ui._trainingSpeedLabel.setAlpha(active ? 1 : 0.75);
+    if (ui._trainingSpeedHit) {
+        if (active) ui._trainingSpeedHit.setInteractive({ useHandCursor: true });
+        else ui._trainingSpeedHit.disableInteractive();
+    }
 }

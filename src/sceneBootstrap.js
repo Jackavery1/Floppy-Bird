@@ -1,13 +1,17 @@
-import { GAME_CONFIG } from './config.js';
 import { hasCoyoteGrace } from './sceneCoyote.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
+export function resolveTrainingTimeScale(scene) {
+    return scene.trainingMode ? scene.trainingTimeScale : 1;
+}
+
+/** @param {SceneContext} scene */
 export function frameStep(scene) {
     const base = (scene.game.loop.delta / 1000) * 60;
     if (scene.trainingMode) {
-        return base * GAME_CONFIG.training.timeScale;
+        return base * resolveTrainingTimeScale(scene);
     }
     return base;
 }
@@ -44,7 +48,7 @@ export function primeAudio(scene, resumeAudio) {
 
 /** @param {SceneContext} scene */
 export function applyTrainingTimeScale(scene) {
-    scene.time.timeScale = scene.trainingMode ? GAME_CONFIG.training.timeScale : 1;
+    scene.time.timeScale = resolveTrainingTimeScale(scene);
 }
 
 /** @param {SceneContext} scene */

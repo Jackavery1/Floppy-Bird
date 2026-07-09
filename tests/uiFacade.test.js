@@ -25,12 +25,15 @@ const hud = vi.hoisted(() => ({
     showHardcoreInvincibilityHint: vi.fn(),
     showHardcoreTutorial: vi.fn(),
     dismissHardcoreTutorial: vi.fn(() => false),
+    showTrainingTutorial: vi.fn(),
+    dismissTrainingTutorial: vi.fn(() => false),
     showScoreStreak: vi.fn(),
 }));
 
 const menu = vi.hoisted(() => ({
     showMenu: vi.fn(() => []),
     updateTrainingLabel: vi.fn(),
+    updateTrainingSpeedLabel: vi.fn(),
     updateHardcoreLabel: vi.fn(),
     updateDifficultyButtons: vi.fn(),
     refreshHighScore: vi.fn(),
@@ -46,7 +49,10 @@ vi.mock('../src/uiMenuScoresPanel.js', () => ({ toggleMenuScores: vi.fn() }));
 vi.mock('../src/uiMenuSkinsPanel.js', () => ({ toggleMenuSkins: vi.fn() }));
 vi.mock('../src/uiMenuSkins.js', () => ({ cycleMenuSkin: vi.fn() }));
 vi.mock('../src/uiPause.js', () => ({ showPause: vi.fn(() => ({ elements: [] })) }));
-vi.mock('../src/uiGameOver.js', () => ({ buildGameOverUI: vi.fn(() => ({ elements: [] })) }));
+vi.mock('../src/uiGameOverLoader.js', () => ({
+    preloadGameOverUI: vi.fn(() => Promise.resolve()),
+    buildGameOverUI: vi.fn(() => ({ elements: [] })),
+}));
 vi.mock('../src/storage.js', () => ({ loadHighScore: vi.fn(() => 0) }));
 
 import { UI } from '../src/ui.js';
@@ -54,7 +60,7 @@ import { toggleMenuOptions, refreshHardcoreLockState } from '../src/uiMenuOption
 import { toggleMenuScores } from '../src/uiMenuScoresPanel.js';
 import { toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
 import { cycleMenuSkin } from '../src/uiMenuSkins.js';
-import { buildGameOverUI } from '../src/uiGameOver.js';
+import { buildGameOverUI } from '../src/uiGameOverLoader.js';
 
 describe('UI façade — délégation', () => {
     let ui;
@@ -87,11 +93,13 @@ describe('UI façade — délégation', () => {
         ui.showHardcoreInvincibilityHint(700);
         ui.showHardcoreTutorial();
         ui.dismissHardcoreTutorial();
+        ui.showTrainingTutorial();
+        ui.dismissTrainingTutorial();
         ui.showFlash();
 
         expect(hud.createScoreDisplay).toHaveBeenCalledWith(ui);
         expect(hud.showCoyoteHint).toHaveBeenCalledWith(ui);
-        expect(hud.showHardcoreInvincibilityHint).toHaveBeenCalledWith(ui, 700, 1);
+        expect(hud.showHardcoreInvincibilityHint).toHaveBeenCalledWith(ui, 700);
         expect(hud.showFlash).toHaveBeenCalledWith(ui);
     });
 

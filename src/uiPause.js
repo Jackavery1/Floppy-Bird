@@ -1,9 +1,15 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
-import { bindAccessibilityAction, syncAccessibilityLayer } from './uiDomAccessibility.js';
+import { pauseResumeHint, menuHint } from './device.js';
+import {
+    bindAccessibilityAction,
+    setAccessibilityControlLabel,
+    syncAccessibilityLayer,
+} from './uiDomAccessibility.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_HINT,
     FONT_TITLE,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
@@ -31,6 +37,20 @@ export function showPause(ui, { onResume, onMenu }) {
         DEPTH.PAUSE_TITLE
     );
     elements.push(pauseTitle);
+
+    const pauseHint = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        pause.title + 22,
+        `${pauseResumeHint()} · ${menuHint()}`,
+        panelChromeTextStyle({
+            fontSize: FONT_SIZE_HINT,
+            fill: DESIGN_TOKENS.texteSecondaire,
+            fontStyle: 'italic',
+        }),
+        DEPTH.PAUSE_TITLE
+    );
+    elements.push(pauseHint);
 
     const resumeGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_BTN);
     elements.push(resumeGraphics);
@@ -122,6 +142,7 @@ export function showPause(ui, { onResume, onMenu }) {
 
     bindAccessibilityAction('pauseResume', onResume);
     bindAccessibilityAction('pauseMenu', onMenu);
+    setAccessibilityControlLabel('pauseResume', pauseResumeHint());
     syncAccessibilityLayer(ui.scene.game);
 
     return { elements };

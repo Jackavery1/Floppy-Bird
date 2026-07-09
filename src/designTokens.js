@@ -1,5 +1,5 @@
 /**
- * Tokens visuels partagés entre le shell HTML (`style.css`) et l’UI Phaser.
+ * Tokens visuels partagés entre le shell HTML (`style.css`) et l'UI Phaser.
  * Les variables CSS `:root` sont synchronisées via {@link syncShellTheme}.
  *
  * Matrice typo (Phaser + shell) :
@@ -12,6 +12,8 @@
  * | Grille skins      | 11 px    | Segoe UI            | menuTextStyle          |
  * | Chargement shell  | 14–16 px | policeInterface     | CSS `#loading`         |
  */
+import { getBackgroundPeriod } from './textures/backgroundTextures.js';
+
 export const DESIGN_TOKENS = Object.freeze({
     fondNuit: '#1a1a2e',
     fondJour: '#87ceeb',
@@ -85,7 +87,9 @@ export function prefersHighContrast() {
 }
 
 function epaisseurContourHud() {
-    return prefersHighContrast() ? 3 : 2;
+    const base = prefersHighContrast() ? 3 : 2;
+    if (getBackgroundPeriod() === 'day') return Math.max(base, 3);
+    return base;
 }
 
 /** Style Phaser texte HUD (contour noir systématique). */
@@ -145,3 +149,14 @@ export const CONFETTI_COLORS_PHASER = Object.freeze([
     hexVersPhaser(DESIGN_TOKENS.bannerSuccess),
     hexVersPhaser(DESIGN_TOKENS.texteHud),
 ]);
+
+/** Glyphes affichés avec Press Start 2P (chrome panneaux, titres, pause). */
+export const GLYPHES_TITRE_UI = [
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    'abcdefghijklmnopqrstuvwxyz',
+    '0123456789',
+    ' .,·:;!?\'"()[]{}+-=*/%#@&_',
+    '◂▸▾★—…',
+    'éèêëàâäùûüôöîïçœ',
+    'ÉÈÊËÀÂÄÙÛÜÔÖÎÏÇŒ',
+].join('');

@@ -230,7 +230,7 @@ test.describe('touch mobile portrait', () => {
         await expectGameState(page, 'playing');
     });
 
-    test('rejoue via tap sur le bouton REJOUER', async ({ page }, testInfo) => {
+    test('rejoue via tap sur le bouton ENCORE', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);

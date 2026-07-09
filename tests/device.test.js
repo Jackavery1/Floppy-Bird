@@ -117,7 +117,8 @@ describe('device', () => {
         const { optionsControlsHint } = await loadDevice(true);
         const hint = optionsControlsHint();
         expect(hint).toContain('TAP : sauter');
-        expect(hint).toContain('scores · skins');
+        expect(hint).toContain('ENTR.');
+        expect(hint).toContain('scores · skins · options');
     });
 
     it('dailyReplayHint et restartHintForMode distinguent le mode daily', async () => {
@@ -125,6 +126,13 @@ describe('device', () => {
         expect(dailyReplayHint()).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(true)).toBe('TAP : rejouer le défi');
         expect(restartHintForMode(false)).toBe('TAP : rejouer');
+    });
+
+    it('skipTutorialHint adapte le libellé', async () => {
+        const { skipTutorialHint } = await loadDevice(true);
+        expect(skipTutorialHint()).toBe('TAP : passer');
+        const { skipTutorialHint: fine } = await loadDevice(false);
+        expect(fine()).toBe('P : passer');
     });
 
     it('deathCauseLabel décrit la cause de mort', async () => {

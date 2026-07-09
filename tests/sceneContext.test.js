@@ -5,6 +5,7 @@ import { initSceneCore } from '../src/sceneContext.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     loadTrainingEnabled: vi.fn(() => false),
+    loadTrainingTimeScale: vi.fn(() => 0.8),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({

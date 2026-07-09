@@ -28,6 +28,10 @@ html {
     color-scheme: dark;
 }
 
+html.partie-active {
+    overscroll-behavior: none;
+}
+
 body {
     background: var(--couleur-fond);
     overflow: hidden;

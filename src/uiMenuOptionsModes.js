@@ -5,6 +5,7 @@ import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { buildMetaContext } from './metaContext.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { beginOptionsSection } from './uiMenuOptionsSection.js';
+import { buildTrainingSpeedControl } from './uiMenuOptionsTrainingSpeed.js';
 import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from './uiToggleIcons.js';
 import {
     applyHardcoreLabel,
@@ -65,6 +66,8 @@ export function buildModeControls(ui, elements, panel) {
         scene.toggleTraining();
     });
     add(ui._trainingHit);
+
+    buildTrainingSpeedControl(ui, elements, panel);
 
     ui._hardcoreIcon = scene.add.graphics();
     ui._hardcoreIcon.setPosition(toggleIconX, panel.hardcore);

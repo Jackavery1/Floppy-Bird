@@ -69,8 +69,8 @@ export function dailyChallengeHint() {
     return isCoarsePointer() ? 'Tap Défi du jour' : 'D : défi du jour';
 }
 
-export function menuControlsHint() {
-    return optionsControlsHint();
+export function skipTutorialHint() {
+    return isCoarsePointer() ? 'TAP : passer' : 'P : passer';
 }
 
 /** Commandes structurées pour le panneau OPTIONS (onglet Contrôles). */
@@ -80,7 +80,10 @@ export function optionsControlRows() {
             { key: 'TAP', action: 'sauter' },
             { key: 'DÉFI', action: 'défi du jour' },
             { key: '1·2·3', action: 'difficulté' },
-            { key: '···', action: 'scores · skins' },
+            { key: 'ENTR.', action: 'entraînement' },
+            { key: 'VIT.', action: 'vitesse entraînement' },
+            { key: 'HARD', action: 'hardcore' },
+            { key: '···', action: 'scores · skins · options' },
         ];
     }
     return [
@@ -104,6 +107,10 @@ export function optionsControlsHint() {
 
 export function optionsButtonLabel(_open) {
     return 'OPTS';
+}
+
+export function optionsAccessibilityLabel() {
+    return isCoarsePointer() ? 'Options' : 'Options — touche S ou O';
 }
 
 export function scoresButtonLabel(_open) {
@@ -156,8 +163,14 @@ export function hardcoreInvincibilityHintText(ms, pipeIndex = 1) {
     return `Invincible ${ms} ms${suffix}`;
 }
 
-export function trainingTutorialText() {
-    const scale = GAME_CONFIG.training.timeScale;
+export function trainingSpeedLabel(scale) {
+    const pct = Math.round(scale * 100);
+    return isCoarsePointer()
+        ? `Vitesse entraîn. : ${pct} %`
+        : `VITESSE ENTRAÎNEMENT : ${pct} % (tap)`;
+}
+
+export function trainingTutorialText(scale = GAME_CONFIG.training.timeScale) {
     const pct = Math.round(scale * 100);
     return isCoarsePointer()
         ? `Entraînement : ${pct} % vitesse,\nfantôme de ton meilleur run`

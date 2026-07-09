@@ -21,6 +21,8 @@ import {
     startSpawnInvincibility,
     onPipeSpawned,
 } from './sceneRound.js';
+import { preloadGameOverUI } from './uiGameOverLoader.js';
+import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -32,6 +34,7 @@ function clearRoundOverlays(scene) {
 
 /** @param {SceneContext} scene @param {{ resetBird?: boolean }} [opts] */
 export function beginRound(scene, { resetBird = false } = {}) {
+    preloadGameOverUI();
     clearRoundOverlays(scene);
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
@@ -110,4 +113,5 @@ export function beginRound(scene, { resetBird = false } = {}) {
 
     scene.time.paused = false;
     scene.state = GAME_STATE.PLAYING;
+    syncShellGameState(GAME_STATE.PLAYING);
 }

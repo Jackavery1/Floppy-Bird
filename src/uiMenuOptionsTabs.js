@@ -10,6 +10,7 @@ import {
 } from './uiLayout.js';
 import { setOptionsSectionVisible } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';
+import { syncOptionsTabAccessibility } from './uiDomAccessibilityFlows.js';
 
 /** @typedef {'controls' | 'preferences'} OptionsTabId */
 
@@ -42,6 +43,7 @@ export function setOptionsTab(ui, tab) {
         paint(active ? MENU_BTN_COLOR : TAB_INACTIVE, active ? 0.95 : 0.78);
         label.setColor(active ? DESIGN_TOKENS.texteMenu : DESIGN_TOKENS.texteHintMenu);
     });
+    syncOptionsTabAccessibility(ui);
 }
 
 /**

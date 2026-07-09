@@ -1,10 +1,10 @@
 import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin } from './metaStorage.js';
-import { loadHighScore } from './storage.js';
-import { skinsPanelHint } from './device.js';
+import { skinsPanelHint, skinsCycleHint } from './device.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
 import { ensureBirdTextures } from './textures/index.js';
+import { scheduleRemainingBirdTextures } from './uiMenuSkinsTextures.js';
 import {
     getSkin,
     listUnlockedSkins,
@@ -31,6 +31,9 @@ import {
 } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { announceAccessibility } from './uiDomAccessibility.js';
+import { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
+
+export { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
 
 const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
 const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
@@ -38,20 +41,6 @@ const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 52;
 const SKIN_CELL_H = 56;
-
-/** Charge les textures oiseau par lots pour ne pas bloquer l’ouverture du panneau. */
-function scheduleRemainingBirdTextures(scene, skinIds) {
-    const queue = skinIds.filter((id) => !scene.textures.exists(`bird-sheet-${id}`));
-    if (!queue.length) return;
-
-    const batchSize = 4;
-    const step = () => {
-        const batch = queue.splice(0, batchSize);
-        if (batch.length) ensureBirdTextures(scene, batch);
-        if (queue.length) scene.time.delayedCall(16, step);
-    };
-    step();
-}
 
 /**
  * @param {import('./ui.js').UI} ui
@@ -191,6 +180,22 @@ export function buildSkinsTab(ui, elements, panelElements) {
     elements.push(ui._skinHint);
     ui._skinsTabElements.push(ui._skinHint);
 
+    ui._skinCycleHint = addCenteredText(
+        scene,
+        GAME_CONFIG.centerX,
+        panel.skinsHint + 16,
+        skinsCycleHint(),
+        menuTextStyle({
+            fontSize: FONT_SIZE_HINT,
+            fill: DESIGN_TOKENS.texteSecondaire,
+            fontStyle: 'italic',
+        }),
+        DEPTH.PANEL_FRAME
+    );
+    panelElements.push(ui._skinCycleHint);
+    elements.push(ui._skinCycleHint);
+    ui._skinsTabElements.push(ui._skinCycleHint);
+
     const closeBtn = buildMenuToggleButton(scene, elements, {
         cx: GAME_CONFIG.centerX,
         cy: panel.closeBtn,
@@ -221,48 +226,4 @@ export function cycleMenuSkin(ui, step) {
     refreshSkinsTab(ui);
     const nextSkin = getSkin(nextId);
     announceAccessibility(`Apparence sélectionnée : ${nextSkin.label}`);
-}
-
-/** @param {import('./ui.js').UI} ui */
-export function refreshSkinsTab(ui) {
-    if (!ui._skinCells) return;
-    const scene = ui.scene;
-    const ctx = buildMetaContext(scene);
-    const unlocked = new Set(listUnlockedSkins(ctx));
-    const selected = loadSelectedSkin();
-
-    ui._skinsCountLine?.setText(`${ctx.unlockedSkinCount}/${SKIN_IDS.length} débloqués`);
-
-    ui._skinCells.forEach(({ skinId, frame, preview, nameLabel, recordLabel }) => {
-        const isUnlocked = unlocked.has(skinId);
-        const isSelected = skinId === selected;
-        preview.setAlpha(isUnlocked ? 1 : 0.28);
-        nameLabel.setColor(
-            isUnlocked
-                ? isSelected
-                    ? DESIGN_TOKENS.accent
-                    : DESIGN_TOKENS.texteSkinLabel
-                : DESIGN_TOKENS.texteVerrouille
-        );
-        nameLabel.setText(isUnlocked ? getSkin(skinId).label : '???');
-        frame.setStrokeStyle(
-            2,
-            isSelected
-                ? hexVersPhaser(DESIGN_TOKENS.accent)
-                : hexVersPhaser(DESIGN_TOKENS.cadreSkinContour)
-        );
-        if (!isUnlocked) {
-            nameLabel.setText('???');
-        }
-        if (recordLabel) {
-            if (isUnlocked) {
-                const best = loadHighScore(scene.difficulty, scene.hardcoreMode, skinId);
-                recordLabel.setVisible(true);
-                recordLabel.setText(best > 0 ? `★ ${best}` : '');
-            } else {
-                recordLabel.setVisible(false);
-                recordLabel.setText('');
-            }
-        }
-    });
 }

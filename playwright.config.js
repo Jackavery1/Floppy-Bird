@@ -10,6 +10,11 @@ function previewBaseUrl() {
     return `http://127.0.0.1:4173${normalized}`;
 }
 
+const previewCommand =
+    process.env.CI && process.env.PLAYWRIGHT_SKIP_BUILD === '1'
+        ? 'npx vite preview --host 127.0.0.1 --port 4173'
+        : 'npm run build && npx vite preview --host 127.0.0.1 --port 4173';
+
 export default defineConfig({
     testDir: './e2e',
     timeout: 45_000,
@@ -21,7 +26,7 @@ export default defineConfig({
         serviceWorkers: 'allow',
     },
     webServer: {
-        command: 'npm run build:e2e && npx vite preview --host 127.0.0.1 --port 4173',
+        command: previewCommand,
         port: 4173,
         reuseExistingServer: !process.env.CI,
         env: {

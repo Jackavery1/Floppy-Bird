@@ -37,7 +37,17 @@ jobs:
     e2e:
         needs: check
         runs-on: ubuntu-latest
-        timeout-minutes: 120
+        timeout-minutes: 35
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    - chromium-desktop
+                    - chromium-mobile-portrait
+                    - chromium-mobile-landscape
+                    - webkit-mobile-portrait
+                    - webkit-mobile-landscape
+                    - chromium-tablet-landscape
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -52,9 +62,10 @@ jobs:
               env:
                   BASE_PATH: /Floppy-Bird/
                   VITE_ENABLE_TEST_SEAM: 'true'
-            - run: npm run test:e2e:ci
+            - run: npx playwright test --workers=1 --project=${{ matrix.project }}
               env:
                   BASE_PATH: /Floppy-Bird/
+                  PLAYWRIGHT_SKIP_BUILD: '1'
 
     lighthouse:
         needs: check

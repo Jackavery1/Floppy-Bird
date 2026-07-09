@@ -1,7 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import { coyoteHintText, hardcoreInvincibilityHintText } from './device.js';
-import { sceneTween } from './motion.js';
+import { prefersReducedMotion, sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
 import {
     acquireHudBannerSlot,
@@ -216,6 +216,7 @@ export function showHardcoreInvincibilityHint(ui, durationMs, pipeIndex = 1) {
 }
 
 export function showFlash(ui, color = hexVersPhaser(DESIGN_TOKENS.texteHud), alpha = 0.8) {
+    if (prefersReducedMotion()) return;
     const flash = ui.scene.add.rectangle(
         GAME_CONFIG.centerX,
         GAME_CONFIG.centerY,

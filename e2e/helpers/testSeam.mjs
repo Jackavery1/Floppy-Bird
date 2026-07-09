@@ -81,6 +81,36 @@ export function advancePipeForScore(page) {
 }
 
 /** @param {import('@playwright/test').Page} page */
+export function getTrainingRuntime(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getTrainingRuntime?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
 export function waitForScoreHud(page, timeout = 5_000) {
     return page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, { timeout });
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getTutorialState(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getTutorialState?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [count] */
+export function sampleGapVariance(page, count = 32) {
+    return page.evaluate((n) => window.__FLOPPY_TEST__?.sampleGapVariance?.(n), count);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function cycleTrainingSpeed(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.cycleTrainingSpeed?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [times] */
+export function cycleTrainingSpeedTimes(page, times = 4) {
+    return page.evaluate((n) => {
+        const seam = window.__FLOPPY_TEST__;
+        const out = [];
+        for (let i = 0; i < n; i++) out.push(seam?.cycleTrainingSpeed?.());
+        return out;
+    }, times);
 }

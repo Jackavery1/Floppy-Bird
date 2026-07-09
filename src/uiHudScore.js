@@ -1,18 +1,19 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyHudLabel } from './dailyChallenge.js';
 import { getSkin } from './skins/index.js';
-import { DESIGN_TOKENS } from './designTokens.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
 import { updateGapHudBadge } from './uiHudGapBadge.js';
 import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 
-const SCORE_STYLE = Object.freeze({
-    fontSize: '40px',
-    fill: DESIGN_TOKENS.texteHud,
-    fontStyle: 'bold',
-    stroke: DESIGN_TOKENS.contourHud,
-    strokeThickness: 4,
-});
+const SCORE_STYLE = Object.freeze(
+    hudTextStyle({
+        fontSize: '40px',
+        fill: DESIGN_TOKENS.texteHud,
+        fontStyle: 'bold',
+        strokeThickness: 4,
+    })
+);
 
 export function createScoreDisplay(ui) {
     if (ui.scoreText) ui.scoreText.destroy();

@@ -20,6 +20,7 @@ export const OPTIONS_TAB_CONTROL_KEYS = Object.freeze([
 export const OPTIONS_CONTROL_KEYS = Object.freeze([
     ...OPTIONS_TAB_CONTROL_KEYS,
     'menuTraining',
+    'menuTrainingSpeed',
     'menuHardcore',
     'menuMute',
     'menuOptionsClose',
@@ -138,6 +139,14 @@ export const CONTROL_DEFS = Object.freeze({
         label: 'Mode entraînement',
         x: TOUCH_TARGETS.menuTraining.x,
         y: TOUCH_TARGETS.menuTraining.y,
+        width: 220,
+        height: MIN_TOUCH,
+    },
+    menuTrainingSpeed: {
+        id: 'a11y-training-speed',
+        label: 'Vitesse entraînement',
+        x: TOUCH_TARGETS.menuTrainingSpeed.x,
+        y: TOUCH_TARGETS.menuTrainingSpeed.y,
         width: 220,
         height: MIN_TOUCH,
     },

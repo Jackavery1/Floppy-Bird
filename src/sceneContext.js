@@ -1,6 +1,7 @@
 import { GAME_STATE } from './gameState.js';
 import { createRoundState } from './roundState.js';
 import { createSceneModesState } from './sceneModes.js';
+import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -18,6 +19,7 @@ export function initSceneCore(scene) {
 
     scene.round = createRoundState();
     scene.state = GAME_STATE.MENU;
+    syncShellGameState(GAME_STATE.MENU);
     Object.assign(scene, createSceneModesState());
 
     scene._clouds = [];

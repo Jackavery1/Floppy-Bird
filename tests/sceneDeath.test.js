@@ -25,8 +25,11 @@ vi.mock('../src/tutorialStorage.js', () => ({
 vi.mock('../src/dailyChallengeProgress.js', () => ({
     saveDailyCompletion: vi.fn(),
 }));
-vi.mock('../src/dailyChallenge.js', () => ({
-    getDailyChallengeSkin: vi.fn(() => 'classic'),
+vi.mock('../src/shellGameState.js', () => ({
+    syncShellGameState: vi.fn(),
+}));
+vi.mock('../src/uiGameOverLoader.js', () => ({
+    preloadGameOverUI: vi.fn(() => Promise.resolve()),
 }));
 
 describe('sceneDeath', () => {
@@ -96,6 +99,7 @@ describe('sceneDeath', () => {
             },
         };
         updateDying(scene);
+        await Promise.resolve();
         const { setupGameOverAccessibility } = await import('../src/uiDomAccessibility.js');
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
         expect(scene.ui.highScore).toBe(7);
@@ -138,6 +142,7 @@ describe('sceneDeath', () => {
             },
         };
         updateDying(scene);
+        await Promise.resolve();
         expect(saveDailyCompletion).toHaveBeenCalled();
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
     });

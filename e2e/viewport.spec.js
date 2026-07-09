@@ -219,4 +219,58 @@ test.describe('jeu chargé', () => {
         await startPlayingFromMenu(page, true);
         await expectGameState(page, 'playing');
     });
+
+    test('manifest PWA contient icônes et métadonnées', async ({ page }) => {
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const href = await page.locator('link[rel="manifest"]').first().getAttribute('href');
+        expect(href).toMatch(/manifest\.webmanifest$/);
+        const manifest = await page.evaluate(async (url) => {
+            const res = await fetch(url);
+            return res.json();
+        }, href);
+        expect(manifest.name).toBe('Floppy Bird');
+        expect(manifest.display).toBe('standalone');
+        expect(manifest.icons?.length).toBeGreaterThanOrEqual(4);
+        expect(manifest.lang).toBe('fr');
+    });
+
+    test('active partie-active et restreint zoom en mobile portrait', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-mobile-portrait',
+            'mobile portrait uniquement'
+        );
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('html')).toHaveClass(/partie-active/);
+        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+            'content',
+            /user-scalable=no/
+        );
+    });
+
+    test('active partie-active sur html pendant une partie', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await expect(page.locator('html')).not.toHaveClass(/partie-active/);
+        await startPlayingFromMenu(page, false);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('html')).toHaveClass(/partie-active/);
+        await expect(page.locator('html')).toHaveAttribute('data-game-state', 'playing');
+    });
+
+    test('restreint le zoom viewport en partie active', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+            'content',
+            /user-scalable=yes/
+        );
+        await startPlayingFromMenu(page, false);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+            'content',
+            /user-scalable=no/
+        );
+    });
 });

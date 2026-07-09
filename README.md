@@ -3,7 +3,7 @@
 [![CI](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-100%2F100-green)](.)
 [![A11y](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-green)](.)
-[![Tests](https://img.shields.io/badge/Tests-574%2F574-green)](.)
+[![Tests](https://img.shields.io/badge/Tests-604%2F604-green)](.)
 
 > Jeu arcade 2D Floppy Bird — Phaser 3, Vite, PWA progressive. Jouable hors-ligne avec scores locaux persistants.
 
@@ -19,7 +19,7 @@
 - 💾 **Persistant** : Scores locaux, progression meta, sélection skins sauvegardées
 - ⚡ **Performance** : ~2s load time, bundle ~180KB (gzipped)
 
-Couverture Vitest en CI : seuils ≥ 75 % lines / statements, ≥ 70 % functions / branches (`npm run test:coverage`).
+Couverture Vitest en CI : seuils ≥ 94 % lines / statements, ≥ 82 % branches, ≥ 91 % functions (`npm run test:coverage`). Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour les artefacts locaux.
 
 ## Commandes
 
@@ -92,7 +92,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 
 **UI** : [`src/uiIndex.js`](src/uiIndex.js) réexporte la façade (`UI`, HUD, menu, pause, game over). `sceneSetup.js` l’utilise comme point d’entrée ; les sous-modules (`uiMenuOptionsLabels.js`, etc.) restent importables directement.
 
-**Artefacts locaux** (`dist/`, `dev-dist/`, `test-results/`, `coverage/`, `playwright-report/`) : générés par build/tests, ignorés par git — ne pas les committer.
+**Artefacts locaux** : voir [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Build & perf
 

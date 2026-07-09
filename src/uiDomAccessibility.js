@@ -3,6 +3,9 @@ export {
     bindAccessibilityAction,
     setAccessibilityControlVisible,
     setAccessibilityControlDisabled,
+    setAccessibilityControlLabel,
+    setAccessibilityControlPressed,
+    setAccessibilityControlExpanded,
     announceAccessibility,
     hideAllAccessibilityControls,
 } from './uiDomAccessibilityControls.js';
@@ -15,4 +18,6 @@ export {
     bindOptionsAccessibility,
     bindScoresAccessibility,
     setupGameOverAccessibility,
+    syncMenuToggleAccessibility,
+    syncOptionsTabAccessibility,
 } from './uiDomAccessibilityFlows.js';

@@ -2,8 +2,12 @@ import { DIFFICULTY } from './config.js';
 import {
     bindAccessibilityAction,
     announceAccessibility,
+    setAccessibilityControlExpanded,
+    setAccessibilityControlLabel,
+    setAccessibilityControlPressed,
     setAccessibilityControlVisible,
 } from './uiDomAccessibilityControls.js';
+import { dailyChallengeHint, optionsAccessibilityLabel, restartHintForMode, trainingHint, hardcoreHint, trainingSpeedLabel } from './device.js';
 import {
     GAME_OVER_CONTROL_KEYS,
     MENU_CONTROL_KEYS,
@@ -15,6 +19,24 @@ import { setOptionsTab } from './uiMenuOptionsTabs.js';
 import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
+export function syncMenuToggleAccessibility(scene) {
+    if (!scene) return;
+    setAccessibilityControlPressed('menuDiffEasy', scene.difficulty === DIFFICULTY.EASY);
+    setAccessibilityControlPressed('menuDiffNormal', scene.difficulty === DIFFICULTY.NORMAL);
+    setAccessibilityControlPressed('menuDiffHard', scene.difficulty === DIFFICULTY.HARD);
+    setAccessibilityControlPressed('menuTraining', !!scene.trainingMode);
+    setAccessibilityControlPressed('menuHardcore', !!scene.hardcoreMode);
+}
+
+/** @param {import('./ui.js').UI} ui */
+export function syncOptionsTabAccessibility(ui) {
+    if (!ui) return;
+    const tab = ui._optionsActiveTab ?? 'preferences';
+    setAccessibilityControlExpanded('menuOptionsTabControls', tab === 'controls');
+    setAccessibilityControlExpanded('menuOptionsTabPreferences', tab === 'preferences');
+}
+
+/** @param {import('./sceneTypes.js').SceneContext} scene */
 export function setupMenuAccessibility(scene) {
     bindAccessibilityAction('menuStart', () => scene.handlePrimaryAction());
     bindAccessibilityAction('menuDaily', () => scene.launchDailyChallenge());
@@ -24,12 +46,15 @@ export function setupMenuAccessibility(scene) {
     bindAccessibilityAction('menuDiffEasy', () => scene.changeDifficulty(DIFFICULTY.EASY));
     bindAccessibilityAction('menuDiffNormal', () => scene.changeDifficulty(DIFFICULTY.NORMAL));
     bindAccessibilityAction('menuDiffHard', () => scene.changeDifficulty(DIFFICULTY.HARD));
+    setAccessibilityControlLabel('menuDaily', dailyChallengeHint());
+    setAccessibilityControlLabel('menuOptions', optionsAccessibilityLabel());
     for (const key of MENU_CONTROL_KEYS) {
         setAccessibilityControlVisible(
             /** @type {keyof import('./uiDomAccessibilityDefs.js').CONTROL_DEFS} */ (key),
             true
         );
     }
+    syncMenuToggleAccessibility(scene);
     syncAccessibilityLayer(scene.game);
 }
 
@@ -114,6 +139,17 @@ export function setOptionsPanelAccessibility(scene, open) {
             open
         );
     }
+    if (open) {
+        setAccessibilityControlLabel('menuTraining', trainingHint());
+        setAccessibilityControlLabel('menuHardcore', hardcoreHint());
+        setAccessibilityControlLabel(
+            'menuTrainingSpeed',
+            trainingSpeedLabel(scene.trainingTimeScale ?? 0.8)
+        );
+        syncMenuToggleAccessibility(scene);
+        syncOptionsTabAccessibility(scene.ui);
+        announceAccessibility('Panneau options ouvert');
+    }
     syncAccessibilityLayer(scene.game);
 }
 
@@ -124,6 +160,7 @@ export function bindOptionsAccessibility(scene) {
         setOptionsTab(scene.ui, 'preferences')
     );
     bindAccessibilityAction('menuTraining', () => scene.toggleTraining());
+    bindAccessibilityAction('menuTrainingSpeed', () => scene.cycleTrainingSpeed());
     bindAccessibilityAction('menuHardcore', () => scene.toggleHardcore());
     bindAccessibilityAction('menuOptionsClose', () => scene.ui.toggleMenuOptionsPanel());
 }
@@ -143,6 +180,7 @@ export function setupGameOverAccessibility(scene, { score, isDaily = false }) {
             true
         );
     }
+    setAccessibilityControlLabel('gameOverRestart', restartHintForMode(isDaily));
     syncAccessibilityLayer(scene.game);
     const mode = isDaily ? 'défi du jour' : 'partie';
     announceAccessibility(`Game over. Score ${score}. ${mode}. Rejouer ou retour au menu.`);

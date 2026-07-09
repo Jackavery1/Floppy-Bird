@@ -1,5 +1,5 @@
 import { DIFFICULTY, DIFFICULTY_ORDER } from './config.js';
-import { loadTrainingEnabled } from './trainingStorage.js';
+import { loadTrainingEnabled, loadTrainingTimeScale } from './trainingStorage.js';
 import { loadHardcoreEnabled, saveHardcoreEnabled } from './hardcoreStorage.js';
 import { loadHighScore } from './storage.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
@@ -27,6 +27,7 @@ export function createSceneModesState() {
     return {
         difficulty,
         trainingMode,
+        trainingTimeScale: loadTrainingTimeScale(),
         hardcoreMode,
         playMode: 'classic',
         dailyChallengeMode: false,

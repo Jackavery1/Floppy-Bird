@@ -10,6 +10,7 @@ import {
     tickPipeSpawnFallback,
     spawnPipeWave,
 } from '../src/sceneRound.js';
+import { GAME_CONFIG } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -55,6 +56,15 @@ describe('sceneRound', () => {
             cancelPipeSpawnTimer(scene);
             expect(remove).toHaveBeenCalledWith(false);
             expect(scene.round.pipeSpawnTimer).toBeNull();
+        });
+
+        it('scheduleFirstPipe utilise le délai config', () => {
+            scene.time.delayedCall = vi.fn(() => ({ remove: vi.fn() }));
+            scheduleFirstPipe(scene);
+            expect(scene.time.delayedCall).toHaveBeenCalledWith(
+                GAME_CONFIG.round.pipeSpawnDelayMs,
+                expect.any(Function)
+            );
         });
 
         it('scheduleFirstPipe spawn si toujours en jeu', () => {

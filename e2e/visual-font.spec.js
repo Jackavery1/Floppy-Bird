@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { waitForGameReady } from './helpers/gameCoords.mjs';
+import { getTestState } from './helpers/testSeam.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const shotsDir = path.join(__dirname, '..', 'test-results', 'visual-font');
@@ -13,13 +14,9 @@ test.describe('vérif visuelle police titre', () => {
         await page.screenshot({ path: path.join(shotsDir, 'menu.png'), fullPage: true });
 
         await page.keyboard.press('Space');
-        await expect
-            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getState?.()))
-            .toBe('playing');
+        await expect.poll(() => getTestState(page)).toBe('playing');
         await page.keyboard.press('Escape');
-        await expect
-            .poll(() => page.evaluate(() => window.__FLOPPY_TEST__?.getState?.()))
-            .toBe('paused');
+        await expect.poll(() => getTestState(page)).toBe('paused');
         await page.screenshot({ path: path.join(shotsDir, 'pause.png'), fullPage: true });
 
         const fontReady = await page.evaluate(async () => {

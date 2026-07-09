@@ -1,12 +1,12 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import {
-    isCoarsePointer,
     jumpTutorialText,
     gapTutorialText,
     scoreTutorialText,
     hardcoreTutorialText,
     trainingTutorialText,
+    skipTutorialHint,
 } from './device.js';
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
@@ -24,7 +24,7 @@ function addSkipTutorialControl(ui) {
     if (loadTutorialComplete()) return;
     dismissSkipTutorialControl(ui);
     const skipY = GAME_CONFIG.centerY + 24;
-    const skipHint = isCoarsePointer() ? 'TAP : passer' : 'P : passer';
+    const skipHint = skipTutorialHint();
     ui._tutorialSkipLabel = addCenteredText(
         ui.scene,
         GAME_CONFIG.centerX,
@@ -97,7 +97,7 @@ export function showHardcoreTutorial(ui) {
 
 export function showTrainingTutorial(ui) {
     ui._trainingTutorialActive = true;
-    showPulsingTutorialHint(ui, trainingTutorialText());
+    showPulsingTutorialHint(ui, trainingTutorialText(ui.scene?.trainingTimeScale));
 }
 
 export function dismissHardcoreTutorial(ui) {

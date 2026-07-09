@@ -4,12 +4,15 @@ import {
     setHardcoreMode,
     toggleTrainingMode,
     toggleHardcoreMode,
+    cycleTrainingSpeed,
 } from '../src/sceneModeSettings.js';
 
 vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
     loadTrainingEnabled: vi.fn(() => false),
     loadBestTrainingScore: vi.fn(() => 0),
+    cycleTrainingTimeScale: vi.fn((v) => (v === 0.8 ? 1 : 0.8)),
+    saveTrainingTimeScale: vi.fn(),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
@@ -28,6 +31,7 @@ describe('sceneModeSettings', () => {
     function makeScene() {
         return {
             trainingMode: false,
+            trainingTimeScale: 0.8,
             hardcoreMode: false,
             difficulty: 'normal',
             dailyChallengeMode: false,
@@ -35,6 +39,7 @@ describe('sceneModeSettings', () => {
             round: { score: 0 },
             ui: {
                 updateTrainingLabel: vi.fn(),
+                updateTrainingSpeedLabel: vi.fn(),
                 updateHardcoreLabel: vi.fn(),
                 refreshHardcoreLockState: vi.fn(),
                 refreshHighScore: vi.fn(),
@@ -79,5 +84,14 @@ describe('sceneModeSettings', () => {
         const scene = makeScene();
         toggleHardcoreMode(scene);
         expect(scene.hardcoreMode).toBe(true);
+    });
+
+    it('cycleTrainingSpeed persiste et met à jour l’UI', async () => {
+        const { saveTrainingTimeScale } = await import('../src/trainingStorage.js');
+        const scene = makeScene();
+        cycleTrainingSpeed(scene);
+        expect(scene.trainingTimeScale).toBe(1);
+        expect(saveTrainingTimeScale).toHaveBeenCalledWith(1);
+        expect(scene.ui.updateTrainingSpeedLabel).toHaveBeenCalledWith(1, scene.trainingMode);
     });
 });

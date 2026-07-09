@@ -110,4 +110,15 @@ describe('pipeGaps', () => {
             vi.restoreAllMocks();
         });
     });
+
+    describe('sampleGapSequence (équité RNG)', () => {
+        it('borne les deltas consécutifs au plafond de score', async () => {
+            const { sampleGapSequence } = await import('../src/pipeGapSampling.js');
+            const { maxObservedDelta, maxAllowedDelta, spread } = sampleGapSequence(32, {
+                runScore: 15,
+            });
+            expect(maxObservedDelta).toBeLessThanOrEqual(maxAllowedDelta);
+            expect(spread).toBeGreaterThan(0);
+        });
+    });
 });

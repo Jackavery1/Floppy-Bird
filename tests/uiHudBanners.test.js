@@ -21,6 +21,7 @@ import { createRoundState } from '../src/roundState.js';
 
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
+    prefersReducedMotion: vi.fn(() => false),
 }));
 
 describe('uiHudBanners', () => {

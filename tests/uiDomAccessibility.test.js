@@ -327,4 +327,46 @@ describe('uiDomAccessibility', () => {
         expect(store.has('a11y-controls')).toBe(true);
         expect(store.has('ui-announcer')).toBe(true);
     });
+
+    it('setAccessibilityControlPressed met à jour aria-pressed', async () => {
+        const { setAccessibilityControlPressed } = await import(
+            '../src/uiDomAccessibilityControls.js'
+        );
+        const btn = { setAttribute: vi.fn() };
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => (id === 'a11y-training' ? btn : null)),
+        });
+        setAccessibilityControlPressed('menuTraining', true);
+        expect(btn.setAttribute).toHaveBeenCalledWith('aria-pressed', 'true');
+        setAccessibilityControlPressed('menuTraining', false);
+        expect(btn.setAttribute).toHaveBeenCalledWith('aria-pressed', 'false');
+    });
+
+    it('syncMenuToggleAccessibility reflète difficulté et modes', async () => {
+        const { syncMenuToggleAccessibility } = await import(
+            '../src/uiDomAccessibilityFlows.js'
+        );
+        const buttons = new Map();
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => {
+                if (!buttons.has(id)) {
+                    buttons.set(id, { setAttribute: vi.fn() });
+                }
+                return buttons.get(id);
+            }),
+        });
+        syncMenuToggleAccessibility({
+            difficulty: 'hard',
+            trainingMode: true,
+            hardcoreMode: false,
+        });
+        expect(buttons.get('a11y-diff-hard')?.setAttribute).toHaveBeenCalledWith(
+            'aria-pressed',
+            'true'
+        );
+        expect(buttons.get('a11y-training')?.setAttribute).toHaveBeenCalledWith(
+            'aria-pressed',
+            'true'
+        );
+    });
 });

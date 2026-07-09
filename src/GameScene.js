@@ -23,6 +23,7 @@ import {
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
+    cycleTrainingSpeed,
     launchDailyChallenge,
 } from './sceneFlow.js';
 import { beginRound } from './sceneBeginRound.js';
@@ -97,6 +98,9 @@ export class GameScene extends Phaser.Scene {
     }
     toggleHardcore() {
         toggleHardcore(this);
+    }
+    cycleTrainingSpeed() {
+        cycleTrainingSpeed(this);
     }
     launchDailyChallenge() {
         launchDailyChallenge(this);

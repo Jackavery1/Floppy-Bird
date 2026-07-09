@@ -13,6 +13,7 @@ import {
     applyTrainingLabel,
     applyHardcoreLabel,
 } from './uiMenuOptions.js';
+import { applyTrainingSpeedLabel } from './uiMenuOptionsLabels.js';
 import {
     buildMenuScoresPanel,
     refreshScoresButtonLabel,
@@ -22,6 +23,7 @@ import { buildMenuSkinsPanel, setMenuSkinsOpen } from './uiMenuSkinsPanel.js';
 import { refreshScoresTab } from './uiMenuScores.js';
 import { syncMenuChromeVisibility } from './uiMenuPanel.js';
 import { buildMetaContext } from './metaContext.js';
+import { syncMenuToggleAccessibility } from './uiDomAccessibilityFlows.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { DEPTH } from './uiLayout.js';
 
@@ -88,6 +90,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._skinsBtnBg,
         ui._skinsBtnLabel,
         ui._skinsBtnHit,
+        ui._menuHint,
     ].filter(Boolean);
     syncMenuChromeVisibility(ui);
     playMenuIntroTween(ui, title);
@@ -97,7 +100,13 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
 
 export function updateTrainingLabel(ui, trainingMode) {
     applyTrainingLabel(ui, trainingMode);
+    updateTrainingSpeedLabel(ui, ui.scene?.trainingTimeScale ?? 0.8, trainingMode);
     refreshOptionsButtonLabel(ui);
+}
+
+/** @param {import('./ui.js').UI} ui @param {number} scale @param {boolean} [trainingMode] */
+export function updateTrainingSpeedLabel(ui, scale, trainingMode) {
+    applyTrainingSpeedLabel(ui, scale, trainingMode);
 }
 
 export function updateHardcoreLabel(ui, hardcoreMode) {
@@ -120,6 +129,7 @@ export function updateDifficultyButtons(ui, difficulty) {
     ui._diffBtnLabels.forEach(({ label, diff }) => {
         label.setColor(diffLabelColor(difficulty, diff));
     });
+    syncMenuToggleAccessibility(ui.scene);
 }
 
 export function refreshHighScore(ui, difficulty, hardcoreMode = false, skinId = null) {

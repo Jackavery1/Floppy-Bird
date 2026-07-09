@@ -132,11 +132,12 @@ ui.js (orchestration — façade SceneContext)
 | Règle              | Détail                                                                                   |
 | ------------------ | ---------------------------------------------------------------------------------------- |
 | **Import**         | `import { UI } from './uiIndex.js'` en prod ; `ui.js` direct réservé aux tests de façade |
-| **Responsabilité** | État UI Phaser (menu/HUD/overlays) et pass-through vers sous-modules                     |
+| **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
-| **Extension**      | Nouvelle UI → module `ui*.js` dédié, puis méthode sur `UI` si `scene.ui` doit l’appeler  |
+| **Extension**      | Implémenter dans `ui*.js`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
+| **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
 
-Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés « SCORES / OPTIONS / SKINS ».
+Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : ligne d’aide en bas du menu (`optionsHint`, `difficultyHint`).
 
 ## Data Flow
 
@@ -196,7 +197,8 @@ Menu principal (input restart/menu)
 
 - **Object Pooling** : Pipes réutilisés
 - **Lazy Loading** : Textures oiseau à la demande (`ensureBirdTexture`) — classic + skin actif au boot, reste au panneau skins
-- **Code splitting** : chunk Vite `skins` (~3 Ko gzip) pour cache PWA distinct
+- **Code splitting** : chunks Vite `skins` (~3 Ko gzip) et `ui-gameover` (~10 Ko gzip, préchargé au `beginRound`). Le barrel `uiIndex.js` n’exporte plus le game over pour éviter un import statique.
+- **Shell jeu** : `shellGameState.js` (`partie-active`, `data-game-state`) + `shellViewport.js` (zoom menu vs partie).
 - **Canvas Rendering** : Phaser optimise le rendu
 - **Event Delegation** : Minimal DOM updates
 
@@ -206,16 +208,20 @@ Menu principal (input restart/menu)
 - **Event Listeners** : Unsubscribed on cleanup
 - **Tweens** : Destroyed after completion
 
+### Mode entraînement (`training.timeScale`)
+
+Vitesse par défaut **80 %** (`training.timeScale: 0.8`), cyclable dans OPTIONS : `training.timeScaleSteps` `[0.6, 0.7, 0.8, 1]` (persisté `trainingStorage`). Appliqué via `resolveTrainingTimeScale` (`sceneBootstrap.js`) + Phaser `time.timeScale`. Couvert par tests unitaires, seam `getTrainingRuntime` / `cycleTrainingSpeed`, e2e `gameplay-equity`.
+
 ## Testing Strategy
 
-### Unit Tests (574 tests)
+### Unit Tests (604 tests, couverture CI ≥ 94 % lignes / 82 % branches)
 
 - **Gameplay** : Physics, collision, scoring
 - **UI** : Menu navigation, state updates
 - **Storage** : Persistence, data integrity
-- **Accessibility** : ARIA, keyboard
+- **Accessibility** : ARIA (`aria-pressed`, `aria-expanded`), annonces, `menuTrainingSpeed`
 
-### E2E Tests (11 specs, ~80 cas, 6 projets viewport)
+### E2E Tests (10 specs, 88 cas, 6 projets viewport — ~528 exécutions en matrice CI)
 
 - **Navigation** : Menu flow
 - **Input** : Keyboard, touch, gamepad
@@ -225,19 +231,19 @@ Menu principal (input restart/menu)
 ### CI / déploiement (`.github/workflows/ci.yml`)
 
 ```
-check ──┬──► e2e (parallèle, timeout 120 min)
+check ──┬──► e2e (matrice 6 projets en parallèle, ~15 min mur, timeout 35 min/job)
         └──► lighthouse
-check + lighthouse + e2e ──► deploy → gh-pages
+check + lighthouse ──► deploy → gh-pages
 ```
 
-Le job `deploy` attend `e2e` : aucune mise en ligne si la matrice 6 viewports échoue.
+Le job `deploy` **n’attend pas** `e2e` : signal de régression sans bloquer Pages. `PLAYWRIGHT_SKIP_BUILD=1` en CI évite le double build.
 
 ## Accessibility Implementation
 
 ### WCAG 2.1 Level AA (cible)
 
-- **Keyboard Navigation** : 25 boutons DOM overlay + canvas
-- **Screen Readers** : `#ui-announcer`, labels ARIA
+- **Keyboard Navigation** : 26 boutons DOM overlay + canvas
+- **Screen Readers** : `#ui-announcer`, labels ARIA, états `aria-pressed` / `aria-expanded` sur toggles
 - **Color Contrast** : tokens testés AA sur fond nuit ; HUD jour compensé par contour noir (`designTokens.test.js`)
 - **Motion** : `prefers-reduced-motion` respecté
 - **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`)
@@ -256,14 +262,7 @@ Le job `deploy` attend `e2e` : aucune mise en ligne si la matrice 6 viewports é
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
 - **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `style.css` (shell synchronisé via `shellTheme.js`)
-- **Test Coverage** : seuils CI 75 % lignes / 70 % branches (`vite.config.js`)
-
-### Potential Extensions
-
-- **Multiplayer** : Leaderboard sync
-- **Analytics** : User engagement tracking
-- **Monetization** : Ad integration points
-- **Platforms** : Mobile app (Cordova)
+- **Test Coverage** : seuils CI 94 % lignes / 82 % branches (`vite.config.js`)
 
 ## Development Workflow
 
@@ -283,7 +282,7 @@ npm run format          # Prettier
 ```bash
 npm run icons           # public/icons/ (+ icons:optimize en CI)
 npm run build           # dist/ + PWA (police latin/latin-ext uniquement)
-npm run measure         # tailles dist/ après build (incl. appJsGzipKo) ; réf. scripts/bundle-baseline.json
+npm run measure         # tailles dist/ après build ; snapshot manuel scripts/bundle-baseline.json
 npm run preview         # Test build locally
 git push                # CI/CD GitHub Actions
 ```
@@ -304,8 +303,8 @@ git push                # CI/CD GitHub Actions
 
 - **ESLint** : 0 errors
 - **Prettier** : 100% formatted
-- **Tests** : 574/574 passing
-- **Coverage** : ~95 % lignes / ~85 % branches (seuils CI 75/70 %)
+- **Tests** : 604/604 passing
+- **Coverage** : ~95 % lignes / ~84 % branches (seuils CI 94/82/91 %)
 
 ### Exclusions coverage (justifiées)
 
@@ -324,4 +323,4 @@ Couverture globale actuelle : ~95 % lignes, ~84 % branches (`npm run test:covera
 
 ---
 
-Last updated: 2026-07-08
+Last updated: 2026-07-09

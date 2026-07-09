@@ -9,6 +9,7 @@ import {
     changeDifficulty,
     toggleTraining,
     toggleHardcore,
+    cycleTrainingSpeed,
     startDailyChallenge,
     applyPausedState,
     applyPlayingState,
@@ -20,6 +21,9 @@ vi.mock('../src/trainingStorage.js', () => ({
     saveTrainingEnabled: vi.fn(),
     loadTrainingEnabled: vi.fn(() => false),
     loadBestTrainingScore: vi.fn(() => 0),
+    loadTrainingTimeScale: vi.fn(() => 0.8),
+    cycleTrainingTimeScale: vi.fn((v) => (v === 0.8 ? 1 : 0.8)),
+    saveTrainingTimeScale: vi.fn(),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
@@ -83,6 +87,7 @@ describe('sceneFlow', () => {
                 highScore: 0,
                 updateDifficultyButtons: vi.fn(),
                 updateTrainingLabel: vi.fn(),
+                updateTrainingSpeedLabel: vi.fn(),
                 updateHardcoreLabel: vi.fn(),
                 refreshHardcoreLockState: vi.fn(),
                 showJumpTutorial: vi.fn(),
@@ -183,6 +188,26 @@ describe('sceneFlow', () => {
         expect(scene.hardcoreMode).toBe(true);
         expect(scene.trainingMode).toBe(false);
         expect(saveTrainingEnabled).toHaveBeenCalledWith(false);
+    });
+
+    it('cycleTrainingSpeed cyclera la vitesse au menu', async () => {
+        const { cycleTrainingTimeScale, saveTrainingTimeScale } =
+            await import('../src/trainingStorage.js');
+        const scene = makeScene(GAME_STATE.MENU);
+        scene.trainingTimeScale = 0.8;
+        cycleTrainingSpeed(scene);
+        expect(cycleTrainingTimeScale).toHaveBeenCalledWith(0.8);
+        expect(saveTrainingTimeScale).toHaveBeenCalledWith(1);
+        expect(scene.trainingTimeScale).toBe(1);
+    });
+
+    it('cycleTrainingSpeed ignore hors menu', async () => {
+        const { cycleTrainingTimeScale } = await import('../src/trainingStorage.js');
+        vi.mocked(cycleTrainingTimeScale).mockClear();
+        const scene = makeScene(GAME_STATE.PLAYING);
+        scene.trainingTimeScale = 0.8;
+        cycleTrainingSpeed(scene);
+        expect(cycleTrainingTimeScale).not.toHaveBeenCalled();
     });
 
     it('handlePrimaryAction démarre la partie depuis le menu', () => {

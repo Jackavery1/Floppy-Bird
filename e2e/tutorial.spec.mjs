@@ -5,6 +5,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
+import { getTutorialState } from './helpers/testSeam.mjs';
 
 test.describe('tutoriel première partie', () => {
     test.beforeEach(async ({ page }) => {
@@ -17,9 +18,7 @@ test.describe('tutoriel première partie', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
 
-        const tutorial = await page.evaluate(
-            () => window.__FLOPPY_TEST__?.getTutorialState?.() ?? null
-        );
+        const tutorial = await getTutorialState(page);
         expect(tutorial?.complete).toBe(false);
         expect(tutorial?.step).toBeGreaterThanOrEqual(0);
     });
@@ -30,9 +29,7 @@ test.describe('tutoriel première partie', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
 
-        const tutorial = await page.evaluate(
-            () => window.__FLOPPY_TEST__?.getTutorialState?.() ?? null
-        );
+        const tutorial = await getTutorialState(page);
         expect(tutorial?.complete).toBe(false);
     });
 });

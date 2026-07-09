@@ -9,11 +9,15 @@ import {
 } from './helpers/gameCoords.mjs';
 import {
     bumpScore,
+    cycleTrainingSpeedTimes,
     getGameplayEquity,
+    getPipeState,
     getRoundScore,
     getScoreHud,
+    getTrainingRuntime,
     grantCoyoteGrace,
     requestJump,
+    sampleGapVariance,
     triggerDeath,
 } from './helpers/testSeam.mjs';
 
@@ -42,10 +46,8 @@ test.describe('gameplay equity via test seam', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
 
-        const equity = await page.evaluate(() => {
-            window.__FLOPPY_TEST__?.requestJump?.();
-            return window.__FLOPPY_TEST__?.getGameplayEquity?.();
-        });
+        await requestJump(page);
+        const equity = await getGameplayEquity(page);
 
         expect(equity?.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
@@ -75,7 +77,26 @@ test.describe('gameplay equity via test seam', () => {
 
         const equity = await getGameplayEquity(page);
         expect(equity?.spawnInvincibilityMs).toBe(GAME_CONFIG.round.spawnInvincibilityMs);
-        expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThan(equity?.spawnInvincibilityMs);
+        expect(equity?.pipeSpawnDelayMs).toBe(GAME_CONFIG.round.pipeSpawnDelayMs);
+        expect(equity?.pipeSpawnDelayMs).toBeGreaterThan(equity?.spawnInvincibilityMs);
+    });
+
+    test('premier tuyau n’apparaît pas avant la fin de l’invincibilité spawn', async ({
+        page,
+    }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+
+        await page.waitForTimeout(GAME_CONFIG.round.spawnInvincibilityMs - 50);
+        const early = await getPipeState(page);
+        expect(early?.pipeCount ?? 0).toBe(0);
+
+        await page.waitForTimeout(GAME_CONFIG.round.pipeSpawnDelayMs);
+        await expect
+            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0)
+            .toBeGreaterThan(0);
     });
 
     test('sauts répétés maintiennent la partie active', async ({ page }, testInfo) => {
@@ -109,6 +130,43 @@ test.describe('gameplay equity via test seam', () => {
         await triggerDeath(page, 'pipe');
         await expectGameState(page, 'dying', 5_000);
         await expectGameState(page, 'gameover', 15_000);
+    });
+
+    test('mode entraînement applique timeScale 0.8 (choix gameplay)', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-options').click();
+        await expect(page.locator('#a11y-training')).toBeVisible();
+        await page.locator('#a11y-training').click();
+        await page.locator('#a11y-options-close').click();
+        await startPlayingFromMenu(page, false);
+        await expect
+            .poll(async () => getTrainingRuntime(page))
+            .toMatchObject({
+                trainingMode: true,
+                timeScale: GAME_CONFIG.training.timeScale,
+                configTimeScale: GAME_CONFIG.training.timeScale,
+            });
+    });
+
+    test('variance des gaps respecte le plafond de delta vertical', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        const variance = await sampleGapVariance(page, 32);
+        expect(variance?.maxObservedDelta).toBeLessThanOrEqual(variance?.maxAllowedDelta);
+        expect(variance?.spread).toBeGreaterThan(0);
+    });
+
+    test('vitesse entraînement cyclable depuis le menu', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        const scales = await cycleTrainingSpeedTimes(page, 4);
+        expect(scales).toEqual([1, 0.6, 0.7, 0.8]);
+        await page.locator('#a11y-training').click();
+        await startPlayingFromMenu(page, false);
+        await expect
+            .poll(async () => getTrainingRuntime(page))
+            .toMatchObject({ trainingMode: true, trainingTimeScale: 0.8, timeScale: 0.8 });
     });
 });
 

@@ -7,6 +7,10 @@ import {
     panelChromeTextStyle,
 } from '../src/designTokens.js';
 
+vi.mock('../src/textures/backgroundTextures.js', () => ({
+    getBackgroundPeriod: vi.fn(() => 'night'),
+}));
+
 function hexToRgb(hex) {
     const n = Number.parseInt(hex.replace('#', ''), 16);
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
@@ -134,6 +138,28 @@ describe('designTokens', () => {
 
     it('panelChromeTextStyle impose 12 px minimum', () => {
         expect(panelChromeTextStyle().fontSize).toBe('12px');
+    });
+
+    it('renforce le contour HUD en fond jour', async () => {
+        const { getBackgroundPeriod } = await import('../src/textures/backgroundTextures.js');
+        vi.mocked(getBackgroundPeriod).mockReturnValue('day');
+        expect(hudTextStyle().strokeThickness).toBeGreaterThanOrEqual(3);
+        vi.mocked(getBackgroundPeriod).mockReturnValue('night');
+        expect(hudTextStyle().strokeThickness).toBe(2);
+    });
+
+    it('pastels HUD restent lisibles sur fond jour avec contour', async () => {
+        const { getBackgroundPeriod } = await import('../src/textures/backgroundTextures.js');
+        vi.mocked(getBackgroundPeriod).mockReturnValue('day');
+        for (const fill of [
+            DESIGN_TOKENS.accentGap,
+            DESIGN_TOKENS.bannerStreak,
+            DESIGN_TOKENS.bannerCoyote,
+        ]) {
+            const stroke = hudTextStyle({ fill }).stroke;
+            expect(contrastRatio(stroke, DESIGN_TOKENS.fondJour)).toBeGreaterThanOrEqual(4.5);
+        }
+        vi.mocked(getBackgroundPeriod).mockReturnValue('night');
     });
 
     it('expose les couleurs Phaser médailles et confettis', async () => {

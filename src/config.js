@@ -81,7 +81,10 @@ export const GAME_CONFIG = {
     },
 
     training: {
+        /** Ralenti par défaut (80 %) — mode pédagogique + fantôme. */
         timeScale: 0.8,
+        /** Vitesses cyclables dans OPTIONS (entraînement). */
+        timeScaleSteps: [0.6, 0.7, 0.8, 1],
         ghostAlpha: 0.35,
         sampleEveryFrames: 3,
     },

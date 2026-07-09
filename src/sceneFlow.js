@@ -6,7 +6,7 @@ import {
     canReturnToMenu,
     shouldStartGameOnPrimary,
 } from './gameState.js';
-import { toggleTrainingMode, toggleHardcoreMode } from './sceneModeSettings.js';
+import { toggleTrainingMode, toggleHardcoreMode, cycleTrainingSpeed as cycleTrainingSpeedMode } from './sceneModeSettings.js';
 import { saveTrainingEnabled } from './trainingStorage.js';
 import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
@@ -21,6 +21,7 @@ import {
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
 import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
+import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -28,12 +29,14 @@ import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessi
 export function applyPlayingState(scene) {
     scene.state = GAME_STATE.PLAYING;
     scene.time.paused = false;
+    syncShellGameState(GAME_STATE.PLAYING);
 }
 
 /** @param {SceneContext} scene */
 export function applyPausedState(scene) {
     scene.state = GAME_STATE.PAUSED;
     scene.time.paused = true;
+    syncShellGameState(GAME_STATE.PAUSED);
 }
 
 /** @param {SceneContext} scene */
@@ -51,6 +54,7 @@ function clearPauseOverlay(scene) {
 export function showMenu(scene) {
     clearPauseOverlay(scene);
     scene.state = GAME_STATE.MENU;
+    syncShellGameState(GAME_STATE.MENU);
     scene.playMode = 'classic';
     scene.dailyChallengeMode = false;
     scene.round.score = 0;
@@ -188,6 +192,12 @@ export function toggleTraining(scene) {
 export function toggleHardcore(scene) {
     if (scene.state !== GAME_STATE.MENU) return;
     toggleHardcoreMode(scene);
+}
+
+/** @param {SceneContext} scene */
+export function cycleTrainingSpeed(scene) {
+    if (scene.state !== GAME_STATE.MENU) return;
+    cycleTrainingSpeedMode(scene);
 }
 
 /** @param {SceneContext} scene */

@@ -33,6 +33,7 @@ vi.mock('../src/sceneDeath.js', () => ({
 
 vi.mock('../src/trainingStorage.js', () => ({
     loadTrainingEnabled: vi.fn(() => false),
+    loadTrainingTimeScale: vi.fn(() => 0.8),
 }));
 
 vi.mock('../src/hardcoreStorage.js', () => ({
@@ -74,6 +75,10 @@ vi.mock('../src/sceneCoyote.js', () => ({
     hasCoyoteGrace: vi.fn(() => false),
 }));
 
+vi.mock('../src/sceneBeginRound.js', () => ({
+    beginRound: vi.fn(),
+}));
+
 vi.mock('../src/sceneFlow.js', () => ({
     showMenu: vi.fn(),
     beginRound: vi.fn(),
@@ -84,6 +89,7 @@ vi.mock('../src/sceneFlow.js', () => ({
     changeDifficulty: vi.fn(),
     toggleTraining: vi.fn(),
     toggleHardcore: vi.fn(),
+    cycleTrainingSpeed: vi.fn(),
     launchDailyChallenge: vi.fn(),
 }));
 
@@ -135,6 +141,62 @@ describe('GameScene', () => {
         const scene = new GameScene();
         scene.returnToMenu();
         expect(returnToMenu).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue showMenu au module sceneFlow', async () => {
+        const { showMenu } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.showMenu();
+        expect(showMenu).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue startGame au module sceneFlow', async () => {
+        const { startGame } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.startGame();
+        expect(startGame).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue beginRound au module sceneBeginRound', async () => {
+        const { beginRound } = await import('../src/sceneBeginRound.js');
+        const scene = new GameScene();
+        scene.beginRound({ daily: true });
+        expect(beginRound).toHaveBeenCalledWith(scene, { daily: true });
+    });
+
+    it('délègue changeDifficulty au module sceneFlow', async () => {
+        const { changeDifficulty } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.changeDifficulty(DIFFICULTY.HARD);
+        expect(changeDifficulty).toHaveBeenCalledWith(scene, DIFFICULTY.HARD);
+    });
+
+    it('délègue toggleTraining au module sceneFlow', async () => {
+        const { toggleTraining } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.toggleTraining();
+        expect(toggleTraining).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue toggleHardcore au module sceneFlow', async () => {
+        const { toggleHardcore } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.toggleHardcore();
+        expect(toggleHardcore).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue cycleTrainingSpeed au module sceneFlow', async () => {
+        const { cycleTrainingSpeed } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.cycleTrainingSpeed();
+        expect(cycleTrainingSpeed).toHaveBeenCalledWith(scene);
+    });
+
+    it('délègue launchDailyChallenge au module sceneFlow', async () => {
+        const { launchDailyChallenge } = await import('../src/sceneFlow.js');
+        const scene = new GameScene();
+        scene.launchDailyChallenge();
+        expect(launchDailyChallenge).toHaveBeenCalledWith(scene);
     });
 
     it('délègue triggerDeath au module sceneDeath', () => {

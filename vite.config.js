@@ -47,11 +47,15 @@ export default defineConfig(({ mode }) => {
             rollupOptions: {
                 output: {
                     manualChunks(id) {
-                        if (id.includes('node_modules')) {
+                        const normalized = id.replace(/\\/g, '/');
+                        if (normalized.includes('node_modules')) {
                             return useVendorPhaser ? undefined : 'phaser';
                         }
-                        if (useVendorPhaser && id.includes('/src/skins/')) {
+                        if (useVendorPhaser && normalized.includes('/src/skins/')) {
                             return 'skins';
+                        }
+                        if (useVendorPhaser && normalized.includes('/src/uiGameOver')) {
+                            return 'ui-gameover';
                         }
                         return undefined;
                     },
@@ -124,7 +128,7 @@ export default defineConfig(({ mode }) => {
                     'src/sceneTypes.js',
                 ],
                 reporter: ['text', 'html', 'lcov'],
-                thresholds: { lines: 75, functions: 70, branches: 70, statements: 75 },
+                thresholds: { lines: 94, functions: 91, branches: 82, statements: 94 },
             },
         },
     };

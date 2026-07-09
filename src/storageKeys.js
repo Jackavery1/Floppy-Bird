@@ -18,6 +18,7 @@ export const STORAGE_KEYS = Object.freeze({
     pipeDeathCount: 'floppy-bird-pipe-death-count',
     hardcoreTutorialSeen: 'floppy-bird-hardcore-tutorial-seen',
     trainingTutorialSeen: 'floppy-bird-training-tutorial-seen',
+    trainingTimeScale: 'floppy-bird-training-time-scale',
     roundsStarted: 'floppy-bird-rounds-started',
     meta: 'floppy-bird-meta',
 });

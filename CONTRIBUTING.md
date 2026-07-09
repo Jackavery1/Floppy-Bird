@@ -22,7 +22,8 @@ Build e2e manuel (équivalent CI) :
 
 ```bash
 # PowerShell
-$env:VITE_ENABLE_TEST_SEAM='true'; $env:BASE_PATH='/Floppy-Bird/'; npm run build; npm run test:e2e:ci
+# PowerShell — après npm run build (évite double build Playwright)
+$env:PLAYWRIGHT_SKIP_BUILD='1'; $env:BASE_PATH='/Floppy-Bird/'; npm run test:e2e:ci
 ```
 
 #### Échec SSL en local (proxy d’entreprise)
@@ -46,7 +47,7 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
 | `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touch.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu, PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touch.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay (`gameplay-equity.spec.mjs`).
 
 ## Artefacts générés (ne pas committer)
 
@@ -97,7 +98,9 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`**. Les **e2e** (6 viewports, ~90 min) tournent en parallèle mais **ne bloquent pas** le déploiement — signal de régression sans retarder Pages.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`**. Les **e2e** tournent en **matrice parallèle** (6 viewports, ~15 min mur) mais **ne bloquent pas** le déploiement.
+
+En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 
 **Pages** (Settings → Pages) : source **GitHub Actions** (recommandé) ou branche **`gh-pages`** / **`/ (root)`** si tu utilises peaceiris.
 

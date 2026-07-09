@@ -20,6 +20,36 @@ export function setAccessibilityControlVisible(key, visible) {
     if (btn) btn.hidden = !visible;
 }
 
+/** @param {keyof typeof CONTROL_DEFS} key @param {string} label */
+export function setAccessibilityControlLabel(key, label) {
+    const def = CONTROL_DEFS[key];
+    if (!def) return;
+    const doc = getDocument();
+    if (!doc) return;
+    const btn = doc.getElementById(def.id);
+    if (btn?.setAttribute) btn.setAttribute('aria-label', label);
+}
+
+/** @param {keyof typeof CONTROL_DEFS} key @param {boolean} pressed */
+export function setAccessibilityControlPressed(key, pressed) {
+    const def = CONTROL_DEFS[key];
+    if (!def) return;
+    const doc = getDocument();
+    if (!doc) return;
+    const btn = doc.getElementById(def.id);
+    if (btn?.setAttribute) btn.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+}
+
+/** @param {keyof typeof CONTROL_DEFS} key @param {boolean} expanded */
+export function setAccessibilityControlExpanded(key, expanded) {
+    const def = CONTROL_DEFS[key];
+    if (!def) return;
+    const doc = getDocument();
+    if (!doc) return;
+    const btn = doc.getElementById(def.id);
+    if (btn?.setAttribute) btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+}
+
 /** @param {keyof typeof CONTROL_DEFS} key @param {boolean} disabled */
 export function setAccessibilityControlDisabled(key, disabled) {
     const def = CONTROL_DEFS[key];
