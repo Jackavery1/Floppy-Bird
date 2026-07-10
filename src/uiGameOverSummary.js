@@ -30,8 +30,16 @@ import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_SIZE_HINT, FONT_TITLE } f
  * }} opts
  */
 export function buildGameOverSummary(scene, cx, y, ui, opts) {
-    const { finalScore, fadeIn, isNewRecord, deathCause, coyoteFramesAtDeath, hardcoreMode, dailyGoal, activeSkinId } =
-        opts;
+    const {
+        finalScore,
+        fadeIn,
+        isNewRecord,
+        deathCause,
+        coyoteFramesAtDeath,
+        hardcoreMode,
+        dailyGoal,
+        activeSkinId,
+    } = opts;
     const isDaily = dailyGoal > 0;
     const special = !isDaily && isSpecialSkin(activeSkinId);
     const activeSkin = getSkin(activeSkinId);

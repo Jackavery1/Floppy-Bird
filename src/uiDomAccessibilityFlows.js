@@ -120,9 +120,7 @@ export function setSkinsPanelAccessibility(scene, open) {
     }
     syncAccessibilityLayer(scene.game);
     if (open) {
-        announceAccessibility(
-            `Panneau skins ouvert. ${skinsPanelHint()}. ${skinsCycleHint()}`
-        );
+        announceAccessibility(`Panneau skins ouvert. ${skinsPanelHint()}. ${skinsCycleHint()}`);
     }
 }
 

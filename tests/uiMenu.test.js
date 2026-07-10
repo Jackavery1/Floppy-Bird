@@ -76,7 +76,8 @@ describe('uiMenu', () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
 
         expect(ui._optionsOpen).toBe(false);
-        const isHidden = (el) => el.visible === false || el.setVisible?.mock?.calls?.at(-1)?.[0] === false;
+        const isHidden = (el) =>
+            el.visible === false || el.setVisible?.mock?.calls?.at(-1)?.[0] === false;
         for (const el of ui._optionsChromeElements ?? []) {
             expect(isHidden(el)).toBe(true);
         }

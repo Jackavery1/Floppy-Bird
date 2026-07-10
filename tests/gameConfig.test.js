@@ -22,8 +22,7 @@ describe('GAME_CONFIG.round', () => {
     });
 
     it('laisse une marge post-invincibilité avant le premier tuyau', () => {
-        const gap =
-            GAME_CONFIG.round.pipeSpawnDelayMs - GAME_CONFIG.round.spawnInvincibilityMs;
+        const gap = GAME_CONFIG.round.pipeSpawnDelayMs - GAME_CONFIG.round.spawnInvincibilityMs;
         expect(gap).toBeGreaterThanOrEqual(300);
     });
 

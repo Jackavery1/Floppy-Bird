@@ -16,9 +16,10 @@ export function updateGapHudBadge(ui, score) {
     const scene = ui.scene;
     const baseGap = getDifficultyForRound(scene.difficulty, scene.hardcoreMode).gap;
     const gapPx =
-        score >= seuil ? effectivePipeGapForScore(baseGap, score) : effectivePipeGapForScore(baseGap, seuil);
-    const label =
-        score >= seuil ? `ÉCART ${gapPx}px` : `ÉCART ↓ ${gapPx}px au score ${seuil}`;
+        score >= seuil
+            ? effectivePipeGapForScore(baseGap, score)
+            : effectivePipeGapForScore(baseGap, seuil);
+    const label = score >= seuil ? `ÉCART ${gapPx}px` : `ÉCART ↓ ${gapPx}px au score ${seuil}`;
 
     if (!ui._gapHudBadge) {
         ui._gapHudBadge = addCenteredText(

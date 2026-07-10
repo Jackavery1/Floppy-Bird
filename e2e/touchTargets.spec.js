@@ -33,7 +33,9 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         expect(minScreenPx).toBeGreaterThanOrEqual(44);
     });
 
-    test('boutons menu secondaires SCORE / OPTS / SKINS après letterbox', async ({ page }, testInfo) => {
+    test('boutons menu secondaires SCORE / OPTS / SKINS après letterbox', async ({
+        page,
+    }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
         await waitForGameReady(page);
         for (const id of ['a11y-scores', 'a11y-options', 'a11y-skins']) {

@@ -7,10 +7,7 @@ import { createGroundTexture } from './groundTextures.js';
 import { preloadDecorTextures } from './decorPreload.js';
 
 export { getBackgroundPeriod } from '../backgroundPeriod.js';
-export {
-    resetBackgroundCache,
-    getBackgroundCanvasColor,
-} from './backgroundTextures.js';
+export { resetBackgroundCache, getBackgroundCanvasColor } from './backgroundTextures.js';
 export { GROUND_BLADE_H, GROUND_TILE_H } from './groundTextures.js';
 export { HILLS_FAR_H, HILLS_NEAR_H } from './hillTextures.js';
 
@@ -62,4 +59,3 @@ export function preloadTextures(scene) {
 }
 
 export { ensurePipeTextures };
-

@@ -3,7 +3,12 @@ import { GAME_STATE } from '../src/gameState.js';
 import { syncShellViewport, viewportContentForState } from '../src/shellViewport.js';
 
 function mockDoc(initialContent) {
-    const meta = { content: initialContent, setAttribute(_name, value) { this.content = value; } };
+    const meta = {
+        content: initialContent,
+        setAttribute(_name, value) {
+            this.content = value;
+        },
+    };
     return {
         querySelector: (sel) => (sel === 'meta[name="viewport"]' ? meta : null),
         meta,

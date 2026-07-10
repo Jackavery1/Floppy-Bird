@@ -1,5 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
-import { frameStep, splitPhysicsSteps, checkCollisions, warnFileProtocol, primeAudio, applyTrainingTimeScale } from '../src/sceneBootstrap.js';
+import {
+    frameStep,
+    splitPhysicsSteps,
+    checkCollisions,
+    warnFileProtocol,
+    primeAudio,
+    applyTrainingTimeScale,
+} from '../src/sceneBootstrap.js';
 import { createRoundState } from '../src/roundState.js';
 
 describe('sceneBootstrap', () => {
@@ -9,7 +16,11 @@ describe('sceneBootstrap', () => {
     });
 
     it('frameStep ralentit en mode entraînement', () => {
-        const scene = { game: { loop: { delta: 16.67 } }, trainingMode: true, trainingTimeScale: 0.8 };
+        const scene = {
+            game: { loop: { delta: 16.67 } },
+            trainingMode: true,
+            trainingTimeScale: 0.8,
+        };
         expect(frameStep(scene)).toBeCloseTo(0.8, 2);
     });
 
@@ -64,7 +75,11 @@ describe('sceneBootstrap', () => {
                 id: '',
                 textContent: '',
             })),
-            body: { prepend: vi.fn((el) => { stored.warn = el; }) },
+            body: {
+                prepend: vi.fn((el) => {
+                    stored.warn = el;
+                }),
+            },
         });
         warnFileProtocol();
         expect(stored.warn?.textContent).toMatch(/serveur requis/i);

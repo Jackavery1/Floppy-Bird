@@ -27,7 +27,10 @@ test.describe('vérif visuelle police titre', () => {
         });
         expect(fontReady).toBe(true);
 
-        await expect(page.locator('#a11y-diff-normal')).toHaveAttribute('aria-label', /difficulté/i);
+        await expect(page.locator('#a11y-diff-normal')).toHaveAttribute(
+            'aria-label',
+            /difficulté/i
+        );
         await expect(page.locator('#a11y-diff-normal')).toHaveAttribute('aria-label', /touche 2/i);
     });
 });

@@ -116,9 +116,9 @@ export function bindUiFacade(UiClass) {
         hardcoreMode = false,
         dailyGoal = 0,
         activeSkinId = 'classic',
-    deathCause = null,
-    coyoteFramesAtDeath = null
-) {
+        deathCause = null,
+        coyoteFramesAtDeath = null
+    ) {
         return buildGameOverUI(
             this.scene,
             this,

@@ -1,5 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { forceGameOver, getDailyChallengeMode, getGameOverRestartLabel, getGameplayEquity, getTestState } from './helpers/testSeam.mjs';
+import {
+    forceGameOver,
+    getDailyChallengeMode,
+    getGameOverRestartLabel,
+    getGameplayEquity,
+    getTestState,
+} from './helpers/testSeam.mjs';
 import {
     enterPausedFromPlaying,
     expectGameState,

@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test';
-import {
-    expectGameState,
-    startPlayingFromMenu,
-    waitForGameReady,
-} from './helpers/gameCoords.mjs';
+import { expectGameState, startPlayingFromMenu, waitForGameReady } from './helpers/gameCoords.mjs';
 
 test.describe('viewport PWA et métadonnées', () => {
     test('expose og:image et twitter:card pour le partage social', async ({ page }) => {
@@ -58,7 +54,9 @@ test.describe('viewport PWA et métadonnées', () => {
 });
 
 test.describe('viewport état partie', () => {
-    test('active partie-active et restreint zoom en mobile portrait', async ({ page }, testInfo) => {
+    test('active partie-active et restreint zoom en mobile portrait', async ({
+        page,
+    }, testInfo) => {
         test.skip(
             testInfo.project.name !== 'chromium-mobile-portrait',
             'mobile portrait uniquement'

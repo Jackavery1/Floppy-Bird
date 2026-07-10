@@ -1,12 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { panelChromeTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
-import {
-    addCenteredText,
-    DEPTH,
-    MIN_TOUCH,
-    stopUiEvent,
-} from './uiLayout.js';
+import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 const START_HIT_WIDTH = 240;
 

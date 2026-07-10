@@ -2,10 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
 import { prefersReducedMotion, sceneTween } from './motion.js';
 import { addCenteredText, DEPTH } from './uiLayout.js';
-import {
-    acquireHudBannerSlot,
-    releaseHudBannerSlot,
-} from './uiHudBannerStack.js';
+import { acquireHudBannerSlot, releaseHudBannerSlot } from './uiHudBannerStack.js';
 
 export function showTransientBanner(
     ui,

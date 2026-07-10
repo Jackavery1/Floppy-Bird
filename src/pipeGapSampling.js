@@ -42,8 +42,7 @@ export function sampleGapSequence(count, opts = {}) {
     }
 
     const maxDelta = maxGapDeltaForScore(runScore);
-    const maxObservedDelta =
-        deltas.length > 0 ? Math.max(...deltas.map((d) => Math.abs(d))) : 0;
+    const maxObservedDelta = deltas.length > 0 ? Math.max(...deltas.map((d) => Math.abs(d))) : 0;
 
     return {
         gaps,

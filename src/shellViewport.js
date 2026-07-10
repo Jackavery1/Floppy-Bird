@@ -9,9 +9,7 @@ const VIEWPORT_GAME_TOUCH =
 /** @param {string} state */
 export function viewportContentForState(state) {
     const partieActive =
-        state === GAME_STATE.PLAYING ||
-        state === GAME_STATE.PAUSED ||
-        state === GAME_STATE.DYING;
+        state === GAME_STATE.PLAYING || state === GAME_STATE.PAUSED || state === GAME_STATE.DYING;
     if (!partieActive) return VIEWPORT_MENU;
     if (!isCoarsePointer()) return VIEWPORT_MENU;
     return VIEWPORT_GAME_TOUCH;

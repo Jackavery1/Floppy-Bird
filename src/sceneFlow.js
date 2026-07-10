@@ -6,7 +6,11 @@ import {
     canReturnToMenu,
     shouldStartGameOnPrimary,
 } from './gameState.js';
-import { toggleTrainingMode, toggleHardcoreMode, cycleTrainingSpeed as cycleTrainingSpeedMode } from './sceneModeSettings.js';
+import {
+    toggleTrainingMode,
+    toggleHardcoreMode,
+    cycleTrainingSpeed as cycleTrainingSpeedMode,
+} from './sceneModeSettings.js';
 import { saveTrainingEnabled } from './trainingStorage.js';
 import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
