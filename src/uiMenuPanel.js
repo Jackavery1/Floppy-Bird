@@ -202,6 +202,7 @@ export function createMenuPanelController(ui, cfg) {
  *   labelStroke: string,
  *   panelTheme?: { fill: string, stroke: string },
  *   buildContent: (ui: import('./ui.js').UI, elements: import('phaser').GameObjects.GameObject[], panelElements: import('phaser').GameObjects.GameObject[]) => void,
+ *   setContentVisible?: (ui: import('./ui.js').UI, open: boolean) => void,
  * }} cfg
  */
 export function buildMenuPanelShell(ui, elements, controller, cfg) {
@@ -236,7 +237,11 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
     elements.push(ui[cfg.backdropKey].frame, ui[cfg.backdropKey].hit);
 
     cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
-    setMenuPanelVisible(ui[cfg.panelElementsKey], false);
+    if (cfg.setContentVisible) {
+        cfg.setContentVisible(ui, false);
+    } else {
+        setMenuPanelVisible(ui[cfg.panelElementsKey], false);
+    }
     ui[cfg.backdropKey]?.setVisible(false);
     ui[cfg.openKey] = false;
 }

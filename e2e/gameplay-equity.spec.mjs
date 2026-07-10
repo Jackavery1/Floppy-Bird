@@ -10,6 +10,7 @@ import {
 import {
     bumpScore,
     cycleTrainingSpeedTimes,
+    getDifficultyMetrics,
     getGameplayEquity,
     getPipeState,
     getRoundScore,
@@ -155,6 +156,42 @@ test.describe('gameplay equity via test seam', () => {
         const variance = await sampleGapVariance(page, 32);
         expect(variance?.maxObservedDelta).toBeLessThanOrEqual(variance?.maxAllowedDelta);
         expect(variance?.spread).toBeGreaterThan(0);
+    });
+
+    test('métriques difficulté cohérentes aux scores 15, 20 et 25', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+
+        const at15 = await getDifficultyMetrics(page, 15);
+        expect(at15?.score).toBe(15);
+        expect(at15?.speedMultiplier).toBeCloseTo(1.03, 2);
+        expect(at15?.pipeGap).toBe(GAME_CONFIG.getDifficulty('normal').gap);
+
+        const at20 = await getDifficultyMetrics(page, 20);
+        expect(at20?.score).toBe(20);
+        expect(at20?.speedMultiplier).toBeCloseTo(1.06, 2);
+        expect(at20?.pipeGap).toBe(
+            GAME_CONFIG.getDifficulty('normal').gap - GAME_CONFIG.round.gapTightenStep
+        );
+
+        const at25 = await getDifficultyMetrics(page, 25);
+        expect(at25?.speedMultiplier).toBeCloseTo(1.06, 2);
+        expect(at25?.pipeGap).toBe(at20?.pipeGap);
+    });
+
+    test('score 20 via seam reflète resserrement des gaps', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await bumpScore(page, 20);
+        const metrics = await getDifficultyMetrics(page);
+        expect(metrics?.score).toBe(20);
+        expect(metrics?.pipeGap).toBe(
+            GAME_CONFIG.getDifficulty('normal').gap - GAME_CONFIG.round.gapTightenStep
+        );
     });
 
     test('vitesse entraînement cyclable depuis le menu', async ({ page }, testInfo) => {

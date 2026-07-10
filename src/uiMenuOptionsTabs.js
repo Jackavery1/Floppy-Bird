@@ -10,7 +10,7 @@ import {
 } from './uiLayout.js';
 import { setOptionsSectionVisible } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';
-import { syncOptionsTabAccessibility } from './uiDomAccessibilityFlows.js';
+import { syncOptionsTabAccessibility } from './uiDomAccessibilityControls.js';
 
 /** @typedef {'controls' | 'preferences'} OptionsTabId */
 

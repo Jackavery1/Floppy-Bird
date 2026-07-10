@@ -26,5 +26,8 @@ test.describe('vérif visuelle police titre', () => {
             return fonts.check('12px "Press Start 2P"');
         });
         expect(fontReady).toBe(true);
+
+        await expect(page.locator('#a11y-diff-normal')).toHaveAttribute('aria-label', /difficulté/i);
+        await expect(page.locator('#a11y-diff-normal')).toHaveAttribute('aria-label', /touche 2/i);
     });
 });

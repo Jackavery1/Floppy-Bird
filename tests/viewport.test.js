@@ -46,14 +46,23 @@ describe('viewport', () => {
 
     it('getViewportDimensions expose visualViewport offsets', () => {
         vi.stubGlobal('window', {
-            visualViewport: { width: 390, height: 400, offsetTop: 12, offsetLeft: 4 },
+            visualViewport: { width: 390, height: 400, offsetTop: 12, offsetLeft: 4, scale: 1 },
         });
         expect(getViewportDimensions()).toEqual({
             width: 390,
             height: 400,
             offsetTop: 12,
             offsetLeft: 4,
+            scale: 1,
         });
+        vi.unstubAllGlobals();
+    });
+
+    it('getViewportDimensions expose le scale au zoom navigateur', () => {
+        vi.stubGlobal('window', {
+            visualViewport: { width: 640, height: 360, offsetTop: 0, offsetLeft: 0, scale: 2 },
+        });
+        expect(getViewportDimensions().scale).toBe(2);
         vi.unstubAllGlobals();
     });
 
@@ -71,6 +80,7 @@ describe('viewport', () => {
             height: 700,
             offsetTop: 5,
             offsetLeft: 2,
+            scale: 1,
         });
         vi.unstubAllGlobals();
     });
@@ -89,6 +99,7 @@ describe('viewport', () => {
             height: 620,
             offsetTop: 18,
             offsetLeft: 0,
+            scale: 1,
         });
         vi.unstubAllGlobals();
     });
@@ -111,6 +122,7 @@ describe('viewport', () => {
             height: 760,
             offsetTop: 30,
             offsetLeft: 10,
+            scale: 1,
         });
         vi.unstubAllGlobals();
     });

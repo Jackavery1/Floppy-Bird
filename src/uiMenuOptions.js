@@ -77,6 +77,7 @@ export function buildMenuOptions(ui, elements, layout) {
     ui._optionsPanelController = createMenuPanelController(ui, controllerCfg);
     buildMenuPanelShell(ui, elements, ui._optionsPanelController, {
         ...PANEL_CFG,
+        setContentVisible: setOptionsContentVisible,
         btnLayout: { cx: layout.optionsBtn, cy: layout.menuRow, width: layout.menuBtnW },
         panelLayout: panel,
         panelTheme: {

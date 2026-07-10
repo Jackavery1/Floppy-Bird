@@ -19,5 +19,5 @@ export {
     bindScoresAccessibility,
     setupGameOverAccessibility,
     syncMenuToggleAccessibility,
-    syncOptionsTabAccessibility,
 } from './uiDomAccessibilityFlows.js';
+export { syncOptionsTabAccessibility } from './uiDomAccessibilityControls.js';

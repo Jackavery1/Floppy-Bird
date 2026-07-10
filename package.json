@@ -5,7 +5,6 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "start": "vite",
         "dev": "vite",
         "build": "node scripts/copy-phaser.mjs && vite build",
         "preview": "vite preview --port 8000",
@@ -14,6 +13,7 @@
         "test:watch": "vitest",
         "test:e2e": "playwright test",
         "test:e2e:ci": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait --project=chromium-mobile-landscape --project=webkit-mobile-portrait --project=webkit-mobile-landscape --project=chromium-tablet-landscape",
+        "test:e2e:smoke": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait",
         "test:e2e:install": "playwright install chromium webkit",
         "lighthouse": "node scripts/lighthouse-ci.mjs",
         "lint": "eslint .",
@@ -22,7 +22,8 @@
         "icons": "node scripts/generate-icons.mjs",
         "icons:optimize": "node scripts/optimize-icons.mjs",
         "measure": "node scripts/measure-bundle.mjs",
-        "clean": "node scripts/clean-artifacts.mjs"
+        "clean": "node scripts/clean-artifacts.mjs",
+        "cycles": "madge --circular --extensions js src/"
     },
     "dependencies": {
         "@fontsource/press-start-2p": "^5.2.7",
@@ -36,6 +37,7 @@
         "eslint": "^9.17.0",
         "globals": "^15.14.0",
         "lighthouse": "^12.3.0",
+        "madge": "^8.0.0",
         "prettier": "^3.4.2",
         "sharp": "^0.33.5",
         "vite": "^5.4.11",

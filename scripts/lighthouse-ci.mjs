@@ -12,8 +12,11 @@ const THRESHOLDS = Object.freeze({
     seo: 0.85,
 });
 
-/** Informatif — Phaser canvas sans LCP classique. */
+/** Informatif — Phaser canvas sans LCP classique ; avertissement si sous le plancher. */
 const INFO_CATEGORIES = Object.freeze(['performance']);
+const INFO_WARN_THRESHOLDS = Object.freeze({
+    performance: 0.45,
+});
 
 async function waitForServer(url, attempts = 40) {
     for (let i = 0; i < attempts; i++) {
@@ -61,7 +64,14 @@ async function runLighthouseAudit() {
         for (const category of INFO_CATEGORIES) {
             const score = result.lhr.categories[category]?.score ?? 0;
             const pct = Math.round(score * 100);
-            console.log(`ℹ ${category}: ${pct} (informatif, canvas Phaser)`);
+            const warnMin = INFO_WARN_THRESHOLDS[category];
+            const warnPct = warnMin != null ? Math.round(warnMin * 100) : null;
+            const belowWarn = warnMin != null && score < warnMin;
+            console.log(
+                `${belowWarn ? '⚠' : 'ℹ'} ${category}: ${pct} (informatif, canvas Phaser${
+                    warnPct != null ? ` ; plancher conseillé ${warnPct}` : ''
+                })`
+            );
         }
 
         if (failed) {

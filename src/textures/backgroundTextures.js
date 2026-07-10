@@ -1,13 +1,10 @@
 import { GAME_CONFIG } from '../config.js';
 import { DESIGN_TOKENS } from '../designTokens.js';
+import { getBackgroundPeriod } from '../backgroundPeriod.js';
 
 let cachedBackgroundPeriod = null;
 
-/** @param {Date} [date] */
-export function getBackgroundPeriod(date = new Date()) {
-    const hour = date.getHours();
-    return hour >= 6 && hour < 20 ? 'day' : 'night';
-}
+export { getBackgroundPeriod } from '../backgroundPeriod.js';
 
 export function resetBackgroundCache() {
     cachedBackgroundPeriod = null;
@@ -39,8 +36,8 @@ const DAY_BANDS = [
     { y: 780, h: 74, c: 0xc8e6c9 },
 ];
 
-/** @type {[number, number][]} */
-const STAR_POSITIONS = [
+/** Positions décoratives des étoiles (x, y) en px canvas — sans lien avec les gaps gameplay. */
+export const STAR_POSITIONS = [
     [22, 28],
     [58, 14],
     [104, 48],

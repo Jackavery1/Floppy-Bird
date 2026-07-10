@@ -60,15 +60,18 @@ describe('sceneDeath', () => {
 
     it('triggerDeath pipe enregistre les morts tuyau pour le hint coyote', async () => {
         const { recordPipeDeathForCoyoteHint } = await import('../src/tutorialStorage.js');
+        const round = createRoundState();
+        round.coyoteFrames = 3;
         const scene = {
             state: GAME_STATE.PLAYING,
-            round: createRoundState(),
+            round,
             bird: { velocityY: 0 },
             ghost: { finishRound: vi.fn() },
             time: { delayedCall: vi.fn() },
         };
         triggerDeath(scene, 'pipe');
         expect(recordPipeDeathForCoyoteHint).toHaveBeenCalled();
+        expect(scene.round.coyoteFramesAtDeath).toBe(3);
     });
 
     it('updateDying termine quand l’oiseau touche le sol', async () => {

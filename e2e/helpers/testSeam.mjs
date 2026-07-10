@@ -110,6 +110,11 @@ export function cycleTrainingSpeed(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.cycleTrainingSpeed?.() ?? null);
 }
 
+/** @param {import('@playwright/test').Page} page @param {number} [score] */
+export function getDifficultyMetrics(page, score) {
+    return page.evaluate((s) => window.__FLOPPY_TEST__?.getDifficultyMetrics?.(s), score);
+}
+
 /** @param {import('@playwright/test').Page} page @param {number} [times] */
 export function cycleTrainingSpeedTimes(page, times = 4) {
     return page.evaluate((n) => {

@@ -10,6 +10,8 @@ import {
 } from '../src/pipeGaps.js';
 import { Utils } from '../src/utils.js';
 
+const NORMAL_PIPE_GAP = GAME_CONFIG.getDifficulty('normal').gap;
+
 describe('pipeGaps', () => {
     describe('smoothGapY', () => {
         it('retourne la valeur brute sans historique', () => {
@@ -43,7 +45,7 @@ describe('pipeGaps', () => {
 
     describe('gapBounds', () => {
         it('respecte les marges de spawn', () => {
-            const gap = 112;
+            const gap = NORMAL_PIPE_GAP;
             const { min, max } = gapBounds(gap);
             expect(min).toBe(GAME_CONFIG.pipes.spawnMarginY);
             expect(max).toBe(GAME_CONFIG.groundY - gap - GAME_CONFIG.pipes.spawnMarginY);
@@ -53,15 +55,15 @@ describe('pipeGaps', () => {
     describe('randomGapY', () => {
         it('utilise le RNG seedé en mode daily', () => {
             const rng = Utils.createSeededRandom(424242);
-            const a = randomGapY(rng, 112);
-            const b = randomGapY(Utils.createSeededRandom(424242), 112);
+            const a = randomGapY(rng, NORMAL_PIPE_GAP);
+            const b = randomGapY(Utils.createSeededRandom(424242), NORMAL_PIPE_GAP);
             expect(a).toBe(b);
         });
     });
 
     describe('resolveNextGapY', () => {
         it('applique la séquence scriptée en classique sans jitter', () => {
-            const pipeGap = 112;
+            const pipeGap = NORMAL_PIPE_GAP;
             const first = resolveNextGapY({
                 gapIndex: 0,
                 lastGapY: null,
@@ -75,7 +77,7 @@ describe('pipeGaps', () => {
         });
 
         it('jitter les gaps scriptés dans une fenêtre bornée', () => {
-            const pipeGap = 112;
+            const pipeGap = NORMAL_PIPE_GAP;
             const base = getScriptedPipeGapY(0, pipeGap);
             const jittered = applyScriptedGapJitter(base, 0, 4242, pipeGap);
             expect(jittered).toBeGreaterThanOrEqual(base - GAME_CONFIG.pipes.scriptedGapJitterPx);
@@ -83,7 +85,7 @@ describe('pipeGaps', () => {
         });
 
         it('ignore le script en mode daily', () => {
-            const pipeGap = 112;
+            const pipeGap = NORMAL_PIPE_GAP;
             const dailyRng = Utils.createSeededRandom(99);
             const result = resolveNextGapY({
                 gapIndex: 0,
@@ -97,7 +99,7 @@ describe('pipeGaps', () => {
 
         it('lisse les gaps aléatoires après le script', () => {
             vi.spyOn(Utils, 'randomInt').mockReturnValue(400);
-            const pipeGap = 112;
+            const pipeGap = NORMAL_PIPE_GAP;
             const result = resolveNextGapY({
                 gapIndex: 99,
                 lastGapY: 200,

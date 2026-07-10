@@ -21,14 +21,34 @@ import {
 } from './uiMenuScoresPanel.js';
 import { buildMenuSkinsPanel, setMenuSkinsOpen } from './uiMenuSkinsPanel.js';
 import { refreshScoresTab } from './uiMenuScores.js';
-import { syncMenuChromeVisibility } from './uiMenuPanel.js';
+import { setMenuPanelVisible, syncMenuChromeVisibility } from './uiMenuPanel.js';
+import { setOptionsContentVisible } from './uiMenuOptionsContent.js';
 import { buildMetaContext } from './metaContext.js';
 import { syncMenuToggleAccessibility } from './uiDomAccessibilityFlows.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { DEPTH } from './uiLayout.js';
 
 /** @param {import('./ui.js').UI} ui */
-export function closeAllMenuPanels(ui) {
+function forceHideMenuPanels(ui) {
+    if (ui._optionsChromeElements?.length || ui._optionsPanelElements?.length) {
+        setOptionsContentVisible(ui, false);
+    }
+    if (ui._scoresPanelElements?.length) {
+        setMenuPanelVisible(ui._scoresPanelElements, false, ui.scene);
+        ui._scoresBackdrop?.setVisible?.(false);
+    }
+    if (ui._skinsPanelElements?.length) {
+        setMenuPanelVisible(ui._skinsPanelElements, false, ui.scene);
+        ui._skinsBackdrop?.setVisible?.(false);
+    }
+    ui._optionsOpen = false;
+    ui._scoresOpen = false;
+    ui._skinsOpen = false;
+}
+
+/** @param {import('./ui.js').UI} ui @param {{ force?: boolean }} [opts] */
+export function closeAllMenuPanels(ui, opts = {}) {
+    if (opts.force) forceHideMenuPanels(ui);
     setMenuOptionsOpen(ui, false);
     setMenuScoresOpen(ui, false);
     setMenuSkinsOpen(ui, false);
@@ -36,7 +56,8 @@ export function closeAllMenuPanels(ui) {
 
 /** Nettoie menu / pause / game over avant reconstruction du menu principal. */
 export function prepareMenuRebuild(ui) {
-    closeAllMenuPanels(ui);
+    closeAllMenuPanels(ui, { force: true });
+    ui._optionsActiveTab = 'preferences';
     for (const key of ['menu', 'pause', 'gameOver']) {
         ui.clearOverlay(key);
     }
@@ -105,6 +126,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._skinsBtnLabel,
         ui._skinsBtnHit,
     ].filter(Boolean);
+    closeAllMenuPanels(ui, { force: true });
     syncMenuChromeVisibility(ui);
     playMenuIntroTween(ui, title);
 

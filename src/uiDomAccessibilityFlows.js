@@ -2,7 +2,6 @@ import { DIFFICULTY } from './config.js';
 import {
     bindAccessibilityAction,
     announceAccessibility,
-    setAccessibilityControlExpanded,
     setAccessibilityControlLabel,
     setAccessibilityControlPressed,
     setAccessibilityControlVisible,
@@ -25,8 +24,9 @@ import {
     SCORES_PANEL_CONTROL_KEYS,
     SKINS_PANEL_CONTROL_KEYS,
 } from './uiDomAccessibilityDefs.js';
-import { setOptionsTab } from './uiMenuOptionsTabs.js';
 import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
+import { setOptionsTab } from './uiMenuOptionsTabs.js';
+import { syncOptionsTabAccessibility } from './uiDomAccessibilityControls.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function syncMenuToggleAccessibility(scene) {
@@ -36,14 +36,6 @@ export function syncMenuToggleAccessibility(scene) {
     setAccessibilityControlPressed('menuDiffHard', scene.difficulty === DIFFICULTY.HARD);
     setAccessibilityControlPressed('menuTraining', !!scene.trainingMode);
     setAccessibilityControlPressed('menuHardcore', !!scene.hardcoreMode);
-}
-
-/** @param {import('./ui.js').UI} ui */
-export function syncOptionsTabAccessibility(ui) {
-    if (!ui) return;
-    const tab = ui._optionsActiveTab ?? 'preferences';
-    setAccessibilityControlExpanded('menuOptionsTabControls', tab === 'controls');
-    setAccessibilityControlExpanded('menuOptionsTabPreferences', tab === 'preferences');
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */

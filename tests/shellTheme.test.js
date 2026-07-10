@@ -10,7 +10,7 @@ describe('shellTheme', () => {
             'matchMedia',
             vi.fn(() => ({ matches: false }))
         );
-        const style = { setProperty: vi.fn() };
+        const style = { setProperty: vi.fn(), colorScheme: '' };
         const meta = { setAttribute: vi.fn() };
         const doc = {
             documentElement: { style, dataset: {} },
@@ -24,6 +24,8 @@ describe('shellTheme', () => {
         expect(style.setProperty).toHaveBeenCalledWith('--spacing-md', '12px');
         expect(meta.setAttribute).toHaveBeenCalledWith('content', expect.any(String));
         expect(doc.body.style.background).toBeTruthy();
+        expect(doc.documentElement.dataset.theme).toMatch(/^(day|night)$/);
+        expect(['light', 'dark']).toContain(doc.documentElement.style.colorScheme);
     }, 10_000);
 
     it('syncShellTheme renforce le contraste et data-contrast-high', async () => {

@@ -106,6 +106,31 @@ describe('audio', () => {
         expect(milestoneOsc.type).toBe('square');
     });
 
+    it('playScore ajoute une fanfare aux paliers 5, 15 et 20', () => {
+        mockCtx.createOscillator.mockClear();
+        playSound(SOUND.SCORE, 4);
+        const atFour = mockCtx.createOscillator.mock.calls.length;
+        playSound(SOUND.SCORE, 5);
+        const atFive = mockCtx.createOscillator.mock.calls.length;
+        expect(atFive).toBeGreaterThan(atFour);
+
+        mockCtx.createOscillator.mockClear();
+        playSound(SOUND.SCORE, 14);
+        const atFourteen = mockCtx.createOscillator.mock.calls.length;
+        playSound(SOUND.SCORE, 15);
+        expect(mockCtx.createOscillator.mock.calls.length).toBeGreaterThan(atFourteen);
+
+        mockCtx.createOscillator.mockClear();
+        playSound(SOUND.SCORE, 19);
+        const atNineteen = mockCtx.createOscillator.mock.calls.length;
+        playSound(SOUND.SCORE, 20);
+        const atTwenty = mockCtx.createOscillator.mock.calls.length;
+        expect(atTwenty).toBeGreaterThan(atNineteen);
+        const typesAtTwenty = mockCtx.oscillators.slice(atNineteen).map((o) => o.type);
+        expect(typesAtTwenty).toContain('square');
+        expect(typesAtTwenty).toContain('sine');
+    });
+
     it('utilise triangle pour gameover et bruit filtré pour ground', () => {
         playSound(SOUND.GAME_OVER);
         expect(mockCtx.oscillators.some((o) => o.type === 'triangle')).toBe(true);

@@ -136,6 +136,7 @@ ui.js (orchestration — façade SceneContext)
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
 | **Extension**      | Implémenter dans `ui*.js`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
 | **Délégation**     | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans `ui.js`      |
+| **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
 
 Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
@@ -192,18 +193,18 @@ uiGameOver.buildGameOverUI()
 Menu principal (input restart/menu)
 ```
 
-## Performance Considerations
+## Considérations performance
 
-### Optimization
+### Optimisation
 
 - **Object Pooling** : Pipes réutilisés
-- **Lazy Loading** : Textures oiseau à la demande (`ensureBirdTexture`) — classic + skin actif au boot, reste au panneau skins
+- **Lazy Loading** : textures décor (`textures/decorPreload.js`, chunk Vite séparé) après fond/sol/oiseau ; skins additionnels au panneau skins
 - **Code splitting** : chunks Vite `skins` (~3 Ko gzip) et `ui-gameover` (~10 Ko gzip, préchargé au `beginRound`). Le barrel `uiIndex.js` n’exporte plus le game over pour éviter un import statique.
-- **Shell jeu** : `shellGameState.js` (`partie-active`, `data-game-state`) + `shellViewport.js` (zoom menu vs partie).
+- **Shell jeu** : `shellGameState.js` (`partie-active`, `data-game-state`) + `shellViewport.js` (zoom menu ; pinch bloqué en partie tactile, zoom navigateur conservé sur desktop).
 - **Canvas Rendering** : Phaser optimise le rendu
 - **Event Delegation** : Minimal DOM updates
 
-### Memory
+### Mémoire
 
 - **Scene Cleanup** : Destroy() appelé sur transition
 - **Event Listeners** : Unsubscribed on cleanup
@@ -213,33 +214,15 @@ Menu principal (input restart/menu)
 
 Vitesse par défaut **80 %** (`training.timeScale: 0.8`), cyclable dans OPTIONS : `training.timeScaleSteps` `[0.6, 0.7, 0.8, 1]` (persisté `trainingStorage`). Appliqué via `resolveTrainingTimeScale` (`sceneBootstrap.js`) + Phaser `time.timeScale`. Couvert par tests unitaires, seam `getTrainingRuntime` / `cycleTrainingSpeed`, e2e `gameplay-equity`.
 
-## Testing Strategy
+## Stratégie de tests
 
-### Unit Tests (604 tests, couverture CI ≥ 94 % lignes / 82 % branches)
+Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). Seuils couverture : `vite.config.js`.
 
-- **Gameplay** : Physics, collision, scoring
-- **UI** : Menu navigation, state updates
-- **Storage** : Persistence, data integrity
-- **Accessibility** : ARIA (`aria-pressed`, `aria-expanded`), annonces, `menuTrainingSpeed`
+- **Unitaires** : gameplay, UI, storage, accessibilité
+- **E2E** : navigation, clavier/touch, responsive, PWA offline
+- **CI** : `check` → `e2e-smoke` (desktop + mobile portrait, bloque deploy) + matrice e2e complète (6 viewports, bloquante) + lighthouse
 
-### E2E Tests (11 specs, 6 projets viewport)
-
-- **Navigation** : Menu flow
-- **Input** : Keyboard, touch, gamepad
-- **Responsive** : All viewports
-- **PWA** : Offline mode, precache
-
-### CI / déploiement (`.github/workflows/ci.yml`)
-
-```
-check ──┬──► e2e (matrice 6 projets en parallèle, ~15 min mur, timeout 35 min/job)
-        └──► lighthouse
-check + lighthouse ──► deploy → gh-pages
-```
-
-Le job `deploy` **n’attend pas** `e2e` : signal de régression sans bloquer Pages. `PLAYWRIGHT_SKIP_BUILD=1` en CI évite le double build.
-
-## Accessibility Implementation
+## Implémentation accessibilité
 
 ### WCAG 2.1 Level AA (cible)
 
@@ -249,37 +232,27 @@ Le job `deploy` **n’attend pas** `e2e` : signal de régression sans bloquer Pa
 - **Motion** : `prefers-reduced-motion` respecté
 - **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`)
 
-### Implementation Files
+### Fichiers concernés
 
 - `uiDomAccessibility*.js` : A11y layer
 - `motion.js` : Animation control
 - `style.css` : Focus styles
 - `index.html` : ARIA semantics
 
-## Scalability
+## Évolutivité
 
-### Future-Proof
+### Pérennisation
 
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
 - **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `style.css` (shell synchronisé via `shellTheme.js`)
-- **Test Coverage** : seuils CI 94 % lignes / 82 % branches (`vite.config.js`)
+- **Test Coverage** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
 
-## Development Workflow
+## Workflow de développement
 
-Commandes locales : voir [README.md](README.md). Mesure bundle après build : `npm run measure` (snapshot de référence `scripts/bundle-baseline.json`).
+Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run measure`.
 
-### Build & Deploy
-
-```bash
-npm run icons           # public/icons/ (+ icons:optimize en CI)
-npm run build           # dist/ + PWA (polices latin/latin-ext woff2 uniquement)
-npm run measure         # tailles dist/ après build ; snapshot manuel scripts/bundle-baseline.json
-npm run preview         # Test build locally
-git push                # CI/CD GitHub Actions
-```
-
-## Dependencies
+## Dépendances
 
 | Package         | Version | Role           |
 | --------------- | ------- | -------------- |
@@ -291,12 +264,11 @@ git push                # CI/CD GitHub Actions
 | eslint          | ^9.17.0 | Linting        |
 | prettier        | ^3.4.2  | Formatting     |
 
-## Code Quality Standards
+## Standards qualité code
 
 - **ESLint** : 0 errors
-- **Prettier** : 100% formatted
-- **Tests** : 604/604 passing
-- **Coverage** : ~95 % lignes / ~84 % branches (seuils CI 94/82/91 %)
+- **Prettier** : format check en CI
+- **Tests / couverture** : voir CI (`npm test`, `npm run test:coverage`)
 
 ### Exclusions coverage (justifiées)
 
@@ -307,8 +279,6 @@ git push                # CI/CD GitHub Actions
 | `src/skins/skinIds.js`   | Constantes d’identifiants                               |
 | `src/skins/skinTypes.js` | Typedef JSDoc sans runtime                              |
 | `src/sceneTypes.js`      | Contrat JSDoc `SceneContext` — documenté, non exécuté   |
-
-Couverture globale actuelle : ~95 % lignes, ~84 % branches (`npm run test:coverage`).
 
 - **Types** : JSDoc comments
 - **Accessibility** : 100/100 Lighthouse

@@ -8,7 +8,7 @@ import { UI } from '../src/ui.js';
 vi.mock('../src/motion.js', () => ({ sceneTween: vi.fn() }));
 
 describe('uiHudGapBadge', () => {
-    it('masque le badge avant le seuil de resserrement', () => {
+    it('masque le badge avant le seuil de preview', () => {
         const ui = new UI(
             createBaseScene({
                 difficulty: DIFFICULTY.NORMAL,
@@ -19,9 +19,25 @@ describe('uiHudGapBadge', () => {
         ui.scoreText = { y: 68, setVisible: vi.fn(), setText: vi.fn(), setY: vi.fn() };
         ui._gapHudBadge = { setVisible: vi.fn() };
 
-        updateGapHudBadge(ui, 19);
+        updateGapHudBadge(ui, 14);
 
         expect(ui._gapHudBadge.setVisible).toHaveBeenCalledWith(false);
+    });
+
+    it('affiche la preview d’écart avant le score 20', () => {
+        const scene = createBaseScene({
+            difficulty: DIFFICULTY.NORMAL,
+            hardcoreMode: false,
+            round: createRoundState(),
+        });
+        const ui = new UI(scene);
+        ui.scoreText = { y: 68 };
+        ui._inGameControlElements = [];
+
+        updateGapHudBadge(ui, 15);
+
+        expect(ui._gapHudBadge).toBeTruthy();
+        expect(ui._gapHudBadge.setText).toHaveBeenCalledWith('ÉCART ↓ 99px au score 20');
     });
 
     it('affiche l’écart effectif à partir du score 20', () => {

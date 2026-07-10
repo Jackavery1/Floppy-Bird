@@ -31,7 +31,7 @@ export class UI {
         this._tutorialHint = null;
         this._inGameControlElements = [];
         this._overlays = { menu: [], pause: [], gameOver: [] };
-        this._closeAllMenuPanels = () => closeAllMenuPanels(this);
+        this._closeAllMenuPanels = (opts) => closeAllMenuPanels(this, opts);
     }
 
     /** @param {'menu' | 'pause' | 'gameOver'} key */

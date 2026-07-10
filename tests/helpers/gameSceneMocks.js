@@ -20,7 +20,11 @@ vi.mock('phaser', () => {
 });
 
 vi.mock('../../src/textures/index.js', () => ({
-    preloadTextures: vi.fn(),
+    preloadTexturesEssential: vi.fn(),
+}));
+
+vi.mock('../../src/textures/decorPreload.js', () => ({
+    preloadDecorTextures: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock('../../src/sceneSetup.js', () => ({

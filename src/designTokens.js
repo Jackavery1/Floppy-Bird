@@ -12,7 +12,7 @@
  * | Grille skins      | 11 px    | Segoe UI            | menuTextStyle          |
  * | Chargement shell  | 14–16 px | policeInterface     | CSS `#loading`         |
  */
-import { getBackgroundPeriod } from './textures/backgroundTextures.js';
+import { getBackgroundPeriod } from './backgroundPeriod.js';
 
 export const DESIGN_TOKENS = Object.freeze({
     fondNuit: '#1a1a2e',
@@ -88,17 +88,47 @@ export function prefersHighContrast() {
 
 function epaisseurContourHud() {
     const base = prefersHighContrast() ? 3 : 2;
-    if (getBackgroundPeriod() === 'day') return Math.max(base, 3);
+    if (getBackgroundPeriod() === 'day') return Math.max(base, 4);
     return base;
+}
+
+function ombreHudJour() {
+    if (getBackgroundPeriod() !== 'day') return null;
+    return {
+        offsetX: 0,
+        offsetY: 1,
+        color: DESIGN_TOKENS.contourHud,
+        blur: 3,
+        stroke: true,
+        fill: false,
+    };
+}
+
+function assombrirHex(hex, facteur = 0.82) {
+    const n = Number.parseInt(hex.replace('#', ''), 16);
+    const r = Math.floor(((n >> 16) & 0xff) * facteur);
+    const g = Math.floor(((n >> 8) & 0xff) * facteur);
+    const b = Math.floor((n & 0xff) * facteur);
+    return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
+/** Fill bannière HUD — assombri en mode jour pour le contraste sur ciel clair. */
+export function hudBannerFill(tokenKey) {
+    const fill = DESIGN_TOKENS[tokenKey];
+    if (getBackgroundPeriod() === 'day') return assombrirHex(fill);
+    return fill;
 }
 
 /** Style Phaser texte HUD (contour noir systématique). */
 export function hudTextStyle(overrides = {}) {
-    return {
+    const style = {
         stroke: DESIGN_TOKENS.contourHud,
         strokeThickness: epaisseurContourHud(),
         ...overrides,
     };
+    const shadow = ombreHudJour();
+    if (shadow) style.shadow = shadow;
+    return style;
 }
 
 /** Style Phaser texte menu / panneau (contour sombre). */

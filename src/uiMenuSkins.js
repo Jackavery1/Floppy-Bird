@@ -1,12 +1,10 @@
 import { GAME_CONFIG } from './config.js';
 import { buildMetaContext } from './metaContext.js';
-import { loadSelectedSkin } from './metaStorage.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
 import { ensureBirdTextures } from './textures/index.js';
 import {
     getSkin,
     listUnlockedSkins,
-    cycleUnlockedSkin,
     SKIN_IDS,
     birdTextureKey,
     isSpecialSkin,
@@ -28,10 +26,10 @@ import {
     UI_LAYOUT,
 } from './uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
-import { announceAccessibility } from './uiDomAccessibility.js';
 import { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
 
 export { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
+export { cycleMenuSkin } from './uiMenuSkinCycle.js';
 
 const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
 const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
@@ -174,16 +172,4 @@ export function buildSkinsTab(ui, elements, panelElements) {
     ui._skinsCloseHit = closeBtn.hit;
 
     refreshSkinsTab(ui);
-}
-
-/** @param {import('./ui.js').UI} ui @param {1 | -1} step */
-export function cycleMenuSkin(ui, step) {
-    const ctx = buildMetaContext(ui.scene);
-    const current = loadSelectedSkin();
-    const nextId = cycleUnlockedSkin(current, ctx, step);
-    if (nextId === current) return;
-    applySelectedSkin(ui.scene, nextId);
-    refreshSkinsTab(ui);
-    const nextSkin = getSkin(nextId);
-    announceAccessibility(`Apparence sélectionnée : ${nextSkin.label}`);
 }

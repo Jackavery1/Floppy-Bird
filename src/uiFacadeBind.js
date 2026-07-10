@@ -39,7 +39,7 @@ import {
 import { toggleMenuOptions, refreshHardcoreLockState } from './uiMenuOptions.js';
 import { toggleMenuScores } from './uiMenuScoresPanel.js';
 import { toggleMenuSkins } from './uiMenuSkinsPanel.js';
-import { cycleMenuSkin } from './uiMenuSkins.js';
+import { cycleMenuSkin } from './uiMenuSkinCycle.js';
 import { showPause } from './uiPause.js';
 
 const HUD_METHODS = {
@@ -116,8 +116,9 @@ export function bindUiFacade(UiClass) {
         hardcoreMode = false,
         dailyGoal = 0,
         activeSkinId = 'classic',
-        deathCause = null
-    ) {
+    deathCause = null,
+    coyoteFramesAtDeath = null
+) {
         return buildGameOverUI(
             this.scene,
             this,
@@ -128,7 +129,8 @@ export function bindUiFacade(UiClass) {
             hardcoreMode,
             dailyGoal,
             activeSkinId,
-            deathCause
+            deathCause,
+            coyoteFramesAtDeath
         );
     };
 }

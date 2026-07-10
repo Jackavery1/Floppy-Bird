@@ -24,6 +24,7 @@ jobs:
             - run: npm run icons
             - run: npm run icons:optimize
             - run: npm run lint
+            - run: npm run cycles
             - run: npm run format:check
             - run: npm test
             - run: npm run test:coverage
@@ -33,6 +34,35 @@ jobs:
                   name: coverage-report
                   path: coverage/
                   retention-days: 14
+
+    e2e-smoke:
+        needs: check
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        strategy:
+            fail-fast: false
+            matrix:
+                project:
+                    - chromium-desktop
+                    - chromium-mobile-portrait
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+                  cache: npm
+            - run: npm ci
+            - run: npm run icons
+            - run: npm run icons:optimize
+            - run: npx playwright install chromium
+            - run: npm run build
+              env:
+                  BASE_PATH: /Floppy-Bird/
+                  VITE_ENABLE_TEST_SEAM: 'true'
+            - run: npx playwright test --workers=1 --project=${{ matrix.project }}
+              env:
+                  BASE_PATH: /Floppy-Bird/
+                  PLAYWRIGHT_SKIP_BUILD: '1'
 
     e2e:
         needs: check
@@ -83,8 +113,7 @@ jobs:
             - run: npm run lighthouse
 
     deploy:
-        # e2e (6 viewports, ~90 min) reste informatif — ne bloque pas Pages (cf. CONTRIBUTING).
-        needs: [check, lighthouse]
+        needs: [check, lighthouse, e2e-smoke]
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         runs-on: ubuntu-latest
         permissions:

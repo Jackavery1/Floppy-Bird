@@ -47,7 +47,7 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
 | `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu, PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay (`gameplay-equity.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
 
 ## Artefacts générés (ne pas committer)
 
@@ -79,10 +79,14 @@ Générées avant chaque build de production :
 ```bash
 npm run icons           # génère public/icons/
 npm run icons:optimize  # recompression PNG (exécuté en CI après icons)
+npm run test:e2e:smoke   # smoke bloquant deploy (desktop + mobile portrait)
+npm run test:e2e:ci      # matrice complète 6 viewports
 npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
 La CI exécute `npm run icons` puis `npm run icons:optimize` automatiquement.
+
+`npm run cycles` détecte les imports circulaires dans `src/` (madge). Lighthouse CI : perf **informatif** (plancher conseillé 45, avertissement ⚠ sans échec) — seuils bloquants a11y / best-practices / seo (`scripts/lighthouse-ci.mjs`).
 
 ## Problème certificat npm
 
@@ -104,7 +108,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`**. Les **e2e** tournent en **matrice parallèle** (6 viewports, ~15 min mur) mais **ne bloquent pas** le déploiement.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (desktop + mobile portrait). La matrice e2e complète (6 viewports) est **bloquante** en CI.
 
 En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 

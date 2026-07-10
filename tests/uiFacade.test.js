@@ -47,7 +47,7 @@ vi.mock('../src/uiMenuOptions.js', () => ({
 }));
 vi.mock('../src/uiMenuScoresPanel.js', () => ({ toggleMenuScores: vi.fn() }));
 vi.mock('../src/uiMenuSkinsPanel.js', () => ({ toggleMenuSkins: vi.fn() }));
-vi.mock('../src/uiMenuSkins.js', () => ({ cycleMenuSkin: vi.fn() }));
+vi.mock('../src/uiMenuSkinCycle.js', () => ({ cycleMenuSkin: vi.fn() }));
 vi.mock('../src/uiPause.js', () => ({ showPause: vi.fn(() => ({ elements: [] })) }));
 vi.mock('../src/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
@@ -60,7 +60,7 @@ import { UI_FACADE_METHODS } from '../src/uiFacadeBind.js';
 import { toggleMenuOptions, refreshHardcoreLockState } from '../src/uiMenuOptions.js';
 import { toggleMenuScores } from '../src/uiMenuScoresPanel.js';
 import { toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
-import { cycleMenuSkin } from '../src/uiMenuSkins.js';
+import { cycleMenuSkin } from '../src/uiMenuSkinCycle.js';
 import { buildGameOverUI } from '../src/uiGameOverLoader.js';
 
 describe('UI façade — délégation', () => {

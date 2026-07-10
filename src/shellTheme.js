@@ -1,3 +1,4 @@
+import { getBackgroundPeriod } from './backgroundPeriod.js';
 import { DESIGN_TOKENS, prefersHighContrast } from './designTokens.js';
 import { SPACING } from './uiLayoutConstants.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
@@ -31,6 +32,12 @@ export function syncShellTheme(doc = document) {
         root.style.setProperty(name, resolve());
     }
 
+    const period = getBackgroundPeriod();
+    if (root.dataset) {
+        root.dataset.theme = period;
+    }
+    root.style.colorScheme = period === 'day' ? 'light' : 'dark';
+
     if (prefersHighContrast()) {
         for (const [name, value] of Object.entries(CONTRAST_CSS_VARS)) {
             root.style.setProperty(name, value);
@@ -43,7 +50,14 @@ export function syncShellTheme(doc = document) {
     }
 
     const fond = getBackgroundCanvasColor();
-    doc.querySelector('meta[name="theme-color"]')?.setAttribute('content', fond);
+    const themeMetas = doc.querySelectorAll?.('meta[name="theme-color"]');
+    if (themeMetas?.length) {
+        for (const meta of themeMetas) {
+            meta.setAttribute('content', fond);
+        }
+    } else {
+        doc.querySelector('meta[name="theme-color"]')?.setAttribute('content', fond);
+    }
     if (doc.body?.style) {
         doc.body.style.background = fond;
     }

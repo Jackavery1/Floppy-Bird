@@ -149,4 +149,12 @@ describe('device', () => {
         expect(deathCauseLabel('ground')).toBe('Touché le sol');
         expect(deathCauseLabel(null)).toBe('');
     });
+
+    it('coyoteDeathHint résume la marge coyote au game over', async () => {
+        const { coyoteDeathHint } = await loadDevice(false);
+        expect(coyoteDeathHint(null)).toBe('');
+        expect(coyoteDeathHint(0)).toBe('Grâce coyote épuisée');
+        expect(coyoteDeathHint(2)).toBe('Grâce coyote : 2 frames restantes');
+        expect(coyoteDeathHint(null, 'ground')).toBe('Grâce coyote : non applicable (sol/plafond)');
+    });
 });

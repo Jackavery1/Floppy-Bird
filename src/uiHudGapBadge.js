@@ -7,14 +7,18 @@ import { addCenteredText, DEPTH, FONT_SIZE_BADGE } from './uiLayout.js';
 /** @param {import('./ui.js').UI} ui @param {number} score */
 export function updateGapHudBadge(ui, score) {
     const seuil = GAME_CONFIG.round.gapTightenAfterScore;
-    if (score < seuil) {
+    const previewAt = seuil - GAME_CONFIG.round.difficultyPreviewOffset;
+    if (score < previewAt) {
         if (ui._gapHudBadge) ui._gapHudBadge.setVisible(false);
         return;
     }
 
     const scene = ui.scene;
     const baseGap = getDifficultyForRound(scene.difficulty, scene.hardcoreMode).gap;
-    const gapPx = effectivePipeGapForScore(baseGap, score);
+    const gapPx =
+        score >= seuil ? effectivePipeGapForScore(baseGap, score) : effectivePipeGapForScore(baseGap, seuil);
+    const label =
+        score >= seuil ? `ÉCART ${gapPx}px` : `ÉCART ↓ ${gapPx}px au score ${seuil}`;
 
     if (!ui._gapHudBadge) {
         ui._gapHudBadge = addCenteredText(
@@ -32,7 +36,7 @@ export function updateGapHudBadge(ui, score) {
         ui._inGameControlElements?.push(ui._gapHudBadge);
     }
 
-    ui._gapHudBadge.setText(`ÉCART ${gapPx}px`);
+    ui._gapHudBadge.setText(label);
     ui._gapHudBadge.setVisible(true);
     layoutHudSecondaryBadges(ui);
 }

@@ -28,7 +28,7 @@ export function playDeathImpactFeedback(scene, cause = 'pipe') {
     scene.ui.hideInGameScore();
     if (cause === 'pipe') {
         sceneCameraShake(scene.cameras.main, 200, 0.015);
-        scene.ui.showFlash(hexVersPhaser(DESIGN_TOKENS.texteHud), 0.8);
+        scene.ui.showFlash(hexVersPhaser(DESIGN_TOKENS.accentScoreHardcore), 0.75);
         spawnImpactParticles(scene, scene.bird.x, scene.bird.y, 'pipe');
     } else if (cause === 'ground') {
         sceneCameraShake(scene.cameras.main, 140, 0.012);
@@ -62,7 +62,7 @@ export function playGroundImpactFeedback() {
     hapticLight();
 }
 
-/** Particules d'impact lors de la collision (pipe, ground, ceiling). */
+/** Particules d'impact lors de la collision (tuyau, sol, plafond). */
 function spawnImpactParticles(scene, cx, cy, cause) {
     if (prefersReducedMotion()) return;
     const colors = {

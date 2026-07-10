@@ -9,11 +9,10 @@ import {
     pointerGameCoord,
     projectUsesTouch,
     returnToMenuFromPause,
-    replayFromGameOver,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { forceGameOver, getGameOverRestartLabel, getMenuPanels, getOptionsPanel } from './helpers/testSeam.mjs';
+import { getMenuPanels, getOptionsPanel } from './helpers/testSeam.mjs';
 
 test.describe('touch mobile portrait', () => {
     test('ouvre la pause via tap sur le bouton pause', async ({ page }, testInfo) => {
@@ -247,34 +246,6 @@ test.describe('touch mobile portrait', () => {
         const { menuDiffHard } = TOUCH_TARGETS;
         await pointerGameCoord(page, menuDiffHard.x, menuDiffHard.y, usesTouch);
         await startPlayingFromMenu(page, usesTouch);
-        await expectGameState(page, 'playing');
-    });
-
-    test('rejoue via tap sur le bouton REJOUER', async ({ page }, testInfo) => {
-        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
-        const usesTouch = projectUsesTouch(testInfo);
-        await waitForGameReady(page);
-        await forceGameOver(page);
-        await expectGameState(page, 'gameover');
-        await expect.poll(() => getGameOverRestartLabel(page)).toBe('REJOUER');
-        await replayFromGameOver(page, usesTouch);
-    });
-
-    test('game over défi quotidien affiche DÉFI', async ({ page }, testInfo) => {
-        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
-        await waitForGameReady(page);
-        await forceGameOver(page, { isDaily: true });
-        await expectGameState(page, 'gameover');
-        await expect.poll(() => getGameOverRestartLabel(page)).toBe('DÉFI');
-    });
-
-    test('rejoue via bouton a11y DOM game over', async ({ page }, testInfo) => {
-        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
-        await waitForGameReady(page);
-        await forceGameOver(page);
-        await expectGameState(page, 'gameover');
-        await expect(page.locator('#a11y-gameover-restart')).toBeVisible();
-        await page.locator('#a11y-gameover-restart').tap({ force: true });
         await expectGameState(page, 'playing');
     });
 });

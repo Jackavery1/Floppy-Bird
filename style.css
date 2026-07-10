@@ -46,6 +46,14 @@
 html {
     overscroll-behavior: none;
     touch-action: none;
+    color-scheme: dark light;
+}
+
+html[data-theme='day'] {
+    color-scheme: light;
+}
+
+html[data-theme='night'] {
     color-scheme: dark;
 }
 
@@ -124,6 +132,12 @@ body {
     border: 2px dashed var(--couleur-accent);
     border-radius: 10px;
     pointer-events: none;
+}
+
+#game-container canvas:focus-visible {
+    outline: 2px solid var(--couleur-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px rgba(253, 216, 53, 0.35);
 }
 
 #loading {

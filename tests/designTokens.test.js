@@ -7,7 +7,7 @@ import {
     panelChromeTextStyle,
 } from '../src/designTokens.js';
 
-vi.mock('../src/textures/backgroundTextures.js', () => ({
+vi.mock('../src/backgroundPeriod.js', () => ({
     getBackgroundPeriod: vi.fn(() => 'night'),
 }));
 
@@ -141,24 +141,34 @@ describe('designTokens', () => {
     });
 
     it('renforce le contour HUD en fond jour', async () => {
-        const { getBackgroundPeriod } = await import('../src/textures/backgroundTextures.js');
+        const { getBackgroundPeriod } = await import('../src/backgroundPeriod.js');
         vi.mocked(getBackgroundPeriod).mockReturnValue('day');
-        expect(hudTextStyle().strokeThickness).toBeGreaterThanOrEqual(3);
+        const style = hudTextStyle();
+        expect(style.strokeThickness).toBeGreaterThanOrEqual(4);
+        expect(style.shadow).toEqual(
+            expect.objectContaining({ color: DESIGN_TOKENS.contourHud, stroke: true })
+        );
         vi.mocked(getBackgroundPeriod).mockReturnValue('night');
         expect(hudTextStyle().strokeThickness).toBe(2);
+        expect(hudTextStyle().shadow).toBeUndefined();
     });
 
     it('pastels HUD restent lisibles sur fond jour avec contour', async () => {
-        const { getBackgroundPeriod } = await import('../src/textures/backgroundTextures.js');
+        const { getBackgroundPeriod } = await import('../src/backgroundPeriod.js');
         vi.mocked(getBackgroundPeriod).mockReturnValue('day');
         for (const fill of [
             DESIGN_TOKENS.accentGap,
             DESIGN_TOKENS.bannerStreak,
             DESIGN_TOKENS.bannerCoyote,
+            DESIGN_TOKENS.bannerEscalation,
+            DESIGN_TOKENS.badgeHardcore,
+            DESIGN_TOKENS.badgeDaily,
         ]) {
             const stroke = hudTextStyle({ fill }).stroke;
             expect(contrastRatio(stroke, DESIGN_TOKENS.fondJour)).toBeGreaterThanOrEqual(4.5);
         }
+        const { hudBannerFill } = await import('../src/designTokens.js');
+        expect(hudBannerFill('bannerStreak')).not.toBe(DESIGN_TOKENS.bannerStreak);
         vi.mocked(getBackgroundPeriod).mockReturnValue('night');
     });
 

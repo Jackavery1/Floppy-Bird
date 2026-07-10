@@ -13,15 +13,13 @@ import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
-import { prepareMenuRebuild } from './uiMenu.js';
+import { closeAllMenuPanels, prepareMenuRebuild } from './uiMenu.js';
 import {
-    announceAccessibility,
-    hideAllAccessibilityControls,
-    setAccessibilityControlVisible,
-    setupMenuAccessibility,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
-import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
+    enterPauseAccessibility,
+    exitPauseAccessibility,
+    hideAccessibilityForRoundStart,
+    openMenuAccessibility,
+} from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -48,7 +46,7 @@ export function resumeClock(scene) {
 /** @param {SceneContext} scene */
 function clearPauseOverlay(scene) {
     scene.ui.clearOverlay('pause');
-    hideAllAccessibilityControls();
+    hideAccessibilityForRoundStart();
 }
 
 /** @param {SceneContext} scene */
@@ -63,8 +61,7 @@ export function showMenu(scene) {
 
     const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
     scene.ui.setOverlay('menu', elements);
-    setupMenuAccessibility(scene);
-    announceAccessibility('Menu principal');
+    openMenuAccessibility(scene);
 }
 
 /** @param {SceneContext} scene */
@@ -72,11 +69,12 @@ export function startGame(scene) {
     scene.playMode = 'classic';
     scene.dailyChallengeMode = false;
     if (scene.state === GAME_STATE.MENU) {
-        hideAllAccessibilityControls();
+        hideAccessibilityForRoundStart();
+        closeAllMenuPanels(scene.ui, { force: true });
         scene.ui.clearOverlay('menu');
         beginRound(scene, { resetBird: true });
     } else if (scene.state === GAME_STATE.GAME_OVER) {
-        hideAllAccessibilityControls();
+        hideAccessibilityForRoundStart();
         scene.ui.clearOverlay('gameOver');
         beginRound(scene, { resetBird: true });
     }
@@ -92,10 +90,11 @@ export function startDailyChallenge(scene) {
     scene.hardcoreMode = false;
     saveHardcoreEnabled(false);
     if (scene.state === GAME_STATE.MENU) {
-        hideAllAccessibilityControls();
+        hideAccessibilityForRoundStart();
+        closeAllMenuPanels(scene.ui, { force: true });
         scene.ui.clearOverlay('menu');
     } else {
-        hideAllAccessibilityControls();
+        hideAccessibilityForRoundStart();
         scene.ui.clearOverlay('gameOver');
     }
     beginRound(scene, { resetBird: true });
@@ -127,24 +126,11 @@ export function togglePause(scene) {
             onMenu: () => returnToMenu(scene),
         });
         scene.ui.setOverlay('pause', pauseUI.elements);
-        setAccessibilityControlVisible('pause', false);
-        for (const key of PLAYING_CONTROL_KEYS) {
-            if (key !== 'pause') setAccessibilityControlVisible(key, false);
-        }
-        for (const key of PAUSE_OVERLAY_CONTROL_KEYS) {
-            setAccessibilityControlVisible(key, true);
-        }
-        syncAccessibilityLayer(scene.game);
-        announceAccessibility('Partie en pause');
+        enterPauseAccessibility(scene);
     } else if (scene.state === GAME_STATE.PAUSED) {
         applyPlayingState(scene);
         clearPauseOverlay(scene);
-        setAccessibilityControlVisible('pause', true);
-        for (const key of PLAYING_CONTROL_KEYS) {
-            if (key !== 'pause') setAccessibilityControlVisible(key, true);
-        }
-        syncAccessibilityLayer(scene.game);
-        announceAccessibility('Partie reprise');
+        exitPauseAccessibility(scene);
     }
 }
 

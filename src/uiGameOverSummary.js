@@ -5,7 +5,7 @@ import {
     MEDAILLE_COLORS_PHASER,
     menuTextStyle,
 } from './designTokens.js';
-import { deathCauseLabel } from './device.js';
+import { deathCauseLabel, coyoteDeathHint } from './device.js';
 import { Utils } from './utils.js';
 import { getSkin, isSpecialSkin } from './skins/index.js';
 import { shade } from './uiGameOverDecor.js';
@@ -23,13 +23,14 @@ import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_SIZE_HINT, FONT_TITLE } f
  *   fadeIn: boolean,
  *   isNewRecord: boolean,
  *   deathCause: string|null,
+ *   coyoteFramesAtDeath: number|null,
  *   hardcoreMode: boolean,
  *   dailyGoal: number,
  *   activeSkinId: string,
  * }} opts
  */
 export function buildGameOverSummary(scene, cx, y, ui, opts) {
-    const { finalScore, fadeIn, isNewRecord, deathCause, hardcoreMode, dailyGoal, activeSkinId } =
+    const { finalScore, fadeIn, isNewRecord, deathCause, coyoteFramesAtDeath, hardcoreMode, dailyGoal, activeSkinId } =
         opts;
     const isDaily = dailyGoal > 0;
     const special = !isDaily && isSpecialSkin(activeSkinId);
@@ -64,6 +65,24 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
                     fontSize: FONT_SIZE_BADGE,
                     fill: DESIGN_TOKENS.accentScoreHardcore,
                     fontStyle: 'italic',
+                }),
+                DEPTH.MENU_RAISED
+            )
+        );
+    }
+
+    const coyoteHint = coyoteDeathHint(coyoteFramesAtDeath, deathCause);
+    if (coyoteHint) {
+        elements.push(
+            addCenteredText(
+                scene,
+                cx,
+                y(deathLabel ? 66 : 52),
+                coyoteHint,
+                menuTextStyle({
+                    fontSize: FONT_SIZE_HINT,
+                    fill: DESIGN_TOKENS.bannerCoyote,
+                    fontStyle: 'normal',
                 }),
                 DEPTH.MENU_RAISED
             )

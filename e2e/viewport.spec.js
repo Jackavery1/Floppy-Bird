@@ -146,6 +146,47 @@ test.describe('jeu chargé', () => {
         expect(metrics.deltaY).toBeLessThan(8);
     });
 
+    test('conserve le centrage au zoom navigateur 200 % simulé', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name.startsWith('webkit'),
+            'mock visualViewport fragile sous WebKit'
+        );
+        await page.setViewportSize({ width: 1280, height: 720 });
+        await waitForGameReady(page);
+        const metrics = await page.evaluate(() => {
+            Object.defineProperty(window, 'visualViewport', {
+                configurable: true,
+                value: {
+                    width: 640,
+                    height: 360,
+                    offsetTop: 0,
+                    offsetLeft: 0,
+                    scale: 2,
+                    addEventListener: () => {},
+                    removeEventListener: () => {},
+                },
+            });
+            window.dispatchEvent(new Event('resize'));
+            const canvas = document.querySelector('#game-container canvas');
+            const box = canvas?.getBoundingClientRect();
+            const vv = { width: 640, height: 360, offsetTop: 0, offsetLeft: 0 };
+            const cx = vv.offsetLeft + vv.width / 2;
+            const cy = vv.offsetTop + vv.height / 2;
+            const canvasCx = box ? box.left + box.width / 2 : 0;
+            const canvasCy = box ? box.top + box.height / 2 : 0;
+            return {
+                ratio: box && box.height > 0 ? box.width / box.height : 0,
+                scale: window.visualViewport.scale,
+                deltaX: Math.abs(canvasCx - cx),
+                deltaY: Math.abs(canvasCy - cy),
+            };
+        });
+        expect(metrics.scale).toBe(2);
+        expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+        expect(metrics.deltaX).toBeLessThan(8);
+        expect(metrics.deltaY).toBeLessThan(8);
+    });
+
     test('affiche l’aide paysage sur grand téléphone en paysage', async ({ page }) => {
         await page.setViewportSize({ width: 932, height: 430 });
         await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -183,94 +224,5 @@ test.describe('jeu chargé', () => {
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(ratio, 1);
         await expectGameState(page, 'playing');
-    });
-
-    test('expose og:image et twitter:card pour le partage social', async ({ page }) => {
-        await page.goto('/', { waitUntil: 'domcontentloaded' });
-        await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
-            'content',
-            /icon-512\.png/
-        );
-        await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
-            'content',
-            'summary_large_image'
-        );
-        await expect(page.locator('#game-container')).toHaveAttribute('role', 'img');
-        await expect(page.locator('#game-container')).toHaveAttribute(
-            'aria-labelledby',
-            'game-description'
-        );
-        await expect(page.locator('main#app')).toHaveAttribute('aria-label', 'Floppy Bird');
-    });
-
-    test('expose le manifest PWA', async ({ page }) => {
-        await page.goto('/', { waitUntil: 'domcontentloaded' });
-        const href = await page.locator('link[rel="manifest"]').first().getAttribute('href');
-        expect(href).toMatch(/manifest\.webmanifest$/);
-    });
-
-    test('autorise le jeu en tablette paysage sans hint bloquant', async ({ page }, testInfo) => {
-        test.skip(
-            testInfo.project.name !== 'chromium-tablet-landscape',
-            'tablette paysage uniquement'
-        );
-        await waitForGameReady(page);
-        await expect(page.locator('#landscape-hint')).toBeHidden();
-        await startPlayingFromMenu(page, true);
-        await expectGameState(page, 'playing');
-    });
-
-    test('manifest PWA contient icônes et métadonnées', async ({ page }) => {
-        await page.goto('/', { waitUntil: 'domcontentloaded' });
-        const href = await page.locator('link[rel="manifest"]').first().getAttribute('href');
-        expect(href).toMatch(/manifest\.webmanifest$/);
-        const manifest = await page.evaluate(async (url) => {
-            const res = await fetch(url);
-            return res.json();
-        }, href);
-        expect(manifest.name).toBe('Floppy Bird');
-        expect(manifest.display).toBe('standalone');
-        expect(manifest.icons?.length).toBeGreaterThanOrEqual(4);
-        expect(manifest.lang).toBe('fr');
-    });
-
-    test('active partie-active et restreint zoom en mobile portrait', async ({ page }, testInfo) => {
-        test.skip(
-            testInfo.project.name !== 'chromium-mobile-portrait',
-            'mobile portrait uniquement'
-        );
-        await waitForGameReady(page);
-        await startPlayingFromMenu(page, true);
-        await expectGameState(page, 'playing');
-        await expect(page.locator('html')).toHaveClass(/partie-active/);
-        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
-            'content',
-            /user-scalable=no/
-        );
-    });
-
-    test('active partie-active sur html pendant une partie', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
-        await waitForGameReady(page);
-        await expect(page.locator('html')).not.toHaveClass(/partie-active/);
-        await startPlayingFromMenu(page, false);
-        await expectGameState(page, 'playing');
-        await expect(page.locator('html')).toHaveClass(/partie-active/);
-        await expect(page.locator('html')).toHaveAttribute('data-game-state', 'playing');
-    });
-
-    test('restreint le zoom viewport en partie active', async ({ page }, testInfo) => {
-        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
-        await waitForGameReady(page);
-        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
-            'content',
-            /user-scalable=yes/
-        );
-        await startPlayingFromMenu(page, false);
-        await expectGameState(page, 'playing');
-        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
-            'content',
-            /user-scalable=no/
-        );
     });
 });

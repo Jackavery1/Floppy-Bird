@@ -19,6 +19,7 @@ export function triggerDeath(scene, cause = 'pipe') {
     scene.state = GAME_STATE.DYING;
     syncShellGameState(GAME_STATE.DYING);
     scene.round.deathCause = cause;
+    scene.round.coyoteFramesAtDeath = cause === 'pipe' ? scene.round.coyoteFrames : null;
     scene.round.resetDeathAnimation();
 
     playDeathImpactFeedback(scene, cause);
@@ -80,7 +81,8 @@ function finishDying(scene) {
             scene.hardcoreMode,
             scene.playMode === 'daily' ? scene.dailyGoal : 0,
             scene.activeSkinId ?? 'classic',
-            round.deathCause
+            round.deathCause,
+            round.coyoteFramesAtDeath
         );
         scene.ui.setOverlay('gameOver', elements);
         setupGameOverAccessibility(scene, {

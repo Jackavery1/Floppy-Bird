@@ -1,5 +1,8 @@
 import { resolveNextGapY } from './pipeGaps.js';
 import { maxGapDeltaForScore } from './gapDifficulty.js';
+import { GAME_CONFIG } from './config.js';
+
+const DEFAULT_PIPE_GAP = GAME_CONFIG.getDifficulty('normal').gap;
 
 /**
  * Échantillonne une séquence de gaps (tests / seam e2e).
@@ -16,7 +19,7 @@ export function sampleGapSequence(count, opts = {}) {
     let lastGapY = opts.lastGapY ?? 200;
     let prevGapDelta = 0;
     const runScore = opts.runScore ?? 15;
-    const pipeGap = opts.pipeGap ?? 112;
+    const pipeGap = opts.pipeGap ?? DEFAULT_PIPE_GAP;
     const gapJitterSeed = opts.gapJitterSeed ?? 4242;
     const gaps = [];
     const deltas = [];

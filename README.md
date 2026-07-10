@@ -3,7 +3,6 @@
 [![CI](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml/badge.svg)](https://github.com/Jackavery1/Floppy-Bird/actions/workflows/ci.yml)
 [![Lighthouse](https://img.shields.io/badge/Lighthouse-A11y%2090%2B%20%7C%20BP%2090%2B-green)](.)
 [![A11y](https://img.shields.io/badge/A11y-WCAG%202.1%20AA-green)](.)
-[![Tests](https://img.shields.io/badge/Tests-604%2F604-green)](.)
 
 > Jeu arcade 2D Floppy Bird — Phaser 3, Vite, PWA progressive. Jouable hors-ligne avec scores locaux persistants.
 
@@ -24,7 +23,7 @@ Couverture Vitest en CI : seuils ≥ 94 % lines / statements, ≥ 82 % branches,
 ## Commandes
 
 > **Ne pas utiliser Live Server** (port 5500) : il ne bundle pas Vite/Phaser — écran bloqué sur « Chargement… ».  
-> Lance toujours **`npm run dev`** ou **`npm start`** → http://localhost:5173
+> Lance toujours **`npm run dev`** → http://localhost:5173
 
 ```bash
 npm install
@@ -104,7 +103,7 @@ Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/conf
 - **Touch targets** : hauteur minimale **44 px** (`MIN_TOUCH`) ; boutons secondaires menu **80×44 px** (`menuBtnW` dans `uiLayoutConstants.js`, fit typo via `applyFittedLabel`)
 - **Mobile paysage** : `#landscape-hint` bloque le jeu sur téléphone tactile (hauteur ≤520 px) — choix assumé ; **tablette paysage** (hauteur >520 px) autorisée
 - **Accessibilité clavier** : overlay DOM transparent (`#a11y-controls`, 25 boutons) — pause, saut, menu, game over, difficultés, onglets options (Tab + Entrée)
-- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 (`maximum-scale=3.0` dans le viewport) pour l’accessibilité visuelle ; le canvas reste centré via `visualViewport` (position `fixed`, recalcul au resize/scroll clavier virtuel) ; le letterbox préserve le ratio 288×512
+- **Zoom** : pinch-to-zoom autorisé jusqu’à ×3 au menu ; **desktop** : zoom navigateur (ex. 200 %) conservé en partie ; **tactile** : pinch bloqué en jeu pour éviter les faux sauts ; letterbox centré via `visualViewport` (recalcul resize/scroll)
 - **PWA** : `orientation: portrait-primary` (portrait recommandé sur téléphone) ; 1ère visite hors ligne → `offline.html`
 - **UI** : titres menu/pause/game over en **Press Start 2P** ; métadonnées Open Graph / Twitter (`og:image` 512 px en prod)
 

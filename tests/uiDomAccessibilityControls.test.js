@@ -78,6 +78,30 @@ describe('uiDomAccessibility contrôles', () => {
         expect(btn.setAttribute).toHaveBeenCalledWith('aria-pressed', 'false');
     });
 
+    it('syncOptionsTabAccessibility met à jour aria-expanded des onglets', async () => {
+        const { syncOptionsTabAccessibility } = await import(
+            '../src/uiDomAccessibilityControls.js'
+        );
+        const buttons = new Map();
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => {
+                if (!buttons.has(id)) {
+                    buttons.set(id, { setAttribute: vi.fn() });
+                }
+                return buttons.get(id);
+            }),
+        });
+        syncOptionsTabAccessibility({ _optionsActiveTab: 'controls' });
+        expect(buttons.get('a11y-options-tab-controls')?.setAttribute).toHaveBeenCalledWith(
+            'aria-expanded',
+            'true'
+        );
+        expect(buttons.get('a11y-options-tab-preferences')?.setAttribute).toHaveBeenCalledWith(
+            'aria-expanded',
+            'false'
+        );
+    });
+
     it('syncMenuToggleAccessibility reflète difficulté et modes', async () => {
         const { syncMenuToggleAccessibility } = await import(
             '../src/uiDomAccessibilityFlows.js'

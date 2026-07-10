@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GAME_CONFIG } from './config.js';
 import { shouldUpdateDying, shouldUpdateGameplay, shouldAnimateBackground } from './gameState.js';
-import { preloadTextures } from './textures/index.js';
+import { preloadTexturesEssential } from './textures/index.js';
 import { updateClouds, updateGround, updateHills } from './sceneBackground.js';
 import {
     checkScorePipes,
@@ -37,8 +37,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        preloadTextures(this);
-        setupSceneWorld(this);
+        preloadTexturesEssential(this);
+        import('./textures/decorPreload.js').then(({ preloadDecorTextures }) => {
+            preloadDecorTextures(this);
+            setupSceneWorld(this);
+        });
     }
 
     update() {

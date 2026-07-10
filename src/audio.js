@@ -194,7 +194,7 @@ function playScore(ctx, score = 1) {
         peakGain: 0.26,
         delay: 0.06,
     });
-    if (isScoreMilestone(score)) {
+    if (isScoreMilestone(score) && score !== 20) {
         const tier = Math.floor(score / 10);
         playTone(ctx, {
             type: 'square',
@@ -203,6 +203,41 @@ function playScore(ctx, score = 1) {
             duration: 0.22,
             peakGain: 0.28,
             delay: 0.1,
+        });
+    } else if (score === 5) {
+        playTone(ctx, {
+            type: 'triangle',
+            freqAt: 620,
+            freqRamp: 880,
+            duration: 0.16,
+            peakGain: 0.22,
+            delay: 0.08,
+        });
+    } else if (score === 15) {
+        playTone(ctx, {
+            type: 'triangle',
+            freqAt: 700,
+            freqRamp: 960,
+            duration: 0.18,
+            peakGain: 0.24,
+            delay: 0.09,
+        });
+    } else if (score === 20) {
+        playTone(ctx, {
+            type: 'square',
+            freqAt: 780,
+            freqRamp: 1180,
+            duration: 0.24,
+            peakGain: 0.3,
+            delay: 0.1,
+        });
+        playTone(ctx, {
+            type: 'sine',
+            freqAt: 520,
+            freqRamp: 920,
+            duration: 0.18,
+            peakGain: 0.18,
+            delay: 0.14,
         });
     } else if (isStreakMilestone(score)) {
         const idx = GAME_CONFIG.round.streakMilestones.indexOf(score);

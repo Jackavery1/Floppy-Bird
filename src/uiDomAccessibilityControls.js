@@ -87,6 +87,14 @@ export function announceAccessibility(message, doc = getDocument()) {
     }
 }
 
+/** @param {import('./ui.js').UI} ui */
+export function syncOptionsTabAccessibility(ui) {
+    if (!ui) return;
+    const tab = ui._optionsActiveTab ?? 'preferences';
+    setAccessibilityControlExpanded('menuOptionsTabControls', tab === 'controls');
+    setAccessibilityControlExpanded('menuOptionsTabPreferences', tab === 'preferences');
+}
+
 /** Masque tous les boutons DOM overlay (pause menu, etc.). */
 export function hideAllAccessibilityControls() {
     for (const key of Object.keys(CONTROL_DEFS)) {

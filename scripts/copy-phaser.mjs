@@ -11,14 +11,12 @@ mkdirSync(targetDir, { recursive: true });
 copyFileSync(source, target);
 
 const fontDir = join(root, 'public', 'fonts');
-const fontSource = join(
-    root,
-    'node_modules',
-    '@fontsource',
-    'press-start-2p',
-    'files',
-    'press-start-2p-latin-400-normal.woff2'
-);
-const fontTarget = join(fontDir, 'press-start-2p-latin-400-normal.woff2');
 mkdirSync(fontDir, { recursive: true });
-copyFileSync(fontSource, fontTarget);
+
+for (const subset of ['latin', 'latin-ext']) {
+    const name = `press-start-2p-${subset}-400-normal.woff2`;
+    copyFileSync(
+        join(root, 'node_modules', '@fontsource', 'press-start-2p', 'files', name),
+        join(fontDir, name)
+    );
+}

@@ -186,21 +186,21 @@ describe('Pipes', () => {
     describe('setDailySeed', () => {
         it('ignore les gaps scriptés en mode daily', () => {
             pipes.setDailySeed(424242);
-            pipes.pipeGap = 112;
+            pipes.pipeGap = NORMAL_DIFF.gap;
             const gap1 = pipes._resolveGapY();
             const gap2 = pipes._resolveGapY();
-            expect(gap1).not.toBe(getScriptedPipeGapY(0, 112));
-            expect(gap2).not.toBe(getScriptedPipeGapY(1, 112));
+            expect(gap1).not.toBe(getScriptedPipeGapY(0, NORMAL_DIFF.gap));
+            expect(gap2).not.toBe(getScriptedPipeGapY(1, NORMAL_DIFF.gap));
         });
 
         it('produit la même séquence RNG daily', () => {
             pipes.setDailySeed(424242);
-            pipes.pipeGap = 112;
+            pipes.pipeGap = NORMAL_DIFF.gap;
             const gap1 = pipes._resolveGapY();
             const gap2 = pipes._resolveGapY();
 
             const other = new Pipes(scene);
-            other.pipeGap = 112;
+            other.pipeGap = NORMAL_DIFF.gap;
             other.setDailySeed(424242);
             expect(other._resolveGapY()).toBe(gap1);
             expect(other._resolveGapY()).toBe(gap2);
@@ -210,15 +210,15 @@ describe('Pipes', () => {
 
     describe('setGapJitterSeed', () => {
         it('varie les gaps scriptés sans casser la reproductibilité', () => {
-            pipes.pipeGap = 112;
+            pipes.pipeGap = NORMAL_DIFF.gap;
             pipes.setGapJitterSeed(777);
             const gapA = pipes._resolveGapY();
             pipes.reset();
-            pipes.pipeGap = 112;
+            pipes.pipeGap = NORMAL_DIFF.gap;
             pipes.setGapJitterSeed(777);
             const gapB = pipes._resolveGapY();
             expect(gapA).toBe(gapB);
-            expect(gapA).not.toBe(getScriptedPipeGapY(0, 112));
+            expect(gapA).not.toBe(getScriptedPipeGapY(0, NORMAL_DIFF.gap));
         });
     });
 });

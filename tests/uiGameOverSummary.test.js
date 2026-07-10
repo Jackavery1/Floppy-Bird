@@ -39,12 +39,31 @@ describe('uiGameOverSummary', () => {
             fadeIn: false,
             isNewRecord: false,
             deathCause: 'pipe',
+            coyoteFramesAtDeath: null,
             hardcoreMode: false,
             dailyGoal: 0,
             activeSkinId: 'classic',
         });
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
         expect(texts).toContain('Collision tuyau');
+    });
+
+    it('affiche la marge coyote restante après mort tuyau', () => {
+        const scene = createBaseScene();
+        const ui = makeUi();
+        const y = (offset) => 80 + offset;
+        buildGameOverSummary(scene, 144, y, ui, {
+            finalScore: 8,
+            fadeIn: false,
+            isNewRecord: false,
+            deathCause: 'pipe',
+            coyoteFramesAtDeath: 0,
+            hardcoreMode: false,
+            dailyGoal: 0,
+            activeSkinId: 'classic',
+        });
+        const texts = scene.add.text.mock.calls.map((call) => call[2]);
+        expect(texts).toContain('Grâce coyote épuisée');
     });
 
     it('marque le récap daily sans objectif classique', () => {

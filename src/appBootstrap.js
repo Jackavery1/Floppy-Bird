@@ -80,16 +80,25 @@ export function hideLoadingScreen(doc = document) {
     doc.documentElement?.classList.add('game-ready');
 }
 
-export function attachViewportResize(game, resizeFn = resizeGameCanvas) {
+function attachViewportResize(game, resizeFn = resizeGameCanvas) {
     const handler = () => resizeFn(game);
     window.addEventListener('resize', handler);
     const vv = window.visualViewport;
     vv?.addEventListener('resize', handler);
     vv?.addEventListener('scroll', handler);
+    if (vv && 'onscrollend' in vv) {
+        vv.addEventListener('scrollend', handler);
+    }
     return handler;
 }
 
 export function onGameReady(game, { resizeFn = resizeGameCanvas, doc = document } = {}) {
+    const canvas = game?.canvas;
+    if (canvas?.setAttribute) {
+        canvas.setAttribute('tabindex', '0');
+        canvas.setAttribute('role', 'application');
+        canvas.setAttribute('aria-label', 'Floppy Bird — espace ou toucher pour jouer');
+    }
     initAccessibilityLayer(doc);
     syncShellTheme(doc);
     resizeFn(game);

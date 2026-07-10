@@ -3,7 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
 import { GameScene } from '../src/GameScene.js';
-import { preloadTextures } from '../src/textures/index.js';
+import { preloadTexturesEssential } from '../src/textures/index.js';
+import { preloadDecorTextures } from '../src/textures/decorPreload.js';
 import { setupSceneWorld } from '../src/sceneSetup.js';
 import { triggerDeath } from '../src/sceneDeath.js';
 import { processJumpBuffer, tickJumpBuffer } from '../src/sceneJumpBuffer.js';
@@ -24,11 +25,14 @@ describe('GameScene', () => {
         expect(scene.round.score).toBe(0);
     });
 
-    it('create charge les textures puis initialise le monde', () => {
+    it('create charge les textures puis initialise le monde', async () => {
         const scene = new GameScene();
         scene.create();
-        expect(preloadTextures).toHaveBeenCalledWith(scene);
-        expect(setupSceneWorld).toHaveBeenCalledWith(scene);
+        expect(preloadTexturesEssential).toHaveBeenCalledWith(scene);
+        await vi.waitFor(() => {
+            expect(setupSceneWorld).toHaveBeenCalledWith(scene);
+        });
+        expect(preloadDecorTextures).toHaveBeenCalledWith(scene);
     });
 
     it('délègue handlePrimaryAction au module sceneFlow', async () => {

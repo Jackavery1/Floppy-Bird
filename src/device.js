@@ -153,8 +153,14 @@ export function coyoteHintText() {
 
 /** @param {number} ms @param {number} [pipeIndex] */
 export function hardcoreInvincibilityHintText(ms, pipeIndex = 1) {
-    const suffix = pipeIndex > 0 ? ` · tuyau ${pipeIndex}` : ' · tuyau';
-    return `Invincible ${ms} ms${suffix}`;
+    if (pipeIndex <= 1) {
+        return isCoarsePointer()
+            ? `Hardcore : invincible ${ms} ms au 1er tuyau`
+            : `Hardcore : invincible ${ms} ms (tuyau 1)`;
+    }
+    return isCoarsePointer()
+        ? `Invincible ${ms} ms · tuyau ${pipeIndex}`
+        : `Invincible ${ms} ms · tuyau ${pipeIndex}`;
 }
 
 export function trainingSpeedLabel(scale) {
@@ -189,4 +195,15 @@ export function deathCauseLabel(cause) {
         default:
             return '';
     }
+}
+
+/** @param {number | null | undefined} framesAtDeath @param {'pipe' | 'ground' | 'ceiling' | null | undefined} [cause] */
+export function coyoteDeathHint(framesAtDeath, cause) {
+    if (cause === 'ground' || cause === 'ceiling') {
+        return 'Grâce coyote : non applicable (sol/plafond)';
+    }
+    if (framesAtDeath == null) return '';
+    if (framesAtDeath <= 0) return 'Grâce coyote épuisée';
+    const suffix = framesAtDeath > 1 ? 's' : '';
+    return `Grâce coyote : ${framesAtDeath} frame${suffix} restante${suffix}`;
 }

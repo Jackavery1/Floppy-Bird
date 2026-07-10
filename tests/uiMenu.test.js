@@ -6,11 +6,14 @@ import { createRoundState } from '../src/roundState.js';
 import {
     refreshBestScore,
     showMenu,
+    prepareMenuRebuild,
     updateTrainingLabel,
     updateHardcoreLabel,
     updateDifficultyButtons,
     refreshHighScore,
 } from '../src/uiMenu.js';
+import { toggleMenuOptions } from '../src/uiMenuOptions.js';
+import { setOptionsTab } from '../src/uiMenuOptionsTabs.js';
 
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
@@ -58,6 +61,32 @@ describe('uiMenu', () => {
         ui.scoreText = { destroy: vi.fn() };
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
         expect(ui.scoreText).toBeNull();
+    });
+
+    it('prepareMenuRebuild puis showMenu masque le panneau options après game over', () => {
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
+        toggleMenuOptions(ui);
+        setOptionsTab(ui, 'controls');
+        expect(ui._optionsOpen).toBe(true);
+
+        ui._overlays.menu.forEach((el) => el.destroy?.());
+        ui._overlays.menu.length = 0;
+
+        prepareMenuRebuild(ui);
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
+
+        expect(ui._optionsOpen).toBe(false);
+        const isHidden = (el) => el.visible === false || el.setVisible?.mock?.calls?.at(-1)?.[0] === false;
+        for (const el of ui._optionsChromeElements ?? []) {
+            expect(isHidden(el)).toBe(true);
+        }
+        for (const el of ui._optionsControlsElements ?? []) {
+            expect(isHidden(el)).toBe(true);
+        }
+        for (const el of ui._optionsSettingsElements ?? []) {
+            expect(isHidden(el)).toBe(true);
+        }
+        expect(ui._startText.visible).toBe(true);
     });
 
     it('updateTrainingLabel reflète le mode entraînement', () => {

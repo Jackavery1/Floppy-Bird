@@ -47,7 +47,7 @@ export function computeLetterboxPosition(
 
 export function getViewportDimensions() {
     if (typeof window === 'undefined') {
-        return { width: 0, height: 0, offsetTop: 0, offsetLeft: 0 };
+        return { width: 0, height: 0, offsetTop: 0, offsetLeft: 0, scale: 1 };
     }
     const vv = window.visualViewport;
     if (vv) {
@@ -56,6 +56,7 @@ export function getViewportDimensions() {
             height: vv.height,
             offsetTop: vv.offsetTop,
             offsetLeft: vv.offsetLeft,
+            scale: vv.scale ?? 1,
         };
     }
     return {
@@ -63,6 +64,7 @@ export function getViewportDimensions() {
         height: window.innerHeight,
         offsetTop: 0,
         offsetLeft: 0,
+        scale: 1,
     };
 }
 
@@ -78,6 +80,7 @@ export function getLetterboxViewport() {
     const vv = window.visualViewport;
     const offsetTop = vv?.offsetTop ?? 0;
     const offsetLeft = vv?.offsetLeft ?? 0;
+    const scale = vv?.scale ?? 1;
     if (body?.clientWidth > 0 && body?.clientHeight > 0) {
         const vvWidth = vv?.width ?? body.clientWidth;
         const vvHeight = vv?.height ?? body.clientHeight;
@@ -86,6 +89,7 @@ export function getLetterboxViewport() {
             height: Math.min(body.clientHeight, vvHeight),
             offsetTop,
             offsetLeft,
+            scale,
         };
     }
     const dims = getViewportDimensions();
@@ -95,5 +99,6 @@ export function getLetterboxViewport() {
         height: Math.max(1, dims.height - insets.top - insets.bottom),
         offsetTop: dims.offsetTop + insets.top,
         offsetLeft: dims.offsetLeft + insets.left,
+        scale: dims.scale ?? 1,
     };
 }
