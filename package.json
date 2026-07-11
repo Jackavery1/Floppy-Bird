@@ -1,6 +1,6 @@
 {
     "name": "floppy-bird",
-    "version": "1.6.0",
+    "version": "2.0.0",
     "description": "Floppy Bird — Phaser 3, PWA, scores locaux",
     "private": true,
     "type": "module",

@@ -8,7 +8,6 @@ import { UI_LAYOUT } from '../src/uiLayout.js';
 describe('uiMenuOptionsTabs', () => {
     let scene;
     let ui;
-    let elements;
 
     beforeEach(() => {
         scene = createBaseScene({ round: createRoundState() });
@@ -17,13 +16,13 @@ describe('uiMenuOptionsTabs', () => {
         ui._optionsChromeElements = [];
         ui._optionsControlsElements = [{ setVisible: vi.fn() }];
         ui._optionsSettingsElements = [{ setVisible: vi.fn() }];
-        elements = [];
-        const pushChrome = (targetUi, targetElements, el) => {
-            targetElements.push(el);
+        ui._optionsPanelRoot = { add: vi.fn() };
+        const pushChrome = (targetUi, el) => {
+            targetUi._optionsPanelRoot.add(el);
             targetUi._optionsPanelElements.push(el);
             targetUi._optionsChromeElements.push(el);
         };
-        buildOptionsTabs(ui, elements, pushChrome);
+        buildOptionsTabs(ui, pushChrome);
     });
 
     it('crée deux onglets en haut du panneau', () => {

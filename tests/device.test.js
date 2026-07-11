@@ -88,15 +88,10 @@ describe('device', () => {
         expect(fine()).toBe('H : hardcore');
     });
 
-    it('hardcoreToggleLabel mentionne la grace progressive', async () => {
+    it('hardcoreToggleLabel indique ON/OFF sans détail invincibilité', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toContain('700→325 ms');
-    });
-
-    it('hardcoreInvincibilityHintText indique la durée et le tuyau', async () => {
-        const { hardcoreInvincibilityHintText } = await loadDevice(false);
-        expect(hardcoreInvincibilityHintText(625, 2)).toContain('625 ms');
-        expect(hardcoreInvincibilityHintText(625, 2)).toContain('tuyau 2');
+        expect(hardcoreToggleLabel(true)).toBe('🟥 HARDCORE : ON');
+        expect(hardcoreToggleLabel(false)).toBe('⬜ HARDCORE : OFF');
     });
 
     it('trainingTutorialText mentionne le ralenti', async () => {
@@ -130,10 +125,10 @@ describe('device', () => {
         expect(restartHintForMode(false)).toBe('TAP : rejouer');
     });
 
-    it('gameOverRestartLabel distingue daily et classique', async () => {
+    it('gameOverRestartLabel affiche REJOUER (classique et défi)', async () => {
         const { gameOverRestartLabel } = await loadDevice(true);
         expect(gameOverRestartLabel(false)).toBe('REJOUER');
-        expect(gameOverRestartLabel(true)).toBe('DÉFI');
+        expect(gameOverRestartLabel(true)).toBe('REJOUER');
     });
 
     it('skipTutorialHint adapte le libellé', async () => {

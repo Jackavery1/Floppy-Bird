@@ -7,8 +7,11 @@ import {
     formatDailyMenuButtonLabel,
     formatDailyMenuSubtitle,
     formatDailyHudLabel,
+    formatDailyStartBanner,
+    getDailyChallengeSummary,
 } from '../src/dailyChallenge.js';
 import { DIFFICULTY } from '../src/config.js';
+import { getSkinPattern } from '../src/skinPatterns.js';
 
 describe('dailyChallenge', () => {
     const date = new Date(2026, 0, 1);
@@ -31,6 +34,14 @@ describe('dailyChallenge', () => {
         expect(hard).toBeGreaterThan(easy);
     });
 
+    it('getDailyChallengeGoal applique les bases relevées + bonus skin', () => {
+        const skinId = getDailyChallengeSkin(date);
+        const offset = getSkinPattern(skinId).goalOffset ?? 0;
+        expect(getDailyChallengeGoal(DIFFICULTY.EASY, date)).toBe(10 + offset);
+        expect(getDailyChallengeGoal(DIFFICULTY.NORMAL, date)).toBe(16 + offset);
+        expect(getDailyChallengeGoal(DIFFICULTY.HARD, date)).toBe(22 + offset);
+    });
+
     it('formatDailyMenuButtonLabel affiche Défi du jour', () => {
         const label = formatDailyMenuButtonLabel(DIFFICULTY.NORMAL, date);
         expect(label).toBe('Défi du jour');
@@ -38,7 +49,22 @@ describe('dailyChallenge', () => {
 
     it('formatDailyMenuSubtitle décrit le pattern', () => {
         const sub = formatDailyMenuSubtitle(DIFFICULTY.NORMAL, date);
-        expect(sub).toMatch(/objectif \d+ pts/);
+        const summary = getDailyChallengeSummary(DIFFICULTY.NORMAL, date);
+        expect(sub).toContain(summary.skinLabel);
+        expect(sub).toContain(summary.patternTag);
+        expect(sub).toMatch(/\d+ pts/);
+    });
+
+    it('formatDailyStartBanner inclut skin et pattern', () => {
+        const summary = getDailyChallengeSummary(DIFFICULTY.NORMAL, date);
+        const banner = formatDailyStartBanner({
+            skinLabel: summary.skinLabel,
+            patternTag: summary.patternTag,
+            goal: summary.goal,
+        });
+        expect(banner).toContain(summary.skinLabel);
+        expect(banner).toContain(summary.patternTag);
+        expect(banner).toContain(`OBJECTIF : ${summary.goal} pts`);
     });
 
     it('formatDailyHudLabel inclut le code du jour', () => {

@@ -1,7 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
 import { loadCoyoteHintSeen, markCoyoteHintSeen } from './tutorialStorage.js';
-import { updateCoyoteHudBadge } from './uiHudCoyoteBadge.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -19,8 +18,13 @@ export function updateCoyoteTime(scene, step) {
 
     if (inGap) {
         round.coyoteFrames = GAME_CONFIG.bird.coyoteTimeFrames;
+        round.coyoteLowWarnShown = false;
     } else if (round.coyoteFrames > 0) {
         round.coyoteFrames = Math.max(0, round.coyoteFrames - step);
+        if (round.coyoteFrames > 0 && round.coyoteFrames <= 2 && !round.coyoteLowWarnShown) {
+            scene.ui.showCoyoteLowGraceHint?.(round.coyoteFrames);
+            round.coyoteLowWarnShown = true;
+        }
     }
 
     round._wasInGap = inGap;
@@ -32,7 +36,6 @@ export function updateCoyoteVisual(scene) {
     if (!sprite) return;
     if (scene.state !== GAME_STATE.PLAYING || scene.round.spawnInvincible) {
         sprite.clearTint();
-        updateCoyoteHudBadge(scene.ui, false);
         return;
     }
     if (hasCoyoteGrace(scene)) {
@@ -40,7 +43,6 @@ export function updateCoyoteVisual(scene) {
     } else {
         sprite.clearTint();
     }
-    updateCoyoteHudBadge(scene.ui, hasCoyoteGrace(scene));
 }
 
 /** @param {SceneContext} scene */

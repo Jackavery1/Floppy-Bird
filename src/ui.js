@@ -2,7 +2,7 @@ import { GAME_CONFIG, DIFFICULTY } from './config.js';
 import { Utils } from './utils.js';
 import { loadHighScore } from './storage.js';
 import { bindUiFacade } from './uiFacadeBind.js';
-import { closeAllMenuPanels } from './uiMenu.js';
+import { closeAllMenuPanels, prepareMenuRebuild } from './uiMenu.js';
 import {
     DEPTH,
     GAME_OVER_RESTART_BTN_COLOR,
@@ -32,6 +32,7 @@ export class UI {
         this._inGameControlElements = [];
         this._overlays = { menu: [], pause: [], gameOver: [] };
         this._closeAllMenuPanels = (opts) => closeAllMenuPanels(this, opts);
+        this._prepareMenuRebuild = () => prepareMenuRebuild(this);
     }
 
     /** @param {'menu' | 'pause' | 'gameOver'} key */

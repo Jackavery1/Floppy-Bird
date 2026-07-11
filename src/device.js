@@ -63,9 +63,7 @@ export function hardcoreToggleLabel(enabled, unlocked = true) {
             : `🔒 HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
     }
     if (enabled) {
-        return isCoarsePointer()
-            ? '🟥 HARD ON · inv. / tuyau'
-            : '🟥 HARDCORE : ON (invinc. / tuyau, 700→325 ms)';
+        return isCoarsePointer() ? '🟥 HARD ON' : '🟥 HARDCORE : ON';
     }
     return isCoarsePointer() ? '⬜ HARD OFF' : '⬜ HARDCORE : OFF';
 }
@@ -119,8 +117,8 @@ export function skinsButtonLabel(_open) {
     return 'SKINS';
 }
 
-export function gameOverRestartLabel(isDaily) {
-    return isDaily ? 'DÉFI' : 'REJOUER';
+export function gameOverRestartLabel(_isDaily) {
+    return 'REJOUER';
 }
 
 export function skinsCycleHint() {
@@ -129,8 +127,8 @@ export function skinsCycleHint() {
 
 export function skinsPanelHint() {
     return isCoarsePointer()
-        ? 'Scores · hardcore · défi · entraînement · néon = collection'
-        : 'Débloqués via scores, modes et collection';
+        ? 'Classique = look · défi du jour = physique du skin imposé'
+        : 'Classique : apparence seule · défi du jour : physique du skin du jour';
 }
 
 export function jumpTutorialText() {
@@ -151,16 +149,11 @@ export function coyoteHintText() {
         : 'Grâce dans le gap : ~5 frames après sortie du corridor';
 }
 
-/** @param {number} ms @param {number} [pipeIndex] */
-export function hardcoreInvincibilityHintText(ms, pipeIndex = 1) {
-    if (pipeIndex <= 1) {
-        return isCoarsePointer()
-            ? `Hardcore : invincible ${ms} ms au 1er tuyau`
-            : `Hardcore : invincible ${ms} ms (tuyau 1)`;
-    }
+export function coyoteLowGraceHintText(frames) {
+    const suffix = frames > 1 ? 's' : '';
     return isCoarsePointer()
-        ? `Invincible ${ms} ms · tuyau ${pipeIndex}`
-        : `Invincible ${ms} ms · tuyau ${pipeIndex}`;
+        ? `Grâce : ${frames} frame${suffix}`
+        : `Grâce coyote : ${frames} frame${suffix} restante${suffix}`;
 }
 
 export function trainingSpeedLabel(scale) {
@@ -179,8 +172,8 @@ export function trainingTutorialText(scale = GAME_CONFIG.training.timeScale) {
 
 export function hardcoreTutorialText() {
     return isCoarsePointer()
-        ? 'Hardcore : invincible au 1er tuyau,\npuis moins longtemps à chaque tuyau'
-        : 'Hardcore : invincible 700 ms au 1er tuyau,\npuis 625→375→325 ms (7 tuyaux)';
+        ? 'Hardcore : plus difficile,\nTOP hardcore séparé'
+        : 'Hardcore : gravité et vitesse renforcées,\nTOP hardcore séparé';
 }
 
 /** @param {'pipe' | 'ground' | 'ceiling' | null | undefined} cause */

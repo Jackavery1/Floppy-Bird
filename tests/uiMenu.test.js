@@ -76,18 +76,18 @@ describe('uiMenu', () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
 
         expect(ui._optionsOpen).toBe(false);
-        const isHidden = (el) =>
-            el.visible === false || el.setVisible?.mock?.calls?.at(-1)?.[0] === false;
-        for (const el of ui._optionsChromeElements ?? []) {
-            expect(isHidden(el)).toBe(true);
-        }
-        for (const el of ui._optionsControlsElements ?? []) {
-            expect(isHidden(el)).toBe(true);
-        }
-        for (const el of ui._optionsSettingsElements ?? []) {
-            expect(isHidden(el)).toBe(true);
-        }
+        expect(ui._optionsPanelBuilt).toBe(false);
+        expect(ui._optionsPanelRoot).toBeFalsy();
         expect(ui._startText.visible).toBe(true);
+        expect(ui._skinsBtnBg.visible).toBe(true);
+        expect(ui._skinsBtnLabel.visible).toBe(true);
+    });
+
+    it('showMenu n’instancie pas le panneau options tant qu’OPTS n’est pas ouvert', () => {
+        showMenu(ui, DIFFICULTY.NORMAL, false, false);
+        expect(ui._optionsPanelBuilt).toBe(false);
+        expect(ui._optionsPanelRoot).toBeFalsy();
+        expect(ui._optionsTabButtons ?? []).toHaveLength(0);
     });
 
     it('updateTrainingLabel reflète le mode entraînement', () => {

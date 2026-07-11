@@ -2,6 +2,7 @@ import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
 import { GAME_STATE } from './gameState.js';
 import { loadHighScore } from './storage.js';
+import { getSkin } from './skins/index.js';
 import {
     showTutorialForProgress,
     showHardcoreTutorialIfNeeded,
@@ -11,7 +12,7 @@ import { incrementRoundsStarted } from './tutorialStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
-import { applySkinPatternToDifficulty } from './skinPatterns.js';
+import { applySkinPatternToDifficulty, getSkinPattern } from './skinPatterns.js';
 import { Utils } from './utils.js';
 import { ensurePipeTextures } from './textures/index.js';
 import {
@@ -103,7 +104,11 @@ export function beginRound(scene, { resetBird = false } = {}) {
     showHardcoreTutorialIfNeeded(scene);
     showTrainingTutorialIfNeeded(scene);
     if (scene.dailyChallengeMode && scene.dailyGoal > 0) {
-        scene.ui.showDailyGoalBrief(scene.dailyGoal);
+        const pattern = getSkinPattern(skinId);
+        scene.ui.showDailyGoalBrief(scene.dailyGoal, {
+            skinLabel: getSkin(skinId).label,
+            patternTag: pattern.tagline,
+        });
     }
     if (scene.trainingMode) {
         scene.ghost.beginRound({ record: true });

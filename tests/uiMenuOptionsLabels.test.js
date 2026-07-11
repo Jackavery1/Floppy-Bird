@@ -57,10 +57,12 @@ describe('uiMenuOptionsLabels', () => {
         const controlRoot = { setVisible: vi.fn(), setAlpha: vi.fn() };
         const controlChild = { setVisible: vi.fn(), setAlpha: vi.fn() };
         ui._optionsControlsElements = [controlRoot, controlChild];
-        ui._optionsChromeElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
-        ui._optionsPanelElements = [{ setVisible: vi.fn(), setAlpha: vi.fn() }];
+        ui._optionsPanelRoot = { setVisible: vi.fn() };
+        ui._optionsBackdrop = { setVisible: vi.fn() };
         setOptionsContentVisible(ui, false);
         expect(controlRoot.setVisible).toHaveBeenCalledWith(false);
         expect(controlChild.setVisible).toHaveBeenCalledWith(false);
+        expect(ui._optionsPanelRoot.setVisible).toHaveBeenCalledWith(false);
+        expect(ui._optionsBackdrop.setVisible).toHaveBeenCalledWith(false);
     });
 });

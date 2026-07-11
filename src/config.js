@@ -1,4 +1,5 @@
 import { Utils } from './utils.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 
 export const SOUND = Object.freeze({
     JUMP: 'jump',
@@ -122,9 +123,9 @@ export const GAME_CONFIG = {
     },
 
     difficultyColors: {
-        easy: '#88ff88',
-        normal: '#ffff00',
-        hard: '#ff8888',
+        easy: DESIGN_TOKENS.difficulteFacile,
+        normal: DESIGN_TOKENS.difficulteNormal,
+        hard: DESIGN_TOKENS.difficulteDifficile,
     },
 
     getDifficulty(key) {

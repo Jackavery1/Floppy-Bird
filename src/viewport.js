@@ -45,7 +45,7 @@ export function computeLetterboxPosition(
     };
 }
 
-export function getViewportDimensions() {
+function getViewportDimensions() {
     if (typeof window === 'undefined') {
         return { width: 0, height: 0, offsetTop: 0, offsetLeft: 0, scale: 1 };
     }

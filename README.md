@@ -63,19 +63,20 @@ Dépannage npm, icônes PWA et build Pages : voir [CONTRIBUTING.md](CONTRIBUTING
 
 - Tap → saut ; tuyaux infinis ; +1 par tuyau passé ; collision = mort
 - 8 premiers gaps scriptés (±10 px de jitter par manche), puis séquence daily / aléatoire lissé
-- Premier tuyau après 1,2 s ; invincibilité ~0,9 s au spawn (hardcore : 700→325 ms sur les **7** premiers tuyaux, paliers 425/375 ms — sol/plafond protégés pendant la grâce)
-- Coyote time 5 frames : centre **ou** hitbox entière dans le corridor du gap (tuyaux seulement — sol et plafond restent mortels hors invincibilité spawn) ; teinte discrète pendant la grâce ; hint explicite la première fois (~5 frames / ~0,08 s) ; buffer de saut 4 frames
+- Premier tuyau après 1,2 s ; protection au spawn ~0,9 s (hardcore : grace plus courte par paliers sur les **7** premiers tuyaux — sol/plafond protégés pendant la grâce)
+- Coyote time 5 frames : centre **ou** hitbox entière dans le corridor du gap (tuyaux seulement — sol et plafond restent mortels hors grâce spawn) ; teinte discrète pendant la grâce ; hint à la 1re sortie de gap + alerte si ≤ 2 frames ; buffer de saut 4 frames
 - Tutoriel en 3 étapes (saut → gap → score) à la première partie, puis hint coyote au premier passage ; **auto-skip après 3 parties** si non terminé
 - Son de palier distinct tous les 10 points
 - **Record battu** → bannière « NOUVEAU RECORD ! » en jeu + badge game over
-- **Preview gaps** au score 15 (« GAPS ↓ + VITESSE +3 % au score 20 ») puis bannière « GAPS RESSERRÉS » au score 20
+- **Preview vitesse** au score 9 ; **preview gaps** au score 15 puis bannière « GAPS RESSERRÉS » au score 20
 - **Records et TOP 5** par difficulté (facile / normal / difficile)
 - **Mode entraînement** : ralenti (×0,8), fantôme enregistré (meilleur parcours par difficulté/hardcore), scores non enregistrés
-- **Défi du jour** (D) : séquence partagée, skin/objectif imposés, fantôme replay sans ralenti, **hors TOP 5 classique**, rejouable depuis le game over
+- **Défi du jour** (D) : séquence partagée, skin/pattern/objectif imposés (bases **10 / 16 / 22** pts + bonus skin), fantôme replay sans ralenti, **hors TOP 5 classique**, rejouable depuis le game over
 - Escalade : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; preview vitesse au score 9 ; gaps resserrés après 20 ; preview combinée au score 15 ; séries à 10, 15, 20, 30, 40, 50 pts
 - Hint coyote : réaffiché après chaque 3e mort sur tuyau
 - **Mort différenciée** : feedback visuel (tuyau / sol / plafond) + libellé au game over ; micro slow-mo à l’impact
-- **Mode hardcore** : gravité/vitesse renforcées, grace progressive 700→325 ms sur 7 tuyaux (bannière « Invincible N ms · tuyau K » à chaque renouvellement), **TOP 5 hardcore** séparé
+- **Mode hardcore** : gravité/vitesse renforcées, grace spawn échelonnée sur 7 tuyaux (sans bannière HUD), **TOP 5 hardcore** séparé
+- **Skins** : apparence en classique ; **physique du pattern** (gravité/saut/vitesse) active uniquement au défi du jour
 - **Meta** : 16 skins et 8 trophées déblocables (dont score 25 et série daily ×3)
 
 Difficultés (vitesse, écart, intervalle) : voir `difficulties` dans [`src/config.js`](src/config.js).

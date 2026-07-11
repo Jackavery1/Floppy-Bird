@@ -34,16 +34,17 @@ describe('uiMenuOptions', () => {
         buildMenuOptions(ui, elements, UI_LAYOUT.menu);
     });
 
-    it('crée un bouton OPTIONS et un panneau à onglets', () => {
+    it('crée le bouton OPTIONS sans panneau tant qu’il n’est pas ouvert', () => {
         expect(ui._optionsBtnLabel).toBeTruthy();
         expect(ui._optionsBtnBg).toBeTruthy();
-        expect(ui._optionsTabButtons).toHaveLength(2);
-        expect(ui._trainingLabel).toBeTruthy();
+        expect(ui._optionsTabButtons ?? []).toHaveLength(0);
+        expect(ui._optionsPanelRoot).toBeFalsy();
         expect(ui._optionsOpen).toBe(false);
     });
 
-    it('toggleMenuOptions ouvre sur l’onglet réglages par défaut', () => {
+    it('toggleMenuOptions construit puis ouvre sur l’onglet réglages par défaut', () => {
         toggleMenuOptions(ui);
+        expect(ui._optionsTabButtons).toHaveLength(2);
         expect(ui._optionsOpen).toBe(true);
         expect(ui._optionsActiveTab).toBe('preferences');
         expect(ui._optionsSettingsElements[0].setVisible).toHaveBeenCalledWith(true);
@@ -53,6 +54,7 @@ describe('uiMenuOptions', () => {
     });
 
     it('le bouton OPTIONS reste au-dessus du fond du panneau (pas de bleed-through)', () => {
+        toggleMenuOptions(ui);
         const btnDepth = ui._optionsBtnBg.setDepth.mock.calls.at(-1)?.[0];
         const backdropDepth = ui._optionsBackdrop.frame.setDepth.mock.calls.at(-1)?.[0];
         expect(btnDepth).toBeGreaterThan(backdropDepth);

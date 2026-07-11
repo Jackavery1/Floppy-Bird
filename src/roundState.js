@@ -25,6 +25,7 @@ export function createRoundState() {
             this.dailyGoalCelebrated = false;
             this.coyoteFrames = 0;
             this.coyoteFramesAtDeath = null;
+            this.coyoteLowWarnShown = false;
             this._wasInGap = false;
             this.deathCause = null;
             this.dyingFalling = false;

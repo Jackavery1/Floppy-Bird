@@ -1,6 +1,10 @@
 import { gameOverRestartLabel } from './device.js';
 import { sceneTween } from './motion.js';
-import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    panelChromeTextStyle,
+    yellowChromeButtonTextStyle,
+} from './designTokens.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
@@ -18,10 +22,7 @@ import {
     UI_LAYOUT,
 } from './uiLayout.js';
 
-const RESTART_LABEL_STYLE = panelChromeTextStyle({
-    fontSize: '12px',
-    fill: DESIGN_TOKENS.contourMenu,
-});
+const RESTART_LABEL_STYLE = yellowChromeButtonTextStyle({ fontSize: '12px' });
 
 /**
  * Pied de panneau game over : bouton rejouer, bouton menu et animation d’apparition.

@@ -50,10 +50,10 @@ function buildKeyBadge(scene, cx, cy, key) {
 }
 
 /** @param {import('./ui.js').UI} ui @param {import('phaser').GameObjects.GameObject[]} elements */
-export function buildControlsSection(ui, elements) {
+export function buildControlsSection(ui, _elements) {
     const scene = ui.scene;
     const panel = UI_LAYOUT.optionsPanel;
-    const { add } = beginOptionsSection(ui, scene, elements, '_optionsControlsElements');
+    const { add } = beginOptionsSection(ui, scene, '_optionsControlsElements');
     const rows = optionsControlRows();
     const rowGap = panel.controlsGap;
     const firstY = panel.controlsFirst;

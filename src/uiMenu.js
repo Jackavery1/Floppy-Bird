@@ -1,5 +1,6 @@
 import { loadHighScore } from './storage.js';
-import { computeMenuLayout, diffLabelColor, UI_LAYOUT } from './uiLayout.js';
+import { computeMenuLayout, UI_LAYOUT } from './uiLayout.js';
+import { syncDifficultyButtonLabel } from './uiText.js';
 import { applyMenuLayout, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from './uiHud.js';
 import { buildMenuFooter, playMenuIntroTween } from './uiMenuBuild.js';
@@ -10,6 +11,7 @@ import {
     refreshOptionsButtonLabel,
     refreshHardcoreLockState,
     setMenuOptionsOpen,
+    teardownOptionsPanel,
     applyTrainingLabel,
     applyHardcoreLabel,
 } from './uiMenuOptions.js';
@@ -25,14 +27,36 @@ import { setMenuPanelVisible, syncMenuChromeVisibility } from './uiMenuPanel.js'
 import { setOptionsContentVisible } from './uiMenuOptionsContent.js';
 import { buildMetaContext } from './metaContext.js';
 import { syncMenuToggleAccessibility } from './uiDomAccessibilityFlows.js';
+import {
+    setOptionsPanelAccessibility,
+    setScoresPanelAccessibility,
+    setSkinsPanelAccessibility,
+} from './uiDomAccessibility.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { DEPTH } from './uiLayout.js';
 
 /** @param {import('./ui.js').UI} ui */
+function resetMenuPanelRefs(ui) {
+    ui._optionsPanelRoot = null;
+    ui._optionsChromeElements = [];
+    ui._optionsPanelElements = [];
+    ui._optionsControlsElements = [];
+    ui._optionsSettingsElements = [];
+    ui._scoresPanelElements = [];
+    ui._skinsPanelElements = [];
+}
+
+/** @param {import('./ui.js').UI} ui */
+function resetMenuPanelFlags(ui) {
+    ui._optionsOpen = false;
+    ui._scoresOpen = false;
+    ui._skinsOpen = false;
+    ui._optionsActiveTab = 'preferences';
+}
+
+/** @param {import('./ui.js').UI} ui */
 function forceHideMenuPanels(ui) {
-    if (ui._optionsChromeElements?.length || ui._optionsPanelElements?.length) {
-        setOptionsContentVisible(ui, false);
-    }
+    setOptionsContentVisible(ui, false);
     if (ui._scoresPanelElements?.length) {
         setMenuPanelVisible(ui._scoresPanelElements, false, ui.scene);
         ui._scoresBackdrop?.setVisible?.(false);
@@ -41,26 +65,51 @@ function forceHideMenuPanels(ui) {
         setMenuPanelVisible(ui._skinsPanelElements, false, ui.scene);
         ui._skinsBackdrop?.setVisible?.(false);
     }
-    ui._optionsOpen = false;
-    ui._scoresOpen = false;
-    ui._skinsOpen = false;
+}
+
+/** @param {import('./ui.js').UI} ui */
+function ensureMenuActionRowVisible(ui) {
+    if (ui._optionsOpen || ui._scoresOpen || ui._skinsOpen) return;
+    syncMenuChromeVisibility(ui);
+    for (const el of [
+        ui._scoresBtnBg,
+        ui._scoresBtnLabel,
+        ui._scoresBtnHit,
+        ui._optionsBtnBg,
+        ui._optionsBtnLabel,
+        ui._optionsBtnHit,
+        ui._skinsBtnBg,
+        ui._skinsBtnLabel,
+        ui._skinsBtnHit,
+    ]) {
+        el?.setVisible?.(true);
+        el?.setAlpha?.(1);
+    }
 }
 
 /** @param {import('./ui.js').UI} ui @param {{ force?: boolean }} [opts] */
 export function closeAllMenuPanels(ui, opts = {}) {
+    const panelOpts = opts.force ? { force: true } : undefined;
     if (opts.force) forceHideMenuPanels(ui);
-    setMenuOptionsOpen(ui, false);
-    setMenuScoresOpen(ui, false);
-    setMenuSkinsOpen(ui, false);
+    setMenuOptionsOpen(ui, false, panelOpts);
+    setMenuScoresOpen(ui, false, panelOpts);
+    setMenuSkinsOpen(ui, false, panelOpts);
 }
 
-/** Nettoie menu / pause / game over avant reconstruction du menu principal. */
+/** Réinitialise flags panneaux, options et a11y avant rebuild du menu principal. */
 export function prepareMenuRebuild(ui) {
-    closeAllMenuPanels(ui, { force: true });
-    ui._optionsActiveTab = 'preferences';
+    resetMenuPanelFlags(ui);
+    teardownOptionsPanel(ui);
+    const scene = ui.scene;
+    if (scene) {
+        setOptionsPanelAccessibility(scene, false);
+        setScoresPanelAccessibility(scene, false);
+        setSkinsPanelAccessibility(scene, false);
+    }
     for (const key of ['menu', 'pause', 'gameOver']) {
         ui.clearOverlay(key);
     }
+    resetMenuPanelRefs(ui);
     destroyInGameControls(ui);
     if (ui._startText?.scene?.tweens) {
         ui.scene.tweens.killTweensOf(ui._startText);
@@ -113,6 +162,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ...(ui._diffBtnLabels ?? []).flatMap(({ label, hitZone }) => [label, hitZone]),
         ui._dailyBtnBg,
         ui._dailyBtnLabel,
+        ui._dailyBtnSubtitle,
         ui._dailyBtnHit,
         ui._startText,
         ui._startHit,
@@ -127,7 +177,9 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._skinsBtnHit,
     ].filter(Boolean);
     closeAllMenuPanels(ui, { force: true });
-    syncMenuChromeVisibility(ui);
+    setOptionsContentVisible(ui, false);
+    ui._optionsPanelRoot?.setVisible(false);
+    ensureMenuActionRowVisible(ui);
     playMenuIntroTween(ui, title);
 
     return elements;
@@ -162,7 +214,7 @@ export function updateDifficultyButtons(ui, difficulty) {
     drawDiffButtons(ui, difficulty, ui._menuLayout ?? UI_LAYOUT.menu);
 
     ui._diffBtnLabels.forEach(({ label, diff }) => {
-        label.setColor(diffLabelColor(difficulty, diff));
+        syncDifficultyButtonLabel(label, difficulty, diff);
     });
     syncMenuToggleAccessibility(ui.scene);
 }

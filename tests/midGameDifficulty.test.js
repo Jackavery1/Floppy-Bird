@@ -2,12 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { handleScoreMilestones } from '../src/sceneScoreMilestones.js';
 
 describe('midGameDifficulty (intégration paliers 9–20)', () => {
-    it('enchaîne previews et séries aux scores 9, 15 et 20', () => {
+    it('enchaîne previews, séries et escalade aux scores 9, 15 et 20', () => {
         const calls = [];
         const scene = {
             ui: {
                 showSpeedBoostPreview: () => calls.push('speedPreview'),
-                showDifficultyEscalationPreview: () => calls.push('gapPreview'),
+                showDifficultyEscalationPreview: () => calls.push('escalationPreview'),
                 showDifficultyEscalation: () => calls.push('gapEscalation'),
                 showScoreStreak: (s) => calls.push(`streak:${s}`),
             },
@@ -17,7 +17,7 @@ describe('midGameDifficulty (intégration paliers 9–20)', () => {
         }
         expect(calls).toEqual([
             'speedPreview',
-            'gapPreview',
+            'escalationPreview',
             'streak:15',
             'gapEscalation',
             'streak:20',

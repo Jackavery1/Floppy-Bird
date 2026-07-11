@@ -2,6 +2,7 @@ import { DIFFICULTY } from './config.js';
 import {
     bindAccessibilityAction,
     announceAccessibility,
+    hideAllAccessibilityControls,
     setAccessibilityControlLabel,
     setAccessibilityControlPressed,
     setAccessibilityControlVisible,
@@ -179,6 +180,7 @@ export function bindScoresAccessibility(scene) {
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {{ score: number, isDaily?: boolean }} opts */
 export function setupGameOverAccessibility(scene, { score, isDaily = false }) {
+    hideAllAccessibilityControls();
     bindAccessibilityAction('gameOverRestart', () => scene.handlePrimaryAction());
     bindAccessibilityAction('gameOverMenu', () => scene.returnToMenu());
     for (const key of GAME_OVER_CONTROL_KEYS) {

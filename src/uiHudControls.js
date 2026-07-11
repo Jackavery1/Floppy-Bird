@@ -11,8 +11,6 @@ import {
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
 import { PLAYING_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
-import { destroyGapHudBadge } from './uiHudGapBadge.js';
-import { destroyCoyoteHudBadge } from './uiHudCoyoteBadge.js';
 import { resetHudBannerSlots } from './uiHudBannerStack.js';
 import {
     addCenteredText,
@@ -37,8 +35,6 @@ export function destroyInGameControls(ui) {
     ui._hardcoreBadge = null;
     ui._dailyBadge = null;
     ui._dailyPatternBadge = null;
-    destroyGapHudBadge(ui);
-    destroyCoyoteHudBadge(ui);
     resetHudBannerSlots(ui);
     for (const key of PLAYING_CONTROL_KEYS) {
         setAccessibilityControlVisible(key, false);
@@ -109,7 +105,7 @@ export function createInGameControls(
             ui.scene,
             GAME_CONFIG.centerX,
             badgeY,
-            'HARDCORE · inv. / tuyau',
+            'HARDCORE',
             hudTextStyle({
                 fontSize: FONT_SIZE_BADGE,
                 fill: DESIGN_TOKENS.badgeHardcore,

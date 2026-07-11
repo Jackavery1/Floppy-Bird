@@ -78,11 +78,11 @@ export function clearSpawnInvincibility(scene) {
     round.spawnInvincible = false;
 }
 
-/** @param {SceneContext} scene @param {number} [durationMs] @param {number} [pipeIndex] */
+/** @param {SceneContext} scene @param {number} [durationMs] @param {number} [_pipeIndex] */
 export function startSpawnInvincibility(
     scene,
     durationMs = GAME_CONFIG.round.spawnInvincibilityMs,
-    pipeIndex = 1
+    _pipeIndex = 1
 ) {
     const { round } = scene;
     clearSpawnInvincibility(scene);
@@ -92,9 +92,6 @@ export function startSpawnInvincibility(
         round.spawnInvincible = false;
         if (scene.bird?.sprite) scene.bird.sprite.setAlpha(1);
     });
-    if (scene.hardcoreMode) {
-        scene.ui.showHardcoreInvincibilityHint?.(durationMs, pipeIndex);
-    }
 }
 
 /** @param {SceneContext} scene @param {number} pipeCount */

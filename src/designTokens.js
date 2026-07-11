@@ -36,6 +36,11 @@ export const DESIGN_TOKENS = Object.freeze({
     texteMenu: '#ffffff',
     texteHintMenu: '#ECEFF1',
     contourMenu: '#0d1117',
+    /** Texte sur fond accent jaune (difficulté active, REJOUER). */
+    texteBoutonJaune: '#0d1117',
+    difficulteFacile: '#88ff88',
+    difficulteNormal: '#ffff00',
+    difficulteDifficile: '#ff8888',
     accentTitre: '#FDD835',
     accentTitreContour: '#E65100',
     accentTitreOmbre: '#BF360C',
@@ -147,6 +152,17 @@ export function panelChromeTextStyle(overrides = {}) {
         fontSize: '12px',
         ...overrides,
     });
+}
+
+/** Texte lisible sur bouton jaune (difficulté active, rejouer). */
+export function yellowChromeButtonTextStyle(overrides = {}) {
+    return {
+        fontFamily: DESIGN_TOKENS.policeTitre,
+        fontSize: '12px',
+        fill: DESIGN_TOKENS.texteBoutonJaune,
+        fontStyle: 'bold',
+        ...overrides,
+    };
 }
 
 /** Texte lisible de l'écran d'accueil (hors titre du jeu). */

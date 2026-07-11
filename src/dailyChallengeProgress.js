@@ -5,7 +5,7 @@ function dateKey(date = new Date()) {
 }
 
 /** @returns {{ dateKey: string, completed: boolean, goal: number, score: number, difficulty: string, skinId: string } | null} */
-export function loadDailyCompletion(date = new Date()) {
+function loadDailyCompletion(date = new Date()) {
     try {
         const raw = localStorage.getItem(STORAGE_KEYS.dailyCompletion);
         if (!raw) return null;

@@ -56,6 +56,7 @@ export function playMenuIntroTween(ui, title) {
         ui._skinsBtnBg,
         ui._dailyBtnLabel,
         ui._dailyBtnBg,
+        ui._dailyBtnSubtitle,
     ];
     targets.forEach((el) => el?.setAlpha(0));
     sceneTween(ui.scene, {

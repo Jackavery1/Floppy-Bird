@@ -41,9 +41,10 @@ describe('sceneCoyote', () => {
 
     it('updateCoyoteTime décrémente hors gap', () => {
         const scene = makeScene(false);
-        scene.round.coyoteFrames = 3;
+        scene.round.coyoteFrames = 4;
+        scene.ui = {};
         updateCoyoteTime(scene, 1);
-        expect(scene.round.coyoteFrames).toBe(2);
+        expect(scene.round.coyoteFrames).toBe(3);
     });
 
     it('hasCoyoteGrace tant que des frames restent', () => {
@@ -70,6 +71,15 @@ describe('sceneCoyote', () => {
         vi.unstubAllGlobals();
     });
 
+    it('updateCoyoteTime alerte quand il reste ≤ 2 frames de grâce', () => {
+        const showCoyoteLowGraceHint = vi.fn();
+        const scene = makeScene(false);
+        scene.round.coyoteFrames = 3;
+        scene.ui = { showCoyoteLowGraceHint };
+        updateCoyoteTime(scene, 1);
+        expect(showCoyoteLowGraceHint).toHaveBeenCalledWith(2);
+    });
+
     it('updateCoyoteVisual teinte l’oiseau pendant le coyote', () => {
         const scene = makeScene(false);
         scene.state = GAME_STATE.PLAYING;
@@ -78,12 +88,10 @@ describe('sceneCoyote', () => {
             scene: createBaseScene(),
             scoreText: { y: 68 },
             _inGameControlElements: [],
-            _coyoteHudBadge: { setVisible: vi.fn(), setY: vi.fn() },
         };
         scene.round.coyoteFrames = 2;
         updateCoyoteVisual(scene);
         expect(scene.bird.sprite.setTint).toHaveBeenCalledWith(0xffeeaa);
-        expect(scene.ui._coyoteHudBadge.setVisible).toHaveBeenCalledWith(true);
 
         scene.round.coyoteFrames = 0;
         updateCoyoteVisual(scene);

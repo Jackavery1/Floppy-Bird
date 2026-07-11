@@ -30,14 +30,17 @@ function hideAllOptionsSections(ui) {
 
 /** @param {import('./ui.js').UI} ui @param {boolean} visible */
 export function setOptionsContentVisible(ui, visible) {
-    if (!visible) {
-        hideAllOptionsSections(ui);
-        setMenuPanelVisible(ui._optionsChromeElements, false, ui.scene);
-        setMenuPanelVisible(ui._optionsPanelElements, false, ui.scene);
+    if (visible) {
+        ui._ensureOptionsPanelBuilt?.();
+        ui._optionsPanelRoot?.setVisible(true);
+        ui._optionsBackdrop?.setVisible?.(true);
+        setMenuPanelVisible(ui._optionsChromeElements, true, ui.scene);
+        setOptionsTab(ui, ui._optionsActiveTab ?? 'preferences');
         return;
     }
-    setMenuPanelVisible(ui._optionsChromeElements, true, ui.scene);
-    setOptionsTab(ui, ui._optionsActiveTab ?? 'preferences');
+    hideAllOptionsSections(ui);
+    ui._optionsPanelRoot?.setVisible(false);
+    ui._optionsBackdrop?.setVisible?.(false);
 }
 
 export function applyTrainingLabel(ui, trainingMode) {

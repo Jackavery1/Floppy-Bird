@@ -25,6 +25,7 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
+import { skinsPanelHint } from './device.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
 
@@ -78,6 +79,18 @@ export function buildSkinsTab(ui, elements, panelElements) {
     panelElements.push(ui._skinsCountLine);
     elements.push(ui._skinsCountLine);
     ui._skinsTabElements.push(ui._skinsCountLine);
+
+    ui._skinsPatternLine = addCenteredText(
+        scene,
+        GAME_CONFIG.centerX,
+        panel.skinsSubtitle + 18,
+        '',
+        menuHomeTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.badgeDailySecondary }),
+        DEPTH.PANEL_FRAME
+    );
+    panelElements.push(ui._skinsPatternLine);
+    elements.push(ui._skinsPatternLine);
+    ui._skinsTabElements.push(ui._skinsPatternLine);
 
     const gridLeft = GAME_CONFIG.centerX - ((SKIN_COLS - 1) * SKIN_CELL_W) / 2;
 
@@ -153,6 +166,18 @@ export function buildSkinsTab(ui, elements, panelElements) {
 
         ui._skinCells.push({ skinId, frame, preview, nameLabel, recordLabel, hit });
     });
+
+    const skinsHint = addCenteredText(
+        scene,
+        GAME_CONFIG.centerX,
+        panel.skinsHint,
+        skinsPanelHint(),
+        menuHomeTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.texteSecondaire }),
+        DEPTH.PANEL_FRAME
+    );
+    panelElements.push(skinsHint);
+    elements.push(skinsHint);
+    ui._skinsTabElements.push(skinsHint);
 
     const closeBtn = buildMenuToggleButton(scene, elements, {
         cx: GAME_CONFIG.centerX,

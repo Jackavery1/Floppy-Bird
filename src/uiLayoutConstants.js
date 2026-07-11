@@ -76,6 +76,7 @@ export const UI_LAYOUT = {
         difficulty: 200,
         start: 278,
         dailyBtn: 318,
+        dailySubtitle: 348,
         menuRow: 378,
         scoresBtn: 52,
         optionsBtn: 144,

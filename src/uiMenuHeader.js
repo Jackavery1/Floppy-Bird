@@ -12,7 +12,7 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
-import { addReliefText } from './uiText.js';
+import { addReliefText, syncDifficultyButtonLabel } from './uiText.js';
 import { drawDiffButtons } from './uiMenuLayout.js';
 
 export function buildMenuHeader(ui, elements, layout) {
@@ -86,6 +86,7 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
             ui.scene.changeDifficulty(diff);
         });
         ui._diffBtnLabels.push({ label, diff, hitZone });
+        syncDifficultyButtonLabel(label, ui._currentDifficulty, diff);
         elements.push(hitZone);
     });
 }

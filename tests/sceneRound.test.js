@@ -190,11 +190,9 @@ describe('sceneRound', () => {
             round: createRoundState(),
             time: { delayedCall: vi.fn(() => ({ remove: vi.fn() })) },
             bird: { sprite: { setAlpha: vi.fn() } },
-            ui: { showHardcoreInvincibilityHint: vi.fn() },
         };
         onPipeSpawned(scene, 2);
         expect(scene.round.spawnInvincible).toBe(true);
-        expect(scene.ui.showHardcoreInvincibilityHint).toHaveBeenCalledWith(625, 2);
     });
 
     it('onPipeSpawned ignore le mode normal', () => {

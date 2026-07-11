@@ -1,4 +1,4 @@
-# Architecture - Floppy Bird v1.6.0
+# Architecture - Floppy Bird v2.0.0
 
 ## Vue d'ensemble
 
@@ -35,6 +35,8 @@ src/
 ├── sceneFeedback.js           # Feedback (particules, shake, etc)
 ├── sceneInput.js              # Gestion des inputs
 ├── sceneFlow.js               # Transitions entre scènes
+├── sceneMenuSync.js           # Port scène → menu (sans import uiMenu depuis le flux)
+├── sceneA11ySync.js           # Port scène → accessibilité DOM
 │
 ├── Game Objects
 ├── bird.js                    # Physique et animation de l'oiseau
@@ -120,8 +122,7 @@ ui.js (orchestration — façade SceneContext)
 │   ├── uiMenuPanel.js (animations)
 │   └── uiMenuSkins.js (sélection skins)
 ├── HUD (pendant le jeu)
-│   ├── uiHudBanners.js
-│   └── uiHudCoyoteBadge.js
+│   └── uiHudBanners.js
 └── Game Over
     ├── uiGameOver.js
     └── uiGameOverDecor.js (confetti)

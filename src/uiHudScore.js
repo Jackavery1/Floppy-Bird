@@ -3,7 +3,6 @@ import { formatDailyHudLabel } from './dailyChallenge.js';
 import { getSkin } from './skins/index.js';
 import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { sceneTween } from './motion.js';
-import { updateGapHudBadge } from './uiHudGapBadge.js';
 import { addCenteredText, DEPTH, UI_LAYOUT } from './uiLayout.js';
 
 const SCORE_STYLE = Object.freeze(
@@ -66,5 +65,4 @@ export function updateScore(ui, newScore) {
             `${formatDailyHudLabel(newScore, ui.scene.dailyGoal)} · ${getSkin(ui.scene.activeSkinId ?? 'classic').label}`
         );
     }
-    updateGapHudBadge(ui, newScore);
 }

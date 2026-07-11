@@ -5,19 +5,15 @@ import {
     setupMenuAccessibility,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
-import {
-    GAME_OVER_CONTROL_KEYS,
-    PLAYING_CONTROL_KEYS,
-    PAUSE_OVERLAY_CONTROL_KEYS,
-} from './uiDomAccessibilityDefs.js';
+import { setOptionsPanelAccessibility } from './uiDomAccessibilityFlows.js';
+import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
 export function openMenuAccessibility(scene) {
-    for (const key of GAME_OVER_CONTROL_KEYS) {
-        setAccessibilityControlVisible(key, false);
-    }
+    hideAllAccessibilityControls();
+    setOptionsPanelAccessibility(scene, false);
     setupMenuAccessibility(scene);
     announceAccessibility('Menu principal');
 }

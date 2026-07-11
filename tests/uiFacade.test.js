@@ -22,7 +22,7 @@ const hud = vi.hoisted(() => ({
     showDifficultyEscalationPreview: vi.fn(),
     showSpeedBoostPreview: vi.fn(),
     showCoyoteHint: vi.fn(),
-    showHardcoreInvincibilityHint: vi.fn(),
+    showCoyoteLowGraceHint: vi.fn(),
     showHardcoreTutorial: vi.fn(),
     dismissHardcoreTutorial: vi.fn(() => false),
     showTrainingTutorial: vi.fn(),
@@ -91,7 +91,7 @@ describe('UI façade — délégation', () => {
         ui.showDifficultyEscalationPreview();
         ui.showSpeedBoostPreview();
         ui.showCoyoteHint();
-        ui.showHardcoreInvincibilityHint(700);
+        ui.showCoyoteLowGraceHint(2);
         ui.showHardcoreTutorial();
         ui.dismissHardcoreTutorial();
         ui.showTrainingTutorial();
@@ -100,7 +100,7 @@ describe('UI façade — délégation', () => {
 
         expect(hud.createScoreDisplay).toHaveBeenCalledWith(ui);
         expect(hud.showCoyoteHint).toHaveBeenCalledWith(ui);
-        expect(hud.showHardcoreInvincibilityHint).toHaveBeenCalledWith(ui, 700);
+        expect(hud.showCoyoteLowGraceHint).toHaveBeenCalledWith(ui, 2);
         expect(hud.showFlash).toHaveBeenCalledWith(ui);
     });
 

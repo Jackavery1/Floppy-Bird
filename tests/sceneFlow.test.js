@@ -50,13 +50,10 @@ vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
-vi.mock('../src/uiMenu.js', async (importOriginal) => {
-    const actual = await importOriginal();
-    return {
-        ...actual,
-        prepareMenuRebuild: vi.fn(),
-    };
-});
+vi.mock('../src/sceneMenuSync.js', () => ({
+    openMainMenu: vi.fn(),
+    closeMenuPanelsForRoundStart: vi.fn(),
+}));
 
 describe('sceneFlow', () => {
     function makeScene(state = GAME_STATE.MENU) {
@@ -116,29 +113,27 @@ describe('sceneFlow', () => {
     }
 
     it('showMenu remet l’état MENU', async () => {
-        const { prepareMenuRebuild } = await import('../src/uiMenu.js');
+        const { openMainMenu } = await import('../src/sceneMenuSync.js');
         const scene = makeScene(GAME_STATE.PLAYING);
         showMenu(scene);
-        expect(prepareMenuRebuild).toHaveBeenCalledWith(scene.ui);
-        expect(scene.state).toBe(GAME_STATE.MENU);
-        expect(scene.ui.showMenu).toHaveBeenCalled();
+        expect(openMainMenu).toHaveBeenCalledWith(scene);
     });
 
     it('returnToMenu depuis game over nettoie puis affiche le menu', async () => {
-        const { prepareMenuRebuild } = await import('../src/uiMenu.js');
+        const { openMainMenu } = await import('../src/sceneMenuSync.js');
         const scene = makeScene(GAME_STATE.GAME_OVER);
         scene.returnToMenu = function () {
             returnToMenu(this);
         };
         returnToMenu(scene);
-        expect(prepareMenuRebuild).toHaveBeenCalledWith(scene.ui);
-        expect(scene.state).toBe(GAME_STATE.MENU);
-        expect(scene.ui.showMenu).toHaveBeenCalled();
+        expect(openMainMenu).toHaveBeenCalledWith(scene);
     });
 
-    it('startGame depuis le menu lance un round', () => {
+    it('startGame depuis le menu lance un round', async () => {
+        const { closeMenuPanelsForRoundStart } = await import('../src/sceneMenuSync.js');
         const scene = makeScene(GAME_STATE.MENU);
         startGame(scene);
+        expect(closeMenuPanelsForRoundStart).toHaveBeenCalledWith(scene);
         expect(scene.ui.clearOverlay).toHaveBeenCalledWith('menu');
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });

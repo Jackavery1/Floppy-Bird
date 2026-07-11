@@ -9,7 +9,7 @@ import {
     showDifficultyEscalationPreview,
     showSpeedBoostPreview,
     showCoyoteHint,
-    showHardcoreInvincibilityHint,
+    showCoyoteLowGraceHint,
     showScoreStreak,
     showGapTutorial,
     showScoreTutorial,
@@ -93,11 +93,9 @@ describe('uiHudBanners', () => {
         expect(ui._tutorialHint).toBeTruthy();
     });
 
-    it('showHardcoreInvincibilityHint remplace la bannière précédente', () => {
-        showHardcoreInvincibilityHint(ui, 700);
-        expect(ui._hardcoreInvBanner).toBeTruthy();
-        showHardcoreInvincibilityHint(ui, 625);
-        expect(ui.scene.add.text).toHaveBeenCalledTimes(2);
+    it('showCoyoteLowGraceHint crée une bannière', () => {
+        showCoyoteLowGraceHint(ui, 2);
+        expect(ui._coyoteLowBanner).toBeTruthy();
     });
 
     it('showJumpTutorial et dismissJumpTutorial gèrent le hint', () => {

@@ -1,6 +1,5 @@
 import { hudBannerFill, hudTextStyle } from './designTokens.js';
-import { coyoteHintText, hardcoreInvincibilityHintText } from './device.js';
-import { destroyHudBanner } from './uiHudBannerStack.js';
+import { coyoteHintText, coyoteLowGraceHintText } from './device.js';
 import { showTransientBanner } from './uiHudBannerCore.js';
 
 export function showCoyoteHint(ui) {
@@ -19,19 +18,19 @@ export function showCoyoteHint(ui) {
     );
 }
 
-export function showHardcoreInvincibilityHint(ui, durationMs, pipeIndex = 1) {
-    destroyHudBanner(ui, '_hardcoreInvBanner');
+/** @param {import('./ui.js').UI} ui @param {number} frames */
+export function showCoyoteLowGraceHint(ui, frames) {
     showTransientBanner(
         ui,
-        '_hardcoreInvBanner',
-        hardcoreInvincibilityHintText(durationMs, pipeIndex),
+        '_coyoteLowBanner',
+        coyoteLowGraceHintText(frames),
         hudTextStyle({
             fontSize: '11px',
-            fill: hudBannerFill('badgeHardcore'),
+            fill: hudBannerFill('bannerCoyote'),
             fontStyle: 'bold',
         }),
-        18,
-        500,
-        1800
+        24,
+        700,
+        1200
     );
 }

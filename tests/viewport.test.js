@@ -3,7 +3,6 @@ import {
     computeLetterboxSize,
     computeLetterboxPosition,
     readSafeAreaInsets,
-    getViewportDimensions,
     getLetterboxViewport,
 } from '../src/viewport.js';
 
@@ -44,11 +43,20 @@ describe('viewport', () => {
         expect(readSafeAreaInsets()).toEqual({ top: 0, right: 0, bottom: 0, left: 0 });
     });
 
-    it('getViewportDimensions expose visualViewport offsets', () => {
+    it('getLetterboxViewport expose visualViewport quand le body n’est pas prêt', () => {
         vi.stubGlobal('window', {
             visualViewport: { width: 390, height: 400, offsetTop: 12, offsetLeft: 4, scale: 1 },
         });
-        expect(getViewportDimensions()).toEqual({
+        vi.stubGlobal('document', {
+            body: { clientWidth: 0, clientHeight: 0 },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0px',
+            paddingRight: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '0px',
+        }));
+        expect(getLetterboxViewport()).toEqual({
             width: 390,
             height: 400,
             offsetTop: 12,
@@ -58,11 +66,20 @@ describe('viewport', () => {
         vi.unstubAllGlobals();
     });
 
-    it('getViewportDimensions expose le scale au zoom navigateur', () => {
+    it('getLetterboxViewport propage le scale au zoom navigateur', () => {
         vi.stubGlobal('window', {
             visualViewport: { width: 640, height: 360, offsetTop: 0, offsetLeft: 0, scale: 2 },
         });
-        expect(getViewportDimensions().scale).toBe(2);
+        vi.stubGlobal('document', {
+            body: { clientWidth: 0, clientHeight: 0 },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0px',
+            paddingRight: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '0px',
+        }));
+        expect(getLetterboxViewport().scale).toBe(2);
         vi.unstubAllGlobals();
     });
 

@@ -2,6 +2,7 @@ import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { loadHighScore } from './storage.js';
 import { getSkin, listUnlockedSkins, SKIN_IDS } from './skins/index.js';
+import { getSkinPattern } from './skinPatterns.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 
 /** @param {import('./ui.js').UI} ui */
@@ -13,6 +14,15 @@ export function refreshSkinsTab(ui) {
     const selected = loadSelectedSkin();
 
     ui._skinsCountLine?.setText(`${ctx.unlockedSkinCount}/${SKIN_IDS.length} débloqués`);
+
+    const selectedSkin = getSkin(selected);
+    const selectedPattern = getSkinPattern(selected);
+    const selectedUnlocked = unlocked.has(selected);
+    ui._skinsPatternLine?.setText(
+        selectedUnlocked
+            ? `${selectedSkin.label} · ${selectedPattern.tagline}`
+            : `🔒 ${selectedSkin.hint}`
+    );
 
     ui._skinCells.forEach(({ skinId, frame, preview, nameLabel, recordLabel }) => {
         const isUnlocked = unlocked.has(skinId);

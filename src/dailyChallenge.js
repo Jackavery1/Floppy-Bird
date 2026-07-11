@@ -29,9 +29,9 @@ export function getDailyChallengeSkin(date = new Date()) {
 }
 
 const BASE_DAILY_GOALS = Object.freeze({
-    [DIFFICULTY.EASY]: 6,
-    [DIFFICULTY.NORMAL]: 10,
-    [DIFFICULTY.HARD]: 14,
+    [DIFFICULTY.EASY]: 10,
+    [DIFFICULTY.NORMAL]: 16,
+    [DIFFICULTY.HARD]: 22,
 });
 
 /** Objectif de score selon difficulté + pattern du skin du jour. */
@@ -69,7 +69,13 @@ export function formatDailyMenuButtonLabel(difficulty, date = new Date()) {
 export function formatDailyMenuSubtitle(difficulty, date = new Date()) {
     const s = getDailyChallengeSummary(difficulty, date);
     const diff = GAME_CONFIG.difficultyLabels[difficulty] ?? difficulty;
-    return `${s.patternTag} · objectif ${s.goal} pts (${diff})`;
+    return `${s.skinLabel} · ${s.patternTag} · ${s.goal} pts (${diff})`;
+}
+
+/** @param {{ skinLabel: string, patternTag: string, goal: number }} brief */
+export function formatDailyStartBanner({ skinLabel, patternTag, goal }) {
+    if (!skinLabel || !patternTag) return `OBJECTIF : ${goal} pts`;
+    return `${skinLabel} · ${patternTag}\nOBJECTIF : ${goal} pts`;
 }
 
 export function formatDailyHudLabel(score, goal, date = new Date()) {

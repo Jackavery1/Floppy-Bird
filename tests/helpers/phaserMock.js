@@ -146,6 +146,10 @@ export function createContainerMock() {
         }
         return container;
     });
+    container.addAt = vi.fn(function (child, index) {
+        container.list.splice(index, 0, child);
+        return container;
+    });
     container.setVisible = vi.fn(function (v) {
         container.visible = v;
         for (const child of container.list) {

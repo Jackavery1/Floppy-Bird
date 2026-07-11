@@ -34,9 +34,13 @@ const TAB_LABEL_STYLE = panelChromeTextStyle({
 export function setOptionsTab(ui, tab) {
     ui._optionsActiveTab = tab;
     const panelOpen = ui._optionsOpen === true;
-    setOptionsSectionVisible(ui._optionsControlsElements, panelOpen && tab === 'controls');
-    const preferencesVisible = panelOpen && tab === 'preferences';
-    setOptionsSectionVisible(ui._optionsSettingsElements, preferencesVisible);
+    if (!panelOpen) {
+        setOptionsSectionVisible(ui._optionsControlsElements, false);
+        setOptionsSectionVisible(ui._optionsSettingsElements, false);
+    } else {
+        setOptionsSectionVisible(ui._optionsControlsElements, tab === 'controls');
+        setOptionsSectionVisible(ui._optionsSettingsElements, tab === 'preferences');
+    }
     ui._optionsTabButtons?.forEach(({ id, paint, label }) => {
         const active = id === tab;
         paint(active ? MENU_BTN_COLOR : TAB_INACTIVE, active ? 0.95 : 0.78);
@@ -47,16 +51,15 @@ export function setOptionsTab(ui, tab) {
 
 /**
  * @param {import('./ui.js').UI} ui
- * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {(ui: import('./ui.js').UI, elements: import('phaser').GameObjects.GameObject[], el: import('phaser').GameObjects.GameObject) => void} pushChrome
+ * @param {(ui: import('./ui.js').UI, el: import('phaser').GameObjects.GameObject) => void} pushChrome
  */
-export function buildOptionsTabs(ui, elements, pushChrome) {
+export function buildOptionsTabs(ui, pushChrome) {
     const scene = ui.scene;
     const panel = UI_LAYOUT.optionsPanel;
     ui._optionsTabButtons = [];
     ui._optionsActiveTab = 'preferences';
 
-    const pushTab = (el) => pushChrome(ui, elements, el);
+    const pushTab = (el) => pushChrome(ui, el);
 
     TABS.forEach(({ id, label, cxKey }) => {
         const cx = panel[cxKey];

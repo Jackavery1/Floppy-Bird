@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { formatDailyStartBanner } from './dailyChallenge.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudBannerFill, hudTextStyle } from './designTokens.js';
 import { showFlash, showTransientBanner } from './uiHudBannerCore.js';
 
@@ -52,15 +53,17 @@ export function showScoreStreak(ui, score) {
     );
 }
 
-export function showDailyGoalBrief(ui, goal) {
+/** @param {import('./ui.js').UI} ui @param {number} goal @param {{ skinLabel?: string, patternTag?: string }} [brief] */
+export function showDailyGoalBrief(ui, goal, brief = {}) {
     showTransientBanner(
         ui,
         '_dailyBriefBanner',
-        `OBJECTIF : ${goal} pts`,
+        formatDailyStartBanner({ ...brief, goal }),
         hudTextStyle({
-            fontSize: '13px',
+            fontSize: '12px',
             fill: hudBannerFill('badgeDaily'),
             fontStyle: 'bold',
+            align: 'center',
         })
     );
 }

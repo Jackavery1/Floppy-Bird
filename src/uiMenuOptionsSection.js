@@ -13,16 +13,15 @@ export function setOptionsSectionVisible(section, visible) {
  * Conteneur Phaser pour un onglet Options — masquage atomique de toute la section.
  * @param {import('./ui.js').UI} ui
  * @param {import('phaser').Scene} scene
- * @param {import('phaser').GameObjects.GameObject[]} elements
  * @param {'_optionsControlsElements' | '_optionsSettingsElements'} sectionKey
  */
-export function beginOptionsSection(ui, scene, elements, sectionKey) {
+export function beginOptionsSection(ui, scene, sectionKey) {
     const container = scene.add.container(0, 0);
     container.setDepth(DEPTH.PANEL_FRAME);
     container.setVisible(false);
+    ui._optionsPanelRoot?.add(container);
 
     const section = (ui[sectionKey] = [container]);
-    elements.push(container);
     ui._optionsPanelElements.push(container);
 
     return {

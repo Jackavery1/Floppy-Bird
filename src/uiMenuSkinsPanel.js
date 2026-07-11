@@ -36,9 +36,9 @@ export function refreshSkinsButtonLabel(ui) {
     ui._skinsPanelController?.refreshButtonLabel();
 }
 
-/** @param {import('./ui.js').UI} ui @param {boolean} open */
-export function setMenuSkinsOpen(ui, open) {
-    ui._skinsPanelController?.setOpen(open);
+/** @param {import('./ui.js').UI} ui @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
+export function setMenuSkinsOpen(ui, open, panelOpts) {
+    ui._skinsPanelController?.setOpen(open, panelOpts);
 }
 
 /** @param {import('./ui.js').UI} ui */

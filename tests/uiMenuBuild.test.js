@@ -70,14 +70,13 @@ describe('uiMenuBuild', () => {
         expect(ui._muteHit).toBeUndefined();
     });
 
-    it('buildMenuOptions crée le bouton et le panneau repliable', async () => {
+    it('buildMenuOptions crée le bouton sans construire le panneau tant qu’il est fermé', async () => {
         const { buildMenuOptions } = await import('../src/uiMenuOptions.js');
         buildMenuOptions(ui, elements, layout);
         expect(ui._optionsBtnLabel).toBeTruthy();
         expect(ui._optionsBtnHit).toBeTruthy();
-        expect(ui._optionsBackdrop).toBeTruthy();
-        expect(ui._trainingHit).toBeTruthy();
-        const hits = scene.add.rectangle.mock.calls.filter(([, , , h]) => h === MIN_TOUCH);
-        expect(hits.length).toBeGreaterThanOrEqual(4);
+        expect(ui._optionsBackdrop).toBeFalsy();
+        expect(ui._trainingHit).toBeFalsy();
+        expect(ui._optionsPanelBuilt).toBe(false);
     });
 });

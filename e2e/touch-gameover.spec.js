@@ -19,12 +19,12 @@ test.describe('touch game over', () => {
         await replayFromGameOver(page, usesTouch);
     });
 
-    test('game over défi quotidien affiche DÉFI', async ({ page }, testInfo) => {
+    test('game over défi quotidien affiche REJOUER', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         await waitForGameReady(page);
         await forceGameOver(page, { isDaily: true });
         await expectGameState(page, 'gameover');
-        await expect.poll(() => getGameOverRestartLabel(page)).toBe('DÉFI');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('REJOUER');
     });
 
     test('rejoue via bouton a11y DOM game over', async ({ page }, testInfo) => {

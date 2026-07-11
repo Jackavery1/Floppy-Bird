@@ -44,8 +44,23 @@ export function addReliefText(scene, x, y, text, style, depth, relief = {}) {
 }
 
 export function diffLabelColor(difficulty, diff) {
-    if (difficulty === diff) return DESIGN_TOKENS.contourHud;
+    if (difficulty === diff) return DESIGN_TOKENS.texteBoutonJaune;
     return GAME_CONFIG.difficultyColors[diff] ?? DESIGN_TOKENS.texteHud;
+}
+
+/** @param {import('phaser').GameObjects.Text} label @param {string} difficulty @param {string} diff */
+export function syncDifficultyButtonLabel(label, difficulty, diff) {
+    const selected = difficulty === diff;
+    label.setColor(diffLabelColor(difficulty, diff));
+    if (selected) {
+        label.setStroke?.(DESIGN_TOKENS.contourMenu);
+        label.setStrokeThickness?.(2);
+        label.setShadow?.(0, 0, '#000000', 0, false, false);
+    } else {
+        label.setStroke?.(DESIGN_TOKENS.contourHud);
+        label.setStrokeThickness?.(4);
+        label.setShadow?.(0, 1, DESIGN_TOKENS.contourHud, 3, true, false);
+    }
 }
 
 export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {

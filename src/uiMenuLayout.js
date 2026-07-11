@@ -2,12 +2,12 @@ import { GAME_CONFIG, DIFFICULTY_ORDER } from './config.js';
 import {
     computeMenuLayout,
     diffButtonCenter,
-    diffLabelColor,
     DIFF_BTN_ACTIVE,
     DIFF_BTN_HOVER,
     DIFF_BTN_IDLE,
     UI_LAYOUT,
 } from './uiLayout.js';
+import { syncDifficultyButtonLabel } from './uiText.js';
 
 export function drawDiffButtons(ui, difficulty, layout) {
     if (!ui._diffBtnGraphics) return;
@@ -38,7 +38,7 @@ export function applyMenuLayout(ui, difficulty) {
     drawDiffButtons(ui, difficulty, layout);
     ui._diffBtnLabels?.forEach(({ label, diff, hitZone }, i) => {
         label.setY(layout.difficulty);
-        label.setColor(diffLabelColor(ui._currentDifficulty, diff));
+        syncDifficultyButtonLabel(label, ui._currentDifficulty, diff);
         hitZone.setY(layout.difficulty);
         hitZone.x = diffButtonCenter(i);
     });
@@ -47,6 +47,7 @@ export function applyMenuLayout(ui, difficulty) {
     ui._dailyBtnLabel?.setY(layout.dailyBtn);
     ui._dailyBtnBg?.setY(layout.dailyBtn);
     ui._dailyBtnHit?.setY(layout.dailyBtn);
+    ui._dailyBtnSubtitle?.setY(layout.dailySubtitle);
     const rowY = layout.menuRow;
     ui._scoresBtnLabel?.setY(rowY);
     ui._scoresBtnHit?.setY(rowY);

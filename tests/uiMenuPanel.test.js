@@ -93,4 +93,28 @@ describe('uiMenuPanel', () => {
         controller.setOpen(false);
         expect(el.setVisible).not.toHaveBeenCalled();
     });
+
+    it('setOpen({ force: true }) referme visuellement même si le flag est déjà fermé', () => {
+        const el = { setVisible: vi.fn(), setAlpha: vi.fn() };
+        const onClose = vi.fn();
+        const ui = {
+            scene: { tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
+            _scoresOpen: false,
+            _scoresBackdrop: { setVisible: vi.fn() },
+            _scoresPanelElements: [el],
+            _scoresBtnLabel: { setText: vi.fn() },
+        };
+        const controller = createMenuPanelController(ui, {
+            openKey: '_scoresOpen',
+            backdropKey: '_scoresBackdrop',
+            panelElementsKey: '_scoresPanelElements',
+            btnLabelKey: '_scoresBtnLabel',
+            buttonLabelFn: () => 'SCORES',
+            onClose,
+        });
+        controller.setOpen(false, { force: true });
+        expect(el.setVisible).toHaveBeenCalledWith(false);
+        expect(ui._scoresBackdrop.setVisible).toHaveBeenCalledWith(false);
+        expect(onClose).toHaveBeenCalledWith(ui);
+    });
 });

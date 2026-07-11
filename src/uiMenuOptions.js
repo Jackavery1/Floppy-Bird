@@ -8,9 +8,10 @@ import {
     setOptionsPanelAccessibility,
 } from './uiDomAccessibility.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
-import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
+import { buildMenuPanelBackdrop, buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
 import {
     applyHardcoreLabel,
+    attachOptionsBackdropToRoot,
     buildOptionsContent,
     setOptionsContentVisible,
 } from './uiMenuOptionsContent.js';
@@ -29,6 +30,54 @@ const PANEL_CFG = {
     btnStroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
     labelStroke: DESIGN_TOKENS.contourOptions,
 };
+
+const OPTIONS_PANEL_THEME = {
+    fill: DESIGN_TOKENS.fondPanneauGameOver,
+    stroke: DESIGN_TOKENS.boutonOptionsStroke,
+};
+
+/** @param {import('./ui.js').UI} ui */
+export function teardownOptionsPanel(ui) {
+    ui._optionsPanelRoot?.destroy?.();
+    if (!ui._optionsPanelRoot && ui._optionsBackdrop) {
+        ui._optionsBackdrop.frame?.destroy?.();
+        ui._optionsBackdrop.hit?.destroy?.();
+    }
+    ui._optionsPanelRoot = null;
+    ui._optionsBackdrop = null;
+    ui._optionsPanelBuilt = false;
+    ui._optionsPanelElements = [];
+    ui._optionsChromeElements = [];
+    ui._optionsControlsElements = [];
+    ui._optionsSettingsElements = [];
+    ui._optionsTabButtons = [];
+    ui._trainingLabel = null;
+    ui._hardcoreLabel = null;
+    ui._trainingIcon = null;
+    ui._hardcoreIcon = null;
+    ui._trainingSpeedLabel = null;
+    ui._trainingSpeedHit = null;
+    ui._optionsCloseHit = null;
+}
+
+/** @param {import('./ui.js').UI} ui */
+export function ensureOptionsPanelBuilt(ui) {
+    if (ui._optionsPanelBuilt) return;
+    const elements = ui._menuBuildElements;
+    if (!elements || !ui.scene) return;
+
+    const panel = UI_LAYOUT.optionsPanel;
+    ui._optionsBackdrop = buildMenuPanelBackdrop(ui.scene, panel, OPTIONS_PANEL_THEME);
+    buildOptionsContent(ui, elements);
+    attachOptionsBackdropToRoot(ui);
+
+    const ctx = buildMetaContext(ui.scene);
+    const unlocked = isHardcoreUnlocked(ctx);
+    applyHardcoreLabel(ui, ui.scene.hardcoreMode, unlocked);
+    refreshHardcoreLockState(ui);
+
+    ui._optionsPanelBuilt = true;
+}
 
 const controllerCfg = {
     ...PANEL_CFG,
@@ -61,9 +110,9 @@ export function refreshHardcoreLockState(ui) {
     }
 }
 
-/** @param {import('./ui.js').UI} ui @param {boolean} open */
-export function setMenuOptionsOpen(ui, open) {
-    ui._optionsPanelController?.setOpen(open);
+/** @param {import('./ui.js').UI} ui @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
+export function setMenuOptionsOpen(ui, open, panelOpts) {
+    ui._optionsPanelController?.setOpen(open, panelOpts);
 }
 
 /** @param {import('./ui.js').UI} ui */
@@ -73,19 +122,17 @@ export function toggleMenuOptions(ui) {
 
 /** @param {import('./ui.js').UI} ui @param {import('phaser').GameObjects.GameObject[]} elements @param {ReturnType<import('./uiLayout.js').computeMenuLayout>} layout */
 export function buildMenuOptions(ui, elements, layout) {
-    const panel = UI_LAYOUT.optionsPanel;
+    teardownOptionsPanel(ui);
+    ui._menuBuildElements = elements;
+    ui._ensureOptionsPanelBuilt = () => ensureOptionsPanelBuilt(ui);
     ui._optionsPanelController = createMenuPanelController(ui, controllerCfg);
     buildMenuPanelShell(ui, elements, ui._optionsPanelController, {
         ...PANEL_CFG,
+        deferPanelContent: true,
         setContentVisible: setOptionsContentVisible,
         btnLayout: { cx: layout.optionsBtn, cy: layout.menuRow, width: layout.menuBtnW },
-        panelLayout: panel,
-        panelTheme: {
-            fill: DESIGN_TOKENS.fondPanneauGameOver,
-            stroke: DESIGN_TOKENS.boutonOptionsStroke,
-        },
-        buildContent: (targetUi, targetElements) => {
-            buildOptionsContent(targetUi, targetElements);
-        },
+        panelLayout: UI_LAYOUT.optionsPanel,
+        panelTheme: OPTIONS_PANEL_THEME,
+        buildContent: () => {},
     });
 }

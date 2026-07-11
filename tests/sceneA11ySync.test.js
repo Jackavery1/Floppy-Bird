@@ -14,16 +14,23 @@ vi.mock('../src/uiDomAccessibility.js', () => ({
     syncAccessibilityLayer: vi.fn(),
 }));
 
+vi.mock('../src/uiDomAccessibilityFlows.js', () => ({
+    setOptionsPanelAccessibility: vi.fn(),
+}));
+
 describe('sceneA11ySync', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
 
-    it('openMenuAccessibility configure le menu et annonce', async () => {
-        const { setupMenuAccessibility, announceAccessibility } =
+    it('openMenuAccessibility masque tout puis configure le menu', async () => {
+        const { hideAllAccessibilityControls, setupMenuAccessibility, announceAccessibility } =
             await import('../src/uiDomAccessibility.js');
+        const { setOptionsPanelAccessibility } = await import('../src/uiDomAccessibilityFlows.js');
         const scene = { game: { canvas: null } };
         openMenuAccessibility(scene);
+        expect(hideAllAccessibilityControls).toHaveBeenCalled();
+        expect(setOptionsPanelAccessibility).toHaveBeenCalledWith(scene, false);
         expect(setupMenuAccessibility).toHaveBeenCalledWith(scene);
         expect(announceAccessibility).toHaveBeenCalledWith('Menu principal');
     });

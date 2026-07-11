@@ -37,12 +37,4 @@ export {
 
 export { DEPTH } from './uiDepth.js';
 
-export {
-    addCenteredText,
-    addReliefText,
-    diffLabelColor,
-    fitTitleFontSize,
-    fitLabelFontSize,
-    applyFittedLabel,
-    addFittedCenteredText,
-} from './uiText.js';
+export { addCenteredText, diffLabelColor, fitTitleFontSize, applyFittedLabel } from './uiText.js';

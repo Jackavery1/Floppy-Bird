@@ -13,7 +13,7 @@ export {
     showSpeedBoostPreview,
     showDifficultyEscalationPreview,
     showCoyoteHint,
-    showHardcoreInvincibilityHint,
+    showCoyoteLowGraceHint,
     showFlash,
 } from './uiHudBanners.js';
 

@@ -7,4 +7,4 @@ export {
     showSpeedBoostPreview,
     showDifficultyEscalationPreview,
 } from './uiHudBannersDifficulty.js';
-export { showCoyoteHint, showHardcoreInvincibilityHint } from './uiHudBannersHints.js';
+export { showCoyoteHint, showCoyoteLowGraceHint } from './uiHudBannersHints.js';

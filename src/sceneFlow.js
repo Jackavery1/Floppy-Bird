@@ -17,12 +17,11 @@ import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
-import { closeAllMenuPanels, prepareMenuRebuild } from './uiMenu.js';
+import { closeMenuPanelsForRoundStart, openMainMenu } from './sceneMenuSync.js';
 import {
     enterPauseAccessibility,
     exitPauseAccessibility,
     hideAccessibilityForRoundStart,
-    openMenuAccessibility,
 } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 
@@ -56,16 +55,7 @@ function clearPauseOverlay(scene) {
 /** @param {SceneContext} scene */
 export function showMenu(scene) {
     clearPauseOverlay(scene);
-    prepareMenuRebuild(scene.ui);
-    scene.state = GAME_STATE.MENU;
-    syncShellGameState(GAME_STATE.MENU);
-    scene.playMode = 'classic';
-    scene.dailyChallengeMode = false;
-    scene.round.score = 0;
-
-    const elements = scene.ui.showMenu(scene.difficulty, scene.trainingMode, scene.hardcoreMode);
-    scene.ui.setOverlay('menu', elements);
-    openMenuAccessibility(scene);
+    openMainMenu(scene);
 }
 
 /** @param {SceneContext} scene */
@@ -74,7 +64,7 @@ export function startGame(scene) {
     scene.dailyChallengeMode = false;
     if (scene.state === GAME_STATE.MENU) {
         hideAccessibilityForRoundStart();
-        closeAllMenuPanels(scene.ui, { force: true });
+        closeMenuPanelsForRoundStart(scene);
         scene.ui.clearOverlay('menu');
         beginRound(scene, { resetBird: true });
     } else if (scene.state === GAME_STATE.GAME_OVER) {
@@ -95,7 +85,7 @@ export function startDailyChallenge(scene) {
     saveHardcoreEnabled(false);
     if (scene.state === GAME_STATE.MENU) {
         hideAccessibilityForRoundStart();
-        closeAllMenuPanels(scene.ui, { force: true });
+        closeMenuPanelsForRoundStart(scene);
         scene.ui.clearOverlay('menu');
     } else {
         hideAccessibilityForRoundStart();

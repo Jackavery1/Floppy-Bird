@@ -34,8 +34,10 @@ describe('uiText', () => {
         expect(label.setDepth).toHaveBeenCalledWith(52);
     });
 
-    it('diffLabelColor met le bouton actif en noir', () => {
-        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(DESIGN_TOKENS.contourHud);
+    it('diffLabelColor met le bouton actif en sombre sur fond jaune', () => {
+        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
+            DESIGN_TOKENS.texteBoutonJaune
+        );
     });
 
     it('fitLabelFontSize réduit jusqu’à tenir dans la largeur max', () => {

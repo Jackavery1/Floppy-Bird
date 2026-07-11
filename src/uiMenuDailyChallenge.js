@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
-import { formatDailyMenuButtonLabel } from './dailyChallenge.js';
-import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
+import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
@@ -18,6 +18,11 @@ const DAILY_BTN_STYLE = panelChromeTextStyle({
     fill: DESIGN_TOKENS.texteMenu,
     fontStyle: 'bold',
     stroke: DESIGN_TOKENS.badgeDailyContour,
+});
+
+const DAILY_SUBTITLE_STYLE = menuHomeTextStyle({
+    fontSize: '10px',
+    fill: DESIGN_TOKENS.badgeDailySecondary,
 });
 
 export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
@@ -50,6 +55,23 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     );
     elements.push(ui._dailyBtnLabel);
 
+    ui._dailyBtnSubtitle = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        layout.dailySubtitle,
+        formatDailyMenuSubtitle(difficulty),
+        DAILY_SUBTITLE_STYLE,
+        DEPTH.MENU_BTN_BG
+    );
+    applyFittedLabel(
+        ui.scene,
+        ui._dailyBtnSubtitle,
+        formatDailyMenuSubtitle(difficulty),
+        DAILY_SUBTITLE_STYLE,
+        DAILY_BTN_TEXT_MAX_WIDTH
+    );
+    elements.push(ui._dailyBtnSubtitle);
+
     ui._dailyBtnHit = ui.scene.add.rectangle(
         GAME_CONFIG.centerX,
         layout.dailyBtn,
@@ -75,11 +97,21 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
 
 export function refreshDailyChallengeButton(ui, difficulty) {
     if (!ui._dailyBtnLabel) return;
+    const label = formatDailyMenuButtonLabel(difficulty);
     applyFittedLabel(
         ui.scene,
         ui._dailyBtnLabel,
-        formatDailyMenuButtonLabel(difficulty),
+        label,
         DAILY_BTN_STYLE,
+        DAILY_BTN_TEXT_MAX_WIDTH
+    );
+    if (!ui._dailyBtnSubtitle) return;
+    const subtitle = formatDailyMenuSubtitle(difficulty);
+    applyFittedLabel(
+        ui.scene,
+        ui._dailyBtnSubtitle,
+        subtitle,
+        DAILY_SUBTITLE_STYLE,
         DAILY_BTN_TEXT_MAX_WIDTH
     );
 }

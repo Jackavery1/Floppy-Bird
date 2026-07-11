@@ -155,11 +155,13 @@ export function createMenuPanelController(ui, cfg) {
         }
     }
 
-    function setOpen(open) {
+    /** @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
+    function setOpen(open, panelOpts = {}) {
+        const force = Boolean(panelOpts.force);
         const wasOpen = ui[cfg.openKey];
-        if (wasOpen === open) return;
+        if (!force && wasOpen === open) return;
         ui[cfg.openKey] = open;
-        ui[cfg.backdropKey]?.setVisible(open);
+        ui[cfg.backdropKey]?.setVisible?.(open);
         if (cfg.setContentVisible) {
             cfg.setContentVisible(ui, open);
         } else {
@@ -167,7 +169,7 @@ export function createMenuPanelController(ui, cfg) {
         }
         refreshButtonLabel();
         if (open && cfg.onOpen) cfg.onOpen(ui);
-        if (wasOpen && !open && cfg.onClose) cfg.onClose(ui);
+        if (!open && cfg.onClose && (wasOpen || force)) cfg.onClose(ui);
         syncMenuChromeVisibility(ui);
     }
 
@@ -186,7 +188,7 @@ export function createMenuPanelController(ui, cfg) {
 /**
  * @param {import('./ui.js').UI} ui
  * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {{ refreshButtonLabel: () => void, setOpen: (open: boolean) => void, toggle: () => void }} controller
+ * @param {{ refreshButtonLabel: () => void, setOpen: (open: boolean, panelOpts?: { force?: boolean }) => void, toggle: () => void }} controller
  * @param {{
  *   openKey: string,
  *   backdropKey: string,
@@ -233,15 +235,19 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
     ui[cfg.btnLabelKey] = btn.label;
     ui[cfg.btnHitKey] = btn.hit;
 
-    ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout, cfg.panelTheme);
-    elements.push(ui[cfg.backdropKey].frame, ui[cfg.backdropKey].hit);
+    if (!cfg.deferPanelContent) {
+        ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout, cfg.panelTheme);
+        if (!cfg.attachBackdropToRoot) {
+            elements.push(ui[cfg.backdropKey].frame, ui[cfg.backdropKey].hit);
+        }
 
-    cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
-    if (cfg.setContentVisible) {
-        cfg.setContentVisible(ui, false);
-    } else {
-        setMenuPanelVisible(ui[cfg.panelElementsKey], false);
+        cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
+        if (cfg.setContentVisible) {
+            cfg.setContentVisible(ui, false);
+        } else {
+            setMenuPanelVisible(ui[cfg.panelElementsKey], false);
+        }
+        ui[cfg.backdropKey]?.setVisible(false);
     }
-    ui[cfg.backdropKey]?.setVisible(false);
     ui[cfg.openKey] = false;
 }

@@ -3,7 +3,7 @@ import { hasCoyoteGrace } from './sceneCoyote.js';
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
-export function resolveTrainingTimeScale(scene) {
+function resolveTrainingTimeScale(scene) {
     return scene.trainingMode ? scene.trainingTimeScale : 1;
 }
 
