@@ -206,10 +206,14 @@ test.describe('clavier mobile portrait (couche a11y)', () => {
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
-        await page.locator('#a11y-jump').focus();
+        const jumpBtn = page.locator('#a11y-jump');
+        await expect(jumpBtn).toBeVisible();
+        await jumpBtn.focus();
+        await expect(jumpBtn).toBeFocused();
         await page.keyboard.press('Enter');
-        const equity = await getGameplayEquity(page);
-        expect(equity?.jumpBufferFrames).toBeGreaterThan(0);
+        await expect
+            .poll(async () => (await getGameplayEquity(page))?.jumpBufferFrames ?? 0)
+            .toBeGreaterThan(0);
     });
 });
 

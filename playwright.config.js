@@ -6,7 +6,7 @@ function previewBaseUrl() {
         return 'http://127.0.0.1:4173';
     }
     const path = basePath.startsWith('/') ? basePath : `/${basePath}`;
-    const normalized = path.endsWith('/') ? path.slice(0, -1) : path;
+    const normalized = path.endsWith('/') ? path : `${path}/`;
     return `http://127.0.0.1:4173${normalized}`;
 }
 

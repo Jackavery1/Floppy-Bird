@@ -18,9 +18,24 @@ test.describe('PWA hors ligne', () => {
         await expect
             .poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller))
             .toBe(true);
+        await page.waitForFunction(
+            async () => {
+                await navigator.serviceWorker.ready;
+                const names = await caches.keys();
+                for (const name of names) {
+                    const cache = await caches.open(name);
+                    const keys = await cache.keys();
+                    if (keys.some((req) => req.url.includes('index.html'))) return true;
+                }
+                return false;
+            },
+            null,
+            { timeout: 30_000 }
+        );
 
+        const url = new URL('./index.html', page.url()).href;
         await context.setOffline(true);
-        await page.reload({ waitUntil: 'domcontentloaded' });
+        await page.goto(url, { waitUntil: 'domcontentloaded' });
         await page.locator('#loading').waitFor({ state: 'hidden', timeout: 20_000 });
         await waitForTestSeamReady(page, 20_000);
         await expect(page.locator('#game-container canvas')).toBeVisible();
