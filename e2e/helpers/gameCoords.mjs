@@ -91,8 +91,18 @@ export async function expectGameState(page, state, timeout = 8_000) {
 
 /** @param {boolean} usesTouch */
 export async function startPlayingFromMenu(page, usesTouch) {
-    const { menuStart } = TOUCH_TARGETS;
-    await pointerGameCoord(page, menuStart.x, menuStart.y, usesTouch);
+    if (!usesTouch) {
+        await page.keyboard.press('Space');
+        await expectGameState(page, 'playing');
+        return;
+    }
+    const a11yStart = page.locator('#a11y-start');
+    if (await a11yStart.isVisible()) {
+        await a11yStart.click();
+    } else {
+        const { menuStart } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuStart.x, menuStart.y, true, { force: true });
+    }
     await expectGameState(page, 'playing');
 }
 

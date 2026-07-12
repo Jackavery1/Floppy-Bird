@@ -124,3 +124,34 @@ export function cycleTrainingSpeedTimes(page, times = 4) {
         return out;
     }, times);
 }
+
+/** @param {import('@playwright/test').Page} page @param {{ hardcore?: boolean, training?: boolean }} [modes] */
+export function restartRoundWithModes(page, modes = {}) {
+    return page.evaluate((m) => window.__FLOPPY_TEST__?.restartRoundWithModes?.(m), modes);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function runCoyoteGapExitScenario(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.runCoyoteGapExitScenario?.());
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function holdBirdAtCenter(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.holdBirdAtCenter?.());
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} spawnDelayMs @param {number} invincibilityMs */
+export async function keepBirdAliveForPipeSpawn(page, spawnDelayMs, invincibilityMs) {
+    await page.waitForTimeout(invincibilityMs - 50);
+    const remaining = spawnDelayMs - (invincibilityMs - 50) + 600;
+    for (let elapsed = 0; elapsed < remaining; elapsed += 180) {
+        await holdBirdAtCenter(page);
+        await requestJump(page);
+        await page.waitForTimeout(180);
+    }
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [deltaMs] */
+export function advancePipeSpawnWait(page, deltaMs) {
+    return page.evaluate((ms) => window.__FLOPPY_TEST__?.advancePipeSpawnWait?.(ms), deltaMs);
+}

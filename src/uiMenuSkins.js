@@ -195,6 +195,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
     ui._skinsTabElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
     ui._skinsCloseHit = closeBtn.hit;
+    ui._skinsClosePaint = closeBtn.paint;
 
     refreshSkinsTab(ui);
 }

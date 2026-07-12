@@ -23,6 +23,12 @@ export function collidesWithPipeGroup(pipes, type, birdBounds, pipeBodyWidth) {
     return false;
 }
 
+/** Score when bird hitbox left edge clears the pipe trailing (visual) edge. */
+export function birdClearedPipeForScore(bird, pipeX, pipeWidth) {
+    const bounds = bird.getBounds();
+    return bounds.x > pipeX + pipeWidth / 2;
+}
+
 /** @param {{ x: number, y: number, width: number, height: number }} birdBounds @param {number} topY @param {number} bottomY */
 export function birdVerticallyInGap(birdBounds, topY, bottomY) {
     const birdCy = birdBounds.y + birdBounds.height / 2;

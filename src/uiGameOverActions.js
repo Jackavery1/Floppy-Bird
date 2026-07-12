@@ -5,6 +5,7 @@ import {
     panelChromeTextStyle,
     yellowChromeButtonTextStyle,
 } from './designTokens.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibility.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,
@@ -13,11 +14,13 @@ import {
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_HOVER,
     GAME_OVER_RESTART_BTN_WIDTH,
+    GAME_OVER_RESTART_BTN_HEIGHT,
     gameOverMenuBtnY,
     gameOverRestartBtnY,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
     MIN_TOUCH,
+    MIN_CTA_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
@@ -39,14 +42,15 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     const elements = [];
     const restartBtnY = gameOverRestartBtnY(P);
     const restartLabel = gameOverRestartLabel(isDaily);
+    ui._gameOverRestartBtnY = restartBtnY;
 
     const restartBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     restartBtnShadow.fillStyle(0x000000, 0.35);
     restartBtnShadow.fillRoundedRect(
         cx - GAME_OVER_RESTART_BTN_WIDTH / 2,
-        restartBtnY - UI_LAYOUT.menuBtn.height / 2 + 3,
+        restartBtnY - GAME_OVER_RESTART_BTN_HEIGHT / 2 + 3,
         GAME_OVER_RESTART_BTN_WIDTH,
-        UI_LAYOUT.menuBtn.height,
+        GAME_OVER_RESTART_BTN_HEIGHT,
         UI_LAYOUT.menuBtn.radius
     );
     ui._restartBtnGraphics = scene.add.graphics().setDepth(DEPTH.MENU_BTN_BG);
@@ -73,18 +77,17 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         cx,
         restartBtnY,
         GAME_OVER_RESTART_BTN_WIDTH,
-        MIN_TOUCH,
+        MIN_CTA_TOUCH,
         0x000000,
         0
     );
     restartHitZone.setDepth(DEPTH.MENU_HIT);
     restartHitZone.setInteractive({ useHandCursor: true });
-    restartHitZone.on('pointerover', () =>
-        ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_HOVER)
-    );
-    restartHitZone.on('pointerout', () =>
-        ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_COLOR)
-    );
+    bindUnifiedInteractiveFocus(
+        'gameOverRestart',
+        () => ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_HOVER),
+        () => ui.drawGameOverRestartButton(restartBtnY, GAME_OVER_RESTART_BTN_COLOR)
+    ).attachHit(restartHitZone);
     restartHitZone.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         scene.handlePrimaryAction();
@@ -93,6 +96,7 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     elements.push(restartBtnShadow, ui._restartBtnGraphics, restartBtnText, restartHitZone);
 
     const menuBtnY = gameOverMenuBtnY(P);
+    ui._gameOverMenuBtnY = menuBtnY;
     const menuBtnShadow = scene.add.graphics().setDepth(DEPTH.MENU_RAISED);
     const { menuBtn } = UI_LAYOUT;
     menuBtnShadow.fillStyle(0x000000, 0.35);
@@ -121,8 +125,11 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
     const menuHitZone = scene.add.rectangle(cx, menuBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0);
     menuHitZone.setDepth(DEPTH.MENU_HIT);
     menuHitZone.setInteractive({ useHandCursor: true });
-    menuHitZone.on('pointerover', () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_HOVER));
-    menuHitZone.on('pointerout', () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_COLOR));
+    bindUnifiedInteractiveFocus(
+        'gameOverMenu',
+        () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_HOVER),
+        () => ui.drawGameOverMenuButton(menuBtnY, MENU_BTN_COLOR)
+    ).attachHit(menuHitZone);
     menuHitZone.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         scene.returnToMenu();

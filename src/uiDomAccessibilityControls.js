@@ -1,11 +1,45 @@
 import { CONTROL_DEFS } from './uiDomAccessibilityDefs.js';
-import { getDocument, handlers, visibleControls } from './uiDomAccessibilityState.js';
+import {
+    blurHandlers,
+    focusHandlers,
+    getDocument,
+    handlers,
+    visibleControls,
+} from './uiDomAccessibilityState.js';
 
 /** @param {keyof typeof CONTROL_DEFS} key @param {() => void} handler */
 export function bindAccessibilityAction(key, handler) {
     const def = CONTROL_DEFS[key];
     if (!def) return;
     handlers[def.id] = handler;
+}
+
+/** @param {keyof typeof CONTROL_DEFS} key @param {() => void} [onFocus] @param {() => void} [onBlur] */
+export function bindAccessibilityFocus(key, onFocus, onBlur) {
+    const def = CONTROL_DEFS[key];
+    if (!def) return;
+    if (onFocus) focusHandlers[def.id] = onFocus;
+    else delete focusHandlers[def.id];
+    if (onBlur) blurHandlers[def.id] = onBlur;
+    else delete blurHandlers[def.id];
+}
+
+/**
+ * Lie le même feedback visuel au focus clavier DOM et au survol Phaser.
+ * @param {keyof typeof CONTROL_DEFS} key
+ * @param {() => void} onActive
+ * @param {() => void} onIdle
+ */
+export function bindUnifiedInteractiveFocus(key, onActive, onIdle) {
+    bindAccessibilityFocus(key, onActive, onIdle);
+    return {
+        /** @param {{ on?: (event: string, fn: () => void) => void } | null | undefined} hit */
+        attachHit(hit) {
+            if (!hit?.on) return;
+            hit.on('pointerover', onActive);
+            hit.on('pointerout', onIdle);
+        },
+    };
 }
 
 /** @param {keyof typeof CONTROL_DEFS} key @param {boolean} visible */

@@ -1,7 +1,13 @@
 import { GAME_CONFIG } from './config.js';
 import { CONTROL_DEFS } from './uiDomAccessibilityDefs.js';
 import { announceAccessibility } from './uiDomAccessibilityControls.js';
-import { getDocument, handlers, visibleControls } from './uiDomAccessibilityState.js';
+import {
+    blurHandlers,
+    focusHandlers,
+    getDocument,
+    handlers,
+    visibleControls,
+} from './uiDomAccessibilityState.js';
 
 function scaledSize(def, scaleX, scaleY) {
     const baseW = def.width ?? def.size ?? 44;
@@ -34,6 +40,10 @@ export function initAccessibilityLayer(doc = getDocument()) {
         });
         btn.addEventListener('focus', () => {
             announceAccessibility(def.label, doc);
+            focusHandlers[def.id]?.();
+        });
+        btn.addEventListener('blur', () => {
+            blurHandlers[def.id]?.();
         });
         layer.appendChild(btn);
     }

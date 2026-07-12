@@ -91,13 +91,15 @@ export function beginRound(scene, { resetBird = false } = {}) {
     });
 
     ensurePipeTextures(scene);
+    scene.state = GAME_STATE.PLAYING;
+    syncShellGameState(GAME_STATE.PLAYING);
+    scene.time.paused = false;
     scheduleFirstPipe(scene);
 
     if (!scene.hardcoreMode) {
         startSpawnInvincibility(scene);
     } else {
-        const steps = GAME_CONFIG.round.hardcoreSpawnInvincibilitySteps;
-        startSpawnInvincibility(scene, steps[0]);
+        startSpawnInvincibility(scene, GAME_CONFIG.round.hardcoreSpawnInvincibilityMs);
     }
     applyTrainingTimeScale(scene);
     showTutorialForProgress(scene);
@@ -115,8 +117,4 @@ export function beginRound(scene, { resetBird = false } = {}) {
     } else if (scene.playMode === 'daily') {
         scene.ghost.beginRound({ record: false });
     }
-
-    scene.time.paused = false;
-    scene.state = GAME_STATE.PLAYING;
-    syncShellGameState(GAME_STATE.PLAYING);
 }

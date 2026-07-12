@@ -2,6 +2,8 @@ import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 
 export const MIN_TOUCH = 44;
+/** CTA primaires (démarrer, sauter, rejouer) — recommandation Material 48 px. */
+export const MIN_CTA_TOUCH = 48;
 
 /** Grille spacing 4 px — référence layout menu / HUD. */
 export const SPACING = Object.freeze({
@@ -40,7 +42,7 @@ export function gameOverMenuBtnY(panel = GAME_OVER_PANEL) {
 
 /** @param {{ y: number, h: number }} [panel] */
 export function gameOverRestartBtnY(panel = GAME_OVER_PANEL) {
-    return gameOverMenuBtnY(panel) - MIN_TOUCH - SPACING.sm;
+    return gameOverMenuBtnY(panel) - MIN_CTA_TOUCH - SPACING.sm;
 }
 
 /** @param {{ panelTop: number, panelH: number }} panel */
@@ -166,6 +168,7 @@ export const TOUCH_TARGETS = Object.freeze({
 });
 
 export const GAME_OVER_RESTART_BTN_WIDTH = 100;
+export const GAME_OVER_RESTART_BTN_HEIGHT = MIN_CTA_TOUCH;
 export const GAME_OVER_RESTART_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accent);
 export const GAME_OVER_RESTART_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentTitre);
 export const PAUSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonPause);

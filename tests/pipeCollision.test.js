@@ -5,6 +5,7 @@ import {
     collidesWithPipeGroup,
     isBirdInPipeGap,
     birdVerticallyInGap,
+    birdClearedPipeForScore,
 } from '../src/pipeCollision.js';
 
 describe('pipeCollision', () => {
@@ -76,6 +77,23 @@ describe('pipeCollision', () => {
 
         it('ignore les paires incomplètes', () => {
             expect(isBirdInPipeGap(inGap, topPipes, [], 28)).toBe(false);
+        });
+    });
+
+    describe('birdClearedPipeForScore', () => {
+        const bird = {
+            getBounds: () => ({ x: 121, y: 0, width: 22, height: 16 }),
+        };
+
+        it('valide le dépassement complet de la hitbox', () => {
+            expect(birdClearedPipeForScore(bird, 100, 40)).toBe(true);
+        });
+
+        it('rejette tant que le bord gauche n’a pas dépassé le tuyau', () => {
+            const early = {
+                getBounds: () => ({ x: 120, y: 0, width: 22, height: 16 }),
+            };
+            expect(birdClearedPipeForScore(early, 100, 40)).toBe(false);
         });
     });
 });

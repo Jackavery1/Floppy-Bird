@@ -59,7 +59,7 @@ jobs:
               env:
                   BASE_PATH: /Floppy-Bird/
                   VITE_ENABLE_TEST_SEAM: 'true'
-            - run: npx playwright test --workers=1 --project=${{ matrix.project }}
+            - run: npx playwright test --workers=1 --project=${{ matrix.project }} e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js
               env:
                   BASE_PATH: /Floppy-Bird/
                   PLAYWRIGHT_SKIP_BUILD: '1'

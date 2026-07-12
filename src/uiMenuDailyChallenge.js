@@ -1,6 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
-import { DESIGN_TOKENS, hexVersPhaser, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    hexVersPhaser,
+    menuHomeTextStyle,
+    panelChromeTextStyle,
+} from './designTokens.js';
 import {
     addCenteredText,
     applyFittedLabel,
@@ -98,13 +103,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
 export function refreshDailyChallengeButton(ui, difficulty) {
     if (!ui._dailyBtnLabel) return;
     const label = formatDailyMenuButtonLabel(difficulty);
-    applyFittedLabel(
-        ui.scene,
-        ui._dailyBtnLabel,
-        label,
-        DAILY_BTN_STYLE,
-        DAILY_BTN_TEXT_MAX_WIDTH
-    );
+    applyFittedLabel(ui.scene, ui._dailyBtnLabel, label, DAILY_BTN_STYLE, DAILY_BTN_TEXT_MAX_WIDTH);
     if (!ui._dailyBtnSubtitle) return;
     const subtitle = formatDailyMenuSubtitle(difficulty);
     applyFittedLabel(

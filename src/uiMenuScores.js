@@ -125,6 +125,7 @@ export function buildScoresTab(ui, elements, panelElements) {
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
     ui._scoresTabElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);
     ui._scoresCloseHit = closeBtn.hit;
+    ui._scoresClosePaint = closeBtn.paint;
 }
 
 /** @param {DifficultyId} diff @param {boolean} hardcore */

@@ -3,6 +3,7 @@ import {
     computeMenuLayout,
     UI_LAYOUT,
     MIN_TOUCH,
+    MIN_CTA_TOUCH,
     TOUCH_TARGETS,
     panelCloseBtnY,
     PANEL_CLOSE_INSET,
@@ -39,7 +40,7 @@ describe('uiLayout menu', () => {
     it('les zones tactiles du menu ne se chevauchent pas', () => {
         const { menu } = UI_LAYOUT;
         const diffBottom = menu.difficulty + MIN_TOUCH / 2;
-        const startTop = menu.start - MIN_TOUCH / 2;
+        const startTop = menu.start - MIN_CTA_TOUCH / 2;
         expect(startTop).toBeGreaterThanOrEqual(diffBottom);
         const dailyBottom = menu.dailyBtn + MIN_TOUCH / 2;
         const menuRowTop = menu.menuRow - MIN_TOUCH / 2;
@@ -122,7 +123,9 @@ describe('uiLayout menu', () => {
         const menuY = gameOverMenuBtnY();
         const restartY = gameOverRestartBtnY();
         expect(menuY + MIN_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
-        expect(restartY + MIN_TOUCH / 2).toBeLessThanOrEqual(menuY - MIN_TOUCH / 2 - SPACING.sm);
+        expect(restartY + MIN_CTA_TOUCH / 2).toBeLessThanOrEqual(
+            menuY - MIN_CTA_TOUCH / 2 - SPACING.sm
+        );
         expect(TOUCH_TARGETS.gameOverMenu.y).toBe(menuY);
         expect(TOUCH_TARGETS.gameOverRestart.y).toBe(restartY);
     });

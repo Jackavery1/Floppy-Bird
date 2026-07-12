@@ -140,7 +140,25 @@ ui.js (orchestration — façade SceneContext)
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
 
-Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) ; boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) pour les contrôles secondaires ; **48 px** (`MIN_CTA_TOUCH`) pour les CTA primaires (démarrer, sauter, rejouer). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+
+#### Index modules `ui*`
+
+| Module | Rôle |
+| ------ | ---- |
+| `ui.js` / `uiIndex.js` | Façade orchestration ; délégation via `uiFacadeBind.js` |
+| `uiLayout.js` / `uiLayoutConstants.js` | Grille, cibles tactiles, coordonnées `TOUCH_TARGETS` |
+| `uiDepth.js` / `uiText.js` | Z-order Phaser, typo et labels adaptatifs |
+| `uiMenu.js` + `uiMenuBuild.js`, `uiMenuHeader.js`, `uiMenuLayout.js` | Menu principal (structure, intro, rangées) |
+| `uiMenuPanel.js` / `uiMenuPanelChrome.js` | Pilules, panneaux génériques, animations |
+| `uiMenuOptions*.js` | Panneau options (onglets, modes, mute, vitesse entraînement) |
+| `uiMenuScores*.js` / `uiMenuSkins*.js` | Scores, skins et cycle de sélection |
+| `uiMenuDailyChallenge.js` | Défi du jour |
+| `uiHud*.js` | Score, pause, badges difficulté, tutoriel, contrôles in-game |
+| `uiPause.js` | Overlay pause |
+| `uiGameOver*.js` | Panneau game over, actions, confetti, leaderboard |
+| `uiDomAccessibility*.js` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` unifie focus clavier et survol Phaser |
+| `uiAchievementToast.js` / `uiToggleIcons.js` | Toasts trophées, icônes toggle |
 
 ## Data Flow
 

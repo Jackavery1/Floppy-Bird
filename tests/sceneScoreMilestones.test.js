@@ -31,8 +31,12 @@ describe('sceneScoreMilestones', () => {
                 showDifficultyEscalationPreview,
             },
         };
-        const { speedBoostEvery, speedBoostPreviewOffset, gapTightenAfterScore, difficultyPreviewOffset } =
-            GAME_CONFIG.round;
+        const {
+            speedBoostEvery,
+            speedBoostPreviewOffset,
+            gapTightenAfterScore,
+            difficultyPreviewOffset,
+        } = GAME_CONFIG.round;
         handleScoreMilestones(scene, speedBoostEvery - speedBoostPreviewOffset);
         handleScoreMilestones(scene, gapTightenAfterScore - difficultyPreviewOffset);
         expect(showSpeedBoostPreview).toHaveBeenCalled();

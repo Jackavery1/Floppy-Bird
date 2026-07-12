@@ -39,7 +39,7 @@ export const GAME_CONFIG = {
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        jumpBufferFrames: 4,
+        jumpBufferFrames: 6,
         coyoteTimeFrames: 5,
     },
 
@@ -64,7 +64,7 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1250,
         spawnInvincibilityMs: 900,
-        hardcoreSpawnInvincibilitySteps: [700, 625, 550, 475, 425, 375, 325],
+        hardcoreSpawnInvincibilityMs: 700,
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         /** Plafond d’accélération (+3 % / palier) — score 50+ sans montée supplémentaire. */

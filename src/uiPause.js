@@ -3,6 +3,7 @@ import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designToke
 import { pauseResumeHint, menuHint } from './device.js';
 import {
     bindAccessibilityAction,
+    bindUnifiedInteractiveFocus,
     setAccessibilityControlLabel,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
@@ -88,8 +89,11 @@ export function showPause(ui, { onResume, onMenu }) {
     );
     resumeHit.setDepth(DEPTH.PAUSE_HIT);
     resumeHit.setInteractive({ useHandCursor: true });
-    resumeHit.on('pointerover', () => drawResume(MENU_BTN_HOVER));
-    resumeHit.on('pointerout', () => drawResume(MENU_BTN_COLOR));
+    bindUnifiedInteractiveFocus(
+        'pauseResume',
+        () => drawResume(MENU_BTN_HOVER),
+        () => drawResume(MENU_BTN_COLOR)
+    ).attachHit(resumeHit);
     resumeHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         onResume();
@@ -132,8 +136,11 @@ export function showPause(ui, { onResume, onMenu }) {
     );
     menuHit.setDepth(DEPTH.PAUSE_HIT);
     menuHit.setInteractive({ useHandCursor: true });
-    menuHit.on('pointerover', () => drawMenu(MENU_BTN_HOVER));
-    menuHit.on('pointerout', () => drawMenu(MENU_BTN_COLOR));
+    bindUnifiedInteractiveFocus(
+        'pauseMenu',
+        () => drawMenu(MENU_BTN_HOVER),
+        () => drawMenu(MENU_BTN_COLOR)
+    ).attachHit(menuHit);
     menuHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         onMenu();

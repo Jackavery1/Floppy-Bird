@@ -107,11 +107,23 @@ describe('sceneRound', () => {
     });
 
     describe('checkScorePipes', () => {
-        it('incrémente le score et déclenche les effets', async () => {
+        function birdAt(x) {
+            return {
+                x,
+                getBounds: () => ({
+                    x: x - GAME_CONFIG.bird.width / 2 + 3,
+                    y: 0,
+                    width: GAME_CONFIG.bird.width - 6,
+                    height: GAME_CONFIG.bird.height - 4,
+                }),
+            };
+        }
+
+        it('incrémente le score quand la hitbox dépasse le bord droit du tuyau', async () => {
             const { playScoreFeedback } = await import('../src/sceneFeedback.js');
             const pipe = { x: 100, scored: false };
             const scene = {
-                bird: { x: 130 },
+                bird: birdAt(132),
                 round: createRoundState(),
                 pipes: { topPipes: [pipe], pipeWidth: 40, applySpeedForScore: vi.fn() },
                 ui: { updateScore: vi.fn(), showRecordBroken: vi.fn() },
@@ -122,6 +134,20 @@ describe('sceneRound', () => {
             expect(scene.round.score).toBe(1);
             expect(scene.pipes.applySpeedForScore).toHaveBeenCalledWith(1);
             expect(playScoreFeedback).toHaveBeenCalledWith(1);
+        });
+
+        it('n’incrémente pas le score tant que la hitbox n’a pas dépassé le tuyau', () => {
+            const pipe = { x: 100, scored: false };
+            const scene = {
+                bird: birdAt(130),
+                round: createRoundState(),
+                pipes: { topPipes: [pipe], pipeWidth: 40, applySpeedForScore: vi.fn() },
+                ui: { updateScore: vi.fn(), showRecordBroken: vi.fn() },
+                scoreEffects: { show: vi.fn() },
+            };
+            checkScorePipes(scene);
+            expect(pipe.scored).toBe(false);
+            expect(scene.round.score).toBe(0);
         });
     });
 
@@ -184,7 +210,7 @@ describe('sceneRound', () => {
         expect(spawnPipeWave(scene)).toBe(false);
     });
 
-    it('onPipeSpawned rafraîchit la grace hardcore par paliers', () => {
+    it('onPipeSpawned ne renouvelle plus la grace hardcore par tuyau', () => {
         const scene = {
             hardcoreMode: true,
             round: createRoundState(),
@@ -192,7 +218,8 @@ describe('sceneRound', () => {
             bird: { sprite: { setAlpha: vi.fn() } },
         };
         onPipeSpawned(scene, 2);
-        expect(scene.round.spawnInvincible).toBe(true);
+        expect(scene.round.spawnInvincible).toBe(false);
+        expect(scene.time.delayedCall).not.toHaveBeenCalled();
     });
 
     it('onPipeSpawned ignore le mode normal', () => {

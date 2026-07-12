@@ -6,10 +6,12 @@ import { getSkin } from './skins/index.js';
 import { jumpHint } from './device.js';
 import {
     bindAccessibilityAction,
+    bindUnifiedInteractiveFocus,
     setAccessibilityControlLabel,
     setAccessibilityControlVisible,
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
+import { bindPlayingAccessibilityFocusVisuals } from './uiDomAccessibilityFocusVisuals.js';
 import { PLAYING_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
 import { resetHudBannerSlots } from './uiHudBannerStack.js';
 import {
@@ -135,8 +137,11 @@ export function createInGameControls(
     );
     pauseHit.setDepth(DEPTH.PAUSE_ICON_HIT);
     pauseHit.setInteractive({ useHandCursor: true });
-    pauseHit.on('pointerover', () => drawPauseButton(ui, PAUSE_BTN_HOVER));
-    pauseHit.on('pointerout', () => drawPauseButton(ui, PAUSE_BTN_COLOR));
+    bindUnifiedInteractiveFocus(
+        'pause',
+        () => drawPauseButton(ui, PAUSE_BTN_HOVER),
+        () => drawPauseButton(ui, PAUSE_BTN_COLOR)
+    ).attachHit(pauseHit);
     pauseHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         onPause();
@@ -145,6 +150,7 @@ export function createInGameControls(
 
     bindAccessibilityAction('pause', onPause);
     setAccessibilityControlVisible('pause', true);
+    bindPlayingAccessibilityFocusVisuals(ui);
     if (onJump) {
         bindAccessibilityAction('playJump', onJump);
         setAccessibilityControlVisible('playJump', true);

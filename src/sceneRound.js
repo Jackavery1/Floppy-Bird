@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { GAME_STATE } from './gameState.js';
+import { birdClearedPipeForScore } from './pipeCollision.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
 import { playScoreFeedback } from './sceneFeedback.js';
 import { notifyAchievementUnlocks } from './metaAchievements.js';
@@ -94,21 +95,16 @@ export function startSpawnInvincibility(
     });
 }
 
-/** @param {SceneContext} scene @param {number} pipeCount */
-export function onPipeSpawned(scene, pipeCount) {
-    if (!scene.hardcoreMode) return;
-    const steps = GAME_CONFIG.round.hardcoreSpawnInvincibilitySteps;
-    const idx = pipeCount - 1;
-    if (idx < 0 || idx >= steps.length) return;
-    startSpawnInvincibility(scene, steps[idx], pipeCount);
+/** @param {SceneContext} scene @param {number} _pipeCount */
+export function onPipeSpawned(_scene, _pipeCount) {
+    // Grace hardcore : uniquement au début de manche (voir sceneBeginRound).
 }
 
 /** @param {SceneContext} scene */
 export function checkScorePipes(scene) {
     const { round } = scene;
-    const birdX = scene.bird.x;
     scene.pipes.topPipes.forEach((pipe) => {
-        if (!pipe.scored && birdX > pipe.x + scene.pipes.pipeWidth / 2) {
+        if (!pipe.scored && birdClearedPipeForScore(scene.bird, pipe.x, scene.pipes.pipeWidth)) {
             pipe.scored = true;
             round.score++;
             scene.ui.updateScore(round.score);

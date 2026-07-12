@@ -45,6 +45,10 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             rollupOptions: {
+                input: {
+                    main: path.join(root, 'index.html'),
+                    tokens: path.join(root, 'tokens.html'),
+                },
                 output: {
                     manualChunks(id) {
                         const normalized = id.replace(/\\/g, '/');
@@ -106,7 +110,7 @@ export default defineConfig(({ mode }) => {
                         '**/*.{js,css,html,png,json,ico,webp,svg,webmanifest,woff2}',
                     ],
                     navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
-                    navigateFallbackDenylist: [/\/offline\.html$/],
+                    navigateFallbackDenylist: [/\/offline\.html$/, /\/tokens\.html$/],
                 },
                 devOptions: {
                     enabled: true,
@@ -115,6 +119,7 @@ export default defineConfig(({ mode }) => {
             }),
         ],
         test: {
+            testTimeout: 10_000,
             environment: 'node',
             exclude: ['e2e/**', 'node_modules/**'],
             coverage: {

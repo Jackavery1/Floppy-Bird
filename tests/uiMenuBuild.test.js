@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UI } from '../src/ui.js';
 import { DIFFICULTY } from '../src/config.js';
-import { MIN_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
+import { MIN_CTA_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -52,7 +52,7 @@ describe('uiMenuBuild', () => {
         expect(ui._diffBtnGraphics).toBeTruthy();
     });
 
-    it('buildMenuFooter ajoute start et zone tactile 44 px', async () => {
+    it('buildMenuFooter ajoute start et zone tactile CTA 48 px', async () => {
         const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
         const start = buildMenuFooter(ui, elements, layout);
         expect(start).toBe(ui._startText);
@@ -62,7 +62,7 @@ describe('uiMenuBuild', () => {
             expect.any(Number),
             layout.start,
             240,
-            MIN_TOUCH,
+            MIN_CTA_TOUCH,
             expect.any(Number),
             expect.any(Number)
         );

@@ -14,6 +14,7 @@ import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
 import { updateCoyoteTime, updateCoyoteVisual } from './sceneCoyote.js';
 import { triggerDeath as runDeath, updateDying } from './sceneDeath.js';
 import { updateSpawnInvincibilityVisual } from './sceneSpawnFeedback.js';
+import { updateDebugHitboxes } from './debugHitboxes.js';
 import {
     showMenu,
     startGame,
@@ -82,6 +83,7 @@ export class GameScene extends Phaser.Scene {
             }
             updateSpawnInvincibilityVisual(this);
             tickJumpBuffer(this);
+            updateDebugHitboxes(this);
         } else if (shouldUpdateDying(this.state)) {
             updateDying(this);
         }

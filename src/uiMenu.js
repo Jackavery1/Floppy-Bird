@@ -211,6 +211,7 @@ export function updateDifficultyButtons(ui, difficulty) {
     refreshBestScore(ui, difficulty, ui.scene?.hardcoreMode ?? false);
     refreshDailyChallengeButton(ui, difficulty);
     ui._hoveredDifficulty = null;
+    ui._focusedDifficulty = null;
     drawDiffButtons(ui, difficulty, ui._menuLayout ?? UI_LAYOUT.menu);
 
     ui._diffBtnLabels.forEach(({ label, diff }) => {

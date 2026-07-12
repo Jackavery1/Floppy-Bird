@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
+        "dev:tokens": "vite --open /tokens.html",
         "build": "node scripts/copy-phaser.mjs && vite build",
         "preview": "vite preview --port 8000",
         "test": "vitest run",
@@ -13,7 +14,7 @@
         "test:watch": "vitest",
         "test:e2e": "playwright test",
         "test:e2e:ci": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait --project=chromium-mobile-landscape --project=webkit-mobile-portrait --project=webkit-mobile-landscape --project=chromium-tablet-landscape",
-        "test:e2e:smoke": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait",
+        "test:e2e:smoke": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js",
         "test:e2e:install": "playwright install chromium webkit",
         "lighthouse": "node scripts/lighthouse-ci.mjs",
         "lint": "eslint .",
@@ -23,7 +24,9 @@
         "icons:optimize": "node scripts/optimize-icons.mjs",
         "measure": "node scripts/measure-bundle.mjs",
         "clean": "node scripts/clean-artifacts.mjs",
-        "cycles": "madge --circular --extensions js src/"
+        "cycles": "madge --circular --extensions js src/",
+        "verify": "npm run lint && npm run format:check && npm test",
+        "prepare": "node scripts/install-git-hooks.mjs"
     },
     "dependencies": {
         "@fontsource/press-start-2p": "^5.2.7",

@@ -8,7 +8,11 @@ import {
     setOptionsPanelAccessibility,
 } from './uiDomAccessibility.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
-import { buildMenuPanelBackdrop, buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
+import {
+    buildMenuPanelBackdrop,
+    buildMenuPanelShell,
+    createMenuPanelController,
+} from './uiMenuPanel.js';
 import {
     applyHardcoreLabel,
     attachOptionsBackdropToRoot,

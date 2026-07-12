@@ -175,9 +175,9 @@ describe('designTokens', () => {
     it('texte bouton jaune atteint AA sur fond accent', async () => {
         const { yellowChromeButtonTextStyle } = await import('../src/designTokens.js');
         expect(yellowChromeButtonTextStyle().fill).toBe(DESIGN_TOKENS.texteBoutonJaune);
-        expect(contrastRatio(DESIGN_TOKENS.texteBoutonJaune, DESIGN_TOKENS.accent)).toBeGreaterThanOrEqual(
-            4.5
-        );
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteBoutonJaune, DESIGN_TOKENS.accent)
+        ).toBeGreaterThanOrEqual(4.5);
     });
 
     it('expose les couleurs Phaser médailles et confettis', async () => {

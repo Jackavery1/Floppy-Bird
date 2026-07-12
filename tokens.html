@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="color-scheme" content="dark light" />
+        <title>Floppy Bird — Design tokens</title>
+        <link rel="stylesheet" href="/style.css" />
+        <link rel="stylesheet" href="/src/tokensPage.css" />
+    </head>
+    <body class="tokens-page">
+        <header class="tokens-header">
+            <h1>Floppy Bird — tokens</h1>
+            <p class="tokens-lead">
+                Référence visuelle des couleurs, typographies et espacements (
+                <code>src/designTokens.js</code>).
+            </p>
+            <div class="tokens-toolbar">
+                <button type="button" id="theme-night" class="tokens-btn" aria-pressed="true">
+                    Nuit
+                </button>
+                <button type="button" id="theme-day" class="tokens-btn" aria-pressed="false">
+                    Jour
+                </button>
+                <a class="tokens-link" href="/">← Retour au jeu</a>
+            </div>
+        </header>
+        <main id="tokens-app" class="tokens-main"></main>
+        <footer class="tokens-footer">
+            <p>
+                Doc texte :
+                <a href="https://github.com/Jackavery1/Floppy-Bird/blob/main/docs/design-tokens.md"
+                    >design-tokens.md</a
+                >
+            </p>
+        </footer>
+        <script type="module" src="/src/tokensPage.js"></script>
+    </body>
+</html>

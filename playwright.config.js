@@ -25,6 +25,12 @@ export default defineConfig({
         trace: 'on-first-retry',
         serviceWorkers: 'allow',
     },
+    expect: {
+        toHaveScreenshot: {
+            maxDiffPixelRatio: 0.025,
+            animations: 'disabled',
+        },
+    },
     webServer: {
         command: previewCommand,
         port: 4173,

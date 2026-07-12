@@ -1,4 +1,4 @@
-import { MIN_TOUCH, TOUCH_TARGETS, UI_LAYOUT } from './uiLayoutConstants.js';
+import { MIN_TOUCH, MIN_CTA_TOUCH, TOUCH_TARGETS, UI_LAYOUT } from './uiLayoutConstants.js';
 import { GAME_CONFIG } from './config.js';
 
 /** Définitions géométriques et labels des boutons overlay a11y (#a11y-controls). */
@@ -15,8 +15,8 @@ export const CONTROL_DEFS = Object.freeze({
         label: 'Sauter',
         x: GAME_CONFIG.centerX,
         y: GAME_CONFIG.centerY,
-        width: MIN_TOUCH * 2,
-        height: MIN_TOUCH * 2,
+        width: MIN_CTA_TOUCH * 2,
+        height: MIN_CTA_TOUCH * 2,
     },
     pauseResume: {
         id: 'a11y-resume',
@@ -38,7 +38,7 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.menuStart.x,
         y: TOUCH_TARGETS.menuStart.y,
         width: 240,
-        height: MIN_TOUCH,
+        height: MIN_CTA_TOUCH,
     },
     menuDaily: {
         id: 'a11y-daily',
@@ -190,7 +190,7 @@ export const CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.gameOverRestart.x,
         y: TOUCH_TARGETS.gameOverRestart.y,
         width: 240,
-        height: MIN_TOUCH,
+        height: MIN_CTA_TOUCH,
     },
     gameOverMenu: {
         id: 'a11y-gameover-menu',

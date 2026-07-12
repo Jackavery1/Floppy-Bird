@@ -84,6 +84,23 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         }
     });
 
+    test('CTA primaires ≥ 48 px (démarrer, sauter, rejouer)', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
+        await waitForGameReady(page);
+        for (const id of ['a11y-start']) {
+            const minPx = await minA11yButtonScreenPx(page, id);
+            expect(minPx, id).toBeGreaterThanOrEqual(48);
+        }
+
+        await startPlayingFromMenu(page, true);
+        const jumpPx = await minA11yButtonScreenPx(page, 'a11y-jump');
+        expect(jumpPx).toBeGreaterThanOrEqual(48);
+
+        await forceGameOver(page);
+        const restartPx = await minA11yButtonScreenPx(page, 'a11y-gameover-restart');
+        expect(restartPx).toBeGreaterThanOrEqual(48);
+    });
+
     test('boutons game over REJOUER et MENU', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
         await waitForGameReady(page);

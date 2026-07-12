@@ -26,17 +26,13 @@ describe('GAME_CONFIG.round', () => {
         expect(gap).toBeGreaterThanOrEqual(300);
     });
 
-    it('bufferise les sauts sur plusieurs frames', () => {
-        expect(GAME_CONFIG.bird.jumpBufferFrames).toBeGreaterThanOrEqual(2);
+    it('bufferise les sauts sur plusieurs frames (standard 6–8)', () => {
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(6);
     });
 
-    it('hardcore : grace progressive sur 7 tuyaux avec paliers adoucis', () => {
-        const steps = GAME_CONFIG.round.hardcoreSpawnInvincibilitySteps;
-        expect(steps).toHaveLength(7);
-        expect(steps[0]).toBe(700);
-        expect(steps.at(-1)).toBe(325);
-        expect(steps).toContain(425);
-        expect(steps).toContain(375);
+    it('hardcore : grace initiale 700 ms (sans paliers par tuyau)', () => {
+        expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(700);
+        expect(GAME_CONFIG.round.spawnInvincibilityMs).toBe(900);
     });
 });
 

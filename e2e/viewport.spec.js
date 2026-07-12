@@ -7,7 +7,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { getCanvasLayout } from './helpers/testSeam.mjs';
+import { forceGameOver, getCanvasLayout } from './helpers/testSeam.mjs';
 
 test.describe('jeu chargé', () => {
     test('affiche le canvas et masque le chargement', async ({ page }) => {
@@ -185,6 +185,46 @@ test.describe('jeu chargé', () => {
         expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(metrics.deltaX).toBeLessThan(8);
         expect(metrics.deltaY).toBeLessThan(8);
+    });
+
+    test('conserve les boutons game over au zoom navigateur 200 % simulé', async ({
+        page,
+    }, testInfo) => {
+        test.skip(
+            testInfo.project.name.startsWith('webkit'),
+            'mock visualViewport fragile sous WebKit'
+        );
+        await page.setViewportSize({ width: 1280, height: 720 });
+        await waitForGameReady(page);
+        await forceGameOver(page);
+        await expectGameState(page, 'gameover');
+
+        await page.evaluate(() => {
+            Object.defineProperty(window, 'visualViewport', {
+                configurable: true,
+                value: {
+                    width: 640,
+                    height: 360,
+                    offsetTop: 0,
+                    offsetLeft: 0,
+                    scale: 2,
+                    addEventListener: () => {},
+                    removeEventListener: () => {},
+                },
+            });
+            window.dispatchEvent(new Event('resize'));
+        });
+
+        const restart = page.locator('#a11y-gameover-restart');
+        await expect(restart).toBeVisible();
+        const box = await restart.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width).toBeGreaterThanOrEqual(44);
+        expect(box.height).toBeGreaterThanOrEqual(44);
+
+        const layout = await getCanvasLayout(page);
+        expect(layout?.width ?? 0).toBeGreaterThan(100);
+        expect(layout?.height ?? 0).toBeGreaterThan(100);
     });
 
     test('affiche l’aide paysage sur grand téléphone en paysage', async ({ page }) => {

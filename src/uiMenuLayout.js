@@ -22,7 +22,7 @@ export function drawDiffButtons(ui, difficulty, layout) {
         const by = diffY - diffBtn.height / 2;
         if (difficulty === diff) {
             g.fillStyle(DIFF_BTN_ACTIVE, 1);
-        } else if (ui._hoveredDifficulty === diff) {
+        } else if (ui._hoveredDifficulty === diff || ui._focusedDifficulty === diff) {
             g.fillStyle(DIFF_BTN_HOVER.color, DIFF_BTN_HOVER.alpha);
         } else {
             g.fillStyle(DIFF_BTN_IDLE.color, DIFF_BTN_IDLE.alpha);

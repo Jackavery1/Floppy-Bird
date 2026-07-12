@@ -1,6 +1,8 @@
 export { initAccessibilityLayer, syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 export {
     bindAccessibilityAction,
+    bindAccessibilityFocus,
+    bindUnifiedInteractiveFocus,
     setAccessibilityControlVisible,
     setAccessibilityControlDisabled,
     setAccessibilityControlLabel,

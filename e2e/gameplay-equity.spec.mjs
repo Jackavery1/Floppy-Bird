@@ -17,7 +17,10 @@ import {
     getScoreHud,
     getTrainingRuntime,
     grantCoyoteGrace,
+    keepBirdAliveForPipeSpawn,
     requestJump,
+    restartRoundWithModes,
+    runCoyoteGapExitScenario,
     sampleGapVariance,
     triggerDeath,
 } from './helpers/testSeam.mjs';
@@ -68,6 +71,20 @@ test.describe('gameplay equity via test seam', () => {
             });
     });
 
+    test('coyote réel protège après sortie de gap puis expire', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await restartRoundWithModes(page, { hardcore: false });
+
+        const result = await runCoyoteGapExitScenario(page);
+        expect(result?.coyoteInGap).toBe(GAME_CONFIG.bird.coyoteTimeFrames);
+        expect(result?.collidesAfterExit).toBe(true);
+        expect(result?.hasCoyoteAfterExit).toBe(true);
+        expect(result?.noDeathDuringCoyote).toBe(true);
+        expect(result?.coyoteExpired).toBe(true);
+        expect(result?.deathAfterCoyoteExpired).toBe(true);
+    });
+
     test('délai premier tuyau laisse une fenêtre après invincibilité spawn', async ({
         page,
     }, testInfo) => {
@@ -93,10 +110,68 @@ test.describe('gameplay equity via test seam', () => {
         await page.waitForTimeout(GAME_CONFIG.round.spawnInvincibilityMs - 50);
         const early = await getPipeState(page);
         expect(early?.pipeCount ?? 0).toBe(0);
+    });
 
-        await page.waitForTimeout(GAME_CONFIG.round.pipeSpawnDelayMs);
+    test('premier tuyau apparaît après le délai si l’oiseau reste en vie', async ({
+        page,
+    }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+
+        await page.waitForTimeout(GAME_CONFIG.round.spawnInvincibilityMs - 50);
+        expect((await getPipeState(page))?.pipeCount ?? 0).toBe(0);
+
+        const waitAfterInvincibility =
+            GAME_CONFIG.round.pipeSpawnDelayMs - (GAME_CONFIG.round.spawnInvincibilityMs - 50);
+        for (let elapsed = 0; elapsed < waitAfterInvincibility + 600; elapsed += 250) {
+            await requestJump(page);
+            await page.waitForTimeout(250);
+        }
+
         await expect
-            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0)
+            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0, { timeout: 5_000 })
+            .toBeGreaterThan(0);
+    });
+
+    test('hardcore raccourcit l’invincibilité spawn', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+
+        await restartRoundWithModes(page, { hardcore: true });
+        await expect
+            .poll(async () => getGameplayEquity(page))
+            .toMatchObject({
+                hardcoreMode: true,
+                spawnInvincible: true,
+                spawnInvincibilityMs: GAME_CONFIG.round.hardcoreSpawnInvincibilityMs,
+            });
+
+        expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThan(
+            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
+        );
+
+        await page.waitForTimeout(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs - 50);
+        const early = await getPipeState(page);
+        expect(early?.pipeCount ?? 0).toBe(0);
+    });
+
+    test('hardcore : premier tuyau après le délai si l’oiseau reste en vie', async ({
+        page,
+    }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await restartRoundWithModes(page, { hardcore: true });
+
+        await keepBirdAliveForPipeSpawn(
+            page,
+            GAME_CONFIG.round.pipeSpawnDelayMs,
+            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
+        );
+
+        await expect
+            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0, { timeout: 8_000 })
             .toBeGreaterThan(0);
     });
 
@@ -216,7 +291,7 @@ test.describe('gameplay equity mobile portrait', () => {
 
         await requestJump(page);
         const equity = await getGameplayEquity(page);
-        expect(equity?.jumpBufferMax).toBe(4);
+        expect(equity?.jumpBufferMax).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
 
     test('invincibilité spawn active en mobile portrait', async ({ page }, testInfo) => {

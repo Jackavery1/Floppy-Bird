@@ -7,6 +7,7 @@ import {
     DEPTH,
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_WIDTH,
+    GAME_OVER_RESTART_BTN_HEIGHT,
     MENU_BTN_COLOR,
     UI_LAYOUT,
 } from './uiLayout.js';
@@ -26,6 +27,7 @@ export class UI {
         this._pauseBtnGraphics = null;
         this._trainingBadge = null;
         this._hoveredDifficulty = null;
+        this._focusedDifficulty = null;
         this._trainingLabel = null;
         this._hardcoreLabel = null;
         this._tutorialHint = null;
@@ -66,9 +68,9 @@ export class UI {
         g.fillStyle(fillColor, 1);
         g.fillRoundedRect(
             GAME_CONFIG.centerX - GAME_OVER_RESTART_BTN_WIDTH / 2,
-            restartBtnY - UI_LAYOUT.menuBtn.height / 2,
+            restartBtnY - GAME_OVER_RESTART_BTN_HEIGHT / 2,
             GAME_OVER_RESTART_BTN_WIDTH,
-            UI_LAYOUT.menuBtn.height,
+            GAME_OVER_RESTART_BTN_HEIGHT,
             UI_LAYOUT.menuBtn.radius
         );
     }

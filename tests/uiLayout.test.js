@@ -21,6 +21,8 @@ describe('uiLayout', () => {
             TOUCH_TARGETS,
             UI_LAYOUT,
             MIN_TOUCH,
+            MIN_CTA_TOUCH,
+            GAME_OVER_RESTART_BTN_HEIGHT,
             PAUSE_BTN_VISUAL,
             PAUSE_BTN_INSET,
             FONT_TITLE,
@@ -44,6 +46,8 @@ describe('uiLayout', () => {
         });
         expect(TOUCH_TARGETS.scoreHud.y).toBe(UI_LAYOUT.scoreHud);
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
+        expect(MIN_CTA_TOUCH).toBe(48);
+        expect(GAME_OVER_RESTART_BTN_HEIGHT).toBe(MIN_CTA_TOUCH);
         expect(UI_LAYOUT.menuBtn.height).toBe(MIN_TOUCH);
         expect(UI_LAYOUT.menu.menuBtnW).toBeGreaterThanOrEqual(MIN_TOUCH);
         expect(UI_LAYOUT.diffBtn.height).toBe(MIN_TOUCH);

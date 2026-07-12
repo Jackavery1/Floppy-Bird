@@ -28,6 +28,12 @@ import {
 import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 import { setOptionsTab } from './uiMenuOptionsTabs.js';
 import { syncOptionsTabAccessibility } from './uiDomAccessibilityControls.js';
+import {
+    bindMenuAccessibilityFocusVisuals,
+    bindOptionsAccessibilityFocusVisuals,
+    bindScoresAccessibilityFocusVisuals,
+    bindSkinsAccessibilityFocusVisuals,
+} from './uiDomAccessibilityFocusVisuals.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function syncMenuToggleAccessibility(scene) {
@@ -61,6 +67,7 @@ export function setupMenuAccessibility(scene) {
         );
     }
     syncMenuToggleAccessibility(scene);
+    bindMenuAccessibilityFocusVisuals(scene.ui);
     syncAccessibilityLayer(scene.game);
 }
 
@@ -130,6 +137,7 @@ export function bindSkinsAccessibility(scene) {
     bindAccessibilityAction('menuSkinsPrev', () => scene.ui.cycleMenuSkin(-1));
     bindAccessibilityAction('menuSkinsNext', () => scene.ui.cycleMenuSkin(1));
     bindAccessibilityAction('menuSkinsClose', () => scene.ui.toggleMenuSkinsPanel());
+    bindSkinsAccessibilityFocusVisuals(scene.ui);
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {boolean} open */
@@ -171,11 +179,13 @@ export function bindOptionsAccessibility(scene) {
     bindAccessibilityAction('menuTrainingSpeed', () => scene.cycleTrainingSpeed());
     bindAccessibilityAction('menuHardcore', () => scene.toggleHardcore());
     bindAccessibilityAction('menuOptionsClose', () => scene.ui.toggleMenuOptionsPanel());
+    bindOptionsAccessibilityFocusVisuals(scene.ui);
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function bindScoresAccessibility(scene) {
     bindAccessibilityAction('menuScoresClose', () => scene.ui.toggleMenuScoresPanel());
+    bindScoresAccessibilityFocusVisuals(scene.ui);
 }
 
 /** @param {import('./sceneTypes.js').SceneContext} scene @param {{ score: number, isDaily?: boolean }} opts */

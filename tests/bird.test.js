@@ -128,4 +128,41 @@ describe('Bird', () => {
             expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat-classic', true);
         });
     });
+
+    describe('applyFall', () => {
+        it('applique une rotation « death » fixe', () => {
+            bird.applyFall(1, 'death');
+            expect(scene._sprite.setRotation).toHaveBeenCalledWith(Math.PI / 2.2);
+        });
+    });
+
+    describe('setSkin', () => {
+        it('change la texture et réinitialise l’animation', () => {
+            bird.setSkin('neon');
+            expect(scene._sprite.setTexture).toHaveBeenCalled();
+            expect(scene._sprite.stop).toHaveBeenCalled();
+            expect(scene._sprite.setFrame).toHaveBeenCalledWith(1);
+        });
+    });
+
+    describe('reset', () => {
+        it('réinitialise position, vélocité et sprite', () => {
+            bird.velocityY = 5;
+            bird._jumpBuffered = true;
+            bird.reset(80, 400);
+            expect(bird.x).toBe(80);
+            expect(bird.y).toBe(400);
+            expect(bird.velocityY).toBe(0);
+            expect(bird._jumpBuffered).toBe(false);
+            expect(scene._sprite.setRotation).toHaveBeenCalledWith(0);
+            expect(scene._sprite.setAlpha).toHaveBeenCalledWith(1);
+        });
+    });
+
+    describe('destroy', () => {
+        it('détruit le sprite', () => {
+            bird.destroy();
+            expect(scene._sprite.destroy).toHaveBeenCalled();
+        });
+    });
 });
