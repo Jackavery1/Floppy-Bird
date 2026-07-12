@@ -131,6 +131,7 @@ export default defineConfig(({ mode }) => {
                     'src/phaser-shim.js',
                     'src/testSeam.js',
                     'src/sceneTypes.js',
+                    'src/tokensPage.js',
                 ],
                 reporter: ['text', 'html', 'lcov'],
                 thresholds: { lines: 94, functions: 91, branches: 82, statements: 94 },
