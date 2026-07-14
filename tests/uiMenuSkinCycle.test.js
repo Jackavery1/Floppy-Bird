@@ -25,7 +25,7 @@ vi.mock('../src/skins/index.js', async (importOriginal) => {
     };
 });
 
-vi.mock('../src/uiDomAccessibility.js', () => ({
+vi.mock('../src/uiDomAccessibilityControls.js', () => ({
     announceAccessibility: vi.fn(),
 }));
 
@@ -49,7 +49,7 @@ describe('uiMenuSkinCycle', () => {
     it('ne change rien si cycleUnlockedSkin renvoie le skin courant', async () => {
         const { applySelectedSkin } = await import('../src/skins/skinSelection.js');
         const { refreshSkinsTab } = await import('../src/uiMenuSkinsRefresh.js');
-        const { announceAccessibility } = await import('../src/uiDomAccessibility.js');
+        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
 
         cycleMenuSkin(ui, 1);
 
@@ -62,7 +62,7 @@ describe('uiMenuSkinCycle', () => {
         const { cycleUnlockedSkin, getSkin } = await import('../src/skins/index.js');
         const { applySelectedSkin } = await import('../src/skins/skinSelection.js');
         const { refreshSkinsTab } = await import('../src/uiMenuSkinsRefresh.js');
-        const { announceAccessibility } = await import('../src/uiDomAccessibility.js');
+        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
 
         vi.mocked(cycleUnlockedSkin).mockReturnValue('cosmos');
         vi.mocked(getSkin).mockReturnValue({ label: 'Cosmos' });

@@ -1,6 +1,7 @@
 import { GAME_CONFIG } from './config.js';
 import { trainingSpeedLabel } from './device.js';
 import { DESIGN_TOKENS } from './designTokens.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { applyTrainingSpeedLabel, TRAINING_LABEL_STYLE } from './uiMenuOptionsLabels.js';
 
@@ -36,6 +37,11 @@ export function buildTrainingSpeedControl(ui, add, panel) {
     );
     ui._trainingSpeedHit.setDepth(DEPTH.PANEL_HIT);
     ui._trainingSpeedHit.setInteractive({ useHandCursor: true });
+    bindUnifiedInteractiveFocus(
+        'menuTrainingSpeed',
+        () => ui._trainingSpeedLabel.setAlpha(1),
+        () => ui._trainingSpeedLabel.setAlpha(scene.trainingMode ? 0.92 : 0.85)
+    ).attachHit(ui._trainingSpeedHit);
     ui._trainingSpeedHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         scene.cycleTrainingSpeed();

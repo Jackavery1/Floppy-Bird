@@ -32,6 +32,12 @@ export function menuHint() {
     return isCoarsePointer() ? 'Bouton MENU ci-dessous' : 'M : menu';
 }
 
+export function firstRunMenuHintText() {
+    return isCoarsePointer()
+        ? 'Première partie : TAP pour démarrer et sauter'
+        : 'Première partie : ESPACE pour démarrer et sauter';
+}
+
 /** @param {'easy' | 'normal' | 'hard'} level */
 export function difficultyA11yLabel(level) {
     const names = { easy: 'facile', normal: 'normale', hard: 'difficile' };
@@ -125,12 +131,6 @@ export function skinsCycleHint() {
     return isCoarsePointer() ? 'Tap une case pour choisir' : '← → : skin précédent / suivant';
 }
 
-export function skinsPanelHint() {
-    return isCoarsePointer()
-        ? 'Classique = look · défi du jour = physique du skin imposé'
-        : 'Classique : apparence seule · défi du jour : physique du skin du jour';
-}
-
 export function jumpTutorialText() {
     return isCoarsePointer() ? '↑  TAP pour sauter' : '↑  ESPACE pour sauter';
 }
@@ -141,16 +141,6 @@ export function gapTutorialText() {
 
 export function scoreTutorialText() {
     return '+1 point par tuyau passé !';
-}
-
-export function coyoteHintText() {
-    return isCoarsePointer() ? 'Encore un saut possible !' : 'COYOTE : encore un saut !';
-}
-
-/** @param {number} frames */
-export function coyoteLowGraceHintText(frames) {
-    if (!frames || frames <= 0) return '';
-    return isCoarsePointer() ? 'Presque fini — saute !' : 'COYOTE : dernières frames — saute !';
 }
 
 export function trainingSpeedLabel(scale) {
@@ -185,9 +175,4 @@ export function deathCauseLabel(cause) {
         default:
             return '';
     }
-}
-
-/** @param {number | null | undefined} framesAtDeath @param {'pipe' | 'ground' | 'ceiling' | null | undefined} [cause] */
-export function coyoteDeathHint(_framesAtDeath, _cause) {
-    return '';
 }

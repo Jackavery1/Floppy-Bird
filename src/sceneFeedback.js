@@ -17,7 +17,11 @@ export function playJumpFeedback() {
 /** @param {number} score @param {import('./sceneTypes.js').SceneContext} [scene] */
 export function playScoreFeedback(score, scene = null) {
     playSound(SOUND.SCORE, score);
-    hapticLight();
+    if (score > 0 && score % 10 === 0) {
+        hapticMedium();
+    } else {
+        hapticLight();
+    }
     if (scene?.bird) {
         spawnScoreJuice(scene, scene.bird.x, scene.bird.y, score);
     }

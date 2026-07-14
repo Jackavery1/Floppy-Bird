@@ -2,7 +2,7 @@ import { buildMetaContext } from './metaContext.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { applySelectedSkin } from './skins/skinSelection.js';
 import { getSkin, cycleUnlockedSkin } from './skins/index.js';
-import { announceAccessibility } from './uiDomAccessibility.js';
+import { announceAccessibility } from './uiDomAccessibilityControls.js';
 import { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
 
 /** @param {import('./ui.js').UI} ui @param {number} step */

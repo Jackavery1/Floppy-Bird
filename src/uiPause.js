@@ -1,12 +1,12 @@
 import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle, hexVersPhaser } from './designTokens.js';
 import { pauseResumeHint, menuHint } from './device.js';
 import {
     bindAccessibilityAction,
-    bindUnifiedInteractiveFocus,
     setAccessibilityControlLabel,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
+} from './uiDomAccessibilityControls.js';
+import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
+import { buildPanelPillButton } from './uiMenuPanelChrome.js';
 import {
     addCenteredText,
     DEPTH,
@@ -14,13 +14,35 @@ import {
     FONT_TITLE,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
-    MIN_TOUCH,
-    stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
 
+const PAUSE_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.contourMenu);
+
+/**
+ * @param {import('phaser').Scene} scene
+ * @param {import('phaser').GameObjects.GameObject[]} elements
+ * @param {{ cy: number, label: string, focusKey: 'pauseResume' | 'pauseMenu', onAction: () => void }} cfg
+ */
+function buildPauseActionButton(scene, elements, { cy, label, focusKey, onAction }) {
+    return buildPanelPillButton(scene, elements, {
+        cx: GAME_CONFIG.centerX,
+        cy,
+        width: UI_LAYOUT.menuBtn.width,
+        depth: DEPTH.PAUSE_BTN,
+        color: MENU_BTN_COLOR,
+        stroke: PAUSE_BTN_STROKE,
+        hoverColor: MENU_BTN_HOVER,
+        labelText: label,
+        labelStroke: DESIGN_TOKENS.contourMenu,
+        labelStyle: panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
+        focusKey,
+        onToggle: onAction,
+    });
+}
+
 export function showPause(ui, { onResume, onMenu }) {
-    const { pause, menuBtn } = UI_LAYOUT;
+    const { pause } = UI_LAYOUT;
     const overlay = ui.createOverlay(0.65, DEPTH.PAUSE_OVERLAY);
     const elements = [overlay];
 
@@ -53,99 +75,18 @@ export function showPause(ui, { onResume, onMenu }) {
     );
     elements.push(pauseHint);
 
-    const resumeGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_BTN);
-    elements.push(resumeGraphics);
-    const resumeBtnY = pause.resumeBtn;
-    const drawResume = (color) => {
-        resumeGraphics.clear();
-        resumeGraphics.fillStyle(color, 1);
-        resumeGraphics.fillRoundedRect(
-            GAME_CONFIG.centerX - menuBtn.width / 2,
-            resumeBtnY - menuBtn.height / 2,
-            menuBtn.width,
-            menuBtn.height,
-            menuBtn.radius
-        );
-    };
-    drawResume(MENU_BTN_COLOR);
-
-    const resumeText = addCenteredText(
-        ui.scene,
-        GAME_CONFIG.centerX,
-        resumeBtnY,
-        'REPRENDRE',
-        panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
-        DEPTH.PAUSE_BTN_LABEL
-    );
-    elements.push(resumeText);
-
-    const resumeHit = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX,
-        resumeBtnY,
-        menuBtn.width,
-        MIN_TOUCH,
-        0x000000,
-        0
-    );
-    resumeHit.setDepth(DEPTH.PAUSE_HIT);
-    resumeHit.setInteractive({ useHandCursor: true });
-    bindUnifiedInteractiveFocus(
-        'pauseResume',
-        () => drawResume(MENU_BTN_HOVER),
-        () => drawResume(MENU_BTN_COLOR)
-    ).attachHit(resumeHit);
-    resumeHit.on('pointerdown', (_p, _lx, _ly, event) => {
-        stopUiEvent(event);
-        onResume();
+    buildPauseActionButton(ui.scene, elements, {
+        cy: pause.resumeBtn,
+        label: 'REPRENDRE',
+        focusKey: 'pauseResume',
+        onAction: onResume,
     });
-    elements.push(resumeHit);
-
-    const menuGraphics = ui.scene.add.graphics().setDepth(DEPTH.PAUSE_BTN);
-    elements.push(menuGraphics);
-    const menuBtnY = pause.menuBtn;
-    const drawMenu = (color) => {
-        menuGraphics.clear();
-        menuGraphics.fillStyle(color, 1);
-        menuGraphics.fillRoundedRect(
-            GAME_CONFIG.centerX - menuBtn.width / 2,
-            menuBtnY - menuBtn.height / 2,
-            menuBtn.width,
-            menuBtn.height,
-            menuBtn.radius
-        );
-    };
-    drawMenu(MENU_BTN_COLOR);
-
-    const menuText = addCenteredText(
-        ui.scene,
-        GAME_CONFIG.centerX,
-        menuBtnY,
-        'MENU',
-        panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
-        DEPTH.PAUSE_BTN_LABEL
-    );
-    elements.push(menuText);
-
-    const menuHit = ui.scene.add.rectangle(
-        GAME_CONFIG.centerX,
-        menuBtnY,
-        menuBtn.width,
-        MIN_TOUCH,
-        0x000000,
-        0
-    );
-    menuHit.setDepth(DEPTH.PAUSE_HIT);
-    menuHit.setInteractive({ useHandCursor: true });
-    bindUnifiedInteractiveFocus(
-        'pauseMenu',
-        () => drawMenu(MENU_BTN_HOVER),
-        () => drawMenu(MENU_BTN_COLOR)
-    ).attachHit(menuHit);
-    menuHit.on('pointerdown', (_p, _lx, _ly, event) => {
-        stopUiEvent(event);
-        onMenu();
+    buildPauseActionButton(ui.scene, elements, {
+        cy: pause.menuBtn,
+        label: 'MENU',
+        focusKey: 'pauseMenu',
+        onAction: onMenu,
     });
-    elements.push(menuHit);
 
     bindAccessibilityAction('pauseResume', onResume);
     bindAccessibilityAction('pauseMenu', onMenu);

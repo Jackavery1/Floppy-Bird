@@ -35,7 +35,7 @@ export function warnFileProtocol() {
     const warn = document.createElement('div');
     warn.id = 'file-protocol-warn';
     warn.textContent =
-        'Lance le jeu avec npm run dev ou npm start (serveur requis pour scores et PWA).';
+        'Lance le jeu avec npm run dev (serveur Vite requis pour scores et PWA).';
     document.body.prepend(warn);
 }
 

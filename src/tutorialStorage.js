@@ -45,57 +45,6 @@ export function markTutorialSeen() {
     setTutorialProgress(TUTORIAL_STEPS);
 }
 
-export function loadCoyoteHintSeen() {
-    try {
-        return localStorage.getItem(STORAGE_KEYS.coyoteHintSeen) === '1';
-    } catch {
-        return false;
-    }
-}
-
-export function markCoyoteHintSeen() {
-    try {
-        localStorage.setItem(STORAGE_KEYS.coyoteHintSeen, '1');
-    } catch {
-        /* quota localStorage */
-    }
-}
-
-export function resetCoyoteHintSeen() {
-    try {
-        localStorage.removeItem(STORAGE_KEYS.coyoteHintSeen);
-    } catch {
-        /* quota localStorage */
-    }
-}
-
-export function loadPipeDeathCount() {
-    try {
-        const stored = localStorage.getItem(STORAGE_KEYS.pipeDeathCount);
-        if (stored != null) {
-            const count = Number.parseInt(stored, 10);
-            if (!Number.isNaN(count)) return Math.max(0, count);
-        }
-    } catch {
-        /* quota localStorage */
-    }
-    return 0;
-}
-
-/** @returns {number} nouveau total */
-export function recordPipeDeathForCoyoteHint() {
-    const next = loadPipeDeathCount() + 1;
-    try {
-        localStorage.setItem(STORAGE_KEYS.pipeDeathCount, String(next));
-        if (next > 0 && next % 3 === 0) {
-            resetCoyoteHintSeen();
-        }
-    } catch {
-        /* quota localStorage */
-    }
-    return next;
-}
-
 export function loadRoundsStarted() {
     try {
         const stored = localStorage.getItem(STORAGE_KEYS.roundsStarted);

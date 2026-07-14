@@ -3,7 +3,7 @@
  * Initialisé par {@link import('./sceneContext.js').initSceneCore} avant `create()`.
  *
  * Règles de mutation (qui écrit quoi) :
- * - `state`, `difficulty`, modes : `sceneFlow.js`, `sceneBeginRound.js`, `sceneDeath.js`
+ * - `state`, `difficulty`, modes : `sceneFlow.js`, `sceneFlowOverlays.js`, `sceneBeginRound.js`, `sceneDeath.js`
  * - `round.*` : `sceneRound.js`, `roundState.js`, `sceneDeath.js`, `sceneBeginRound.js`
  * - `bird`, `pipes`, `ghost` : leurs modules + `sceneBootstrap.js` (collisions)
  * - `ui` : façade `UI` uniquement ; les modules `scene*` appellent des méthodes, pas `_skinsOpen` sauf input
@@ -46,6 +46,11 @@
  * @property {() => void} toggleTraining
  * @property {() => void} toggleHardcore
  * @property {() => void} launchDailyChallenge
+ * @property {() => void} beginRound
+ * @property {() => void} startGame
+ * @property {() => void} showMenu
+ * @property {(cause?: 'pipe' | 'ground' | 'ceiling') => void} triggerDeath
+ * @property {() => void} cycleTrainingSpeed
  */
 
 export {};

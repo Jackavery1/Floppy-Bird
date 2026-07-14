@@ -7,6 +7,7 @@ import {
     resolveNextGapY,
     effectiveGapDeltaCap,
     applyScriptedGapJitter,
+    buildScriptedGapOrder,
 } from '../src/pipeGaps.js';
 import { Utils } from '../src/utils.js';
 
@@ -82,6 +83,30 @@ describe('pipeGaps', () => {
             const jittered = applyScriptedGapJitter(base, 0, 4242, pipeGap);
             expect(jittered).toBeGreaterThanOrEqual(base - GAME_CONFIG.pipes.scriptedGapJitterPx);
             expect(jittered).toBeLessThanOrEqual(base + GAME_CONFIG.pipes.scriptedGapJitterPx);
+        });
+
+        it('mélange l’ordre des gaps scriptés selon gapJitterSeed', () => {
+            const pipeGap = NORMAL_PIPE_GAP;
+            const identity = buildScriptedGapOrder(0, GAME_CONFIG.level.pipeGaps.length);
+            const shuffled = buildScriptedGapOrder(424242, GAME_CONFIG.level.pipeGaps.length);
+            expect(identity).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
+            expect(shuffled).not.toEqual(identity);
+
+            const first = resolveNextGapY({
+                gapIndex: 0,
+                lastGapY: null,
+                dailyRng: null,
+                pipeGap,
+                runScore: 0,
+                gapJitterSeed: 424242,
+            });
+            expect(first.gapY).not.toBe(getScriptedPipeGapY(0, pipeGap));
+        });
+
+        it('buildScriptedGapOrder est déterministe pour une seed', () => {
+            const a = buildScriptedGapOrder(9001, 8);
+            const b = buildScriptedGapOrder(9001, 8);
+            expect(a).toEqual(b);
         });
 
         it('ignore le script en mode daily', () => {

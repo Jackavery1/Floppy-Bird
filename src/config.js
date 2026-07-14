@@ -53,7 +53,7 @@ export const GAME_CONFIG = {
         minPipeGap: 72,
         consecutiveGapDeltaFactor: 0.6,
         consecutiveGapDeltaThreshold: 0.85,
-        /** Variation ± px sur les gaps scriptés (classique) — une seed par manche. */
+        /** Variation ± px sur les gaps scriptés (classique) — seed par manche + ordre mélangé. */
         scriptedGapJitterPx: 10,
     },
 
@@ -64,7 +64,8 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1250,
         spawnInvincibilityMs: 900,
-        hardcoreSpawnInvincibilityMs: 700,
+        /** Plus court qu'en classique ; 840 ms compense gravité hardcore (+12 %) tout en gardant ≥400 ms avant le 1er tuyau. */
+        hardcoreSpawnInvincibilityMs: 840,
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         /** Plafond d’accélération (+3 % / palier) — score 50+ sans montée supplémentaire. */
@@ -77,6 +78,8 @@ export const GAME_CONFIG = {
         gapTightenEvery: 10,
         gapTightenStep: 9,
         streakMilestones: [10, 15, 20, 30, 40, 50],
+        /** Seuil debug : mort avant cette durée (ms) depuis le début de manche. */
+        earlyDeathMs: 30_000,
         deathSlowMoMs: 80,
         deathSlowMoScale: 0.3,
     },

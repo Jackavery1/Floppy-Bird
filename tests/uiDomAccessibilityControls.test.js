@@ -100,7 +100,7 @@ describe('uiDomAccessibility contrôles', () => {
     });
 
     it('syncMenuToggleAccessibility reflète difficulté et modes', async () => {
-        const { syncMenuToggleAccessibility } = await import('../src/uiDomAccessibilityFlows.js');
+        const { syncMenuToggleAccessibility } = await import('../src/uiDomAccessibilityMenuToggles.js');
         const buttons = new Map();
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => {

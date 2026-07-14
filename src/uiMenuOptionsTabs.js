@@ -1,4 +1,5 @@
 import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import {
     DEPTH,
     MENU_BTN_COLOR,
@@ -82,12 +83,16 @@ export function buildOptionsTabs(ui, pushChrome) {
         const hit = scene.add.rectangle(cx, cy, w, h, 0x000000, 0);
         hit.setDepth(DEPTH.PANEL_HIT);
         hit.setInteractive({ useHandCursor: true });
-        hit.on('pointerover', () => {
-            if (ui._optionsActiveTab !== id) paint(TAB_HOVER, 0.88);
-        });
-        hit.on('pointerout', () => {
-            if (ui._optionsActiveTab !== id) paint(TAB_INACTIVE, 0.78);
-        });
+        const focusKey = id === 'controls' ? 'menuOptionsTabControls' : 'menuOptionsTabPreferences';
+        bindUnifiedInteractiveFocus(
+            focusKey,
+            () => {
+                if (ui._optionsActiveTab !== id) paint(TAB_HOVER, 0.88);
+            },
+            () => {
+                if (ui._optionsActiveTab !== id) paint(TAB_INACTIVE, 0.78);
+            }
+        ).attachHit(hit);
         hit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             setOptionsTab(ui, id);

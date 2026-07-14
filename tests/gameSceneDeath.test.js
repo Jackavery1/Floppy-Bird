@@ -11,11 +11,22 @@ describe('GameScene mort et shutdown', () => {
         vi.clearAllMocks();
     });
 
-    it('le coyote time ne protège pas le plafond', () => {
+    it('le coyote time protège le plafond après sortie de gap', () => {
         const scene = createPlayingGameScene(GameScene);
         scene.bird.isOutOfBounds = vi.fn(() => true);
         scene.bird.isHittingGround = vi.fn(() => false);
         vi.mocked(hasCoyoteGrace).mockReturnValue(true);
+
+        scene.update();
+
+        expect(triggerDeath).not.toHaveBeenCalled();
+    });
+
+    it('le plafond tue sans coyote actif', () => {
+        const scene = createPlayingGameScene(GameScene);
+        scene.bird.isOutOfBounds = vi.fn(() => true);
+        scene.bird.isHittingGround = vi.fn(() => false);
+        vi.mocked(hasCoyoteGrace).mockReturnValue(false);
 
         scene.update();
 

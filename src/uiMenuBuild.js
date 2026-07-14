@@ -1,9 +1,28 @@
 import { GAME_CONFIG } from './config.js';
-import { panelChromeTextStyle } from './designTokens.js';
-import { sceneTween } from './motion.js';
-import { addCenteredText, DEPTH, MIN_CTA_TOUCH, stopUiEvent } from './uiLayout.js';
+import { DESIGN_TOKENS, menuHomeTextStyle, panelChromeTextStyle } from './designTokens.js';
+import { firstRunMenuHintText } from './device.js';
+import { prefersReducedMotion, sceneTween } from './motion.js';
+import { loadRoundsStarted, loadTutorialComplete } from './tutorialStorage.js';
+import { addCenteredText, DEPTH, MIN_CTA_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
 
 const START_HIT_WIDTH = 240;
+
+export function buildMenuFirstRunHint(ui, elements, layout) {
+    if (loadTutorialComplete() || loadRoundsStarted() > 0) return;
+    ui._firstRunHint = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        layout.hint1 ?? UI_LAYOUT.menu.hint1,
+        firstRunMenuHintText(),
+        menuHomeTextStyle({
+            fontSize: '11px',
+            fill: DESIGN_TOKENS.texteHintMenu,
+            fontStyle: 'italic',
+        }),
+        DEPTH.MENU_PANEL
+    );
+    elements.push(ui._firstRunHint);
+}
 
 export function buildMenuFooter(ui, elements, layout) {
     ui._startText = addCenteredText(
@@ -14,14 +33,18 @@ export function buildMenuFooter(ui, elements, layout) {
         panelChromeTextStyle({ fontSize: '15px' }),
         DEPTH.MENU_PANEL
     );
-    sceneTween(ui.scene, {
-        targets: ui._startText,
-        alpha: 0,
-        duration: 400,
-        yoyo: true,
-        repeat: -1,
-        ease: 'Power0',
-    });
+    if (prefersReducedMotion()) {
+        ui._startText.setAlpha(1);
+    } else {
+        sceneTween(ui.scene, {
+            targets: ui._startText,
+            alpha: 0,
+            duration: 400,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Power0',
+        });
+    }
     elements.push(ui._startText);
 
     ui._startHit = ui.scene.add.rectangle(
@@ -48,6 +71,7 @@ export function playMenuIntroTween(ui, title) {
         title,
         ui._menuTitleShadow,
         ui._startText,
+        ui._firstRunHint,
         ui._scoresBtnLabel,
         ui._scoresBtnBg,
         ui._optionsBtnLabel,

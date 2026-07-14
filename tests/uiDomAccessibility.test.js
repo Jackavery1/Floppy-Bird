@@ -148,6 +148,7 @@ describe('uiDomAccessibility', () => {
         });
 
         const scene = {
+            state: 'menu',
             game: {
                 canvas: {
                     getBoundingClientRect: () => ({
@@ -169,6 +170,33 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-training'].hidden).toBe(true);
     });
 
+    it('setOptionsPanelAccessibility ne réactive pas le menu en pleine partie', () => {
+        const ids = ['a11y-start', 'a11y-options', 'a11y-training', 'a11y-options-close'];
+        const buttons = Object.fromEntries(ids.map((id) => [id, { hidden: true, style: {} }]));
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => buttons[id] ?? null),
+        });
+
+        const scene = {
+            state: 'playing',
+            game: {
+                canvas: {
+                    getBoundingClientRect: () => ({
+                        left: 0,
+                        top: 0,
+                        width: GAME_CONFIG.width,
+                        height: GAME_CONFIG.height,
+                    }),
+                },
+            },
+        };
+
+        setOptionsPanelAccessibility(scene, true);
+        setOptionsPanelAccessibility(scene, false);
+        expect(buttons['a11y-start'].hidden).toBe(true);
+        expect(buttons['a11y-options'].hidden).toBe(true);
+    });
+
     it('setScoresPanelAccessibility masque toute la rangée menu et affiche le retour dédié', () => {
         const ids = [
             'a11y-start',
@@ -183,6 +211,7 @@ describe('uiDomAccessibility', () => {
         });
 
         const scene = {
+            state: 'menu',
             game: {
                 canvas: {
                     getBoundingClientRect: () => ({
@@ -216,6 +245,7 @@ describe('uiDomAccessibility', () => {
         });
 
         const scene = {
+            state: 'menu',
             game: {
                 canvas: {
                     getBoundingClientRect: () => ({

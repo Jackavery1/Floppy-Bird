@@ -8,6 +8,12 @@ import {
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
 import { forceGameOver, getCanvasLayout } from './helpers/testSeam.mjs';
+import {
+    dispatchViewportResize,
+    mockVisualViewport,
+    readLetterboxMetrics,
+    readJumpButtonAlignment,
+} from './helpers/visualViewport.mjs';
 
 test.describe('jeu chargé', () => {
     test('affiche le canvas et masque le chargement', async ({ page }) => {
@@ -62,44 +68,87 @@ test.describe('jeu chargé', () => {
         expect(layout?.height ?? 0).toBeGreaterThan(300);
     });
 
-    test('utilise visualViewport pour le letterbox (clavier virtuel simulé)', async ({
-        page,
-    }, testInfo) => {
-        test.skip(
-            testInfo.project.name.startsWith('webkit'),
-            'mock visualViewport fragile sous WebKit'
-        );
-        await page.setViewportSize({ width: 390, height: 844 });
+    test('conserve le ratio avec safe-area quatre côtés (encoche simulée)', async ({ page }) => {
         await waitForGameReady(page);
+        const ratio = GAME_CONFIG.width / GAME_CONFIG.height;
         const metrics = await page.evaluate(() => {
-            Object.defineProperty(window, 'visualViewport', {
-                configurable: true,
-                value: {
-                    width: 390,
-                    height: 620,
-                    offsetTop: 24,
-                    offsetLeft: 0,
-                    addEventListener: () => {},
-                    removeEventListener: () => {},
-                },
-            });
+            document.body.style.setProperty('padding', '44px 20px 34px 16px', 'important');
             window.dispatchEvent(new Event('resize'));
             const canvas = document.querySelector('#game-container canvas');
-            const container = document.getElementById('game-container');
             const box = canvas?.getBoundingClientRect();
-            const vv = { width: 390, height: 620, offsetTop: 24, offsetLeft: 0 };
-            const cx = vv.offsetLeft + vv.width / 2;
-            const cy = vv.offsetTop + vv.height / 2;
-            const canvasCx = box ? box.left + box.width / 2 : 0;
-            const canvasCy = box ? box.top + box.height / 2 : 0;
+            const body = document.body.getBoundingClientRect();
             return {
-                top: parseFloat(getComputedStyle(container).top) || 0,
-                canvasHeight: box?.height ?? 0,
                 ratio: box && box.height > 0 ? box.width / box.height : 0,
-                deltaX: Math.abs(canvasCx - cx),
-                deltaY: Math.abs(canvasCy - cy),
+                canvasHeight: box?.height ?? 0,
+                insetLeft: box ? box.left - body.left : 0,
+                insetTop: box ? box.top - body.top : 0,
             };
         });
+        expect(metrics.ratio).toBeCloseTo(ratio, 1);
+        expect(metrics.canvasHeight).toBeGreaterThan(280);
+        expect(metrics.insetLeft).toBeGreaterThanOrEqual(0);
+        expect(metrics.insetTop).toBeGreaterThanOrEqual(0);
+    });
+
+    test('conserve le ratio en tablette portrait', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-tablet-portrait',
+            'tablette portrait uniquement'
+        );
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const canvas = page.locator('#game-container canvas');
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
+        const box = await canvas.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+    });
+
+    test('conserve le ratio en tablette paysage', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-tablet-landscape',
+            'tablette paysage uniquement'
+        );
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const canvas = page.locator('#game-container canvas');
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
+        const box = await canvas.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+    });
+
+    test('conserve le ratio en WebKit mobile portrait', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'webkit-mobile-portrait',
+            'WebKit mobile portrait uniquement'
+        );
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const canvas = page.locator('#game-container canvas');
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
+        const box = await canvas.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+    });
+
+    test('conserve le ratio en WebKit tablette portrait', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'webkit-tablet-portrait',
+            'WebKit tablette portrait uniquement'
+        );
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        const canvas = page.locator('#game-container canvas');
+        await expect(canvas).toBeVisible({ timeout: 20_000 });
+        const box = await canvas.boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width / box.height).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
+    });
+
+    test('utilise visualViewport pour le letterbox (clavier virtuel simulé)', async ({ page }) => {
+        const vv = { width: 390, height: 620, offsetTop: 24, offsetLeft: 0 };
+        await page.setViewportSize({ width: 390, height: 844 });
+        await waitForGameReady(page);
+        await mockVisualViewport(page, vv);
+        await dispatchViewportResize(page);
+        const metrics = await readLetterboxMetrics(page, vv);
         expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(metrics.canvasHeight).toBeLessThanOrEqual(622);
         expect(metrics.top).toBeGreaterThanOrEqual(24);
@@ -107,113 +156,39 @@ test.describe('jeu chargé', () => {
         expect(metrics.deltaY).toBeLessThan(8);
     });
 
-    test('conserve le centrage après zoom pinch simulé', async ({ page }, testInfo) => {
-        test.skip(
-            testInfo.project.name.startsWith('webkit'),
-            'mock visualViewport fragile sous WebKit'
-        );
+    test('conserve le centrage après zoom pinch simulé', async ({ page }) => {
+        const vv = { width: 260, height: 460, offsetTop: 40, offsetLeft: 30, scale: 1.5 };
         await page.setViewportSize({ width: 390, height: 844 });
         await waitForGameReady(page);
-        const metrics = await page.evaluate(() => {
-            Object.defineProperty(window, 'visualViewport', {
-                configurable: true,
-                value: {
-                    width: 260,
-                    height: 460,
-                    offsetTop: 40,
-                    offsetLeft: 30,
-                    scale: 1.5,
-                    addEventListener: () => {},
-                    removeEventListener: () => {},
-                },
-            });
-            window.dispatchEvent(new Event('resize'));
-            const canvas = document.querySelector('#game-container canvas');
-            const box = canvas?.getBoundingClientRect();
-            const vv = { width: 260, height: 460, offsetTop: 40, offsetLeft: 30 };
-            const cx = vv.offsetLeft + vv.width / 2;
-            const cy = vv.offsetTop + vv.height / 2;
-            const canvasCx = box ? box.left + box.width / 2 : 0;
-            const canvasCy = box ? box.top + box.height / 2 : 0;
-            return {
-                ratio: box && box.height > 0 ? box.width / box.height : 0,
-                deltaX: Math.abs(canvasCx - cx),
-                deltaY: Math.abs(canvasCy - cy),
-            };
-        });
+        await mockVisualViewport(page, vv);
+        await dispatchViewportResize(page);
+        const metrics = await readLetterboxMetrics(page, vv);
         expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(metrics.deltaX).toBeLessThan(8);
         expect(metrics.deltaY).toBeLessThan(8);
     });
 
-    test('conserve le centrage au zoom navigateur 200 % simulé', async ({ page }, testInfo) => {
-        test.skip(
-            testInfo.project.name.startsWith('webkit'),
-            'mock visualViewport fragile sous WebKit'
-        );
+    test('conserve le centrage au zoom navigateur 200 % simulé', async ({ page }) => {
+        const vv = { width: 640, height: 360, offsetTop: 0, offsetLeft: 0, scale: 2 };
         await page.setViewportSize({ width: 1280, height: 720 });
         await waitForGameReady(page);
-        const metrics = await page.evaluate(() => {
-            Object.defineProperty(window, 'visualViewport', {
-                configurable: true,
-                value: {
-                    width: 640,
-                    height: 360,
-                    offsetTop: 0,
-                    offsetLeft: 0,
-                    scale: 2,
-                    addEventListener: () => {},
-                    removeEventListener: () => {},
-                },
-            });
-            window.dispatchEvent(new Event('resize'));
-            const canvas = document.querySelector('#game-container canvas');
-            const box = canvas?.getBoundingClientRect();
-            const vv = { width: 640, height: 360, offsetTop: 0, offsetLeft: 0 };
-            const cx = vv.offsetLeft + vv.width / 2;
-            const cy = vv.offsetTop + vv.height / 2;
-            const canvasCx = box ? box.left + box.width / 2 : 0;
-            const canvasCy = box ? box.top + box.height / 2 : 0;
-            return {
-                ratio: box && box.height > 0 ? box.width / box.height : 0,
-                scale: window.visualViewport.scale,
-                deltaX: Math.abs(canvasCx - cx),
-                deltaY: Math.abs(canvasCy - cy),
-            };
-        });
+        await mockVisualViewport(page, vv);
+        await dispatchViewportResize(page);
+        const metrics = await readLetterboxMetrics(page, vv);
         expect(metrics.scale).toBe(2);
         expect(metrics.ratio).toBeCloseTo(GAME_CONFIG.width / GAME_CONFIG.height, 1);
         expect(metrics.deltaX).toBeLessThan(8);
         expect(metrics.deltaY).toBeLessThan(8);
     });
 
-    test('conserve les boutons game over au zoom navigateur 200 % simulé', async ({
-        page,
-    }, testInfo) => {
-        test.skip(
-            testInfo.project.name.startsWith('webkit'),
-            'mock visualViewport fragile sous WebKit'
-        );
+    test('conserve les boutons game over au zoom navigateur 200 % simulé', async ({ page }) => {
+        const vv = { width: 640, height: 360, offsetTop: 0, offsetLeft: 0, scale: 2 };
         await page.setViewportSize({ width: 1280, height: 720 });
         await waitForGameReady(page);
         await forceGameOver(page);
         await expectGameState(page, 'gameover');
-
-        await page.evaluate(() => {
-            Object.defineProperty(window, 'visualViewport', {
-                configurable: true,
-                value: {
-                    width: 640,
-                    height: 360,
-                    offsetTop: 0,
-                    offsetLeft: 0,
-                    scale: 2,
-                    addEventListener: () => {},
-                    removeEventListener: () => {},
-                },
-            });
-            window.dispatchEvent(new Event('resize'));
-        });
+        await mockVisualViewport(page, vv);
+        await dispatchViewportResize(page);
 
         const restart = page.locator('#a11y-gameover-restart');
         await expect(restart).toBeVisible();
@@ -227,14 +202,11 @@ test.describe('jeu chargé', () => {
         expect(layout?.height ?? 0).toBeGreaterThan(100);
     });
 
-    test('affiche l’aide paysage sur grand téléphone en paysage', async ({ page }) => {
-        await page.setViewportSize({ width: 932, height: 430 });
-        await page.goto('/', { waitUntil: 'domcontentloaded' });
-        await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 5_000 });
-    });
-
-    test('affiche l’aide paysage en viewport mobile landscape', async ({ page }, testInfo) => {
-        test.skip(!isMobileLandscapeProject(testInfo.project.name), 'mobile landscape uniquement');
+    test('affiche l’aide paysage sur grand téléphone en paysage', async ({ page }, testInfo) => {
+        test.skip(
+            !isMobileLandscapeProject(testInfo.project.name),
+            'coarse pointer requis (mobile landscape)'
+        );
         await page.goto('/', { waitUntil: 'domcontentloaded' });
         await expect(page.locator('#landscape-hint')).toBeVisible({ timeout: 5_000 });
     });
@@ -264,5 +236,72 @@ test.describe('jeu chargé', () => {
         expect(box).not.toBeNull();
         expect(box.width / box.height).toBeCloseTo(ratio, 1);
         await expectGameState(page, 'playing');
+    });
+
+    test('recalcule les contrôles a11y après redimensionnement en partie', async ({ page }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-mobile-portrait',
+            'mobile portrait uniquement'
+        );
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('#a11y-jump')).toBeVisible();
+
+        await page.setViewportSize({ width: 360, height: 780 });
+        await page.waitForTimeout(250);
+
+        const alignment = await readJumpButtonAlignment(page);
+        expect(alignment).not.toBeNull();
+        expect(alignment.jumpW).toBeGreaterThanOrEqual(44);
+        expect(alignment.jumpH).toBeGreaterThanOrEqual(44);
+        expect(alignment.deltaX).toBeLessThan(24);
+        expect(alignment.deltaY).toBeLessThan(24);
+    });
+
+    test('recalcule les contrôles a11y après redimensionnement en partie (tablette)', async ({
+        page,
+    }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-tablet-portrait',
+            'tablette portrait uniquement'
+        );
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('#a11y-jump')).toBeVisible();
+
+        await page.setViewportSize({ width: 720, height: 960 });
+        await page.waitForTimeout(250);
+
+        const alignment = await readJumpButtonAlignment(page);
+        expect(alignment).not.toBeNull();
+        expect(alignment.jumpW).toBeGreaterThanOrEqual(44);
+        expect(alignment.jumpH).toBeGreaterThanOrEqual(44);
+        expect(alignment.deltaX).toBeLessThan(28);
+        expect(alignment.deltaY).toBeLessThan(28);
+    });
+
+    test('recalcule les contrôles a11y après redimensionnement en partie (tablette paysage)', async ({
+        page,
+    }, testInfo) => {
+        test.skip(
+            testInfo.project.name !== 'chromium-tablet-landscape',
+            'tablette paysage uniquement'
+        );
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await expectGameState(page, 'playing');
+        await expect(page.locator('#a11y-jump')).toBeVisible();
+
+        await page.setViewportSize({ width: 900, height: 680 });
+        await page.waitForTimeout(250);
+
+        const alignment = await readJumpButtonAlignment(page);
+        expect(alignment).not.toBeNull();
+        expect(alignment.jumpW).toBeGreaterThanOrEqual(44);
+        expect(alignment.jumpH).toBeGreaterThanOrEqual(44);
+        expect(alignment.deltaX).toBeLessThan(32);
+        expect(alignment.deltaY).toBeLessThan(32);
     });
 });

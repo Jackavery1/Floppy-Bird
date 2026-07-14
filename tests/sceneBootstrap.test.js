@@ -82,7 +82,7 @@ describe('sceneBootstrap', () => {
             },
         });
         warnFileProtocol();
-        expect(stored.warn?.textContent).toMatch(/serveur requis/i);
+        expect(stored.warn?.textContent).toMatch(/npm run dev/i);
         vi.unstubAllGlobals();
     });
 

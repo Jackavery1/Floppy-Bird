@@ -1,4 +1,4 @@
-export { showDailyGoalReached, showFlash } from './uiHudBannerCore.js';
+export { showDailyGoalReached, showFlash, showGameOverLoading, hideGameOverLoading } from './uiHudBannerCore.js';
 export {
     showRecordBroken,
     showDifficultyEscalation,
@@ -7,4 +7,3 @@ export {
     showSpeedBoostPreview,
     showDifficultyEscalationPreview,
 } from './uiHudBannersDifficulty.js';
-export { showCoyoteHint, showCoyoteLowGraceHint } from './uiHudBannersHints.js';

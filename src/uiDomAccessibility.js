@@ -10,16 +10,18 @@ export {
     setAccessibilityControlExpanded,
     announceAccessibility,
     hideAllAccessibilityControls,
+    syncOptionsTabAccessibility,
 } from './uiDomAccessibilityControls.js';
 export {
     setupMenuAccessibility,
+    setupGameOverAccessibility,
+} from './uiDomAccessibilityFlows.js';
+export {
     setScoresPanelAccessibility,
     setSkinsPanelAccessibility,
     bindSkinsAccessibility,
     setOptionsPanelAccessibility,
     bindOptionsAccessibility,
     bindScoresAccessibility,
-    setupGameOverAccessibility,
-    syncMenuToggleAccessibility,
-} from './uiDomAccessibilityFlows.js';
-export { syncOptionsTabAccessibility } from './uiDomAccessibilityControls.js';
+} from './uiDomAccessibilityPanelFlows.js';
+export { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';

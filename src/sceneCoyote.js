@@ -1,33 +1,20 @@
 import { GAME_CONFIG } from './config.js';
+import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { GAME_STATE } from './gameState.js';
-import { loadCoyoteHintSeen, markCoyoteHintSeen } from './tutorialStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
-/** Coyote time : uniquement dans les gaps (tuyaux), pas sol/plafond — voir README. */
+/** Coyote time : recharge dans les gaps ; protège tuyaux et plafond (pas le sol). */
 /** @param {SceneContext} scene @param {number} step */
 export function updateCoyoteTime(scene, step) {
     const { round } = scene;
     const inGap = scene.pipes.isBirdInGap(scene.bird.getBounds());
-    const wasInGap = round._wasInGap ?? false;
-
-    if (wasInGap && !inGap && round.coyoteFrames > 0 && !loadCoyoteHintSeen()) {
-        scene.ui.showCoyoteHint?.();
-        markCoyoteHintSeen();
-    }
 
     if (inGap) {
         round.coyoteFrames = GAME_CONFIG.bird.coyoteTimeFrames;
-        round.coyoteLowWarnShown = false;
     } else if (round.coyoteFrames > 0) {
         round.coyoteFrames = Math.max(0, round.coyoteFrames - step);
-        if (round.coyoteFrames > 0 && round.coyoteFrames <= 2 && !round.coyoteLowWarnShown) {
-            scene.ui.showCoyoteLowGraceHint?.(round.coyoteFrames);
-            round.coyoteLowWarnShown = true;
-        }
     }
-
-    round._wasInGap = inGap;
 }
 
 /** @param {SceneContext} scene */
@@ -39,7 +26,7 @@ export function updateCoyoteVisual(scene) {
         return;
     }
     if (hasCoyoteGrace(scene)) {
-        sprite.setTint(0xffeeaa);
+        sprite.setTint(hexVersPhaser(DESIGN_TOKENS.teinteCoyoteActif));
     } else {
         sprite.clearTint();
     }
@@ -48,7 +35,6 @@ export function updateCoyoteVisual(scene) {
 /** @param {SceneContext} scene */
 export function resetCoyoteTime(scene) {
     scene.round.coyoteFrames = 0;
-    scene.round._wasInGap = false;
 }
 
 /** @param {SceneContext} scene */

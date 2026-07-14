@@ -2,12 +2,13 @@ import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import {
     buildMenuToggleButton,
-    createMenuPanelController,
     setMenuPanelVisible,
 } from '../src/uiMenuPanel.js';
+import { createMenuPanelController } from '../src/uiMenuPanelController.js';
 import { MENU_BTN_COLOR } from '../src/uiLayout.js';
 import { hexVersPhaser, DESIGN_TOKENS } from '../src/designTokens.js';
 import { createBaseScene } from './helpers/phaserMock.js';
+import { GAME_STATE } from '../src/gameState.js';
 
 describe('uiMenuPanel', () => {
     it('setMenuPanelVisible bascule la visibilité', () => {
@@ -52,7 +53,7 @@ describe('uiMenuPanel', () => {
 
     it('createMenuPanelController ouvre et ferme', () => {
         const ui = {
-            scene: { tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
+            scene: { state: GAME_STATE.MENU, tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
             _scoresOpen: false,
             _scoresBackdrop: { setVisible: vi.fn() },
             _scoresPanelElements: [{ setVisible: vi.fn(), setAlpha: vi.fn() }],
@@ -76,7 +77,7 @@ describe('uiMenuPanel', () => {
     it('setOpen ignore les appels redondants (évite tweens fantômes)', () => {
         const el = { setVisible: vi.fn(), setAlpha: vi.fn() };
         const ui = {
-            scene: { tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
+            scene: { state: GAME_STATE.MENU, tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
             _scoresOpen: false,
             _scoresBackdrop: { setVisible: vi.fn() },
             _scoresPanelElements: [el],
@@ -98,7 +99,7 @@ describe('uiMenuPanel', () => {
         const el = { setVisible: vi.fn(), setAlpha: vi.fn() };
         const onClose = vi.fn();
         const ui = {
-            scene: { tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
+            scene: { state: GAME_STATE.MENU, tweens: { killTweensOf: vi.fn(), add: vi.fn() } },
             _scoresOpen: false,
             _scoresBackdrop: { setVisible: vi.fn() },
             _scoresPanelElements: [el],

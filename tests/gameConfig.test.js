@@ -30,8 +30,15 @@ describe('GAME_CONFIG.round', () => {
         expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(6);
     });
 
-    it('hardcore : invincibilité initiale 700 ms (sans paliers par tuyau)', () => {
-        expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(700);
+    it('hardcore : marge post-invincibilité avant premier tuyau', () => {
+        const gap =
+            GAME_CONFIG.round.pipeSpawnDelayMs -
+            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
+        expect(gap).toBeGreaterThanOrEqual(400);
+    });
+
+    it('hardcore : invincibilité initiale 840 ms (compense gravité +12 %, sans paliers par tuyau)', () => {
+        expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(840);
         expect(GAME_CONFIG.round.spawnInvincibilityMs).toBe(900);
     });
 });

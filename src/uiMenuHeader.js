@@ -73,14 +73,6 @@ export function buildMenuDifficulty(ui, elements, layout, difficulty) {
         );
         hitZone.setDepth(DEPTH.MENU_HIT);
         hitZone.setInteractive({ useHandCursor: true });
-        hitZone.on('pointerover', () => {
-            ui._hoveredDifficulty = diff;
-            drawDiffButtons(ui, ui._currentDifficulty, ui._menuLayout);
-        });
-        hitZone.on('pointerout', () => {
-            ui._hoveredDifficulty = null;
-            drawDiffButtons(ui, ui._currentDifficulty, ui._menuLayout);
-        });
         hitZone.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             ui.scene.changeDifficulty(diff);

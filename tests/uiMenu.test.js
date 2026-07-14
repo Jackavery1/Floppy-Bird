@@ -3,6 +3,7 @@ import { UI } from '../src/ui.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
+import { GAME_STATE } from '../src/gameState.js';
 import {
     refreshBestScore,
     showMenu,
@@ -37,6 +38,7 @@ describe('uiMenu', () => {
     beforeEach(() => {
         scene = createBaseScene({
             round: createRoundState(),
+            state: GAME_STATE.MENU,
             trainingMode: false,
             hardcoreMode: false,
             dailyChallengeMode: true,

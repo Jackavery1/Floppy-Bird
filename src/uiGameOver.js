@@ -15,8 +15,7 @@ export function buildGameOverUI(
     hardcoreMode = false,
     dailyGoal = 0,
     activeSkinId = 'classic',
-    deathCause = null,
-    coyoteFramesAtDeath = null
+    deathCause = null
 ) {
     ui.hideInGameScore();
 
@@ -34,7 +33,6 @@ export function buildGameOverUI(
         fadeIn,
         isNewRecord,
         deathCause,
-        coyoteFramesAtDeath,
         hardcoreMode,
         dailyGoal,
         activeSkinId,

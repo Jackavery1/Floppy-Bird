@@ -1,13 +1,13 @@
+import { announceAccessibility, hideAllAccessibilityControls, setAccessibilityControlVisible } from './uiDomAccessibilityControls.js';
 import {
-    announceAccessibility,
-    hideAllAccessibilityControls,
-    setAccessibilityControlVisible,
+    setupGameOverAccessibility,
     setupMenuAccessibility,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
-import { setOptionsPanelAccessibility } from './uiDomAccessibilityFlows.js';
+} from './uiDomAccessibilityFlows.js';
+import { setOptionsPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
+import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
-import { deathCauseLabel } from './device.js';
+import { deathCauseLabel, firstRunMenuHintText } from './device.js';
+import { loadRoundsStarted, loadTutorialComplete } from './tutorialStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -16,7 +16,10 @@ export function openMenuAccessibility(scene) {
     hideAllAccessibilityControls();
     setOptionsPanelAccessibility(scene, false);
     setupMenuAccessibility(scene);
-    announceAccessibility('Menu principal');
+    const firstRun = !loadTutorialComplete() && loadRoundsStarted() === 0;
+    announceAccessibility(
+        firstRun ? `Menu principal. ${firstRunMenuHintText()}` : 'Menu principal'
+    );
 }
 
 export function hideAccessibilityForRoundStart() {
@@ -61,12 +64,19 @@ function syncPausedControls(game) {
 
 /** @param {SceneContext} scene */
 export function enterPauseAccessibility(scene) {
+    hideAllAccessibilityControls();
     syncPausedControls(scene.game);
     announceAccessibility('Partie en pause');
 }
 
 /** @param {SceneContext} scene */
 export function exitPauseAccessibility(scene) {
+    hideAllAccessibilityControls();
     syncPlayingControls(scene.game);
     announceAccessibility('Partie reprise');
+}
+
+/** @param {SceneContext} scene @param {{ score: number, isDaily?: boolean }} opts */
+export function openGameOverAccessibility(scene, opts) {
+    setupGameOverAccessibility(scene, opts);
 }

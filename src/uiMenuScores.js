@@ -120,6 +120,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         labelText: '◂ RETOUR',
         labelStroke: DESIGN_TOKENS.boutonScoresStroke,
         rounded: true,
+        focusKey: 'menuScoresClose',
         onToggle: () => ui._scoresPanelController?.setOpen(false),
     });
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);

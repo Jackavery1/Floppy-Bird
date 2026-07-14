@@ -1,6 +1,9 @@
 import { cycleSoundLevel, formatSoundLabel, isAudioAvailable } from './audio.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
-import { bindAccessibilityAction } from './uiDomAccessibility.js';
+import {
+    bindAccessibilityAction,
+    bindUnifiedInteractiveFocus,
+} from './uiDomAccessibilityControls.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { GAME_CONFIG } from './config.js';
 
@@ -43,6 +46,11 @@ export function buildMuteControls(ui, add, y) {
     ui._muteHit.setDepth(DEPTH.PANEL_HIT);
     if (isAudioAvailable()) {
         ui._muteHit.setInteractive({ useHandCursor: true });
+        bindUnifiedInteractiveFocus(
+            'menuMute',
+            () => ui._muteText.setAlpha(1),
+            () => ui._muteText.setAlpha(0.92)
+        ).attachHit(ui._muteHit);
         ui._muteHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             cycleMuteLabel(ui);

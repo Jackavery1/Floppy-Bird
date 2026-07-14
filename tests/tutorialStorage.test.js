@@ -46,14 +46,6 @@ describe('tutorialStorage', () => {
         expect(loadTutorialProgress()).toBe(3);
     });
 
-    it('hint coyote une seule fois', async () => {
-        const { loadCoyoteHintSeen, markCoyoteHintSeen } =
-            await import('../src/tutorialStorage.js');
-        expect(loadCoyoteHintSeen()).toBe(false);
-        markCoyoteHintSeen();
-        expect(loadCoyoteHintSeen()).toBe(true);
-    });
-
     it('compte les parties démarrées', async () => {
         const { loadRoundsStarted, incrementRoundsStarted } =
             await import('../src/tutorialStorage.js');
@@ -61,17 +53,5 @@ describe('tutorialStorage', () => {
         expect(incrementRoundsStarted()).toBe(1);
         expect(incrementRoundsStarted()).toBe(2);
         expect(loadRoundsStarted()).toBe(2);
-    });
-
-    it('réinitialise le hint coyote tous les 3 morts tuyau', async () => {
-        const { recordPipeDeathForCoyoteHint, loadCoyoteHintSeen, markCoyoteHintSeen } =
-            await import('../src/tutorialStorage.js');
-        markCoyoteHintSeen();
-        expect(loadCoyoteHintSeen()).toBe(true);
-        recordPipeDeathForCoyoteHint();
-        recordPipeDeathForCoyoteHint();
-        expect(loadCoyoteHintSeen()).toBe(true);
-        recordPipeDeathForCoyoteHint();
-        expect(loadCoyoteHintSeen()).toBe(false);
     });
 });

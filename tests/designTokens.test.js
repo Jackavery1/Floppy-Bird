@@ -3,6 +3,7 @@ import {
     DESIGN_TOKENS,
     hexVersPhaser,
     hudTextStyle,
+    menuHomeTextStyle,
     menuTextStyle,
     panelChromeTextStyle,
 } from '../src/designTokens.js';
@@ -136,6 +137,18 @@ describe('designTokens', () => {
         ).toBeGreaterThanOrEqual(4.5);
     });
 
+    it('menuHomeTextStyle hint first-run garde le contour HUD en fond jour', async () => {
+        const { getBackgroundPeriod } = await import('../src/backgroundPeriod.js');
+        vi.mocked(getBackgroundPeriod).mockReturnValue('day');
+        const style = menuHomeTextStyle({
+            fill: DESIGN_TOKENS.texteHintMenu,
+            fontStyle: 'italic',
+        });
+        expect(style.stroke).toBe(DESIGN_TOKENS.contourHud);
+        expect(contrastRatio(style.stroke, DESIGN_TOKENS.fondJour)).toBeGreaterThanOrEqual(4.5);
+        vi.mocked(getBackgroundPeriod).mockReturnValue('night');
+    });
+
     it('panelChromeTextStyle impose 12 px minimum', () => {
         expect(panelChromeTextStyle().fontSize).toBe('12px');
     });
@@ -153,13 +166,16 @@ describe('designTokens', () => {
         expect(hudTextStyle().shadow).toBeUndefined();
     });
 
+    it('expose teinteCoyoteActif pour le feedback sprite', () => {
+        expect(DESIGN_TOKENS.teinteCoyoteActif).toBe('#FFD54F');
+    });
+
     it('pastels HUD restent lisibles sur fond jour avec contour', async () => {
         const { getBackgroundPeriod } = await import('../src/backgroundPeriod.js');
         vi.mocked(getBackgroundPeriod).mockReturnValue('day');
         for (const fill of [
             DESIGN_TOKENS.accentGap,
             DESIGN_TOKENS.bannerStreak,
-            DESIGN_TOKENS.bannerCoyote,
             DESIGN_TOKENS.bannerEscalation,
             DESIGN_TOKENS.badgeHardcore,
             DESIGN_TOKENS.badgeDaily,

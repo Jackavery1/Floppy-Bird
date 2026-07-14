@@ -12,9 +12,9 @@ export {
     showScoreStreak,
     showSpeedBoostPreview,
     showDifficultyEscalationPreview,
-    showCoyoteHint,
-    showCoyoteLowGraceHint,
     showFlash,
+    showGameOverLoading,
+    hideGameOverLoading,
 } from './uiHudBanners.js';
 
 export {

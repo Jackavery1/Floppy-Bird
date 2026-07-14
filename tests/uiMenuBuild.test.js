@@ -70,6 +70,59 @@ describe('uiMenuBuild', () => {
         expect(ui._muteHit).toBeUndefined();
     });
 
+    it('buildMenuFooter n’enregistre pas le focus clavier (délégué à bindMenuAccessibilityFocusVisuals)', async () => {
+        const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
+        const { focusHandlers } = await import('../src/uiDomAccessibilityState.js');
+        buildMenuFooter(ui, elements, layout);
+        expect(focusHandlers['a11y-start']).toBeUndefined();
+        const pointerCalls = ui._startHit.on.mock.calls;
+        expect(pointerCalls.some(([evt]) => evt === 'pointerover')).toBe(false);
+    });
+
+    it('buildMenuFooter laisse le CTA visible sans pulse si reduced motion', async () => {
+        const { prefersReducedMotion } = await import('../src/motion.js');
+        prefersReducedMotion.mockReturnValue(true);
+        const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
+        buildMenuFooter(ui, elements, layout);
+        expect(ui._startText.setAlpha).toHaveBeenCalledWith(1);
+    });
+
+    it('buildMenuFirstRunHint affiche la bannière sur profil vierge', async () => {
+        vi.stubGlobal('localStorage', {
+            getItem: () => null,
+            setItem: vi.fn(),
+        });
+        const { buildMenuFirstRunHint } = await import('../src/uiMenuBuild.js');
+        buildMenuFirstRunHint(ui, elements, layout);
+        expect(ui._firstRunHint).toBeTruthy();
+        vi.unstubAllGlobals();
+    });
+
+    it('buildMenuFirstRunHint absent si tutoriel terminé', async () => {
+        vi.stubGlobal('localStorage', {
+            getItem: (k) => (k.includes('tutorial-progress') ? '3' : null),
+            setItem: vi.fn(),
+        });
+        const { buildMenuFirstRunHint } = await import('../src/uiMenuBuild.js');
+        buildMenuFirstRunHint(ui, elements, layout);
+        expect(ui._firstRunHint).toBeUndefined();
+        vi.unstubAllGlobals();
+    });
+
+    it('playMenuIntroTween inclut la bannière first-run', async () => {
+        const { sceneTween } = await import('../src/motion.js');
+        ui._firstRunHint = { setAlpha: vi.fn() };
+        const title = { setAlpha: vi.fn() };
+        const { playMenuIntroTween } = await import('../src/uiMenuBuild.js');
+        playMenuIntroTween(ui, title);
+        expect(sceneTween).toHaveBeenCalledWith(
+            ui.scene,
+            expect.objectContaining({
+                targets: expect.arrayContaining([ui._firstRunHint]),
+            })
+        );
+    });
+
     it('buildMenuOptions crée le bouton sans construire le panneau tant qu’il est fermé', async () => {
         const { buildMenuOptions } = await import('../src/uiMenuOptions.js');
         buildMenuOptions(ui, elements, layout);

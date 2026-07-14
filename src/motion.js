@@ -22,8 +22,8 @@ export function sceneTween(scene, config) {
     const endScaleY = tweenEndValue(scaleY);
     for (const target of list) {
         if (!target) continue;
-        if (endAlpha !== undefined && !config.yoyo) {
-            target.setAlpha?.(endAlpha);
+        if (endAlpha !== undefined) {
+            target.setAlpha?.(config.yoyo ? 1 : endAlpha);
         }
         if (endY !== undefined) target.setY?.(endY);
         if (endX !== undefined) target.setX?.(endX);

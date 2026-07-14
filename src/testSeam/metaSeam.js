@@ -17,6 +17,22 @@ export function createMetaSeam(getScene) {
             step: loadTutorialProgress(),
             complete: loadTutorialComplete(),
         }),
+        getLastDeathMetrics: () => {
+            const scene = getScene();
+            return scene?.round?.lastDeathMetrics ?? null;
+        },
+        getRoundRuntime: () => {
+            const scene = getScene();
+            if (!scene?.round) return null;
+            const startedAt = scene.round.startedAt ?? 0;
+            const now = scene.time?.now ?? 0;
+            return {
+                state: scene.state ?? null,
+                score: scene.round.score ?? 0,
+                startedAt,
+                elapsedMs: startedAt > 0 ? Math.max(0, now - startedAt) : 0,
+            };
+        },
         getTrainingRuntime: () => {
             const scene = getScene();
             if (!scene) return null;

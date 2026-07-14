@@ -17,39 +17,22 @@ import { cancelPipeSpawnTimer, clearSpawnInvincibility } from './sceneRound.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
-import { closeMenuPanelsForRoundStart, openMainMenu } from './sceneMenuSync.js';
+import { openMainMenu } from './sceneMenuSync.js';
 import {
-    enterPauseAccessibility,
-    exitPauseAccessibility,
-    hideAccessibilityForRoundStart,
-} from './sceneA11ySync.js';
-import { syncShellGameState } from './shellGameState.js';
+    clearPauseOverlay,
+    enterPauseOverlay,
+    exitGameOverForRound,
+    exitMenuForRound,
+    resumeFromPauseOverlay,
+} from './sceneFlowOverlays.js';
+
+export { applyPausedState, applyPlayingState } from './sceneFlowOverlays.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
 /** @param {SceneContext} scene */
-export function applyPlayingState(scene) {
-    scene.state = GAME_STATE.PLAYING;
-    scene.time.paused = false;
-    syncShellGameState(GAME_STATE.PLAYING);
-}
-
-/** @param {SceneContext} scene */
-export function applyPausedState(scene) {
-    scene.state = GAME_STATE.PAUSED;
-    scene.time.paused = true;
-    syncShellGameState(GAME_STATE.PAUSED);
-}
-
-/** @param {SceneContext} scene */
 export function resumeClock(scene) {
     scene.time.paused = false;
-}
-
-/** @param {SceneContext} scene */
-function clearPauseOverlay(scene) {
-    scene.ui.clearOverlay('pause');
-    hideAccessibilityForRoundStart();
 }
 
 /** @param {SceneContext} scene */
@@ -63,13 +46,10 @@ export function startGame(scene) {
     scene.playMode = 'classic';
     scene.dailyChallengeMode = false;
     if (scene.state === GAME_STATE.MENU) {
-        hideAccessibilityForRoundStart();
-        closeMenuPanelsForRoundStart(scene);
-        scene.ui.clearOverlay('menu');
+        exitMenuForRound(scene);
         beginRound(scene, { resetBird: true });
     } else if (scene.state === GAME_STATE.GAME_OVER) {
-        hideAccessibilityForRoundStart();
-        scene.ui.clearOverlay('gameOver');
+        exitGameOverForRound(scene);
         beginRound(scene, { resetBird: true });
     }
 }
@@ -84,12 +64,9 @@ export function startDailyChallenge(scene) {
     scene.hardcoreMode = false;
     saveHardcoreEnabled(false);
     if (scene.state === GAME_STATE.MENU) {
-        hideAccessibilityForRoundStart();
-        closeMenuPanelsForRoundStart(scene);
-        scene.ui.clearOverlay('menu');
+        exitMenuForRound(scene);
     } else {
-        hideAccessibilityForRoundStart();
-        scene.ui.clearOverlay('gameOver');
+        exitGameOverForRound(scene);
     }
     beginRound(scene, { resetBird: true });
 }
@@ -112,19 +89,14 @@ export function returnToMenu(scene) {
 /** @param {SceneContext} scene */
 export function togglePause(scene) {
     if (scene.state === GAME_STATE.PLAYING) {
-        applyPausedState(scene);
-        const pauseUI = scene.ui.showPause({
+        enterPauseOverlay(scene, {
             onResume: () => {
                 if (scene.state === GAME_STATE.PAUSED) togglePause(scene);
             },
             onMenu: () => returnToMenu(scene),
         });
-        scene.ui.setOverlay('pause', pauseUI.elements);
-        enterPauseAccessibility(scene);
     } else if (scene.state === GAME_STATE.PAUSED) {
-        applyPlayingState(scene);
-        clearPauseOverlay(scene);
-        exitPauseAccessibility(scene);
+        resumeFromPauseOverlay(scene);
     }
 }
 

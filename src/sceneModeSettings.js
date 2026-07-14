@@ -7,7 +7,7 @@ import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
-import { syncMenuToggleAccessibility } from './uiDomAccessibilityFlows.js';
+import { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
 import { setAccessibilityControlLabel } from './uiDomAccessibilityControls.js';
 import { trainingSpeedLabel } from './device.js';
 

@@ -121,7 +121,6 @@ export const UI_LAYOUT = {
         skinsTitle: 138,
         skinsSubtitle: 158,
         skinsRow1: 196,
-        skinsHint: 444,
     }),
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {

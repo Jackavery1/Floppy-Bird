@@ -1,0 +1,14 @@
+/* Tokens shell — fallback avant syncShellTheme. Source JS : src/shellTokenDefaults.js */
+:root {
+    --couleur-fond: #1a1a2e;
+    --couleur-texte-chargement: #90caf9;
+    --couleur-texte-hint: #ffffff;
+    --couleur-accent: #fdd835;
+    --police-interface: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --police-titre: 'Press Start 2P', 'Courier New', monospace;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+}

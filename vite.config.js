@@ -103,6 +103,8 @@ export default defineConfig(({ mode }) => {
                     'vendor/*.js',
                     'manifest.webmanifest',
                     'offline.html',
+                    'shell-tokens.css',
+                    'offline-page.css',
                 ],
                 manifest: pwaManifest,
                 workbox: {

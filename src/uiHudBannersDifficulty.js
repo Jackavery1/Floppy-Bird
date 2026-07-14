@@ -1,9 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { formatDailyStartBanner } from './dailyChallenge.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudBannerFill, hudTextStyle } from './designTokens.js';
+import { hapticMedium } from './haptics.js';
 import { showFlash, showTransientBanner } from './uiHudBannerCore.js';
 
 export function showRecordBroken(ui) {
+    hapticMedium();
     showTransientBanner(
         ui,
         '_recordBanner',
@@ -32,6 +34,7 @@ export function showDifficultyEscalation(ui) {
 }
 
 export function showScoreStreak(ui, score) {
+    hapticMedium();
     const labels = {
         10: 'SÉRIE ×10',
         15: 'EN FEU !',

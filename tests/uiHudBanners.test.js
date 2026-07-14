@@ -8,12 +8,12 @@ import {
     showDifficultyEscalation,
     showDifficultyEscalationPreview,
     showSpeedBoostPreview,
-    showCoyoteHint,
-    showCoyoteLowGraceHint,
     showScoreStreak,
     showGapTutorial,
     showScoreTutorial,
     dismissGameplayTutorial,
+    showGameOverLoading,
+    hideGameOverLoading,
 } from '../src/uiHud.js';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
@@ -22,6 +22,11 @@ import { createRoundState } from '../src/roundState.js';
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),
     prefersReducedMotion: vi.fn(() => false),
+}));
+
+vi.mock('../src/haptics.js', () => ({
+    hapticMedium: vi.fn(),
+    hapticLight: vi.fn(),
 }));
 
 describe('uiHudBanners', () => {
@@ -50,9 +55,11 @@ describe('uiHudBanners', () => {
         expect(ui._escalationBanner).toBeTruthy();
     });
 
-    it('showScoreStreak affiche la série ou EN FEU', () => {
+    it('showScoreStreak affiche la série ou EN FEU', async () => {
+        const { hapticMedium } = await import('../src/haptics.js');
         showScoreStreak(ui, 10);
         expect(ui._streakBanner).toBeTruthy();
+        expect(hapticMedium).toHaveBeenCalled();
         showScoreStreak(ui, 15);
         expect(ui.scene.add.text).toHaveBeenCalled();
     });
@@ -80,22 +87,12 @@ describe('uiHudBanners', () => {
         expect(ui._speedBoostPreviewBanner).toBeTruthy();
     });
 
-    it('showCoyoteHint affiche une bannière avec texte coyote', () => {
-        showCoyoteHint(ui);
-        expect(ui._coyoteHintBanner).toBeTruthy();
-    });
-
     it('showGapTutorial et showScoreTutorial utilisent le hint pulsant', () => {
         showGapTutorial(ui);
         expect(ui._tutorialHint).toBeTruthy();
         dismissGameplayTutorial(ui);
         showScoreTutorial(ui);
         expect(ui._tutorialHint).toBeTruthy();
-    });
-
-    it('showCoyoteLowGraceHint affiche une bannière quand des frames restent', () => {
-        showCoyoteLowGraceHint(ui, 2);
-        expect(ui._coyoteLowBanner).toBeTruthy();
     });
 
     it('showJumpTutorial et dismissJumpTutorial gèrent le hint', () => {
@@ -109,5 +106,21 @@ describe('uiHudBanners', () => {
     it('showFlash ajoute un rectangle plein écran', () => {
         showFlash(ui);
         expect(ui.scene.add.rectangle).toHaveBeenCalled();
+    });
+
+    it('showGameOverLoading affiche skeleton puis masque l’indicateur', async () => {
+        const { sceneTween } = await import('../src/motion.js');
+        showGameOverLoading(ui);
+        expect(ui._gameOverLoadingText).toBeTruthy();
+        expect(ui._gameOverLoadingOverlay).toBeTruthy();
+        expect(ui._gameOverLoadingPanel).toBeTruthy();
+        expect(sceneTween).toHaveBeenCalled();
+        showGameOverLoading(ui);
+        expect(ui.scene.add.text).toHaveBeenCalledTimes(1);
+        hideGameOverLoading(ui);
+        expect(ui._gameOverLoadingText).toBeNull();
+        expect(ui._gameOverLoadingOverlay).toBeNull();
+        expect(ui._gameOverLoadingPanel).toBeNull();
+        hideGameOverLoading(ui);
     });
 });

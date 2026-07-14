@@ -34,9 +34,9 @@ describe('uiText', () => {
         expect(label.setDepth).toHaveBeenCalledWith(52);
     });
 
-    it('diffLabelColor met le bouton actif en sombre sur fond jaune', () => {
+    it('diffLabelColor met le bouton actif en blanc sur fond jaune', () => {
         expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
-            DESIGN_TOKENS.texteBoutonJaune
+            DESIGN_TOKENS.texteMenu
         );
     });
 

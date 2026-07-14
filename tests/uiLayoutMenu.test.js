@@ -32,7 +32,7 @@ describe('uiLayout menu', () => {
         const lastControlY = optionsPanel.controlsFirst + 7 * optionsPanel.controlsGap;
         expect(lastControlY).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
-        expect(skinsPanel.skinsHint).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(skinsPanel.closeBtn).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(optionsPanel.hardcore - optionsPanel.training).toBeGreaterThanOrEqual(44);
         expect(skinsPanel.panelTop + skinsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
     });

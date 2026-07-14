@@ -78,7 +78,8 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 #### Règles et mécaniques
 
-- **Coyote time** (5 frames) : marge à la sortie d'un gap ; teinte discrète pendant la protection au spawn (~0,9 s, **700 ms** en hardcore).
+- **Coyote time** (5 frames) : marge à la sortie d'un gap — protège tuyaux **et plafond** (pas le sol) ; teinte oiseau `#FFD54F` (`teinteCoyoteActif`) pendant la protection.
+- **Invincibilité spawn** : ~900 ms (classique), **840 ms** (hardcore — compense la gravité renforcée, marge ≥400 ms avant le 1er tuyau).
 - **Tutoriel** en 3 étapes à la première partie ; auto-skip après 3 parties si non terminé.
 - **Escalade** : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; gaps resserrés au score 20.
 - **Records** : bannière « NOUVEAU RECORD ! » en jeu ; TOP 5 par difficulté (classique et hardcore séparés).
@@ -90,7 +91,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 | ---- | ----------- |
 | **Classique** | 3 difficultés (vitesse, écart, intervalle — voir [`src/config.js`](src/config.js)) |
 | **Entraînement** | Ralenti ×0,8, fantôme du meilleur parcours, scores non enregistrés |
-| **Hardcore** | Gravité/vitesse renforcées, invincibilité spawn 700 ms, TOP 5 dédié |
+| **Hardcore** | Gravité/vitesse renforcées, invincibilité spawn 840 ms, TOP 5 dédié |
 | **Défi du jour** | Séquence partagée, skin/pattern/objectif imposés, rejouable depuis le game over |
 
 Les **skins** modifient l'apparence en classique ; la **physique du pattern** (gravité/saut/vitesse) s'applique uniquement au défi du jour.
@@ -119,7 +120,7 @@ Ouvrez **http://localhost:5173** dans votre navigateur.
 
 ```bash
 npm run build
-npm run preview    # http://localhost:8000
+npm run preview    # http://localhost:8000 (Playwright CI utilise le port 4173 via vite preview)
 ```
 
 ### Installer la PWA
@@ -170,7 +171,29 @@ Documentation complémentaire : [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUT
 | **Mobile paysage** | Letterbox avec bandes | Tap (overlay masqué si exclusion audit) | Même logique jeu ; voir `AUDIT-EXCLUSIONS.md` pour l’overlay paysage |
 | **Tablette** | Letterbox adaptatif | Tap ou clavier externe | Projets Playwright `tablet-*` ; cibles tactiles identiques au mobile |
 
-Paramètre debug gameplay : ajouter `?debug` à l’URL pour afficher FPS et hitboxes collision (oiseau + tuyaux).
+**Projets Playwright** (détail CI dans [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright)) :
+
+| Projet | Viewport | Smoke deploy |
+| ------ | -------- | ------------ |
+| `chromium-desktop` | Desktop Chrome | oui |
+| `chromium-mobile-portrait` | 390×844 | oui |
+| `chromium-mobile-landscape` | 844×390 | matrice complète |
+| `webkit-mobile-portrait` / `-landscape` | iPhone 13 | matrice complète |
+| `chromium-tablet-landscape` | 1024×768 | oui |
+
+Commande smoke : `npm run test:e2e:smoke` (desktop + mobile portrait + tablette paysage).
+
+#### Matrice clavier et entrées
+
+| Contexte | Jeu (saut / action) | Menu | Pause | Game over | Navigation a11y |
+| -------- | ------------------- | ---- | ----- | --------- | --------------- |
+| **Desktop** | Espace, clic canvas | `1`/`2`/`3` difficulté · `T` entraînement · `H` hardcore · `D` défi · `O`/`S`/`K` panneaux · `K`+flèches skins | ESC toggle · `M` menu | Espace rejouer · `D` relance défi | Tab + Entrée sur `#a11y-*` |
+| **Mobile / tablette tactile** | Tap canvas | Tap boutons menu | Tap pause HUD | Tap rejouer | Tab + Entrée sur overlay `#a11y-*` (CTA 48 px, saut 96×96 px) |
+| **Tablette + clavier externe** | Espace (smoke e2e) | Idem desktop si clavier physique | ESC (smoke e2e) | Tap ou Espace | Tab + Entrée |
+
+En partie **tactile**, le pinch est bloqué (`user-scalable=no`, classe `partie-active`) ; sur **desktop**, le zoom navigateur jusqu’à 200 % reste actif (testé e2e).
+
+Paramètre debug gameplay : `?debug` affiche FPS et hitboxes collision ; le **mode entraînement** affiche aussi les hitboxes (sprite vs collision vs tuyaux).
 
 Référence visuelle des tokens : `npm run dev:tokens` → [`tokens.html`](tokens.html).
 
@@ -180,6 +203,7 @@ Référence visuelle des tokens : `npm run dev:tokens` → [`tokens.html`](token
 npm test              # Vitest
 npm run test:coverage # Couverture (seuils CI ≥ 94 % lines)
 npm run test:e2e      # Playwright (viewport + chargement)
+npm run test:e2e:smoke # Smoke CI (desktop + mobile portrait + tablette)
 npm run lint          # ESLint
 npm run format        # Prettier
 npm run icons         # Génère public/icons/
@@ -251,7 +275,8 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 
 #### Rules and Mechanics
 
-- **Coyote time** (5 frames): safety margin when leaving a gap; subtle tint during spawn protection (~0.9 s, **700 ms** in hardcore).
+- **Coyote time** (5 frames): safety margin when leaving a gap — protects pipes **and ceiling** (not the floor); bird tint `#FFD54F` (`teinteCoyoteActif`) while active.
+- **Spawn invincibility**: ~900 ms (classic), **840 ms** (hardcore — offsets stronger gravity, ≥400 ms margin before first pipe).
 - **Tutorial** in 3 steps on first run; auto-skip after 3 games if not completed.
 - **Scaling**: +3% speed / 10 pts (cap +15% from score 50); tighter gaps at score 20.
 - **Records**: « NEW RECORD! » banner in-game; TOP 5 per difficulty (classic and hardcore separate).
@@ -263,7 +288,7 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 | ---- | ----------- |
 | **Classic** | 3 difficulties (speed, gap, interval — see [`src/config.js`](src/config.js)) |
 | **Training** | ×0.8 slow motion, ghost of best run, scores not saved |
-| **Hardcore** | Increased gravity/speed, 700 ms spawn invincibility, dedicated TOP 5 |
+| **Hardcore** | Increased gravity/speed, 840 ms spawn invincibility, dedicated TOP 5 |
 | **Daily challenge** | Shared sequence, forced skin/pattern/objective, replayable from game over |
 
 **Skins** change appearance in classic mode; **pattern physics** (gravity/jump/speed) apply only to the daily challenge.
@@ -292,7 +317,7 @@ Open **http://localhost:5173** in your browser.
 
 ```bash
 npm run build
-npm run preview    # http://localhost:8000
+npm run preview    # http://localhost:8000 (Playwright CI utilise le port 4173 via vite preview)
 ```
 
 ### Install the PWA
@@ -334,12 +359,50 @@ An online visit is required before offline mode. Without Service Worker cache, `
 
 Additional docs: [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUTING.md](CONTRIBUTING.md) · [AUDIT-EXCLUSIONS.md](AUDIT-EXCLUSIONS.md)
 
+#### Viewport matrix (behaviors)
+
+| Context | Logical resolution | Input | Behavior |
+| ------- | ------------------ | ----- | -------- |
+| **Desktop** | Letterbox 288×512 centered | Keyboard (Space, ESC…) + mouse | Clickable canvas; a11y overlay hidden unless keyboard focus |
+| **Mobile portrait** | Full-screen letterbox + safe-area | Tap + `#a11y-*` overlay | Primary CTAs 48 px; jump zone 96×96 px; pause 48 px top-right; skins panel 268×404 px |
+| **Mobile landscape** | Letterbox with bands | Tap (overlay hidden per audit exclusion) | Same game logic; see `AUDIT-EXCLUSIONS.md` for landscape overlay |
+| **Tablet** | Adaptive letterbox | Tap or external keyboard | Playwright `tablet-*` projects; same touch targets as mobile |
+
+**Playwright projects** (CI details in [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright)):
+
+| Project | Viewport | Deploy smoke |
+| ------- | -------- | ------------ |
+| `chromium-desktop` | Desktop Chrome | yes |
+| `chromium-mobile-portrait` | 390×844 | yes |
+| `chromium-mobile-landscape` | 844×390 | full matrix |
+| `webkit-mobile-portrait` / `-landscape` | iPhone 13 | full matrix |
+| `chromium-tablet-landscape` | 1024×768 | yes |
+
+Smoke command: `npm run test:e2e:smoke` (desktop + mobile portrait + tablet landscape).
+
+#### Keyboard and input matrix
+
+| Context | Play (jump / action) | Menu | Pause | Game over | A11y navigation |
+| ------- | -------------------- | ---- | ----- | --------- | --------------- |
+| **Desktop** | Space, canvas click | `1`/`2`/`3` difficulty · `T` training · `H` hardcore · `D` daily · `O`/`S`/`K` panels · `K`+arrows skins | ESC toggle · `M` menu | Space restart · `D` daily replay | Tab + Enter on `#a11y-*` |
+| **Mobile / tablet touch** | Canvas tap | Menu taps | HUD pause tap | Tap restart | Tab + Enter on `#a11y-*` overlay (48 px CTAs, 96×96 jump) |
+| **Tablet + external keyboard** | Space (e2e smoke) | Same as desktop with physical keyboard | ESC (e2e smoke) | Tap or Space | Tab + Enter |
+
+During **touch** play, pinch zoom is blocked (`user-scalable=no`, `partie-active` class); on **desktop**, browser zoom up to 200% remains available (e2e tested).
+
+Gameplay debug: `?debug` shows FPS and collision hitboxes; **training mode** also draws hitboxes (sprite vs collision vs pipes).
+
+Gameplay debug: add `?debug` to the URL to show FPS and collision hitboxes (bird + pipes).
+
+Design tokens reference: `npm run dev:tokens` → [`tokens.html`](tokens.html).
+
 ### Development
 
 ```bash
 npm test              # Vitest
 npm run test:coverage # Coverage (CI thresholds ≥ 94% lines)
 npm run test:e2e      # Playwright (viewport + loading)
+npm run test:e2e:smoke # CI smoke (desktop + mobile portrait + tablet)
 npm run lint          # ESLint
 npm run format        # Prettier
 npm run icons         # Generate public/icons/

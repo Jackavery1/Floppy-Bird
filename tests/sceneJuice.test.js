@@ -41,11 +41,36 @@ describe('sceneJuice', () => {
         expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 90, 0.004);
     });
 
+    it('spawnBurstParticles ignore reduced motion', async () => {
+        prefersReducedMotion.mockReturnValue(true);
+        const { spawnBurstParticles } = await import('../src/sceneJuice.js');
+        const scene = sceneStub();
+        spawnBurstParticles(scene, 100, 200);
+        expect(scene.add.rectangle).not.toHaveBeenCalled();
+    });
+
+    it('spawnScoreJuice sans secousse hors paliers ×10', async () => {
+        const { spawnScoreJuice } = await import('../src/sceneJuice.js');
+        const scene = sceneStub();
+        spawnScoreJuice(scene, 80, 180, 7);
+        expect(sceneCameraShake).not.toHaveBeenCalled();
+    });
+
     it('spawnDeathJuice ignore reduced motion', async () => {
         prefersReducedMotion.mockReturnValue(true);
         const { spawnDeathJuice } = await import('../src/sceneJuice.js');
         const scene = sceneStub();
         spawnDeathJuice(scene, 50, 50, 'pipe');
         expect(scene.add.rectangle).not.toHaveBeenCalled();
+    });
+
+    it('spawnDeathJuice crée des particules pour sol et plafond', async () => {
+        const { spawnDeathJuice } = await import('../src/sceneJuice.js');
+        const scene = sceneStub();
+        spawnDeathJuice(scene, 50, 50, 'ground');
+        expect(scene.add.rectangle).toHaveBeenCalled();
+        vi.clearAllMocks();
+        spawnDeathJuice(scene, 50, 50, 'ceiling');
+        expect(scene.add.rectangle).toHaveBeenCalled();
     });
 });

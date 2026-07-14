@@ -55,14 +55,22 @@ src/
 ├── UI
 ├── ui.js                      # Orchestration UI
 ├── uiLayout.js                # Layout constants et helpers
-├── uiMenu.js                  # Menu principal
+├── uiMenu.js                  # Menu principal (build, labels, difficulté)
+├── uiMenuPanels.js            # Orchestration panneaux (fermeture, rebuild)
+├── uiMenuPanel.js             # Visibilité / toggle panneaux
+├── uiMenuPanelController.js   # Controller + shell panneaux
 ├── uiMenuPanel.js             # Panels génériques (animations)
 ├── uiMenuSkins.js             # Sélection des skins
 ├── uiGameOver.js              # Écran de fin
 ├── uiGameOverDecor.js         # Éléments visuels (confetti)
+├── uiGameOverSummary.js       # Orchestrateur récap game over
+├── uiGameOverSummaryHeader.js # Titre, cause de mort, liseré
+├── uiGameOverSummaryMedal.js  # Médaille ou bannière record
+├── uiGameOverSummaryScore.js  # Bloc score et libellés record/daily
 ├── uiHudBanners.js            # Bannières HUD
 │
 ├── A11y
+├── uiDomAccessibilityFocusVisuals.js  # Focus clavier canvas (CTA menu, panneaux, skins)
 ├── uiDomAccessibility*.js     # Layer d'accessibilité DOM
 ├── haptics.js                 # Retours haptiques
 │
@@ -72,6 +80,8 @@ src/
 ├── textures/                  # Sprites générés
 │
 └── PWA
+    ├── public/shell-tokens.css  # Variables CSS shell (style.css + offline.html)
+    ├── public/offline-page.css  # Styles page fallback offline
     └── (service worker géré par Vite PWA plugin)
 
 tests/
@@ -136,7 +146,7 @@ ui.js (orchestration — façade SceneContext)
 | **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
 | **Extension**      | Implémenter dans `ui*.js`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
-| **Délégation**     | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans `ui.js`      |
+| **Délégation**     | 38 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans `ui.js`      |
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
 
@@ -155,10 +165,69 @@ Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) pour les contrôles secon
 | `uiMenuScores*.js` / `uiMenuSkins*.js` | Scores, skins et cycle de sélection |
 | `uiMenuDailyChallenge.js` | Défi du jour |
 | `uiHud*.js` | Score, pause, badges difficulté, tutoriel, contrôles in-game |
-| `uiPause.js` | Overlay pause |
-| `uiGameOver*.js` | Panneau game over, actions, confetti, leaderboard |
+| `uiPause.js` | Overlay pause — réutilise `buildPanelPillButton` |
+| `uiGameOverPanel.js` | `drawGameOverPanelFrame` partagé avec skeleton chargement game over |
+| `uiGameOver*.js` | Panneau game over, récap (header/medal/score), actions, confetti, leaderboard |
 | `uiDomAccessibility*.js` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` unifie focus clavier et survol Phaser |
 | `uiAchievementToast.js` / `uiToggleIcons.js` | Toasts trophées, icônes toggle |
+
+#### Arbre modules `ui*` (vue rapide)
+
+```
+uiIndex.js → ui.js (façade)
+├── Layout & chrome : uiLayout*, uiDepth, uiText, uiToggleIcons
+├── Menu accueil    : uiMenu.js → uiMenuBuild, uiMenuHeader, uiMenuLayout, uiMenuDailyChallenge
+├── Panneaux        : uiMenuPanel*, uiMenuScores*, uiMenuSkins*, uiMenuOptions*
+├── HUD in-game     : uiHud*, uiPause, uiAchievementToast
+├── Game over       : uiGameOver* (+ chunk lazy ui-gameover)
+└── A11y DOM        : uiDomAccessibility* (overlay #a11y-controls, bindUnifiedInteractiveFocus)
+```
+
+#### Cluster a11y — graphe d'imports (évite les cycles `madge`)
+
+```
+uiDomAccessibility.js              ← barrel (appBootstrap, tests)
+├── uiDomAccessibilityLayer.js     ← overlay DOM #a11y-controls
+├── uiDomAccessibilityControls.js  ← feuille : bindUnifiedInteractiveFocus, aria
+├── uiDomAccessibilityMenuToggles.js ← toggles difficulté / modes (menu)
+├── uiDomAccessibilityPanelFlows.js  ← panneaux scores / skins / options
+├── uiDomAccessibilityFlows.js     ← setup menu + game over
+│   └── uiMenuOptionsTabs.js
+│       └── uiMenuPanelChrome.js
+├── uiDomAccessibilityFocusVisuals.js  ← focus canvas (menuStart, fermer panneaux, skins)
+│   └── bindUnifiedInteractiveFocus au build pour le reste des contrôles
+
+Règle : les modules UI Phaser (`uiMenu*`, `uiGameOver*`, `uiHud*`, `uiPause`), `sceneDeath` et
+`sceneA11ySync` importent depuis les feuilles (`uiDomAccessibilityPanelFlows.js`,
+`uiDomAccessibilityMenuToggles.js`, `uiDomAccessibilityControls.js`, `uiDomAccessibilityFlows.js`,
+`uiDomAccessibilityLayer.js`), jamais depuis le barrel `uiDomAccessibility.js` (réservé à
+`appBootstrap.js` et tests).
+
+Panneaux menu : `uiMenuPanel.js` (visibilité, toggle, backdrop) + `uiMenuPanelController.js`
+(controller + shell) + `uiMenuPanels.js` (orchestration fermeture/rebuild). Overlays scène :
+`sceneFlowOverlays.js`. Tokens shell : `shellTokenDefaults.js` (aligné `public/shell-tokens.css`).
+Garde-fous CSS : `tests/cssShellClasses.test.js`, `tests/cssStaticPages.test.js`.
+Seam debug mort : `getLastDeathMetrics()` (`metaSeam.js`) — `cause`, `elapsedMs`, `isEarlyDeath`, `beforeFirstPipe`.
+```
+
+#### GameScene — adaptateur Phaser
+
+`GameScene.js` délègue volontairement vers `sceneFlow.js` / `sceneBeginRound.js` (`handlePrimaryAction`,
+`togglePause`, `changeDifficulty`, etc.). C’est le point d’entrée Phaser requis par le moteur, pas un god-object
+métier : la logique vit dans les modules `scene*`.
+
+#### Contrat `SceneContext` (`src/sceneTypes.js`)
+
+Contexte typé passé aux modules `scene*` (bird, pipes, round, ui, modes). Initialisé par `sceneContext.js` avant `create()`.
+
+| Zone | Modules autorisés à muter |
+| ---- | ------------------------- |
+| `state`, `difficulty`, modes | `sceneFlow.js`, `sceneBeginRound.js`, `sceneDeath.js` |
+| `round.*` | `sceneRound.js`, `roundState.js`, `sceneDeath.js`, `sceneBeginRound.js` |
+| `bird`, `pipes`, `ghost` | entités + `sceneBootstrap.js` |
+| `ui` | façade `UI` uniquement — pas de physique ni storage direct |
+
+Détail complet des champs : JSDoc `@typedef SceneContext` dans `src/sceneTypes.js`.
 
 ## Data Flow
 
@@ -245,18 +314,19 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 ### WCAG 2.1 Level AA (cible)
 
-- **Keyboard Navigation** : 26 boutons DOM overlay + canvas
+- **Keyboard Navigation** : 26 boutons DOM overlay + canvas (`role="application"`, `aria-labelledby="game-description"`)
 - **Screen Readers** : `#ui-announcer`, labels ARIA, états `aria-pressed` / `aria-expanded` sur toggles
 - **Color Contrast** : tokens testés AA sur fond nuit ; HUD jour compensé par contour noir (`designTokens.test.js`)
 - **Motion** : `prefers-reduced-motion` respecté
-- **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`)
+- **Focus** : outline 2px ; `prefers-contrast: more` renforce focus et couleurs (`style.css`) ; feedback canvas via `uiDomAccessibilityFocusVisuals.js` + `bindUnifiedInteractiveFocus`
 
 ### Fichiers concernés
 
 - `uiDomAccessibility*.js` : A11y layer
 - `motion.js` : Animation control
-- `style.css` : Focus styles
-- `index.html` : ARIA semantics
+- `style.css` + `public/shell-tokens.css` : Focus styles et tokens shell
+- `index.html` : Landmarks, `#game-description` pour le canvas
+- `src/appBootstrap.js` : `role="application"` + `aria-labelledby` sur le canvas Phaser
 
 ## Évolutivité
 
@@ -264,7 +334,7 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
-- **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `style.css` (shell synchronisé via `shellTheme.js`)
+- **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
 - **Test Coverage** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
 
 ## Workflow de développement
@@ -304,4 +374,4 @@ Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run me
 
 ---
 
-Last updated: 2026-07-09
+Last updated: 2026-07-14

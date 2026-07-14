@@ -1,18 +1,16 @@
 import { optionsButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
+import { GAME_STATE } from './gameState.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
+import { setAccessibilityControlDisabled } from './uiDomAccessibilityControls.js';
 import {
     bindOptionsAccessibility,
-    setAccessibilityControlDisabled,
     setOptionsPanelAccessibility,
-} from './uiDomAccessibility.js';
+} from './uiDomAccessibilityPanelFlows.js';
 import { MENU_BTN_COLOR, UI_LAYOUT } from './uiLayout.js';
-import {
-    buildMenuPanelBackdrop,
-    buildMenuPanelShell,
-    createMenuPanelController,
-} from './uiMenuPanel.js';
+import { buildMenuPanelBackdrop } from './uiMenuPanel.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
 import {
     applyHardcoreLabel,
     attachOptionsBackdropToRoot,
@@ -29,6 +27,7 @@ const PANEL_CFG = {
     btnBgKey: '_optionsBtnBg',
     btnLabelKey: '_optionsBtnLabel',
     btnHitKey: '_optionsBtnHit',
+    btnFocusKey: 'menuOptions',
     buttonLabelFn: optionsButtonLabel,
     btnColor: MENU_BTN_COLOR,
     btnStroke: hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke),
@@ -64,9 +63,8 @@ export function teardownOptionsPanel(ui) {
     ui._optionsCloseHit = null;
 }
 
-/** @param {import('./ui.js').UI} ui */
 export function ensureOptionsPanelBuilt(ui) {
-    if (ui._optionsPanelBuilt) return;
+    if (ui._optionsPanelBuilt || ui.scene?.state !== GAME_STATE.MENU) return;
     const elements = ui._menuBuildElements;
     if (!elements || !ui.scene) return;
 

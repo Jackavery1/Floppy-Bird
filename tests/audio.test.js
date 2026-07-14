@@ -182,4 +182,65 @@ describe('audio', () => {
         const { isAudioAvailable } = await import('../src/audio.js');
         expect(isAudioAvailable()).toBe(false);
     });
+
+    it('cycleSoundLevel ignore si audio indisponible', async () => {
+        vi.stubGlobal('AudioContext', undefined);
+        vi.stubGlobal('webkitAudioContext', undefined);
+        vi.resetModules();
+        const { cycleSoundLevel } = await import('../src/audio.js');
+        expect(() => cycleSoundLevel()).not.toThrow();
+    });
+
+    it('formatSoundLabel indique OFF si audio indisponible', async () => {
+        vi.stubGlobal('AudioContext', undefined);
+        vi.stubGlobal('webkitAudioContext', undefined);
+        vi.resetModules();
+        const { formatSoundLabel } = await import('../src/audio.js');
+        expect(formatSoundLabel()).toMatch(/indisponible/i);
+    });
+
+    it('formatSoundLabel reflète le volume courant', async () => {
+        const store = { 'flappy-bird-volume': '0.75' };
+        vi.stubGlobal('localStorage', {
+            getItem: (k) => store[k] ?? null,
+            setItem: (k, v) => {
+                store[k] = v;
+            },
+        });
+        vi.resetModules();
+        const Ctx = vi.fn(() => mockCtx);
+        vi.stubGlobal('AudioContext', Ctx);
+        const { formatSoundLabel } = await import('../src/audio.js');
+        expect(formatSoundLabel()).toContain('75');
+    });
+
+    it('playSound reprend un contexte suspendu', () => {
+        mockCtx.state = 'suspended';
+        playSound(SOUND.JUMP);
+        expect(mockCtx.resume).toHaveBeenCalled();
+    });
+
+    it('playSound ignore si le contexte audio est absent', async () => {
+        vi.stubGlobal('AudioContext', undefined);
+        vi.stubGlobal('webkitAudioContext', undefined);
+        vi.resetModules();
+        const { playSound: play } = await import('../src/audio.js');
+        expect(() => play(SOUND.JUMP)).not.toThrow();
+    });
+
+    it('playSound marque audio indisponible en cas d’erreur', async () => {
+        mockCtx.createOscillator.mockImplementationOnce(() => {
+            throw new Error('blocked');
+        });
+        playSound(SOUND.JUMP);
+        const engine = await import('../src/audioEngine.js');
+        expect(engine.isAudioAvailable()).toBe(false);
+        expect(engine.getAudioContext()).toBeNull();
+    });
+
+    it('playSound ignore les noms de son inconnus', () => {
+        mockCtx.createOscillator.mockClear();
+        playSound('unknown');
+        expect(mockCtx.createOscillator).not.toHaveBeenCalled();
+    });
 });

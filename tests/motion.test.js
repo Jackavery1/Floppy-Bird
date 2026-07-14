@@ -66,6 +66,24 @@ describe('motion', () => {
         expect(target.setScale).toHaveBeenCalledWith(1.05, 1.05);
     });
 
+    it('sceneTween garde alpha visible pour pulse yoyo si reduced motion', async () => {
+        vi.stubGlobal(
+            'matchMedia',
+            vi.fn(() => ({ matches: true }))
+        );
+        const target = { setAlpha: vi.fn() };
+        const scene = { tweens: { add: vi.fn() } };
+        const { sceneTween } = await import('../src/motion.js');
+        sceneTween(scene, {
+            targets: target,
+            alpha: 0,
+            yoyo: true,
+            repeat: -1,
+            duration: 400,
+        });
+        expect(target.setAlpha).toHaveBeenCalledWith(1);
+    });
+
     it('sceneCameraShake ignore si reduced motion', async () => {
         vi.stubGlobal(
             'matchMedia',

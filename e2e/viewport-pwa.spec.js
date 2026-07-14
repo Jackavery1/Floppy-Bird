@@ -12,12 +12,22 @@ test.describe('viewport PWA et métadonnées', () => {
             'content',
             'summary_large_image'
         );
-        await expect(page.locator('#game-container')).toHaveAttribute('role', 'img');
-        await expect(page.locator('#game-container')).toHaveAttribute(
+        await expect(page.locator('#game-container')).not.toHaveAttribute('role', 'img');
+        await expect(page.locator('#game-container canvas')).toHaveAttribute('role', 'application');
+        await expect(page.locator('#game-container canvas')).toHaveAttribute(
             'aria-labelledby',
             'game-description'
         );
+        await expect(page.locator('#game-description')).toHaveClass(/visually-hidden/);
         await expect(page.locator('main#app')).toHaveAttribute('aria-label', 'Floppy Bird');
+    });
+
+    test('expose viewport-fit=cover pour les encoches', async ({ page }) => {
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
+        await expect(page.locator('meta[name="viewport"]')).toHaveAttribute(
+            'content',
+            /viewport-fit=cover/
+        );
     });
 
     test('expose le manifest PWA', async ({ page }) => {

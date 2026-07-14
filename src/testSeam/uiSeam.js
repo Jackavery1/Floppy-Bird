@@ -41,6 +41,8 @@ export function createUiSeam(getScene) {
                 trainingMode: Boolean(scene.trainingMode),
                 hardcoreMode: Boolean(scene.hardcoreMode),
                 dailyChallengeMode: Boolean(scene.dailyChallengeMode),
+                firstRunHintVisible: Boolean(ui._firstRunHint?.visible),
+                firstRunHintText: ui._firstRunHint?.text ?? null,
             };
         },
         getOptionsPanel: () => {

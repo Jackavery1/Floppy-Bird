@@ -1,8 +1,8 @@
 import { skinsButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
-import { bindSkinsAccessibility, setSkinsPanelAccessibility } from './uiDomAccessibility.js';
+import { bindSkinsAccessibility, setSkinsPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
 import { UI_LAYOUT } from './uiLayout.js';
-import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
 import { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';
 
 const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
@@ -15,6 +15,7 @@ const PANEL_CFG = {
     btnBgKey: '_skinsBtnBg',
     btnLabelKey: '_skinsBtnLabel',
     btnHitKey: '_skinsBtnHit',
+    btnFocusKey: 'menuSkins',
     buttonLabelFn: skinsButtonLabel,
     btnColor: SKINS_BTN_COLOR,
     btnStroke: SKINS_BTN_STROKE,

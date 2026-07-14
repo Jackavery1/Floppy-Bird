@@ -33,6 +33,19 @@ test.describe('touch mobile portrait', () => {
         await expectGameState(page, 'paused');
     });
 
+    test('masque les boutons menu pendant la partie', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await page.locator('#a11y-options').tap({ force: true });
+        await expect(page.locator('#a11y-options-close')).toBeVisible();
+        await page.locator('#a11y-options-close').tap({ force: true });
+        await startPlayingFromMenu(page, usesTouch);
+        await expect(page.locator('#a11y-options')).toBeHidden();
+        await expect(page.locator('#a11y-jump')).toBeVisible();
+        await expect(page.locator('#a11y-pause')).toBeVisible();
+    });
+
     test('pause → reprendre via tap', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         const usesTouch = projectUsesTouch(testInfo);

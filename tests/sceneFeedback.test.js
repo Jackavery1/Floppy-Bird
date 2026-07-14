@@ -81,12 +81,21 @@ describe('sceneFeedback', () => {
     it('playScoreFeedback déclenche audio, haptique et juice si scène fournie', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
         const { playSound } = await import('../src/audio.js');
-        const { hapticLight } = await import('../src/haptics.js');
+        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
         const scene = createScene();
         playScoreFeedback(10, scene);
         expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 10);
-        expect(hapticLight).toHaveBeenCalled();
+        expect(hapticMedium).toHaveBeenCalled();
+        expect(hapticLight).not.toHaveBeenCalled();
         expect(spawnScoreJuice).toHaveBeenCalledWith(scene, 80, 200, 10);
+    });
+
+    it('playScoreFeedback utilise haptique léger hors palier ×10', async () => {
+        const { playScoreFeedback } = await import('../src/sceneFeedback.js');
+        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
+        playScoreFeedback(3, createScene());
+        expect(hapticLight).toHaveBeenCalled();
+        expect(hapticMedium).not.toHaveBeenCalled();
     });
 
     it('playGroundImpactFeedback déclenche son sol et haptique léger', async () => {

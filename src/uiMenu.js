@@ -3,121 +3,31 @@ import { computeMenuLayout, UI_LAYOUT } from './uiLayout.js';
 import { syncDifficultyButtonLabel } from './uiText.js';
 import { applyMenuLayout, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from './uiHud.js';
-import { buildMenuFooter, playMenuIntroTween } from './uiMenuBuild.js';
+import { buildMenuFooter, buildMenuFirstRunHint, playMenuIntroTween } from './uiMenuBuild.js';
 import { buildMenuHeader, buildMenuDifficulty } from './uiMenuHeader.js';
 import { buildMenuDailyChallenge, refreshDailyChallengeButton } from './uiMenuDailyChallenge.js';
 import {
     buildMenuOptions,
     refreshOptionsButtonLabel,
     refreshHardcoreLockState,
-    setMenuOptionsOpen,
-    teardownOptionsPanel,
     applyTrainingLabel,
     applyHardcoreLabel,
 } from './uiMenuOptions.js';
 import { applyTrainingSpeedLabel } from './uiMenuOptionsLabels.js';
-import {
-    buildMenuScoresPanel,
-    refreshScoresButtonLabel,
-    setMenuScoresOpen,
-} from './uiMenuScoresPanel.js';
-import { buildMenuSkinsPanel, setMenuSkinsOpen } from './uiMenuSkinsPanel.js';
+import { buildMenuScoresPanel, refreshScoresButtonLabel } from './uiMenuScoresPanel.js';
+import { buildMenuSkinsPanel } from './uiMenuSkinsPanel.js';
 import { refreshScoresTab } from './uiMenuScores.js';
-import { setMenuPanelVisible, syncMenuChromeVisibility } from './uiMenuPanel.js';
 import { setOptionsContentVisible } from './uiMenuOptionsContent.js';
 import { buildMetaContext } from './metaContext.js';
-import { syncMenuToggleAccessibility } from './uiDomAccessibilityFlows.js';
-import {
-    setOptionsPanelAccessibility,
-    setScoresPanelAccessibility,
-    setSkinsPanelAccessibility,
-} from './uiDomAccessibility.js';
+import { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { DEPTH } from './uiLayout.js';
+import {
+    closeAllMenuPanels,
+    ensureMenuActionRowVisible,
+} from './uiMenuPanels.js';
 
-/** @param {import('./ui.js').UI} ui */
-function resetMenuPanelRefs(ui) {
-    ui._optionsPanelRoot = null;
-    ui._optionsChromeElements = [];
-    ui._optionsPanelElements = [];
-    ui._optionsControlsElements = [];
-    ui._optionsSettingsElements = [];
-    ui._scoresPanelElements = [];
-    ui._skinsPanelElements = [];
-}
-
-/** @param {import('./ui.js').UI} ui */
-function resetMenuPanelFlags(ui) {
-    ui._optionsOpen = false;
-    ui._scoresOpen = false;
-    ui._skinsOpen = false;
-    ui._optionsActiveTab = 'preferences';
-}
-
-/** @param {import('./ui.js').UI} ui */
-function forceHideMenuPanels(ui) {
-    setOptionsContentVisible(ui, false);
-    if (ui._scoresPanelElements?.length) {
-        setMenuPanelVisible(ui._scoresPanelElements, false, ui.scene);
-        ui._scoresBackdrop?.setVisible?.(false);
-    }
-    if (ui._skinsPanelElements?.length) {
-        setMenuPanelVisible(ui._skinsPanelElements, false, ui.scene);
-        ui._skinsBackdrop?.setVisible?.(false);
-    }
-}
-
-/** @param {import('./ui.js').UI} ui */
-function ensureMenuActionRowVisible(ui) {
-    if (ui._optionsOpen || ui._scoresOpen || ui._skinsOpen) return;
-    syncMenuChromeVisibility(ui);
-    for (const el of [
-        ui._scoresBtnBg,
-        ui._scoresBtnLabel,
-        ui._scoresBtnHit,
-        ui._optionsBtnBg,
-        ui._optionsBtnLabel,
-        ui._optionsBtnHit,
-        ui._skinsBtnBg,
-        ui._skinsBtnLabel,
-        ui._skinsBtnHit,
-    ]) {
-        el?.setVisible?.(true);
-        el?.setAlpha?.(1);
-    }
-}
-
-/** @param {import('./ui.js').UI} ui @param {{ force?: boolean }} [opts] */
-export function closeAllMenuPanels(ui, opts = {}) {
-    const panelOpts = opts.force ? { force: true } : undefined;
-    if (opts.force) forceHideMenuPanels(ui);
-    setMenuOptionsOpen(ui, false, panelOpts);
-    setMenuScoresOpen(ui, false, panelOpts);
-    setMenuSkinsOpen(ui, false, panelOpts);
-}
-
-/** Réinitialise flags panneaux, options et a11y avant rebuild du menu principal. */
-export function prepareMenuRebuild(ui) {
-    resetMenuPanelFlags(ui);
-    teardownOptionsPanel(ui);
-    const scene = ui.scene;
-    if (scene) {
-        setOptionsPanelAccessibility(scene, false);
-        setScoresPanelAccessibility(scene, false);
-        setSkinsPanelAccessibility(scene, false);
-    }
-    for (const key of ['menu', 'pause', 'gameOver']) {
-        ui.clearOverlay(key);
-    }
-    resetMenuPanelRefs(ui);
-    destroyInGameControls(ui);
-    if (ui._startText?.scene?.tweens) {
-        ui.scene.tweens.killTweensOf(ui._startText);
-    }
-    ui._restartBtnGraphics = null;
-    ui._restartBtnText = null;
-    ui._menuBtnGraphics = null;
-}
+export { closeAllMenuPanels, prepareMenuRebuild } from './uiMenuPanels.js';
 
 export function refreshBestScore(ui, difficulty, hardcoreMode, skinId = null) {
     ui._currentDifficulty = difficulty;
@@ -146,6 +56,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
     buildMenuDifficulty(ui, elements, layout, difficulty);
     buildMenuDailyChallenge(ui, elements, layout, difficulty);
     buildMenuFooter(ui, elements, layout);
+    buildMenuFirstRunHint(ui, elements, layout);
     buildMenuScoresPanel(ui, elements, layout);
     buildMenuOptions(ui, elements, layout);
     buildMenuSkinsPanel(ui, elements, layout);
@@ -166,6 +77,7 @@ export function showMenu(ui, difficulty, trainingMode, hardcoreMode) {
         ui._dailyBtnHit,
         ui._startText,
         ui._startHit,
+        ui._firstRunHint,
         ui._scoresBtnBg,
         ui._scoresBtnLabel,
         ui._scoresBtnHit,

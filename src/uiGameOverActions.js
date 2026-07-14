@@ -5,7 +5,7 @@ import {
     panelChromeTextStyle,
     yellowChromeButtonTextStyle,
 } from './designTokens.js';
-import { bindUnifiedInteractiveFocus } from './uiDomAccessibility.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import { spawnConfetti } from './uiGameOverDecor.js';
 import {
     addCenteredText,

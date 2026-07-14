@@ -25,7 +25,6 @@ import {
     stopUiEvent,
     UI_LAYOUT,
 } from './uiLayout.js';
-import { skinsPanelHint } from './device.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 import { refreshSkinsTab } from './uiMenuSkinsRefresh.js';
 
@@ -168,18 +167,6 @@ export function buildSkinsTab(ui, elements, panelElements) {
         ui._skinCells.push({ skinId, frame, preview, nameLabel, recordLabel, hit });
     });
 
-    const skinsHint = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        panel.skinsHint,
-        skinsPanelHint(),
-        menuHomeTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.texteSecondaire }),
-        DEPTH.PANEL_FRAME
-    );
-    panelElements.push(skinsHint);
-    elements.push(skinsHint);
-    ui._skinsTabElements.push(skinsHint);
-
     const closeBtn = buildMenuToggleButton(scene, elements, {
         cx: GAME_CONFIG.centerX,
         cy: panel.closeBtn,
@@ -191,6 +178,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         labelText: '◂ RETOUR',
         labelStroke: DESIGN_TOKENS.contourSkins,
         rounded: true,
+        focusKey: 'menuSkinsClose',
         onToggle: () => ui._skinsPanelController?.setOpen(false),
     });
     panelElements.push(closeBtn.bg, closeBtn.label, closeBtn.hit);

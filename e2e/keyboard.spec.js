@@ -67,15 +67,15 @@ test.describe('clavier desktop', () => {
         await expectGameState(page, 'playing');
     });
 
-    test('game over défi quotidien affiche DÉFI', async ({ page }, testInfo) => {
+    test('game over défi quotidien affiche REJOUER avec hint défi', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
         await forceGameOver(page, { isDaily: true });
         await expectGameState(page, 'gameover');
-        await expect.poll(() => getGameOverRestartLabel(page)).toBe('DÉFI');
+        await expect.poll(() => getGameOverRestartLabel(page)).toBe('REJOUER');
         await expect(page.locator('#a11y-gameover-restart')).toHaveAttribute(
             'aria-label',
-            /défi|rejouer le défi/i
+            /rejouer le défi/i
         );
     });
 
@@ -98,6 +98,21 @@ test.describe('clavier desktop', () => {
         await page.locator('#a11y-diff-normal').focus();
         await page.keyboard.press('Enter');
         await expectGameState(page, 'menu');
+    });
+
+    test('focus difficulté affiche un contour focus-visible', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await page.locator('#a11y-diff-normal').focus();
+        const outline = await page.locator('#a11y-diff-normal').evaluate((el) => {
+            const style = getComputedStyle(el);
+            return {
+                outlineWidth: style.outlineWidth,
+                borderColor: style.borderColor,
+            };
+        });
+        expect(Number.parseFloat(outline.outlineWidth)).toBeGreaterThan(0);
+        await expect(page.locator('#a11y-diff-normal')).toHaveAttribute('aria-pressed', 'true');
     });
 
     test('Tab ouvre options puis focus entraînement', async ({ page }, testInfo) => {

@@ -3,6 +3,7 @@ import { hardcoreToggleLabel, trainingToggleLabel } from './device.js';
 import { DESIGN_TOKENS } from './designTokens.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { buildMetaContext } from './metaContext.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 import { buildTrainingSpeedControl } from './uiMenuOptionsTrainingSpeed.js';
 import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from './uiToggleIcons.js';
@@ -53,12 +54,11 @@ export function buildModeControls(ui, add, panel) {
     );
     ui._trainingHit.setDepth(DEPTH.PANEL_HIT);
     ui._trainingHit.setInteractive({ useHandCursor: true });
-    ui._trainingHit.on('pointerover', () => {
-        ui._trainingLabel.setAlpha(1);
-    });
-    ui._trainingHit.on('pointerout', () => {
-        ui._trainingLabel.setAlpha(0.92);
-    });
+    bindUnifiedInteractiveFocus(
+        'menuTraining',
+        () => ui._trainingLabel.setAlpha(1),
+        () => ui._trainingLabel.setAlpha(0.92)
+    ).attachHit(ui._trainingHit);
     ui._trainingHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         scene.toggleTraining();
@@ -99,12 +99,11 @@ export function buildModeControls(ui, add, panel) {
     ui._hardcoreHit.setDepth(DEPTH.PANEL_HIT);
     if (hardcoreUnlocked) {
         ui._hardcoreHit.setInteractive({ useHandCursor: true });
-        ui._hardcoreHit.on('pointerover', () => {
-            ui._hardcoreLabel.setAlpha(1);
-        });
-        ui._hardcoreHit.on('pointerout', () => {
-            ui._hardcoreLabel.setAlpha(0.92);
-        });
+        bindUnifiedInteractiveFocus(
+            'menuHardcore',
+            () => ui._hardcoreLabel.setAlpha(1),
+            () => ui._hardcoreLabel.setAlpha(0.92)
+        ).attachHit(ui._hardcoreHit);
         ui._hardcoreHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             scene.toggleHardcore();

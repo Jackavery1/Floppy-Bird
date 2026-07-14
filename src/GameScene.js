@@ -11,7 +11,7 @@ import {
 } from './sceneRound.js';
 import { frameStep, splitPhysicsSteps, checkCollisions } from './sceneBootstrap.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
-import { updateCoyoteTime, updateCoyoteVisual } from './sceneCoyote.js';
+import { updateCoyoteTime, updateCoyoteVisual, hasCoyoteGrace } from './sceneCoyote.js';
 import { triggerDeath as runDeath, updateDying } from './sceneDeath.js';
 import { updateSpawnInvincibilityVisual } from './sceneSpawnFeedback.js';
 import { updateDebugHitboxes } from './debugHitboxes.js';
@@ -75,7 +75,7 @@ export class GameScene extends Phaser.Scene {
                 if (!spawnProtectsBounds) {
                     if (this.bird.isHittingGround()) {
                         this.triggerDeath('ground');
-                    } else if (this.bird.isOutOfBounds()) {
+                    } else if (this.bird.isOutOfBounds() && !hasCoyoteGrace(this)) {
                         this.triggerDeath('ceiling');
                     }
                     break;

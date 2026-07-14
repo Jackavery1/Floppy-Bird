@@ -1,6 +1,7 @@
 import { GAME_STATE } from './gameState.js';
 import { isCoarsePointer } from './device.js';
 
+/** Viewport meta : menu autorise le zoom ; en partie tactile, {@link syncShellViewport} bascule user-scalable=no. */
 const VIEWPORT_MENU =
     'width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover, interactive-widget=resizes-content';
 const VIEWPORT_GAME_TOUCH =

@@ -7,10 +7,11 @@ import { jumpHint } from './device.js';
 import {
     bindAccessibilityAction,
     bindUnifiedInteractiveFocus,
+    hideAllAccessibilityControls,
     setAccessibilityControlLabel,
     setAccessibilityControlVisible,
-    syncAccessibilityLayer,
-} from './uiDomAccessibility.js';
+} from './uiDomAccessibilityControls.js';
+import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 import { bindPlayingAccessibilityFocusVisuals } from './uiDomAccessibilityFocusVisuals.js';
 import { drawPauseChrome } from './uiPhaserComponents.js';
 import { PLAYING_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
@@ -50,6 +51,7 @@ export function createInGameControls(
     { trainingMode, hardcoreMode, dailyMode, dailyGoal, activeSkinId, onPause, onJump }
 ) {
     destroyInGameControls(ui);
+    hideAllAccessibilityControls();
     const elements = [];
     const { playing } = UI_LAYOUT;
     let badgeY = playing.trainingBadgeY;

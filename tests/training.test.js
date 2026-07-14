@@ -134,4 +134,65 @@ describe('training', () => {
         ghost.finishRound(10);
         expect(loadGhostData().score).toBe(3);
     });
+
+    it('loadGhostData retourne vide si JSON invalide', () => {
+        store['flappy-bird-ghost'] = '{bad json';
+        expect(loadGhostData().path).toEqual([]);
+    });
+
+    it('saveGhostData ignore un parcours vide', () => {
+        saveGhostData(5, [], { difficulty: 'normal', hardcore: false });
+        expect(store['flappy-bird-ghost']).toBeUndefined();
+    });
+
+    it('interpolateGhostY retourne null sans points', () => {
+        expect(interpolateGhostY([], 100)).toBeNull();
+    });
+
+    it('ghostMatchesMode accepte un fantôme du même mode', () => {
+        expect(ghostMatchesMode({ difficulty: 'hard', hardcore: true }, 'hard', true)).toBe(true);
+    });
+
+    it('GhostReplay détruit le sprite hors entraînement et hors daily', () => {
+        const sprite = { destroy: vi.fn() };
+        const scene = {
+            trainingMode: false,
+            playMode: 'classic',
+            difficulty: 'normal',
+            hardcoreMode: false,
+            time: { now: 0 },
+            bird: { y: 250 },
+            add: { sprite: vi.fn(() => sprite) },
+        };
+        const ghost = new GhostReplay(scene);
+        ghost.sprite = sprite;
+        ghost.beginRound({ record: false });
+        expect(sprite.destroy).toHaveBeenCalled();
+        expect(ghost.sprite).toBeNull();
+    });
+
+    it('GhostReplay ne sauvegarde pas si le score ne bat pas le record', () => {
+        saveGhostData(10, [{ t: 0, y: 256 }], { difficulty: 'normal', hardcore: false });
+        const sprite = {
+            setScale: vi.fn(),
+            setAlpha: vi.fn(),
+            setDepth: vi.fn(),
+            setTint: vi.fn(),
+            setPosition: vi.fn(),
+            setFrame: vi.fn(),
+            destroy: vi.fn(),
+        };
+        const scene = {
+            trainingMode: true,
+            difficulty: 'normal',
+            hardcoreMode: false,
+            time: { now: 0 },
+            bird: { y: 250 },
+            add: { sprite: vi.fn(() => sprite) },
+        };
+        const ghost = new GhostReplay(scene);
+        ghost.beginRound({ record: true });
+        ghost.finishRound(5);
+        expect(loadGhostData().score).toBe(10);
+    });
 });

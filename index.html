@@ -6,6 +6,7 @@
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover, interactive-widget=resizes-content"
         />
+        <!-- En partie tactile, syncShellViewport() réécrit ce meta (user-scalable=no). -->
         <meta name="color-scheme" content="dark" />
         <meta name="theme-color" content="#1a1a2e" />
         <meta
@@ -90,7 +91,7 @@
             <p id="game-description" class="visually-hidden">
                 Jeu arcade Floppy Bird. Tab pour les contrôles clavier ; tap ou espace pour jouer.
             </p>
-            <div id="game-container" role="img" aria-labelledby="game-description"></div>
+            <div id="game-container"></div>
         </main>
         <script>
             (function () {
@@ -106,7 +107,7 @@
                 if (el && !el.classList.contains('hidden')) {
                     el.innerHTML =
                         'Impossible de charger le jeu.<br><br>' +
-                        'Utilise <strong>npm run dev</strong> ou <strong>npm start</strong> (Vite), pas Live Server.<br>' +
+                        'Utilise <strong>npm run dev</strong> (Vite), pas Live Server.<br>' +
                         'Live Server ne peut pas résoudre les modules npm (Phaser).<br>' +
                         'Après build : <strong>npm run preview</strong>.';
                 }

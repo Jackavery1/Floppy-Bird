@@ -10,12 +10,13 @@ export function createRoundState() {
         spawnInvincible: false,
         spawnInvincibleTimer: null,
         coyoteFrames: 0,
-        coyoteFramesAtDeath: null,
         deathCause: null,
         roundHighScore: 0,
         recordNotified: false,
         isNewRecord: false,
         dailyGoalCelebrated: false,
+        startedAt: 0,
+        lastDeathMetrics: null,
 
         resetForRound() {
             this.score = 0;
@@ -24,14 +25,13 @@ export function createRoundState() {
             this.isNewRecord = false;
             this.dailyGoalCelebrated = false;
             this.coyoteFrames = 0;
-            this.coyoteFramesAtDeath = null;
-            this.coyoteLowWarnShown = false;
-            this._wasInGap = false;
             this.deathCause = null;
             this.dyingFalling = false;
             this.dyingGrounded = false;
             this.leaderboardData = null;
             this._pipeSpawnWaitMs = 0;
+            this.startedAt = 0;
+            this.lastDeathMetrics = null;
         },
 
         resetDeathAnimation() {

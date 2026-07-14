@@ -21,13 +21,13 @@ const hud = vi.hoisted(() => ({
     showDifficultyEscalation: vi.fn(),
     showDifficultyEscalationPreview: vi.fn(),
     showSpeedBoostPreview: vi.fn(),
-    showCoyoteHint: vi.fn(),
-    showCoyoteLowGraceHint: vi.fn(),
     showHardcoreTutorial: vi.fn(),
     dismissHardcoreTutorial: vi.fn(() => false),
     showTrainingTutorial: vi.fn(),
     dismissTrainingTutorial: vi.fn(() => false),
     showScoreStreak: vi.fn(),
+    showGameOverLoading: vi.fn(),
+    hideGameOverLoading: vi.fn(),
 }));
 
 const menu = vi.hoisted(() => ({
@@ -90,8 +90,6 @@ describe('UI façade — délégation', () => {
         ui.dismissGameplayTutorial();
         ui.showDifficultyEscalationPreview();
         ui.showSpeedBoostPreview();
-        ui.showCoyoteHint();
-        ui.showCoyoteLowGraceHint(2);
         ui.showHardcoreTutorial();
         ui.dismissHardcoreTutorial();
         ui.showTrainingTutorial();
@@ -99,8 +97,6 @@ describe('UI façade — délégation', () => {
         ui.showFlash();
 
         expect(hud.createScoreDisplay).toHaveBeenCalledWith(ui);
-        expect(hud.showCoyoteHint).toHaveBeenCalledWith(ui);
-        expect(hud.showCoyoteLowGraceHint).toHaveBeenCalledWith(ui, 2);
         expect(hud.showFlash).toHaveBeenCalledWith(ui);
     });
 

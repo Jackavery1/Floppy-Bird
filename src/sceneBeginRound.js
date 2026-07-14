@@ -24,20 +24,15 @@ import {
 } from './sceneRound.js';
 import { preloadGameOverUI } from './uiGameOverLoader.js';
 import { announceRoundStarted } from './sceneA11ySync.js';
+import { clearStaleOverlays } from './sceneFlowOverlays.js';
 import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
-/** @param {SceneContext} scene */
-function clearRoundOverlays(scene) {
-    scene.ui.clearOverlay('menu');
-    scene.ui.clearOverlay('pause');
-}
-
 /** @param {SceneContext} scene @param {{ resetBird?: boolean }} [opts] */
 export function beginRound(scene, { resetBird = false } = {}) {
     preloadGameOverUI();
-    clearRoundOverlays(scene);
+    clearStaleOverlays(scene);
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
     scene.round.resetForRound();
@@ -93,6 +88,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
 
     ensurePipeTextures(scene);
     scene.state = GAME_STATE.PLAYING;
+    scene.round.startedAt = scene.time?.now ?? 0;
     syncShellGameState(GAME_STATE.PLAYING);
     announceRoundStarted(scene);
     scene.time.paused = false;

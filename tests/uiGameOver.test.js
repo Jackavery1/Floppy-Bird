@@ -2,6 +2,14 @@ import { describe, it, expect, vi } from 'vitest';
 import { buildGameOverUI } from '../src/uiGameOver.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
+vi.mock('../src/motion.js', () => ({
+    sceneTween: vi.fn((scene, config) => {
+        config.onUpdate?.();
+        config.onComplete?.();
+    }),
+    prefersReducedMotion: vi.fn(() => false),
+}));
+
 function makeUi(overrides = {}) {
     return {
         hideInGameScore: vi.fn(),
@@ -108,5 +116,55 @@ describe('uiGameOver', () => {
         );
         const titles = scene.add.text.mock.calls.map((call) => call[2]);
         expect(titles.some((t) => t.includes('COSMOS'))).toBe(true);
+    });
+
+    it('fadeIn anime le score depuis zéro', async () => {
+        const { sceneTween } = await import('../src/motion.js');
+        const scene = createBaseScene();
+        const ui = makeUi();
+        buildGameOverUI(
+            scene,
+            ui,
+            7,
+            { entries: [], highlightId: null },
+            true,
+            false
+        );
+        expect(sceneTween).toHaveBeenCalled();
+        const scoreTween = sceneTween.mock.calls.find(([, cfg]) => cfg.targets?.v != null);
+        expect(scoreTween).toBeTruthy();
+    });
+
+    it('nouveau record sans fadeIn déclenche les confettis', () => {
+        const scene = createBaseScene();
+        const ui = makeUi();
+        const rectBefore = scene.add.rectangle.mock.calls.length;
+        buildGameOverUI(
+            scene,
+            ui,
+            25,
+            { entries: [], highlightId: null },
+            false,
+            true
+        );
+        expect(scene.add.rectangle.mock.calls.length).toBeGreaterThan(rectBefore);
+    });
+
+    it('hardcore affiche HC dans le libellé record spécial', () => {
+        const scene = createBaseScene();
+        const ui = makeUi();
+        buildGameOverUI(
+            scene,
+            ui,
+            15,
+            { entries: [], highlightId: null },
+            false,
+            false,
+            true,
+            0,
+            'cosmos'
+        );
+        const texts = scene.add.text.mock.calls.map((call) => call[2]);
+        expect(texts.some((t) => String(t).includes('HC'))).toBe(true);
     });
 });

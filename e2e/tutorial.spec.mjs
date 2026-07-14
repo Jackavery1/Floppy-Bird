@@ -5,7 +5,7 @@ import {
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { getTutorialState } from './helpers/testSeam.mjs';
+import { getTutorialState, getMenuPanels } from './helpers/testSeam.mjs';
 
 test.describe('tutoriel première partie', () => {
     test.beforeEach(async ({ page }) => {
@@ -16,11 +16,24 @@ test.describe('tutoriel première partie', () => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
+        await expect(page.locator('#ui-announcer')).toContainText(/Première partie/i);
+        const menu = await getMenuPanels(page);
+        expect(menu?.firstRunHintVisible).toBe(true);
+        expect(menu?.firstRunHintText).toMatch(/ESPACE|TAP/i);
         await startPlayingFromMenu(page, usesTouch);
 
         const tutorial = await getTutorialState(page);
         expect(tutorial?.complete).toBe(false);
         expect(tutorial?.step).toBeGreaterThanOrEqual(0);
+    });
+
+    test('first-run hint visible en mobile portrait', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await waitForGameReady(page);
+        await expect(page.locator('#ui-announcer')).toContainText(/Première partie/i);
+        const menu = await getMenuPanels(page);
+        expect(menu?.firstRunHintVisible).toBe(true);
+        expect(menu?.firstRunHintText).toMatch(/TAP/i);
     });
 
     test('tutoriel actif en mobile portrait', async ({ page }, testInfo) => {

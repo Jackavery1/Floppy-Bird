@@ -3,11 +3,9 @@ import { DESIGN_TOKENS, prefersHighContrast } from './designTokens.js';
 import { SPACING } from './uiLayoutConstants.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
 
-const CONTRAST_CSS_VARS = Object.freeze({
-    '--couleur-texte-chargement': '#bbdefb',
-    '--couleur-texte-hint': '#ffffff',
-    '--couleur-accent': '#ffeb3b',
-});
+import { SHELL_HIGH_CONTRAST_CSS_VARS } from './shellTokenDefaults.js';
+
+const CONTRAST_CSS_VARS = SHELL_HIGH_CONTRAST_CSS_VARS;
 
 const CSS_VARS = Object.freeze({
     '--couleur-fond': () => getBackgroundCanvasColor(),

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createGameplaySeam } from '../src/testSeam/gameplaySeam.js';
-import { collidesWithPipeGroup, isBirdInPipeGap } from '../src/pipeCollision.js';
+import { collidesWithPipeGroup, isBirdInPipeGap, birdClearedPipeForScore } from '../src/pipeCollision.js';
 
 vi.mock('../src/sceneBeginRound.js', () => ({
     beginRound: vi.fn(),
@@ -47,7 +47,6 @@ function createScene() {
             coyoteFrames: 0,
             spawnInvincible: false,
             score: 0,
-            _wasInGap: false,
         },
         bird: {
             x: 74,
@@ -177,6 +176,28 @@ describe('gameplaySeam', () => {
         expect(result?.waitMs).toBe(1250);
         expect(scene.pipes.spawn).toHaveBeenCalled();
         expect(result?.pipeCount).toBe(1);
+    });
+
+    it('advancePipeForScore positionne l’oiseau après le tuyau pour scoring', async () => {
+        const { checkScorePipes } = await import('../src/sceneRound.js');
+        const pipe = scene.pipes.topPipes[0];
+        seam.advancePipeForScore();
+        expect(birdClearedPipeForScore(scene.bird, pipe.x, scene.pipes.pipeWidth)).toBe(true);
+        expect(checkScorePipes).toHaveBeenCalledWith(scene);
+    });
+
+    it('alignBirdInFirstGap centre l’oiseau dans le corridor', () => {
+        const result = seam.alignBirdInFirstGap();
+        expect(result?.gapMidY).toBe((scene.pipes.topPipes[0].y + scene.pipes.bottomPipes[0].y) / 2);
+        expect(scene.bird.y).toBe(result?.gapMidY);
+        expect(scene.bird.velocityY).toBe(0);
+    });
+
+    it('tickSurvivalAssist maintient l’oiseau dans le gap actif', () => {
+        const result = seam.tickSurvivalAssist();
+        expect(result?.score).toBe(0);
+        expect(scene.round.coyoteFrames).toBe(GAME_CONFIG.bird.coyoteTimeFrames);
+        expect(scene.bird.velocityY).toBe(0);
     });
 
     it('triggerDeath délègue à sceneDeath', async () => {

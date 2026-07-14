@@ -97,7 +97,7 @@ export function onGameReady(game, { resizeFn = resizeGameCanvas, doc = document 
     if (canvas?.setAttribute) {
         canvas.setAttribute('tabindex', '0');
         canvas.setAttribute('role', 'application');
-        canvas.setAttribute('aria-label', 'Floppy Bird — espace ou toucher pour jouer');
+        canvas.setAttribute('aria-labelledby', 'game-description');
     }
     initAccessibilityLayer(doc);
     syncShellTheme(doc);

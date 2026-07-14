@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import { buildMenuOptions, toggleMenuOptions } from '../src/uiMenuOptions.js';
+import { GAME_STATE } from '../src/gameState.js';
+import { buildMenuOptions, toggleMenuOptions, refreshHardcoreLockState, teardownOptionsPanel, ensureOptionsPanelBuilt } from '../src/uiMenuOptions.js';
 import { setOptionsTab } from '../src/uiMenuOptionsTabs.js';
 import { UI_LAYOUT } from '../src/uiLayout.js';
 
@@ -12,6 +13,22 @@ vi.mock('../src/audio.js', () => ({
     isAudioAvailable: vi.fn(() => true),
 }));
 
+vi.mock('../src/hardcoreUnlock.js', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        isHardcoreUnlocked: vi.fn(() => true),
+    };
+});
+
+vi.mock('../src/uiDomAccessibilityControls.js', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        setAccessibilityControlDisabled: vi.fn(),
+    };
+});
+
 describe('uiMenuOptions', () => {
     let scene;
     let ui;
@@ -20,6 +37,7 @@ describe('uiMenuOptions', () => {
     beforeEach(() => {
         scene = createBaseScene({
             round: createRoundState(),
+            state: GAME_STATE.MENU,
             trainingMode: false,
             hardcoreMode: false,
             dailyChallengeMode: true,
@@ -71,5 +89,64 @@ describe('uiMenuOptions', () => {
             expect(el.setVisible).toHaveBeenCalledWith(false);
         }
         expect(badge).toBeTruthy();
+    });
+
+    it('ignore toggleMenuOptions hors menu principal', () => {
+        scene.state = GAME_STATE.PLAYING;
+        toggleMenuOptions(ui);
+        expect(ui._optionsOpen).toBe(false);
+        expect(ui._optionsPanelRoot).toBeFalsy();
+    });
+
+    it('refreshHardcoreLockState désactive le hit quand hardcore verrouillé', async () => {
+        const { isHardcoreUnlocked } = await import('../src/hardcoreUnlock.js');
+        const { setAccessibilityControlDisabled } = await import(
+            '../src/uiDomAccessibilityControls.js'
+        );
+        isHardcoreUnlocked.mockReturnValue(false);
+        ui._hardcoreLabel = { scene: ui.scene, setText: vi.fn(), setColor: vi.fn() };
+        ui._hardcoreHit = {
+            scene: ui.scene,
+            disableInteractive: vi.fn(),
+            setInteractive: vi.fn(),
+        };
+        refreshHardcoreLockState(ui);
+        expect(ui._hardcoreHit.disableInteractive).toHaveBeenCalled();
+        expect(setAccessibilityControlDisabled).toHaveBeenCalledWith('menuHardcore', true);
+    });
+
+    it('refreshHardcoreLockState réactive le hit quand hardcore déverrouillé', async () => {
+        const { isHardcoreUnlocked } = await import('../src/hardcoreUnlock.js');
+        const { setAccessibilityControlDisabled } = await import(
+            '../src/uiDomAccessibilityControls.js'
+        );
+        isHardcoreUnlocked.mockReturnValue(true);
+        ui._hardcoreLabel = { scene: ui.scene, setText: vi.fn(), setColor: vi.fn() };
+        ui._hardcoreHit = {
+            scene: ui.scene,
+            disableInteractive: vi.fn(),
+            setInteractive: vi.fn(),
+        };
+        refreshHardcoreLockState(ui);
+        expect(ui._hardcoreHit.setInteractive).toHaveBeenCalled();
+        expect(setAccessibilityControlDisabled).toHaveBeenCalledWith('menuHardcore', false);
+    });
+
+    it('teardownOptionsPanel détruit backdrop sans panel root', () => {
+        const frame = { destroy: vi.fn() };
+        const hit = { destroy: vi.fn() };
+        ui._optionsPanelRoot = null;
+        ui._optionsBackdrop = { frame, hit };
+        teardownOptionsPanel(ui);
+        expect(frame.destroy).toHaveBeenCalled();
+        expect(hit.destroy).toHaveBeenCalled();
+        expect(ui._optionsPanelBuilt).toBe(false);
+    });
+
+    it('ensureOptionsPanelBuilt ignore hors menu', () => {
+        scene.state = GAME_STATE.PLAYING;
+        ui._optionsPanelBuilt = false;
+        ensureOptionsPanelBuilt(ui);
+        expect(ui._optionsPanelBuilt).toBe(false);
     });
 });

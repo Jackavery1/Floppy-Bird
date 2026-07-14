@@ -143,4 +143,58 @@ describe('viewport', () => {
         });
         vi.unstubAllGlobals();
     });
+
+    it('getLetterboxViewport retombe sans window ni document (SSR pur)', () => {
+        vi.stubGlobal('window', undefined);
+        vi.stubGlobal('document', undefined);
+        expect(getLetterboxViewport()).toEqual({
+            width: 0,
+            height: 0,
+            offsetTop: 0,
+            offsetLeft: 0,
+            scale: 1,
+        });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport retombe sans document (SSR / tests node)', () => {
+        vi.stubGlobal('window', {
+            innerWidth: 320,
+            innerHeight: 640,
+            visualViewport: undefined,
+        });
+        vi.stubGlobal('document', undefined);
+        expect(getLetterboxViewport()).toEqual({
+            width: 320,
+            height: 640,
+            offsetTop: 0,
+            offsetLeft: 0,
+            scale: 1,
+        });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport retombe sur innerWidth sans visualViewport', () => {
+        vi.stubGlobal('window', {
+            innerWidth: 360,
+            innerHeight: 780,
+        });
+        vi.stubGlobal('document', {
+            body: null,
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0px',
+            paddingRight: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '0px',
+        }));
+        expect(getLetterboxViewport()).toEqual({
+            width: 360,
+            height: 780,
+            offsetTop: 0,
+            offsetLeft: 0,
+            scale: 1,
+        });
+        vi.unstubAllGlobals();
+    });
 });

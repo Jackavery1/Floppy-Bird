@@ -91,6 +91,16 @@ export function getTrainingRuntime(page) {
 }
 
 /** @param {import('@playwright/test').Page} page */
+export function getLastDeathMetrics(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getLastDeathMetrics?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function getRoundRuntime(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.getRoundRuntime?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page */
 export function waitForScoreHud(page, timeout = 5_000) {
     return page.waitForFunction(() => window.__FLOPPY_TEST__?.getScoreHud?.() != null, { timeout });
 }
@@ -149,6 +159,37 @@ export async function keepBirdAliveForPipeSpawn(page, spawnDelayMs, invincibilit
         await requestJump(page);
         await page.waitForTimeout(180);
     }
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function alignBirdInFirstGap(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.alignBirdInFirstGap?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [durationMs] */
+export function runSurvivalScenario(page, durationMs = 30_000) {
+    return page.evaluate(
+        (ms) => window.__FLOPPY_TEST__?.runSurvivalScenario?.(ms) ?? null,
+        durationMs
+    );
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function tickSurvivalAssist(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.tickSurvivalAssist?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [timeoutMs] */
+export async function waitForNaturalPipeScore(page, timeoutMs = 15_000) {
+    const before = (await getRoundScore(page)) ?? 0;
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+        await alignBirdInFirstGap(page);
+        const score = await getRoundScore(page);
+        if (score != null && score > before) return score;
+        await page.waitForTimeout(120);
+    }
+    return null;
 }
 
 /** @param {import('@playwright/test').Page} page @param {number} [deltaMs] */

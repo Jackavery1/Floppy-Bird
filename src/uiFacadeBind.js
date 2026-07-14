@@ -20,13 +20,13 @@ import {
     showDifficultyEscalation,
     showDifficultyEscalationPreview,
     showSpeedBoostPreview,
-    showCoyoteHint,
-    showCoyoteLowGraceHint,
     showHardcoreTutorial,
     dismissHardcoreTutorial,
     showTrainingTutorial,
     dismissTrainingTutorial,
     showScoreStreak,
+    showGameOverLoading,
+    hideGameOverLoading,
 } from './uiHud.js';
 import {
     showMenu,
@@ -59,13 +59,13 @@ const HUD_METHODS = {
     dismissGameplayTutorial,
     showDifficultyEscalationPreview,
     showSpeedBoostPreview,
-    showCoyoteHint,
-    showCoyoteLowGraceHint,
     showHardcoreTutorial,
     dismissHardcoreTutorial,
     showTrainingTutorial,
     dismissTrainingTutorial,
     showFlash,
+    showGameOverLoading,
+    hideGameOverLoading,
 };
 
 const MENU_METHODS = {
@@ -116,8 +116,7 @@ export function bindUiFacade(UiClass) {
         hardcoreMode = false,
         dailyGoal = 0,
         activeSkinId = 'classic',
-        deathCause = null,
-        coyoteFramesAtDeath = null
+        deathCause = null
     ) {
         return buildGameOverUI(
             this.scene,
@@ -129,8 +128,7 @@ export function bindUiFacade(UiClass) {
             hardcoreMode,
             dailyGoal,
             activeSkinId,
-            deathCause,
-            coyoteFramesAtDeath
+            deathCause
         );
     };
 }

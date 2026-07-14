@@ -15,14 +15,22 @@ import {
     getPipeState,
     getRoundScore,
     getScoreHud,
+    getTestState,
     getTrainingRuntime,
+    getRoundRuntime,
+    getLastDeathMetrics,
     grantCoyoteGrace,
+    alignBirdInFirstGap,
+    holdBirdAtCenter,
     keepBirdAliveForPipeSpawn,
+    runSurvivalScenario,
     requestJump,
     restartRoundWithModes,
     runCoyoteGapExitScenario,
     sampleGapVariance,
     triggerDeath,
+    probeAudio,
+    probeHaptics,
 } from './helpers/testSeam.mjs';
 
 test.describe('gameplay equity via test seam', () => {
@@ -135,7 +143,9 @@ test.describe('gameplay equity via test seam', () => {
             .toBeGreaterThan(0);
     });
 
-    test('hardcore raccourcit l’invincibilité spawn', async ({ page }, testInfo) => {
+    test('hardcore : invincibilité spawn avec marge avant premier tuyau', async ({
+        page,
+    }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
 
@@ -148,6 +158,10 @@ test.describe('gameplay equity via test seam', () => {
                 spawnInvincibilityMs: GAME_CONFIG.round.hardcoreSpawnInvincibilityMs,
             });
 
+        const margin =
+            GAME_CONFIG.round.pipeSpawnDelayMs -
+            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
+        expect(margin).toBeGreaterThanOrEqual(400);
         expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThan(
             GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
         );
@@ -175,6 +189,31 @@ test.describe('gameplay equity via test seam', () => {
             .toBeGreaterThan(0);
     });
 
+    test('hardcore : pas de mort avant 5 s avec sauts réguliers', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await restartRoundWithModes(page, { hardcore: true });
+
+        await keepBirdAliveForPipeSpawn(
+            page,
+            GAME_CONFIG.round.pipeSpawnDelayMs,
+            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
+        );
+
+        const deadline = Date.now() + 5000;
+        while (Date.now() < deadline) {
+            expect(await getTestState(page)).toBe('playing');
+            await alignBirdInFirstGap(page);
+            await requestJump(page);
+            await page.waitForTimeout(180);
+        }
+
+        await expectGameState(page, 'playing');
+        const equity = await getGameplayEquity(page);
+        expect(equity?.hardcoreMode).toBe(true);
+        expect(equity?.spawnInvincible).toBe(false);
+    });
+
     test('sauts répétés maintiennent la partie active', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         const usesTouch = projectUsesTouch(testInfo);
@@ -196,6 +235,8 @@ test.describe('gameplay equity via test seam', () => {
         await bumpScore(page, 3);
         await expect.poll(async () => getScoreHud(page)).toMatchObject({ text: '3' });
         expect(await getRoundScore(page)).toBe(3);
+        const audio = await probeAudio(page);
+        expect(audio).toMatchObject({ available: expect.any(Boolean) });
     });
 
     test('collision tuyau déclenche la mort', async ({ page }, testInfo) => {
@@ -206,6 +247,59 @@ test.describe('gameplay equity via test seam', () => {
         await triggerDeath(page, 'pipe');
         await expectGameState(page, 'dying', 5_000);
         await expectGameState(page, 'gameover', 15_000);
+    });
+
+    test('probeAudio reste disponible après game over', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await triggerDeath(page, 'pipe');
+        await expectGameState(page, 'gameover', 15_000);
+        const audio = await probeAudio(page);
+        expect(audio).toMatchObject({ available: expect.any(Boolean) });
+    });
+
+    test('probeHaptics expose le support vibrate', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        const haptics = await probeHaptics(page);
+        expect(haptics).toMatchObject({ supported: expect.any(Boolean) });
+    });
+
+    test('getRoundRuntime expose elapsedMs en partie', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, false);
+        await page.waitForTimeout(120);
+        const runtime = await getRoundRuntime(page);
+        expect(runtime).toMatchObject({
+            state: 'playing',
+            score: 0,
+            startedAt: expect.any(Number),
+            elapsedMs: expect.any(Number),
+        });
+        expect(runtime.startedAt).toBeGreaterThan(0);
+        expect(runtime.elapsedMs).toBeGreaterThan(0);
+    });
+
+    test('getLastDeathMetrics expose cause et durée après mort', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, false);
+        await page.waitForTimeout(200);
+        await triggerDeath(page, 'pipe');
+        await expectGameState(page, 'gameover', 15_000);
+        const death = await getLastDeathMetrics(page);
+        expect(death).toMatchObject({
+            cause: 'pipe',
+            score: expect.any(Number),
+            elapsedMs: expect.any(Number),
+            isEarlyDeath: expect.any(Boolean),
+            beforeFirstPipe: expect.any(Boolean),
+        });
+        expect(death.elapsedMs).toBeGreaterThan(0);
+        expect(death.elapsedMs).toBeLessThan(30_000);
     });
 
     test('mode entraînement applique timeScale 0.8 (choix gameplay)', async ({ page }, testInfo) => {
@@ -279,6 +373,16 @@ test.describe('gameplay equity via test seam', () => {
         await expect
             .poll(async () => getTrainingRuntime(page))
             .toMatchObject({ trainingMode: true, trainingTimeScale: 0.8, timeScale: 0.8 });
+    });
+
+    test('survit 30 secondes sans mort', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement — durée 30 s');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, false);
+
+        const result = await runSurvivalScenario(page, 30_000);
+        expect(result?.state).toBe('playing');
+        expect(result?.score).toBeGreaterThanOrEqual(0);
     });
 });
 

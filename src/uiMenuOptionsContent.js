@@ -49,6 +49,7 @@ export function buildOptionsContent(ui, elements) {
         labelText: '◂ RETOUR',
         labelStroke: DESIGN_TOKENS.contourOptions,
         rounded: true,
+        focusKey: 'menuOptionsClose',
         onToggle: () => ui._optionsPanelController?.setOpen(false),
     });
     for (const el of [closeBtn.bg, closeBtn.label, closeBtn.hit]) {

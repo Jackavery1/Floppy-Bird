@@ -1,8 +1,9 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from './designTokens.js';
+import { drawGameOverPanelFrame } from './uiGameOverPanel.js';
 import { prefersReducedMotion, sceneTween } from './motion.js';
-import { addCenteredText, DEPTH } from './uiLayout.js';
-import { acquireHudBannerSlot, releaseHudBannerSlot } from './uiHudBannerStack.js';
+import { addCenteredText, DEPTH, GAME_OVER_PANEL } from './uiLayout.js';
+import { acquireHudBannerSlot, destroyHudBanner } from './uiHudBannerStack.js';
 
 export function showTransientBanner(
     ui,
@@ -43,9 +44,7 @@ export function showTransientBanner(
         delay: holdMs,
         ease: 'Power2',
         onComplete: () => {
-            releaseHudBannerSlot(ui, slot.row);
-            banner.destroy();
-            if (ui[key] === banner) ui[key] = null;
+            destroyHudBanner(ui, key);
         },
     });
     return banner;
@@ -86,12 +85,72 @@ export function showDailyGoalReached(ui) {
         delay: 700,
         ease: 'Power2',
         onComplete: () => {
-            releaseHudBannerSlot(ui, slot.row);
-            banner.destroy();
-            if (ui._dailyGoalBanner === banner) ui._dailyGoalBanner = null;
+            destroyHudBanner(ui, '_dailyGoalBanner');
         },
     });
     showFlash(ui);
+}
+
+export function showGameOverLoading(ui) {
+    if (ui._gameOverLoadingText) return;
+    const scene = ui.scene;
+    const P = GAME_OVER_PANEL;
+
+    ui._gameOverLoadingOverlay = scene.add
+        .rectangle(
+            GAME_CONFIG.centerX,
+            GAME_CONFIG.centerY,
+            GAME_CONFIG.width,
+            GAME_CONFIG.height,
+            hexVersPhaser(DESIGN_TOKENS.texteHud),
+            0.55
+        )
+        .setDepth(DEPTH.OVERLAY_DIM);
+
+    const panel = scene.add.graphics().setDepth(DEPTH.MENU_PANEL);
+    drawGameOverPanelFrame(panel, P, {
+        fillAlpha: 0.82,
+        strokeAlpha: 0.55,
+        innerStrokeAlpha: 0,
+    });
+    ui._gameOverLoadingPanel = panel;
+
+    ui._gameOverLoadingText = addCenteredText(
+        ui.scene,
+        GAME_CONFIG.centerX,
+        GAME_CONFIG.centerY,
+        'Chargement…',
+        hudTextStyle({
+            fontSize: '14px',
+            fill: DESIGN_TOKENS.texteHintMenu,
+            fontStyle: 'bold',
+        }),
+        DEPTH.RECORD_BANNER + 1
+    );
+    ui._gameOverLoadingText.setAlpha(0.85);
+
+    if (!prefersReducedMotion()) {
+        ui._gameOverLoadingTween = sceneTween(ui.scene, {
+            targets: ui._gameOverLoadingText,
+            alpha: 0.45,
+            duration: 550,
+            yoyo: true,
+            repeat: -1,
+            ease: 'Sine.easeInOut',
+        });
+    }
+}
+
+export function hideGameOverLoading(ui) {
+    ui._gameOverLoadingTween?.stop?.();
+    ui._gameOverLoadingTween = null;
+    ui._gameOverLoadingOverlay?.destroy();
+    ui._gameOverLoadingOverlay = null;
+    ui._gameOverLoadingPanel?.destroy();
+    ui._gameOverLoadingPanel = null;
+    if (!ui._gameOverLoadingText) return;
+    ui._gameOverLoadingText.destroy();
+    ui._gameOverLoadingText = null;
 }
 
 export function showFlash(ui, color = hexVersPhaser(DESIGN_TOKENS.texteHud), alpha = 0.8) {

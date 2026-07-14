@@ -79,6 +79,24 @@ export default defineConfig({
             },
         },
         {
+            name: 'webkit-tablet-portrait',
+            use: {
+                browserName: 'webkit',
+                viewport: { width: 768, height: 1024 },
+                isMobile: true,
+                hasTouch: true,
+            },
+        },
+        {
+            name: 'chromium-tablet-portrait',
+            use: {
+                browserName: 'chromium',
+                viewport: { width: 768, height: 1024 },
+                isMobile: true,
+                hasTouch: true,
+            },
+        },
+        {
             name: 'chromium-tablet-landscape',
             use: {
                 browserName: 'chromium',

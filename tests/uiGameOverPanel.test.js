@@ -1,22 +1,24 @@
 import { describe, it, expect, vi } from 'vitest';
-import { buildGameOverShell } from '../src/uiGameOverPanel.js';
-import { GAME_OVER_PANEL } from '../src/uiLayout.js';
-import { createBaseScene } from './helpers/phaserMock.js';
-
-vi.mock('../src/uiGameOverDecor.js', () => ({
-    drawPlaqueCorners: vi.fn(),
-}));
+import { drawGameOverPanelFrame } from '../src/uiGameOverPanel.js';
 
 describe('uiGameOverPanel', () => {
-    it('buildGameOverShell crée overlay et panneau', () => {
-        const scene = createBaseScene();
-        const ui = {
-            createOverlay: vi.fn(() => ({ setDepth: vi.fn() })),
+    it('drawGameOverPanelFrame dessine le panneau avec opacités configurables', () => {
+        const graphics = {
+            fillStyle: vi.fn(),
+            fillRoundedRect: vi.fn(),
+            lineStyle: vi.fn(),
+            strokeRoundedRect: vi.fn(),
         };
-        const result = buildGameOverShell(scene, ui);
-        expect(ui.createOverlay).toHaveBeenCalledWith(0.75, expect.any(Number));
-        expect(scene.add.graphics).toHaveBeenCalled();
-        expect(result.cx).toBe(GAME_OVER_PANEL.x + GAME_OVER_PANEL.w / 2);
-        expect(result.P).toBe(GAME_OVER_PANEL);
+        const P = { x: 10, y: 20, w: 100, h: 80, radius: 8 };
+
+        drawGameOverPanelFrame(graphics, P, {
+            fillAlpha: 0.82,
+            strokeAlpha: 0.55,
+            innerStrokeAlpha: 0,
+        });
+
+        expect(graphics.fillStyle).toHaveBeenCalledWith(expect.any(Number), 0.82);
+        expect(graphics.fillRoundedRect).toHaveBeenCalledWith(10, 20, 100, 80, 8);
+        expect(graphics.strokeRoundedRect).toHaveBeenCalledTimes(1);
     });
 });

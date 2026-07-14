@@ -45,6 +45,7 @@ jobs:
                 project:
                     - chromium-desktop
                     - chromium-mobile-portrait
+                    - chromium-tablet-portrait
                     - chromium-tablet-landscape
         steps:
             - uses: actions/checkout@v4
@@ -60,7 +61,7 @@ jobs:
               env:
                   BASE_PATH: /Floppy-Bird/
                   VITE_ENABLE_TEST_SEAM: 'true'
-            - run: npx playwright test --workers=1 --project=${{ matrix.project }} e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js
+            - run: npx playwright test --workers=1 --project=${{ matrix.project }} e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/natural-scoring.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js
               env:
                   BASE_PATH: /Floppy-Bird/
                   PLAYWRIGHT_SKIP_BUILD: '1'
@@ -78,6 +79,8 @@ jobs:
                     - chromium-mobile-landscape
                     - webkit-mobile-portrait
                     - webkit-mobile-landscape
+                    - webkit-tablet-portrait
+                    - chromium-tablet-portrait
                     - chromium-tablet-landscape
         steps:
             - uses: actions/checkout@v4

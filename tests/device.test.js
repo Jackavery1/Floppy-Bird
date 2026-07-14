@@ -67,6 +67,13 @@ describe('device', () => {
         expect(fine()).toBe('M : menu');
     });
 
+    it('firstRunMenuHintText adapte le libellé', async () => {
+        const { firstRunMenuHintText } = await loadDevice(true);
+        expect(firstRunMenuHintText()).toMatch(/TAP/);
+        const { firstRunMenuHintText: fine } = await loadDevice(false);
+        expect(fine()).toMatch(/ESPACE/);
+    });
+
     it('difficultyA11yLabel mentionne les touches clavier', async () => {
         const { difficultyA11yLabel } = await loadDevice(false);
         expect(difficultyA11yLabel('normal')).toBe('Difficulté normale — touche 2');
@@ -145,19 +152,4 @@ describe('device', () => {
         expect(deathCauseLabel(null)).toBe('');
     });
 
-    it('coyoteDeathHint ne renvoie plus de libellé game over', async () => {
-        const { coyoteDeathHint } = await loadDevice(false);
-        expect(coyoteDeathHint(null)).toBe('');
-        expect(coyoteDeathHint(0)).toBe('');
-        expect(coyoteDeathHint(2)).toBe('');
-        expect(coyoteDeathHint(null, 'ground')).toBe('');
-    });
-
-    it('coyoteHintText guide sans le mot grâce', async () => {
-        const { coyoteHintText, coyoteLowGraceHintText } = await loadDevice(false);
-        expect(coyoteHintText()).toContain('saut');
-        expect(coyoteHintText().toLowerCase()).not.toContain('grâce');
-        expect(coyoteLowGraceHintText(2)).toContain('saute');
-        expect(coyoteLowGraceHintText(2).toLowerCase()).not.toContain('grâce');
-    });
 });

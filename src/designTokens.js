@@ -32,7 +32,8 @@ export const DESIGN_TOKENS = Object.freeze({
     bannerEscalation: '#FF8A65',
     bannerStreak: '#FFAB40',
     bannerSuccess: '#81C784',
-    bannerCoyote: '#FFEEAA',
+    /** Teinte sprite oiseau pendant coyote time. */
+    teinteCoyoteActif: '#FFD54F',
     texteMenu: '#ffffff',
     texteHintMenu: '#ECEFF1',
     contourMenu: '#0d1117',

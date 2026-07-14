@@ -110,4 +110,13 @@ describe('setupSceneWorld', () => {
         expect(syncShellTheme).toHaveBeenCalled();
         expect(ensurePipeTextures).toHaveBeenCalledWith(scene);
     });
+
+    it('ajoute le compteur FPS en mode debug', () => {
+        const prevDebug = GAME_CONFIG.debug;
+        GAME_CONFIG.debug = true;
+        setupSceneWorld(scene);
+        expect(scene.fps).toBeDefined();
+        expect(scene.events.once).toHaveBeenCalledWith('shutdown', scene.shutdown, scene);
+        GAME_CONFIG.debug = prevDebug;
+    });
 });

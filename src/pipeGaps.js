@@ -44,6 +44,18 @@ export function applyScriptedGapJitter(scriptedY, gapIndex, jitterSeed, pipeGap)
     return Utils.clamp(scriptedY + delta, min, max);
 }
 
+/** @param {number} jitterSeed @param {number} count */
+export function buildScriptedGapOrder(jitterSeed, count) {
+    const order = Array.from({ length: count }, (_, i) => i);
+    if (!jitterSeed) return order;
+    const rng = Utils.createSeededRandom(jitterSeed >>> 0);
+    for (let i = count - 1; i > 0; i--) {
+        const j = Utils.seededRandomInt(rng, 0, i);
+        [order[i], order[j]] = [order[j], order[i]];
+    }
+    return order;
+}
+
 /**
  * @param {object} ctx
  * @param {number} ctx.gapIndex
@@ -64,7 +76,12 @@ export function resolveNextGapY({
     prevGapDelta = 0,
     gapJitterSeed = 0,
 }) {
-    const scriptedY = dailyRng ? null : getScriptedPipeGapY(gapIndex, pipeGap);
+    const scriptedCount = GAME_CONFIG.level.pipeGaps.length;
+    let scriptedY = null;
+    if (!dailyRng && gapIndex < scriptedCount) {
+        const slot = buildScriptedGapOrder(gapJitterSeed, scriptedCount)[gapIndex];
+        scriptedY = getScriptedPipeGapY(slot, pipeGap);
+    }
     if (scriptedY !== null) {
         const gapY = applyScriptedGapJitter(scriptedY, gapIndex, gapJitterSeed, pipeGap);
         const gapDelta = lastGapY != null ? gapY - lastGapY : 0;

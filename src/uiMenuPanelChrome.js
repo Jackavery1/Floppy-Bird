@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import { drawPanelPillButton } from './uiPhaserComponents.js';
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
@@ -65,6 +66,7 @@ export function buildStyledPanelBackdrop(scene, panel, theme) {
  *   color: number, stroke: number, hoverColor?: number,
  *   labelText: string, labelStroke: string,
  *   labelStyle?: Phaser.Types.GameObjects.Text.TextStyle,
+ *   focusKey?: keyof typeof import('./uiDomAccessibilityControlDefs.js').CONTROL_DEFS,
  *   onToggle: () => void,
  * }} cfg
  */
@@ -92,8 +94,14 @@ export function buildPanelPillButton(scene, elements, cfg) {
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, h, 0x000000, 0);
     hit.setDepth(cfg.depth + 2);
     hit.setInteractive({ useHandCursor: true });
-    hit.on('pointerover', () => paint(hoverColor, 0.95));
-    hit.on('pointerout', () => paint(cfg.color));
+    const onFocus = () => paint(hoverColor, 0.95);
+    const onBlur = () => paint(cfg.color);
+    if (cfg.focusKey) {
+        bindUnifiedInteractiveFocus(cfg.focusKey, onFocus, onBlur).attachHit(hit);
+    } else {
+        hit.on('pointerover', onFocus);
+        hit.on('pointerout', onBlur);
+    }
     hit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         cfg.onToggle();

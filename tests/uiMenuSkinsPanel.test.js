@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
+import { GAME_STATE } from '../src/gameState.js';
 import { buildMenuSkinsPanel, toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
 import { UI_LAYOUT } from '../src/uiLayout.js';
 
@@ -11,7 +12,7 @@ describe('uiMenuSkinsPanel', () => {
     let elements;
 
     beforeEach(() => {
-        scene = createBaseScene({ round: createRoundState() });
+        scene = createBaseScene({ round: createRoundState(), state: GAME_STATE.MENU });
         ui = new UI(scene);
         ui._closeAllMenuPanels = () => {};
         elements = [];

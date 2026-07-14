@@ -1,8 +1,8 @@
 import { scoresButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
-import { bindScoresAccessibility, setScoresPanelAccessibility } from './uiDomAccessibility.js';
+import { bindScoresAccessibility, setScoresPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
 import { UI_LAYOUT } from './uiLayout.js';
-import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanel.js';
+import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
 
 const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonScores);
@@ -15,6 +15,7 @@ const PANEL_CFG = {
     btnBgKey: '_scoresBtnBg',
     btnLabelKey: '_scoresBtnLabel',
     btnHitKey: '_scoresBtnHit',
+    btnFocusKey: 'menuScores',
     buttonLabelFn: scoresButtonLabel,
     btnColor: SCORES_BTN_COLOR,
     btnStroke: SCORES_BTN_STROKE,

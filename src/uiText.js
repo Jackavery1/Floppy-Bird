@@ -44,7 +44,7 @@ export function addReliefText(scene, x, y, text, style, depth, relief = {}) {
 }
 
 export function diffLabelColor(difficulty, diff) {
-    if (difficulty === diff) return DESIGN_TOKENS.texteBoutonJaune;
+    if (difficulty === diff) return DESIGN_TOKENS.texteMenu;
     return GAME_CONFIG.difficultyColors[diff] ?? DESIGN_TOKENS.texteHud;
 }
 

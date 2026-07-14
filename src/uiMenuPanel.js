@@ -1,8 +1,8 @@
 import { DESIGN_TOKENS, panelChromeTextStyle } from './designTokens.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import {
     addCenteredText,
     applyFittedLabel,
-    DEPTH,
     MENU_BTN_HOVER,
     MIN_TOUCH,
     stopUiEvent,
@@ -75,7 +75,7 @@ export function buildMenuPanelBackdrop(scene, panel, theme) {
 /**
  * @param {import('phaser').Scene} scene
  * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {{ cx: number, cy: number, width: number, depth: number, color: number, stroke: number, labelText: string, labelStroke: string, labelStyle?: Phaser.Types.GameObjects.Text.TextStyle, rounded?: boolean, hoverColor?: number, onToggle: () => void }} cfg
+ * @param {{ cx: number, cy: number, width: number, depth: number, color: number, stroke: number, labelText: string, labelStroke: string, labelStyle?: Phaser.Types.GameObjects.Text.TextStyle, rounded?: boolean, hoverColor?: number, focusKey?: keyof typeof import('./uiDomAccessibilityControlDefs.js').CONTROL_DEFS, onFocus?: () => void, onBlur?: () => void, onToggle: () => void }} cfg
  */
 export function buildMenuToggleButton(scene, elements, cfg) {
     if (cfg.rounded) {
@@ -102,12 +102,14 @@ export function buildMenuToggleButton(scene, elements, cfg) {
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, MIN_TOUCH, 0x000000, 0);
     hit.setDepth(cfg.depth + 2);
     hit.setInteractive({ useHandCursor: true });
-    hit.on('pointerover', () => {
-        bg.setFillStyle(MENU_BTN_HOVER, 0.88);
-    });
-    hit.on('pointerout', () => {
-        bg.setFillStyle(cfg.color, 0.88);
-    });
+    const onFocus = cfg.onFocus ?? (() => bg.setFillStyle(MENU_BTN_HOVER, 0.88));
+    const onBlur = cfg.onBlur ?? (() => bg.setFillStyle(cfg.color, 0.88));
+    if (cfg.focusKey) {
+        bindUnifiedInteractiveFocus(cfg.focusKey, onFocus, onBlur).attachHit(hit);
+    } else {
+        hit.on('pointerover', onFocus);
+        hit.on('pointerout', onBlur);
+    }
     hit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         cfg.onToggle();
@@ -115,139 +117,4 @@ export function buildMenuToggleButton(scene, elements, cfg) {
     elements.push(hit);
 
     return { bg, label, hit };
-}
-
-/**
- * @param {import('./ui.js').UI} ui
- * @param {{
- *   openKey: string,
- *   backdropKey: string,
- *   panelElementsKey: string,
- *   btnLabelKey: string,
- *   buttonLabelFn: (open: boolean) => string,
- *   setContentVisible?: (ui: import('./ui.js').UI, open: boolean) => void,
- *   onOpen?: (ui: import('./ui.js').UI) => void,
- *   onClose?: (ui: import('./ui.js').UI) => void,
- * }} cfg
- */
-export function createMenuPanelController(ui, cfg) {
-    /** @type {{ style?: Phaser.Types.GameObjects.Text.TextStyle, maxWidth?: number }} */
-    const labelFit = {};
-
-    function setLabelFit(style, maxWidth) {
-        labelFit.style = style;
-        labelFit.maxWidth = maxWidth;
-    }
-
-    function refreshButtonLabel() {
-        if (!ui[cfg.btnLabelKey]) return;
-        const text = cfg.buttonLabelFn(ui[cfg.openKey]);
-        if (labelFit.style != null && labelFit.maxWidth != null) {
-            applyFittedLabel(
-                ui.scene,
-                ui[cfg.btnLabelKey],
-                text,
-                labelFit.style,
-                labelFit.maxWidth
-            );
-        } else {
-            ui[cfg.btnLabelKey].setText(text);
-        }
-    }
-
-    /** @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
-    function setOpen(open, panelOpts = {}) {
-        const force = Boolean(panelOpts.force);
-        const wasOpen = ui[cfg.openKey];
-        if (!force && wasOpen === open) return;
-        ui[cfg.openKey] = open;
-        ui[cfg.backdropKey]?.setVisible?.(open);
-        if (cfg.setContentVisible) {
-            cfg.setContentVisible(ui, open);
-        } else {
-            setMenuPanelVisible(ui[cfg.panelElementsKey], open, ui.scene);
-        }
-        refreshButtonLabel();
-        if (open && cfg.onOpen) cfg.onOpen(ui);
-        if (!open && cfg.onClose && (wasOpen || force)) cfg.onClose(ui);
-        syncMenuChromeVisibility(ui);
-    }
-
-    function toggle() {
-        if (ui[cfg.openKey]) {
-            setOpen(false);
-            return;
-        }
-        ui._closeAllMenuPanels?.();
-        setOpen(true);
-    }
-
-    return { refreshButtonLabel, setOpen, toggle, setLabelFit };
-}
-
-/**
- * @param {import('./ui.js').UI} ui
- * @param {import('phaser').GameObjects.GameObject[]} elements
- * @param {{ refreshButtonLabel: () => void, setOpen: (open: boolean, panelOpts?: { force?: boolean }) => void, toggle: () => void }} controller
- * @param {{
- *   openKey: string,
- *   backdropKey: string,
- *   panelElementsKey: string,
- *   btnBgKey: string,
- *   btnLabelKey: string,
- *   btnHitKey: string,
- *   buttonLabelFn: (open: boolean) => string,
- *   btnLayout: { cx: number, cy: number, width: number },
- *   panelLayout: { panelTop: number, panelH: number, w: number },
- *   btnColor: number,
- *   btnStroke: number,
- *   labelStroke: string,
- *   panelTheme?: { fill: string, stroke: string },
- *   buildContent: (ui: import('./ui.js').UI, elements: import('phaser').GameObjects.GameObject[], panelElements: import('phaser').GameObjects.GameObject[]) => void,
- *   setContentVisible?: (ui: import('./ui.js').UI, open: boolean) => void,
- * }} cfg
- */
-export function buildMenuPanelShell(ui, elements, controller, cfg) {
-    const scene = ui.scene;
-    ui[cfg.openKey] = false;
-    ui[cfg.panelElementsKey] = [];
-
-    const labelStyle = panelChromeTextStyle({
-        fill: DESIGN_TOKENS.texteMenu,
-        stroke: cfg.labelStroke,
-    });
-    const labelMaxWidth = cfg.btnLayout.width - 8;
-    controller.setLabelFit?.(labelStyle, labelMaxWidth);
-
-    const btn = buildMenuToggleButton(scene, elements, {
-        cx: cfg.btnLayout.cx,
-        cy: cfg.btnLayout.cy,
-        width: cfg.btnLayout.width,
-        depth: DEPTH.MENU_ROW_BTN,
-        color: cfg.btnColor,
-        stroke: cfg.btnStroke,
-        labelText: cfg.buttonLabelFn(false),
-        labelStroke: cfg.labelStroke,
-        labelStyle,
-        onToggle: () => controller.toggle(),
-    });
-    ui[cfg.btnBgKey] = btn.bg;
-    ui[cfg.btnLabelKey] = btn.label;
-    ui[cfg.btnHitKey] = btn.hit;
-
-    if (!cfg.deferPanelContent) {
-        ui[cfg.backdropKey] = buildMenuPanelBackdrop(scene, cfg.panelLayout, cfg.panelTheme);
-        if (!cfg.attachBackdropToRoot) {
-            elements.push(ui[cfg.backdropKey].frame, ui[cfg.backdropKey].hit);
-        }
-
-        cfg.buildContent(ui, elements, ui[cfg.panelElementsKey]);
-        if (cfg.setContentVisible) {
-            cfg.setContentVisible(ui, false);
-        } else {
-            setMenuPanelVisible(ui[cfg.panelElementsKey], false);
-        }
-        ui[cfg.backdropKey]?.setVisible(false);
-    }
-    ui[cfg.openKey] = false;
 }

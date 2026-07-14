@@ -6,6 +6,7 @@ import {
     updateCoyoteVisual,
 } from '../src/sceneCoyote.js';
 import { GAME_CONFIG } from '../src/config.js';
+import { DESIGN_TOKENS, hexVersPhaser } from '../src/designTokens.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createRoundState } from '../src/roundState.js';
 import { createBaseScene } from './helpers/phaserMock.js';
@@ -26,10 +27,8 @@ describe('sceneCoyote', () => {
     it('resetCoyoteTime remet à zéro', () => {
         const scene = makeScene(false);
         scene.round.coyoteFrames = 3;
-        scene.round._wasInGap = true;
         resetCoyoteTime(scene);
         expect(scene.round.coyoteFrames).toBe(0);
-        expect(scene.round._wasInGap).toBe(false);
     });
 
     it('updateCoyoteTime recharge dans un gap', () => {
@@ -55,31 +54,6 @@ describe('sceneCoyote', () => {
         expect(hasCoyoteGrace(scene)).toBe(false);
     });
 
-    it('affiche le hint coyote à la première sortie de gap', async () => {
-        vi.stubGlobal('localStorage', {
-            getItem: () => null,
-            setItem: vi.fn(),
-        });
-        const { updateCoyoteTime } = await import('../src/sceneCoyote.js');
-        const showCoyoteHint = vi.fn();
-        const scene = makeScene(false);
-        scene.round._wasInGap = true;
-        scene.round.coyoteFrames = 5;
-        scene.ui = { showCoyoteHint };
-        updateCoyoteTime(scene, 1);
-        expect(showCoyoteHint).toHaveBeenCalled();
-        vi.unstubAllGlobals();
-    });
-
-    it('updateCoyoteTime alerte quand il reste ≤ 2 frames coyote', () => {
-        const showCoyoteLowGraceHint = vi.fn();
-        const scene = makeScene(false);
-        scene.round.coyoteFrames = 3;
-        scene.ui = { showCoyoteLowGraceHint };
-        updateCoyoteTime(scene, 1);
-        expect(showCoyoteLowGraceHint).toHaveBeenCalledWith(2);
-    });
-
     it('updateCoyoteVisual teinte l’oiseau pendant le coyote', () => {
         const scene = makeScene(false);
         scene.state = GAME_STATE.PLAYING;
@@ -91,7 +65,9 @@ describe('sceneCoyote', () => {
         };
         scene.round.coyoteFrames = 2;
         updateCoyoteVisual(scene);
-        expect(scene.bird.sprite.setTint).toHaveBeenCalledWith(0xffeeaa);
+        expect(scene.bird.sprite.setTint).toHaveBeenCalledWith(
+            hexVersPhaser(DESIGN_TOKENS.teinteCoyoteActif)
+        );
 
         scene.round.coyoteFrames = 0;
         updateCoyoteVisual(scene);

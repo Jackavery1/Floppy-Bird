@@ -1,5 +1,9 @@
 import { GAME_CONFIG } from './config.js';
-import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
+import {
+    formatDailyMenuButtonLabel,
+    formatDailyMenuSubtitle,
+} from './dailyChallenge.js';
+import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import {
     DESIGN_TOKENS,
     hexVersPhaser,
@@ -87,12 +91,11 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
     );
     ui._dailyBtnHit.setDepth(DEPTH.MENU_HIT);
     ui._dailyBtnHit.setInteractive({ useHandCursor: true });
-    ui._dailyBtnHit.on('pointerover', () => {
-        ui._dailyBtnBg.setFillStyle(DAILY_BTN_HOVER, 0.95);
-    });
-    ui._dailyBtnHit.on('pointerout', () => {
-        ui._dailyBtnBg.setFillStyle(DAILY_BTN_COLOR, 0.9);
-    });
+    bindUnifiedInteractiveFocus(
+        'menuDaily',
+        () => ui._dailyBtnBg.setFillStyle(DAILY_BTN_HOVER, 0.95),
+        () => ui._dailyBtnBg.setFillStyle(DAILY_BTN_COLOR, 0.9)
+    ).attachHit(ui._dailyBtnHit);
     ui._dailyBtnHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
         ui.scene.launchDailyChallenge();

@@ -4,6 +4,16 @@
 
 Commandes de base : [README.md](README.md) (`npm run dev`, `test`, `lint`, `format:check`, `build`).
 
+### Ports de preview locale
+
+| Commande | Port | Usage |
+| -------- | ---- | ----- |
+| `npm run dev` | **5173** | Dev Vite + HMR |
+| `npm run preview` | **8000** | Preview manuelle après build |
+| Playwright (`test:e2e*`) | **4173** | Serveur CI/local lancé par `playwright.config.js` |
+
+Ne pas utiliser Live Server (port 5500) — les modules ES / Phaser ne se résolvent pas.
+
 ### Tests e2e (Playwright)
 
 Après `npm install`, installer les navigateurs une fois :
@@ -45,13 +55,23 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | `chromium-mobile-landscape` | 844×390        | oui   | `viewport.spec.js`, `touch.spec.js`, `keyboard.spec.js` (smoke)             |
 | `webkit-mobile-portrait`    | iPhone 13      | oui   | touch + chargement                                                          |
 | `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
-| `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
+| `webkit-tablet-portrait`    | 768×1024       | oui   | Safari iPad — ratio letterbox (`viewport.spec.js`)                          |
+| `chromium-tablet-portrait`  | 768×1024       | oui   | `viewport.spec.js` ratio + resync a11y mid-game                               |
+| `chromium-tablet-landscape` | 1024×768       | oui   | `viewport.spec.js` ratio + resync a11y mid-game, `keyboard.spec.js` (smoke) |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux / **48 px** pour CTA et pause (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), resync des contrôles a11y après redimensionnement en partie (mobile portrait + tablette portrait/paysage, `viewport.spec.js`), ratio letterbox WebKit portrait (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux / **48 px** pour CTA et pause (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
+
+Matrice clavier détaillée (desktop vs mobile vs tablette) : [README.md — Matrice clavier et entrées](README.md#matrice-clavier-et-entrées).
 
 #### Smoke deploy (CI)
 
-Le job `e2e-smoke` gate le déploiement GitHub Pages sur **3 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`).
+Le job `e2e-smoke` gate le déploiement GitHub Pages sur **4 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`).
+
+Le job `e2e` (matrice complète) couvre **8 viewports**, incluant paysage mobile, WebKit iPad et tablettes Chromium.
+
+```bash
+npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports : desktop, mobile portrait, tablette portrait/paysage)
+```
 
 #### Couverture Vitest
 
@@ -91,8 +111,8 @@ Générées avant chaque build de production :
 ```bash
 npm run icons           # génère public/icons/
 npm run icons:optimize  # recompression PNG (exécuté en CI après icons)
-npm run test:e2e:smoke   # smoke bloquant deploy (desktop + mobile portrait)
-npm run test:e2e:ci      # matrice complète 6 viewports
+npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports)
+npm run test:e2e:ci      # matrice complète 7 viewports
 npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
@@ -120,7 +140,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (desktop + mobile portrait). La matrice e2e complète (6 viewports) est **bloquante** en CI.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (desktop + mobile portrait). La matrice e2e complète (**8 viewports**) est **bloquante** en CI.
 
 En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 
@@ -129,5 +149,6 @@ En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explici
 ## Conventions de code
 
 - **Identifiants** : anglais pour modules, fonctions exportées et API Phaser (`showMenu`, `buildOptionsContent`) — stabilité des imports et alignement avec l’écosystème. **Ne pas renommer massivement** les identifiants existants sans raison fonctionnelle. Textes joueur et commentaires en français.
+- **`SceneContext`** : contrat JSDoc dans `src/sceneTypes.js` — tout module `scene*` reçoit ce contexte ; ne pas accéder à la physique ou au storage depuis `ui*.js`. Résumé dans [ARCHITECTURE.md](ARCHITECTURE.md#contrat-scenecontext-srcscenetypesjs).
 - **`TOUCH_TARGETS`** (`src/uiLayoutConstants.js`) : coordonnées jeu pour les tests e2e — chaque clé doit avoir une spec Playwright associée (`e2e/touch.spec.js`, `e2e/scoreHud.spec.js`).
 - **Format** : Prettier sur `src/`, `tests/`, `e2e/`, `scripts/` (`npm run format` avant une PR si le diff touche plusieurs fichiers).

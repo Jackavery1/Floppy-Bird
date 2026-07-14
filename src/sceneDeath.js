@@ -6,9 +6,7 @@ import { notifyEndOfRoundAchievements } from './metaAchievements.js';
 import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneFeedback.js';
 import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
-import { recordPipeDeathForCoyoteHint } from './tutorialStorage.js';
-import { setupGameOverAccessibility } from './uiDomAccessibility.js';
-import { announceDeathStarted } from './sceneA11ySync.js';
+import { announceDeathStarted, openGameOverAccessibility } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 import { preloadGameOverUI } from './uiGameOverLoader.js';
 
@@ -21,13 +19,21 @@ export function triggerDeath(scene, cause = 'pipe') {
     syncShellGameState(GAME_STATE.DYING);
     announceDeathStarted(cause);
     scene.round.deathCause = cause;
-    scene.round.coyoteFramesAtDeath = cause === 'pipe' ? scene.round.coyoteFrames : null;
+    const startedAt = scene.round.startedAt ?? 0;
+    const now = scene.time?.now ?? 0;
+    scene.round.lastDeathMetrics = {
+        cause,
+        score: scene.round.score ?? 0,
+        elapsedMs: startedAt > 0 ? Math.max(0, now - startedAt) : 0,
+        isEarlyDeath:
+            startedAt > 0
+                ? Math.max(0, now - startedAt) < GAME_CONFIG.round.earlyDeathMs
+                : false,
+        beforeFirstPipe: (scene.round.score ?? 0) === 0,
+    };
     scene.round.resetDeathAnimation();
 
     playDeathImpactFeedback(scene, cause);
-    if (cause === 'pipe') {
-        recordPipeDeathForCoyoteHint();
-    }
     scene.bird.velocityY = 0;
     scene.ghost.finishRound(scene.round.score);
 
@@ -71,7 +77,9 @@ function finishDying(scene) {
     }
     notifyEndOfRoundAchievements(scene);
     scene.ui.highScore = round.roundHighScore;
+    scene.ui.showGameOverLoading?.();
     preloadGameOverUI().then(() => {
+        scene.ui.hideGameOverLoading?.();
         if (scene.state !== GAME_STATE.DYING && scene.state !== GAME_STATE.GAME_OVER) return;
         scene.state = GAME_STATE.GAME_OVER;
         syncShellGameState(GAME_STATE.GAME_OVER);
@@ -83,11 +91,10 @@ function finishDying(scene) {
             scene.hardcoreMode,
             scene.playMode === 'daily' ? scene.dailyGoal : 0,
             scene.activeSkinId ?? 'classic',
-            round.deathCause,
-            round.coyoteFramesAtDeath
+            round.deathCause
         );
         scene.ui.setOverlay('gameOver', elements);
-        setupGameOverAccessibility(scene, {
+        openGameOverAccessibility(scene, {
             score: round.score,
             isDaily: scene.playMode === 'daily',
         });

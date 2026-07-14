@@ -16,11 +16,9 @@ vi.mock('../src/roundScore.js', () => ({
 vi.mock('../src/metaAchievements.js', () => ({
     notifyEndOfRoundAchievements: vi.fn(),
 }));
-vi.mock('../src/uiDomAccessibility.js', () => ({
-    setupGameOverAccessibility: vi.fn(),
-}));
-vi.mock('../src/tutorialStorage.js', () => ({
-    recordPipeDeathForCoyoteHint: vi.fn(),
+vi.mock('../src/sceneA11ySync.js', () => ({
+    announceDeathStarted: vi.fn(),
+    openGameOverAccessibility: vi.fn(),
 }));
 vi.mock('../src/dailyChallengeProgress.js', () => ({
     saveDailyCompletion: vi.fn(),
@@ -31,9 +29,6 @@ vi.mock('../src/shellGameState.js', () => ({
 vi.mock('../src/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
 }));
-vi.mock('../src/sceneA11ySync.js', () => ({
-    announceDeathStarted: vi.fn(),
-}));
 
 describe('sceneDeath', () => {
     it('triggerDeath passe en DYING et enregistre le score', async () => {
@@ -43,28 +38,32 @@ describe('sceneDeath', () => {
         const round = createRoundState();
         round.score = 5;
         round.roundHighScore = 3;
+        round.startedAt = 1000;
         const scene = {
             state: GAME_STATE.PLAYING,
             round,
-            trainingMode: false,
-            hardcoreMode: false,
-            difficulty: 'normal',
             bird: { velocityY: 3 },
             ghost: { finishRound: vi.fn() },
-            time: { delayedCall: vi.fn() },
+            time: { delayedCall: vi.fn(), now: 2500 },
         };
         triggerDeath(scene, 'ground');
         expect(scene.state).toBe(GAME_STATE.DYING);
         expect(announceDeathStarted).toHaveBeenCalledWith('ground');
         expect(scene.round.deathCause).toBe('ground');
+        expect(scene.round.lastDeathMetrics).toMatchObject({
+            cause: 'ground',
+            score: 5,
+            elapsedMs: 1500,
+            isEarlyDeath: true,
+            beforeFirstPipe: false,
+        });
         expect(playDeathImpactFeedback).toHaveBeenCalledWith(scene, 'ground');
         expect(persistRoundScore).toHaveBeenCalledWith(scene);
         expect(scene.bird.velocityY).toBe(0);
         expect(scene.round.isNewRecord).toBe(true);
     });
 
-    it('triggerDeath pipe enregistre les morts tuyau pour le hint coyote', async () => {
-        const { recordPipeDeathForCoyoteHint } = await import('../src/tutorialStorage.js');
+    it('triggerDeath pipe enregistre la cause de mort', async () => {
         const round = createRoundState();
         round.coyoteFrames = 3;
         const scene = {
@@ -75,8 +74,7 @@ describe('sceneDeath', () => {
             time: { delayedCall: vi.fn() },
         };
         triggerDeath(scene, 'pipe');
-        expect(recordPipeDeathForCoyoteHint).toHaveBeenCalled();
-        expect(scene.round.coyoteFramesAtDeath).toBe(3);
+        expect(scene.round.deathCause).toBe('pipe');
     });
 
     it('updateDying termine quand l’oiseau touche le sol', async () => {
@@ -102,19 +100,23 @@ describe('sceneDeath', () => {
             },
             ui: {
                 highScore: 0,
+                showGameOverLoading: vi.fn(),
+                hideGameOverLoading: vi.fn(),
                 showGameOver: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
                 setOverlay: vi.fn(),
             },
         };
         updateDying(scene);
         await Promise.resolve();
-        const { setupGameOverAccessibility } = await import('../src/uiDomAccessibility.js');
+        const { openGameOverAccessibility } = await import('../src/sceneA11ySync.js');
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
         expect(scene.ui.highScore).toBe(7);
         expect(playGroundImpactFeedback).toHaveBeenCalled();
         expect(notifyEndOfRoundAchievements).toHaveBeenCalledWith(scene);
         expect(scene.ui.setOverlay).toHaveBeenCalledWith('gameOver', expect.any(Array));
-        expect(setupGameOverAccessibility).toHaveBeenCalledWith(scene, {
+        expect(scene.ui.showGameOverLoading).toHaveBeenCalled();
+        expect(scene.ui.hideGameOverLoading).toHaveBeenCalled();
+        expect(openGameOverAccessibility).toHaveBeenCalledWith(scene, {
             score: 2,
             isDaily: false,
         });
@@ -145,6 +147,8 @@ describe('sceneDeath', () => {
             },
             ui: {
                 highScore: 0,
+                showGameOverLoading: vi.fn(),
+                hideGameOverLoading: vi.fn(),
                 showGameOver: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
                 setOverlay: vi.fn(),
             },
