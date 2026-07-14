@@ -4,7 +4,7 @@ import { loadCoyoteHintSeen, markCoyoteHintSeen } from './tutorialStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
-/** Grâce coyote : uniquement dans les gaps (tuyaux), pas sol/plafond — voir README. */
+/** Coyote time : uniquement dans les gaps (tuyaux), pas sol/plafond — voir README. */
 /** @param {SceneContext} scene @param {number} step */
 export function updateCoyoteTime(scene, step) {
     const { round } = scene;

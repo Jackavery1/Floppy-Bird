@@ -31,11 +31,15 @@ vi.mock('../src/shellGameState.js', () => ({
 vi.mock('../src/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
 }));
+vi.mock('../src/sceneA11ySync.js', () => ({
+    announceDeathStarted: vi.fn(),
+}));
 
 describe('sceneDeath', () => {
     it('triggerDeath passe en DYING et enregistre le score', async () => {
         const { persistRoundScore } = await import('../src/roundScore.js');
         const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
+        const { announceDeathStarted } = await import('../src/sceneA11ySync.js');
         const round = createRoundState();
         round.score = 5;
         round.roundHighScore = 3;
@@ -51,6 +55,7 @@ describe('sceneDeath', () => {
         };
         triggerDeath(scene, 'ground');
         expect(scene.state).toBe(GAME_STATE.DYING);
+        expect(announceDeathStarted).toHaveBeenCalledWith('ground');
         expect(scene.round.deathCause).toBe('ground');
         expect(playDeathImpactFeedback).toHaveBeenCalledWith(scene, 'ground');
         expect(persistRoundScore).toHaveBeenCalledWith(scene);

@@ -155,3 +155,18 @@ export async function keepBirdAliveForPipeSpawn(page, spawnDelayMs, invincibilit
 export function advancePipeSpawnWait(page, deltaMs) {
     return page.evaluate((ms) => window.__FLOPPY_TEST__?.advancePipeSpawnWait?.(ms), deltaMs);
 }
+
+/** @param {import('@playwright/test').Page} page */
+export function probeAudio(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.probeAudio?.() ?? null);
+}
+
+/** @param {import('@playwright/test').Page} page @param {boolean} [freeze] */
+export function freezeBackgroundAnimation(page, freeze = true) {
+    return page.evaluate((value) => window.__FLOPPY_TEST__?.freezeBackgroundAnimation?.(value), freeze);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function probeHaptics(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.probeHaptics?.() ?? null);
+}

@@ -57,6 +57,13 @@ describe('Bird', () => {
                 width: 22,
                 height: 16,
             });
+            const sprite = bird.getSpriteBounds();
+            expect(sprite).toEqual({
+                x: 100 - 14,
+                y: 200 - 10,
+                width: 28,
+                height: 20,
+            });
         });
     });
 

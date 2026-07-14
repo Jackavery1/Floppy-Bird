@@ -145,11 +145,19 @@ describe('device', () => {
         expect(deathCauseLabel(null)).toBe('');
     });
 
-    it('coyoteDeathHint résume la marge coyote au game over', async () => {
+    it('coyoteDeathHint ne renvoie plus de libellé game over', async () => {
         const { coyoteDeathHint } = await loadDevice(false);
         expect(coyoteDeathHint(null)).toBe('');
-        expect(coyoteDeathHint(0)).toBe('Grâce coyote épuisée');
-        expect(coyoteDeathHint(2)).toBe('Grâce coyote : 2 frames restantes');
-        expect(coyoteDeathHint(null, 'ground')).toBe('Grâce coyote : non applicable (sol/plafond)');
+        expect(coyoteDeathHint(0)).toBe('');
+        expect(coyoteDeathHint(2)).toBe('');
+        expect(coyoteDeathHint(null, 'ground')).toBe('');
+    });
+
+    it('coyoteHintText guide sans le mot grâce', async () => {
+        const { coyoteHintText, coyoteLowGraceHintText } = await loadDevice(false);
+        expect(coyoteHintText()).toContain('saut');
+        expect(coyoteHintText().toLowerCase()).not.toContain('grâce');
+        expect(coyoteLowGraceHintText(2)).toContain('saute');
+        expect(coyoteLowGraceHintText(2).toLowerCase()).not.toContain('grâce');
     });
 });

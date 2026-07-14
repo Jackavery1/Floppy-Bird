@@ -1,30 +1,11 @@
 import { GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser, panelChromeTextStyle } from './designTokens.js';
-import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent, UI_LAYOUT } from './uiLayout.js';
+import { drawPanelPillButton } from './uiPhaserComponents.js';
+import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from './uiLayout.js';
 
 export const PANEL_SHELL_RADIUS = 10;
 
-/** @param {import('phaser').GameObjects.Graphics} g */
-export function drawPanelPillButton(
-    g,
-    cx,
-    cy,
-    w,
-    h,
-    fill,
-    fillAlpha,
-    stroke,
-    strokeAlpha,
-    radius = UI_LAYOUT.menuBtn.radius
-) {
-    const x = cx - w / 2;
-    const y = cy - h / 2;
-    g.clear();
-    g.fillStyle(fill, fillAlpha);
-    g.fillRoundedRect(x, y, w, h, radius);
-    g.lineStyle(2, stroke, strokeAlpha);
-    g.strokeRoundedRect(x, y, w, h, radius);
-}
+export { drawPanelPillButton };
 
 /**
  * @param {import('phaser').Scene} scene

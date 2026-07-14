@@ -23,6 +23,7 @@ import {
     onPipeSpawned,
 } from './sceneRound.js';
 import { preloadGameOverUI } from './uiGameOverLoader.js';
+import { announceRoundStarted } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -93,6 +94,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     ensurePipeTextures(scene);
     scene.state = GAME_STATE.PLAYING;
     syncShellGameState(GAME_STATE.PLAYING);
+    announceRoundStarted(scene);
     scene.time.paused = false;
     scheduleFirstPipe(scene);
 

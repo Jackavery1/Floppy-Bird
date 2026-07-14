@@ -29,9 +29,9 @@ test.describe('cibles tactiques ≥ 44 px', () => {
             const canvas = document.querySelector('#game-container canvas');
             if (!canvas) return 0;
             const scale = canvas.getBoundingClientRect().width / 288;
-            return 44 * scale;
+            return 48 * scale;
         });
-        expect(minScreenPx).toBeGreaterThanOrEqual(44);
+        expect(minScreenPx).toBeGreaterThanOrEqual(48);
     });
 
     test('boutons difficulté et défi du jour au menu', async ({ page }, testInfo) => {

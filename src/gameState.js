@@ -1,4 +1,5 @@
 /** Constantes d'état de la scène et du traitement des entrées */
+import { isE2eBackgroundFrozen } from './e2eVisualFreeze.js';
 export const GAME_STATE = Object.freeze({
     MENU: 'menu', // Écran menu principal
     PLAYING: 'playing', // Partie en cours
@@ -52,5 +53,6 @@ export function shouldScrollGround(state) {
 }
 
 export function shouldAnimateBackground(state) {
+    if (isE2eBackgroundFrozen()) return false;
     return state === GAME_STATE.MENU || state === GAME_STATE.PLAYING;
 }

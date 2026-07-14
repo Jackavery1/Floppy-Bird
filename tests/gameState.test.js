@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
+import { setE2eBackgroundFrozen } from '../src/e2eVisualFreeze.js';
 import {
     GAME_STATE,
     canChangeDifficulty,
@@ -14,6 +15,10 @@ import {
 } from '../src/gameState.js';
 
 describe('gameState', () => {
+    afterEach(() => {
+        setE2eBackgroundFrozen(false);
+    });
+
     it('bloque l’action primaire en pause et en mort', () => {
         expect(canHandlePrimaryAction(GAME_STATE.PAUSED)).toBe(false);
         expect(canHandlePrimaryAction(GAME_STATE.DYING)).toBe(false);
@@ -61,6 +66,12 @@ describe('gameState', () => {
         expect(shouldAnimateBackground(GAME_STATE.PLAYING)).toBe(true);
         expect(shouldAnimateBackground(GAME_STATE.PAUSED)).toBe(false);
         expect(shouldAnimateBackground(GAME_STATE.DYING)).toBe(false);
+    });
+
+    it('fige le fond quand le flag e2e est actif', () => {
+        setE2eBackgroundFrozen(true);
+        expect(shouldAnimateBackground(GAME_STATE.MENU)).toBe(false);
+        expect(shouldAnimateBackground(GAME_STATE.PLAYING)).toBe(false);
     });
 
     it('empêche un double déclenchement de mort', () => {

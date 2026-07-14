@@ -56,7 +56,8 @@ describe('uiHud', () => {
 
     it('createInGameControls ajoute pause et badges modes', async () => {
         const { createInGameControls } = await import('../src/uiHud.js');
-        const { MIN_TOUCH, PAUSE_BTN_VISUAL } = await import('../src/uiLayout.js');
+        const { MIN_TOUCH, MIN_CTA_TOUCH, PAUSE_BTN_HIT, PAUSE_BTN_VISUAL } =
+            await import('../src/uiLayout.js');
         const onPause = vi.fn();
         const elements = createInGameControls(ui, {
             trainingMode: true,
@@ -67,9 +68,10 @@ describe('uiHud', () => {
         expect(ui._trainingBadge).toBeTruthy();
         expect(ui._hardcoreBadge).toBeTruthy();
         const pauseHit = scene.add.rectangle.mock.calls.find(
-            ([, , w, h]) => w === MIN_TOUCH && h === MIN_TOUCH
+            ([, , w, h]) => w === PAUSE_BTN_HIT && h === PAUSE_BTN_HIT
         );
         expect(pauseHit).toBeTruthy();
+        expect(PAUSE_BTN_HIT).toBe(MIN_CTA_TOUCH);
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
     });
 

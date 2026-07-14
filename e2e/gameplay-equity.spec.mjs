@@ -56,7 +56,7 @@ test.describe('gameplay equity via test seam', () => {
         expect(equity?.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
 
-    test('grantCoyoteGrace active la grâce coyote', async ({ page }, testInfo) => {
+    test('grantCoyoteGrace active le coyote time', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);

@@ -1,4 +1,7 @@
-import { GAME_CONFIG } from '../config.js';
+import { setE2eBackgroundFrozen } from '../e2eVisualFreeze.js';
+import { GAME_CONFIG, SOUND } from '../config.js';
+import { isAudioAvailable, playSound } from '../audio.js';
+import { hapticLight, hapticMedium } from '../haptics.js';
 import { loadTutorialComplete, loadTutorialProgress } from '../tutorialStorage.js';
 import { sampleGapSequence } from '../pipeGapSampling.js';
 import {
@@ -39,6 +42,25 @@ export function createMetaSeam(getScene) {
                 pipeGap: effectivePipeGapForScore(baseGap, score),
                 maxGapDelta: maxGapDeltaForScore(score),
                 baseGap,
+            };
+        },
+        probeAudio: () => {
+            const sounds = [SOUND.JUMP, SOUND.SCORE, SOUND.GAME_OVER, SOUND.GROUND];
+            for (const sound of sounds) {
+                playSound(sound, 1);
+            }
+            return { available: isAudioAvailable() };
+        },
+        freezeBackgroundAnimation: (freeze = true) => {
+            setE2eBackgroundFrozen(freeze);
+            return freeze;
+        },
+        probeHaptics: () => {
+            hapticLight();
+            hapticMedium();
+            return {
+                supported:
+                    typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function',
             };
         },
     };

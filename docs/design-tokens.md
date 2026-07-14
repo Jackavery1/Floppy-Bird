@@ -36,7 +36,7 @@ Les valeurs `:root` dans `style.css` sont synchronisées au chargement via `sync
 
 Échelle 4 px : `xs=4`, `sm=8`, `md=12`, `lg=16`, `xl=24` (CSS + `SPACING` JS).
 
-Zones tactiles : **minimum 44×44 px** (`MIN_TOUCH`) ; CTA primaires **48 px** (`MIN_CTA_TOUCH`).
+Zones tactiles : **minimum 44×44 px** (`MIN_TOUCH`) ; CTA primaires et **pause HUD** **48 px** (`MIN_CTA_TOUCH`).
 
 ## Référence visuelle
 

@@ -21,6 +21,14 @@ vi.mock('../src/motion.js', () => ({
     sceneTween,
 }));
 
+const spawnDeathJuice = vi.fn();
+const spawnScoreJuice = vi.fn();
+
+vi.mock('../src/sceneJuice.js', () => ({
+    spawnDeathJuice,
+    spawnScoreJuice,
+}));
+
 const applyTrainingTimeScale = vi.fn();
 vi.mock('../src/sceneBootstrap.js', () => ({
     applyTrainingTimeScale,
@@ -70,13 +78,15 @@ describe('sceneFeedback', () => {
         expect(hapticLight).toHaveBeenCalled();
     });
 
-    it('playScoreFeedback déclenche audio et haptique', async () => {
+    it('playScoreFeedback déclenche audio, haptique et juice si scène fournie', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
         const { playSound } = await import('../src/audio.js');
         const { hapticLight } = await import('../src/haptics.js');
-        playScoreFeedback(3);
-        expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 3);
+        const scene = createScene();
+        playScoreFeedback(10, scene);
+        expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 10);
         expect(hapticLight).toHaveBeenCalled();
+        expect(spawnScoreJuice).toHaveBeenCalledWith(scene, 80, 200, 10);
     });
 
     it('playGroundImpactFeedback déclenche son sol et haptique léger', async () => {
@@ -88,33 +98,33 @@ describe('sceneFeedback', () => {
         expect(hapticLight).toHaveBeenCalled();
     });
 
-    it('playDeathImpactFeedback pipe shake, flash et particules', async () => {
+    it('playDeathImpactFeedback pipe shake, flash et juice', async () => {
         const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
         const { hapticMedium } = await import('../src/haptics.js');
         const scene = createScene();
         playDeathImpactFeedback(scene, 'pipe');
         expect(hapticMedium).toHaveBeenCalled();
         expect(scene.ui.hideInGameScore).toHaveBeenCalled();
-        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 200, 0.015);
+        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 260, 0.022);
         expect(scene.ui.showFlash).toHaveBeenCalled();
-        expect(scene.add.rectangle).toHaveBeenCalledTimes(8);
+        expect(spawnDeathJuice).toHaveBeenCalledWith(scene, 80, 200, 'pipe');
         expect(scene.time.timeScale).toBe(GAME_CONFIG.round.deathSlowMoScale);
     });
 
-    it('playDeathImpactFeedback ground utilise intensité réduite', async () => {
+    it('playDeathImpactFeedback ground utilise intensité renforcée', async () => {
         const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
         const scene = createScene();
         playDeathImpactFeedback(scene, 'ground');
-        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 140, 0.012);
-        expect(scene.add.rectangle).toHaveBeenCalledTimes(8);
+        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 180, 0.018);
+        expect(spawnDeathJuice).toHaveBeenCalledWith(scene, 80, GAME_CONFIG.groundY - 20, 'ground');
     });
 
     it('playDeathImpactFeedback ceiling utilise flash plafond', async () => {
         const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
         const scene = createScene();
         playDeathImpactFeedback(scene, 'ceiling');
-        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 120, 0.01);
-        expect(scene.add.rectangle).toHaveBeenCalledTimes(8);
+        expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 150, 0.014);
+        expect(spawnDeathJuice).toHaveBeenCalledWith(scene, 80, 30, 'ceiling');
     });
 
     it('slow-mo mort respecte prefers-reduced-motion', async () => {
@@ -124,14 +134,6 @@ describe('sceneFeedback', () => {
         playDeathImpactFeedback(scene, 'pipe');
         expect(applyTrainingTimeScale).toHaveBeenCalledWith(scene);
         expect(scene.time.timeScale).toBe(1);
-        expect(scene.add.rectangle).not.toHaveBeenCalled();
-    });
-
-    it('particules ignorées si prefers-reduced-motion', async () => {
-        prefersReducedMotion.mockReturnValue(true);
-        const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
-        const scene = createScene();
-        playDeathImpactFeedback(scene, 'ground');
-        expect(scene.add.rectangle).not.toHaveBeenCalled();
+        expect(spawnDeathJuice).not.toHaveBeenCalled();
     });
 });

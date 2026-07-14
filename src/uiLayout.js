@@ -3,6 +3,7 @@ export {
     MIN_CTA_TOUCH,
     SPACING,
     PAUSE_BTN_VISUAL,
+    PAUSE_BTN_HIT,
     PAUSE_BTN_INSET,
     HUD_SAFE_TOP,
     FONT_SIZE_HINT,

@@ -133,7 +133,7 @@ describe('sceneRound', () => {
             expect(pipe.scored).toBe(true);
             expect(scene.round.score).toBe(1);
             expect(scene.pipes.applySpeedForScore).toHaveBeenCalledWith(1);
-            expect(playScoreFeedback).toHaveBeenCalledWith(1);
+            expect(playScoreFeedback).toHaveBeenCalledWith(1, scene);
         });
 
         it('n’incrémente pas le score tant que la hitbox n’a pas dépassé le tuyau', () => {
@@ -210,7 +210,7 @@ describe('sceneRound', () => {
         expect(spawnPipeWave(scene)).toBe(false);
     });
 
-    it('onPipeSpawned ne renouvelle plus la grace hardcore par tuyau', () => {
+    it('onPipeSpawned ne renouvelle plus l’invincibilité hardcore par tuyau', () => {
         const scene = {
             hardcoreMode: true,
             round: createRoundState(),

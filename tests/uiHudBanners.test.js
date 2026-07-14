@@ -80,7 +80,7 @@ describe('uiHudBanners', () => {
         expect(ui._speedBoostPreviewBanner).toBeTruthy();
     });
 
-    it('showCoyoteHint crée une bannière', () => {
+    it('showCoyoteHint affiche une bannière avec texte coyote', () => {
         showCoyoteHint(ui);
         expect(ui._coyoteHintBanner).toBeTruthy();
     });
@@ -93,7 +93,7 @@ describe('uiHudBanners', () => {
         expect(ui._tutorialHint).toBeTruthy();
     });
 
-    it('showCoyoteLowGraceHint crée une bannière', () => {
+    it('showCoyoteLowGraceHint affiche une bannière quand des frames restent', () => {
         showCoyoteLowGraceHint(ui, 2);
         expect(ui._coyoteLowBanner).toBeTruthy();
     });

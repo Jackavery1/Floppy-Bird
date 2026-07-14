@@ -48,7 +48,7 @@ describe('uiGameOverSummary', () => {
         expect(texts).toContain('Collision tuyau');
     });
 
-    it('affiche la marge coyote restante après mort tuyau', () => {
+    it('n’affiche plus de libellé coyote au game over', () => {
         const scene = createBaseScene();
         const ui = makeUi();
         const y = (offset) => 80 + offset;
@@ -63,7 +63,8 @@ describe('uiGameOverSummary', () => {
             activeSkinId: 'classic',
         });
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
-        expect(texts).toContain('Grâce coyote épuisée');
+        expect(texts).not.toContain('Grâce coyote épuisée');
+        expect(texts.filter((t) => /grâce/i.test(String(t)))).toHaveLength(0);
     });
 
     it('marque le récap daily sans objectif classique', () => {

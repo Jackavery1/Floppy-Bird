@@ -7,6 +7,7 @@ import {
 } from './uiDomAccessibility.js';
 import { setOptionsPanelAccessibility } from './uiDomAccessibilityFlows.js';
 import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
+import { deathCauseLabel } from './device.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -20,6 +21,21 @@ export function openMenuAccessibility(scene) {
 
 export function hideAccessibilityForRoundStart() {
     hideAllAccessibilityControls();
+}
+
+/** @param {SceneContext} scene */
+export function announceRoundStarted(scene) {
+    let mode = 'classique';
+    if (scene.trainingMode) mode = 'entraînement';
+    else if (scene.dailyChallengeMode) mode = 'défi du jour';
+    else if (scene.hardcoreMode) mode = 'hardcore';
+    announceAccessibility(`Partie démarrée. Mode ${mode}.`);
+}
+
+/** @param {'pipe' | 'ground' | 'ceiling'} [cause] */
+export function announceDeathStarted(cause = 'pipe') {
+    const label = deathCauseLabel(cause);
+    announceAccessibility(label ? `Mort : ${label}.` : 'Mort.');
 }
 
 /** @param {import('phaser').Game | null | undefined} game */

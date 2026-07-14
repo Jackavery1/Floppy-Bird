@@ -8,7 +8,7 @@ export const CONTROL_DEFS = Object.freeze({
         label: 'Mettre en pause',
         x: TOUCH_TARGETS.pauseButton.x,
         y: TOUCH_TARGETS.pauseButton.y,
-        size: 44,
+        size: MIN_CTA_TOUCH,
     },
     playJump: {
         id: 'a11y-jump',

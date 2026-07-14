@@ -1,11 +1,7 @@
 import { expect } from '@playwright/test';
 import { GAME_CONFIG } from '../../src/config.js';
 import { TOUCH_TARGETS } from '../../src/uiLayout.js';
-import {
-    getTestState,
-    waitForTestSeamReady,
-    waitForScoreHud,
-} from './testSeam.mjs';
+import { getTestState, waitForTestSeamReady, waitForScoreHud } from './testSeam.mjs';
 
 export async function getCanvasBox(page) {
     const canvas = page.locator('#game-container canvas');
@@ -84,9 +80,7 @@ export async function waitForGameReady(page, { hideLandscapeHint: hideLandscape 
 }
 
 export async function expectGameState(page, state, timeout = 8_000) {
-    await expect
-        .poll(async () => getTestState(page), { timeout })
-        .toBe(state);
+    await expect.poll(async () => getTestState(page), { timeout }).toBe(state);
 }
 
 /** @param {boolean} usesTouch */
@@ -122,8 +116,9 @@ export async function openPauseFromPlaying(page, usesTouch) {
     if (!usesTouch) {
         await page.keyboard.press('Escape');
     } else {
-        const { pauseButton } = TOUCH_TARGETS;
-        await pointerUntilState(page, pauseButton.x, pauseButton.y, true, 'paused');
+        const a11yPause = page.locator('#a11y-pause');
+        await a11yPause.waitFor({ state: 'visible', timeout: 5_000 });
+        await a11yPause.click({ force: true });
     }
     await expectGameState(page, 'paused');
 }

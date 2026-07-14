@@ -3,6 +3,8 @@ import {
     enterPauseAccessibility,
     exitPauseAccessibility,
     hideAccessibilityForRoundStart,
+    announceRoundStarted,
+    announceDeathStarted,
     openMenuAccessibility,
 } from '../src/sceneA11ySync.js';
 
@@ -59,5 +61,27 @@ describe('sceneA11ySync', () => {
         expect(setAccessibilityControlVisible).toHaveBeenCalledWith('pause', true);
         expect(syncAccessibilityLayer).toHaveBeenCalledWith(scene.game);
         expect(announceAccessibility).toHaveBeenCalledWith('Partie reprise');
+    });
+
+    it('announceRoundStarted annonce le mode de partie', async () => {
+        const { announceAccessibility } = await import('../src/uiDomAccessibility.js');
+        announceRoundStarted({
+            trainingMode: true,
+            dailyChallengeMode: false,
+            hardcoreMode: false,
+        });
+        expect(announceAccessibility).toHaveBeenCalledWith('Partie démarrée. Mode entraînement.');
+        announceRoundStarted({
+            trainingMode: false,
+            dailyChallengeMode: true,
+            hardcoreMode: false,
+        });
+        expect(announceAccessibility).toHaveBeenCalledWith('Partie démarrée. Mode défi du jour.');
+    });
+
+    it('announceDeathStarted annonce la cause de mort', async () => {
+        const { announceAccessibility } = await import('../src/uiDomAccessibility.js');
+        announceDeathStarted('pipe');
+        expect(announceAccessibility).toHaveBeenCalledWith('Mort : Collision tuyau.');
     });
 });

@@ -18,6 +18,9 @@ vi.mock('../src/sceneDeath.js', () => ({
 
 vi.mock('../src/sceneRound.js', () => ({
     checkScorePipes: vi.fn(),
+    tickPipeSpawnFallback: vi.fn((scene, deltaMs) => {
+        scene.round._pipeSpawnWaitMs = (scene.round._pipeSpawnWaitMs ?? 0) + deltaMs;
+    }),
 }));
 
 vi.mock('../src/sceneA11ySync.js', () => ({
@@ -148,5 +151,37 @@ describe('gameplaySeam', () => {
             scene.bird.x,
             GAME_CONFIG.centerY
         );
+    });
+
+    it('requestJump délègue au buffer de saut', async () => {
+        const { requestJump } = await import('../src/sceneJumpBuffer.js');
+        seam.requestJump();
+        expect(requestJump).toHaveBeenCalledWith(scene);
+    });
+
+    it('getPipeState expose le premier tuyau', () => {
+        expect(seam.getPipeState()).toMatchObject({
+            pipeCount: 1,
+            firstPipeX: 74,
+            pipeWidth: 40,
+        });
+    });
+
+    it('advancePipeSpawnWait accumule le délai et peut spawner', () => {
+        scene.round._pipeSpawnWaitMs = 0;
+        scene.pipes.topPipes = [];
+        scene.pipes.spawn = vi.fn(() => {
+            scene.pipes.topPipes.push({ x: 200, scored: false });
+        });
+        const result = seam.advancePipeSpawnWait(1250);
+        expect(result?.waitMs).toBe(1250);
+        expect(scene.pipes.spawn).toHaveBeenCalled();
+        expect(result?.pipeCount).toBe(1);
+    });
+
+    it('triggerDeath délègue à sceneDeath', async () => {
+        const { triggerDeath } = await import('../src/sceneDeath.js');
+        seam.triggerDeath('ground');
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'ground');
     });
 });

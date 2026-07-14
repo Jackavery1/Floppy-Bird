@@ -97,7 +97,7 @@ export function startSpawnInvincibility(
 
 /** @param {SceneContext} scene @param {number} _pipeCount */
 export function onPipeSpawned(_scene, _pipeCount) {
-    // Grace hardcore : uniquement au début de manche (voir sceneBeginRound).
+    // Invincibilité hardcore : uniquement au début de manche (voir sceneBeginRound).
 }
 
 /** @param {SceneContext} scene */
@@ -112,7 +112,7 @@ export function checkScorePipes(scene) {
                 onTutorialFirstScore(scene);
             }
             scene.pipes.applySpeedForScore(round.score);
-            playScoreFeedback(round.score);
+            playScoreFeedback(round.score, scene);
             handleScoreMilestones(scene, round.score);
             scene.scoreEffects.show(scene.bird.x, scene.bird.y);
             maybeCelebrateDailyGoal(scene);

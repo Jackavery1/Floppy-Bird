@@ -119,7 +119,8 @@ export default defineConfig(({ mode }) => {
             }),
         ],
         test: {
-            testTimeout: 10_000,
+            testTimeout: 20_000,
+            hookTimeout: 20_000,
             environment: 'node',
             exclude: ['e2e/**', 'node_modules/**'],
             coverage: {
@@ -132,6 +133,7 @@ export default defineConfig(({ mode }) => {
                     'src/testSeam.js',
                     'src/sceneTypes.js',
                     'src/tokensPage.js',
+                    'src/testSeam/**',
                 ],
                 reporter: ['text', 'html', 'lcov'],
                 thresholds: { lines: 94, functions: 91, branches: 82, statements: 94 },

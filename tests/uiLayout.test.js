@@ -33,7 +33,7 @@ describe('uiLayout', () => {
             y: UI_LAYOUT.playing.pauseBtnY,
         });
         expect(TOUCH_TARGETS.pauseButton.x).toBe(
-            GAME_CONFIG.width - MIN_TOUCH / 2 - PAUSE_BTN_INSET
+            GAME_CONFIG.width - MIN_CTA_TOUCH / 2 - PAUSE_BTN_INSET
         );
         expect(TOUCH_TARGETS.pauseResume.y).toBe(UI_LAYOUT.pause.resumeBtn);
         expect(TOUCH_TARGETS.menuStart).toEqual({

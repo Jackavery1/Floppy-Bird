@@ -8,6 +8,7 @@ import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 import { recordPipeDeathForCoyoteHint } from './tutorialStorage.js';
 import { setupGameOverAccessibility } from './uiDomAccessibility.js';
+import { announceDeathStarted } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 import { preloadGameOverUI } from './uiGameOverLoader.js';
 
@@ -18,6 +19,7 @@ export function triggerDeath(scene, cause = 'pipe') {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
     syncShellGameState(GAME_STATE.DYING);
+    announceDeathStarted(cause);
     scene.round.deathCause = cause;
     scene.round.coyoteFramesAtDeath = cause === 'pipe' ? scene.round.coyoteFrames : null;
     scene.round.resetDeathAnimation();

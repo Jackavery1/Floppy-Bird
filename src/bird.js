@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { BIRD_COLLISION_INSET } from './uiPhaserComponents.js';
 import { birdAnimKey, birdTextureKey } from './skins/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { DEPTH } from './uiDepth.js';
@@ -73,9 +74,17 @@ export class Bird {
         this.sprite.setFrame(1);
     }
 
+    getSpriteBounds() {
+        return {
+            x: this.x - this.width / 2,
+            y: this.y - this.height / 2,
+            width: this.width,
+            height: this.height,
+        };
+    }
+
     getBounds() {
-        const mx = 3,
-            my = 2;
+        const { x: mx, y: my } = BIRD_COLLISION_INSET;
         return {
             x: this.x - this.width / 2 + mx,
             y: this.y - this.height / 2 + my,

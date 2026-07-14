@@ -12,6 +12,7 @@ import {
     syncAccessibilityLayer,
 } from './uiDomAccessibility.js';
 import { bindPlayingAccessibilityFocusVisuals } from './uiDomAccessibilityFocusVisuals.js';
+import { drawPauseChrome } from './uiPhaserComponents.js';
 import { PLAYING_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
 import { resetHudBannerSlots } from './uiHudBannerStack.js';
 import {
@@ -19,7 +20,7 @@ import {
     DEPTH,
     FONT_SIZE_BADGE,
     FONT_SIZE_HINT,
-    MIN_TOUCH,
+    PAUSE_BTN_HIT,
     PAUSE_BTN_COLOR,
     PAUSE_BTN_HOVER,
     PAUSE_BTN_VISUAL,
@@ -130,8 +131,8 @@ export function createInGameControls(
     const pauseHit = ui.scene.add.rectangle(
         playing.pauseBtnX,
         playing.pauseBtnY,
-        MIN_TOUCH,
-        MIN_TOUCH,
+        PAUSE_BTN_HIT,
+        PAUSE_BTN_HIT,
         0x000000,
         0
     );
@@ -164,16 +165,11 @@ export function createInGameControls(
 
 function drawPauseButton(ui, fillColor) {
     if (!ui._pauseBtnGraphics) return;
-    const { playing } = UI_LAYOUT;
-    const g = ui._pauseBtnGraphics;
-    const size = PAUSE_BTN_VISUAL;
-    g.clear();
-    g.fillStyle(fillColor, 1);
-    g.fillRoundedRect(playing.pauseBtnX - size / 2, playing.pauseBtnY - size / 2, size, size, 5);
-    g.fillStyle(0xffffff, 1);
-    const barW = 6;
-    const barH = 20;
-    const gap = 6;
-    g.fillRect(playing.pauseBtnX - gap / 2 - barW, playing.pauseBtnY - barH / 2, barW, barH);
-    g.fillRect(playing.pauseBtnX + gap / 2, playing.pauseBtnY - barH / 2, barW, barH);
+    drawPauseChrome(
+        ui._pauseBtnGraphics,
+        UI_LAYOUT.playing.pauseBtnX,
+        UI_LAYOUT.playing.pauseBtnY,
+        PAUSE_BTN_VISUAL,
+        fillColor
+    );
 }

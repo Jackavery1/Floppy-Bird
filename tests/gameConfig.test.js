@@ -30,7 +30,7 @@ describe('GAME_CONFIG.round', () => {
         expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(6);
     });
 
-    it('hardcore : grace initiale 700 ms (sans paliers par tuyau)', () => {
+    it('hardcore : invincibilité initiale 700 ms (sans paliers par tuyau)', () => {
         expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(700);
         expect(GAME_CONFIG.round.spawnInvincibilityMs).toBe(900);
     });

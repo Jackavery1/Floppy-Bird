@@ -71,7 +71,7 @@ describe('sceneCoyote', () => {
         vi.unstubAllGlobals();
     });
 
-    it('updateCoyoteTime alerte quand il reste ≤ 2 frames de grâce', () => {
+    it('updateCoyoteTime alerte quand il reste ≤ 2 frames coyote', () => {
         const showCoyoteLowGraceHint = vi.fn();
         const scene = makeScene(false);
         scene.round.coyoteFrames = 3;

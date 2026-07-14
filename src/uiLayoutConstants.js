@@ -22,6 +22,8 @@ export const FONT_SIZE_BADGE = '12px';
 /** Petits labels compacts (grille skins). */
 export const FONT_SIZE_COMPACT = '12px';
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
+/** Zone tactile du bouton pause (coin HUD) — alignée CTA 48 px. */
+export const PAUSE_BTN_HIT = MIN_CTA_TOUCH;
 /** Marge droite (px jeu) pour le bouton pause — évite les taps ratés au bord letterbox. */
 export const PAUSE_BTN_INSET = 12;
 /** Marge haute minimale (px jeu) pour HUD pause / score sous encoche visuelle. */
@@ -113,19 +115,19 @@ export const UI_LAYOUT = {
         scoresAchievements: 330,
     }),
     skinsPanel: withPanelCloseBtn({
-        panelTop: 128,
-        panelH: 376,
-        w: 252,
-        skinsTitle: 158,
-        skinsSubtitle: 178,
-        skinsRow1: 220,
-        skinsHint: 420,
+        panelTop: 100,
+        panelH: 404,
+        w: 268,
+        skinsTitle: 138,
+        skinsSubtitle: 158,
+        skinsRow1: 196,
+        skinsHint: 444,
     }),
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {
         trainingBadgeY: 30,
         hardcoreBadgeY: 44,
-        pauseBtnX: GAME_CONFIG.width - MIN_TOUCH / 2 - PAUSE_BTN_INSET,
+        pauseBtnX: GAME_CONFIG.width - PAUSE_BTN_HIT / 2 - PAUSE_BTN_INSET,
         pauseBtnY: MIN_TOUCH / 2 + HUD_SAFE_TOP,
     },
     diffBtn: { width: 68, height: MIN_TOUCH, gap: 10, radius: 6, x: [32, 110, 188] },

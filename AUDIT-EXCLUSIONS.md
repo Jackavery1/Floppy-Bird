@@ -12,6 +12,11 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 | `src/skins/skinIds.js` | Constantes d’identifiants |
 | `src/skins/skinTypes.js` | Typedef JSDoc sans runtime |
 | `src/sceneTypes.js` | Contrat JSDoc `SceneContext` — documenté, non exécuté |
+| `src/tokensPage.js` | Page doc design tokens (`tokens.html`) — rendu navigateur, non logique jeu |
+| `src/testSeam/gameplaySeam.js` | Seam Playwright — couvert par tests e2e et `tests/gameplaySeam.test.js` |
+| `src/testSeam/metaSeam.js` | Seam Playwright métadonnées / progression |
+| `src/testSeam/uiSeam.js` | Seam Playwright navigation UI |
+| `src/testSeam/coreSeam.js` | Seam Playwright état scène de base |
 
 ## Choix produit / responsive
 
@@ -26,4 +31,4 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 - Branches : **82 %**
 - Functions : **91 %**
 
-Dernière mise à jour : 2026-07-11 (v2.0.0).
+Dernière mise à jour : 2026-07-14 (v2.0.0).

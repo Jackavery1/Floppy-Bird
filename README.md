@@ -78,7 +78,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 #### Règles et mécaniques
 
-- **Coyote time** (5 frames) : marge de grâce à la sortie d'un gap ; teinte discrète pendant la protection au spawn (~0,9 s, **700 ms** en hardcore).
+- **Coyote time** (5 frames) : marge à la sortie d'un gap ; teinte discrète pendant la protection au spawn (~0,9 s, **700 ms** en hardcore).
 - **Tutoriel** en 3 étapes à la première partie ; auto-skip après 3 parties si non terminé.
 - **Escalade** : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; gaps resserrés au score 20.
 - **Records** : bannière « NOUVEAU RECORD ! » en jeu ; TOP 5 par difficulté (classique et hardcore séparés).
@@ -90,7 +90,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 | ---- | ----------- |
 | **Classique** | 3 difficultés (vitesse, écart, intervalle — voir [`src/config.js`](src/config.js)) |
 | **Entraînement** | Ralenti ×0,8, fantôme du meilleur parcours, scores non enregistrés |
-| **Hardcore** | Gravité/vitesse renforcées, grace spawn 700 ms, TOP 5 dédié |
+| **Hardcore** | Gravité/vitesse renforcées, invincibilité spawn 700 ms, TOP 5 dédié |
 | **Défi du jour** | Séquence partagée, skin/pattern/objectif imposés, rejouable depuis le game over |
 
 Les **skins** modifient l'apparence en classique ; la **physique du pattern** (gravité/saut/vitesse) s'applique uniquement au défi du jour.
@@ -166,7 +166,7 @@ Documentation complémentaire : [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUT
 | Contexte | Résolution logique | Entrée | Comportement |
 | -------- | ------------------ | ------ | ------------ |
 | **Desktop** | Letterbox 288×512 centré | Clavier (Espace, ESC…) + souris | Canvas cliquable ; overlay a11y masqué sauf focus clavier |
-| **Mobile portrait** | Letterbox plein écran + safe-area | Tap + overlay `#a11y-*` | CTA primaires 48 px ; zone saut 96×96 px ; pause 44 px coin haut-droit |
+| **Mobile portrait** | Letterbox plein écran + safe-area | Tap + overlay `#a11y-*` | CTA primaires 48 px ; zone saut 96×96 px ; pause 48 px coin haut-droit ; panneau skins 268×404 px |
 | **Mobile paysage** | Letterbox avec bandes | Tap (overlay masqué si exclusion audit) | Même logique jeu ; voir `AUDIT-EXCLUSIONS.md` pour l’overlay paysage |
 | **Tablette** | Letterbox adaptatif | Tap ou clavier externe | Projets Playwright `tablet-*` ; cibles tactiles identiques au mobile |
 
@@ -251,7 +251,7 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 
 #### Rules and Mechanics
 
-- **Coyote time** (5 frames): grace margin when leaving a gap; subtle tint during spawn protection (~0.9 s, **700 ms** in hardcore).
+- **Coyote time** (5 frames): safety margin when leaving a gap; subtle tint during spawn protection (~0.9 s, **700 ms** in hardcore).
 - **Tutorial** in 3 steps on first run; auto-skip after 3 games if not completed.
 - **Scaling**: +3% speed / 10 pts (cap +15% from score 50); tighter gaps at score 20.
 - **Records**: « NEW RECORD! » banner in-game; TOP 5 per difficulty (classic and hardcore separate).
@@ -263,7 +263,7 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 | ---- | ----------- |
 | **Classic** | 3 difficulties (speed, gap, interval — see [`src/config.js`](src/config.js)) |
 | **Training** | ×0.8 slow motion, ghost of best run, scores not saved |
-| **Hardcore** | Increased gravity/speed, 700 ms spawn grace, dedicated TOP 5 |
+| **Hardcore** | Increased gravity/speed, 700 ms spawn invincibility, dedicated TOP 5 |
 | **Daily challenge** | Shared sequence, forced skin/pattern/objective, replayable from game over |
 
 **Skins** change appearance in classic mode; **pattern physics** (gravity/jump/speed) apply only to the daily challenge.

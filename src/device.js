@@ -144,16 +144,13 @@ export function scoreTutorialText() {
 }
 
 export function coyoteHintText() {
-    return isCoarsePointer()
-        ? 'Grâce dans le gap : ~0,08 s après sortie'
-        : 'Grâce dans le gap : ~5 frames après sortie du corridor';
+    return isCoarsePointer() ? 'Encore un saut possible !' : 'COYOTE : encore un saut !';
 }
 
+/** @param {number} frames */
 export function coyoteLowGraceHintText(frames) {
-    const suffix = frames > 1 ? 's' : '';
-    return isCoarsePointer()
-        ? `Grâce : ${frames} frame${suffix}`
-        : `Grâce coyote : ${frames} frame${suffix} restante${suffix}`;
+    if (!frames || frames <= 0) return '';
+    return isCoarsePointer() ? 'Presque fini — saute !' : 'COYOTE : dernières frames — saute !';
 }
 
 export function trainingSpeedLabel(scale) {
@@ -191,12 +188,6 @@ export function deathCauseLabel(cause) {
 }
 
 /** @param {number | null | undefined} framesAtDeath @param {'pipe' | 'ground' | 'ceiling' | null | undefined} [cause] */
-export function coyoteDeathHint(framesAtDeath, cause) {
-    if (cause === 'ground' || cause === 'ceiling') {
-        return 'Grâce coyote : non applicable (sol/plafond)';
-    }
-    if (framesAtDeath == null) return '';
-    if (framesAtDeath <= 0) return 'Grâce coyote épuisée';
-    const suffix = framesAtDeath > 1 ? 's' : '';
-    return `Grâce coyote : ${framesAtDeath} frame${suffix} restante${suffix}`;
+export function coyoteDeathHint(_framesAtDeath, _cause) {
+    return '';
 }

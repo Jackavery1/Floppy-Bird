@@ -29,6 +29,7 @@ export default defineConfig({
         toHaveScreenshot: {
             maxDiffPixelRatio: 0.025,
             animations: 'disabled',
+            pathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
         },
     },
     webServer: {

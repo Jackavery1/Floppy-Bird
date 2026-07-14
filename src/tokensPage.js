@@ -89,6 +89,57 @@ function renderTypography(root) {
     root.appendChild(section);
 }
 
+/** États UI documentés pour la galerie tokens (référence visuelle, pas le canvas Phaser). */
+export const UI_STATE_GALLERY = Object.freeze([
+    {
+        id: 'menu',
+        title: 'Menu principal',
+        description: 'Titre arcade, CTA 48 px, rangée difficulté, actions secondaires.',
+    },
+    {
+        id: 'playing',
+        title: 'Partie en cours',
+        description:
+            'Score HUD, bouton pause 48 px, zone saut tactile centrale. Primitives : uiPhaserComponents.js.',
+    },
+    {
+        id: 'pause',
+        title: 'Pause',
+        description: 'Overlay semi-transparent, Reprendre et Retour menu.',
+    },
+    {
+        id: 'gameover',
+        title: 'Game over',
+        description: 'Panneau score, record, CTA REJOUER 48 px.',
+    },
+]);
+
+/** @param {HTMLElement} root */
+function renderUiStatesGallery(root) {
+    const section = document.createElement('section');
+    section.className = 'tokens-section';
+    section.innerHTML =
+        '<h2>États UI jeu (référence)</h2><p class="tokens-type-label">Aperçu shell + design system Phaser (<code>uiPhaserComponents.js</code>) — snapshots e2e : menu, pause, game over.</p>';
+
+    const grid = document.createElement('div');
+    grid.className = 'tokens-ui-grid';
+
+    for (const state of UI_STATE_GALLERY) {
+        const card = document.createElement('article');
+        card.className = `tokens-ui-card tokens-ui-card--${state.id}`;
+        card.innerHTML = `
+            <div class="tokens-ui-preview" aria-hidden="true"></div>
+            <div class="tokens-ui-meta">
+                <strong>${state.title}</strong>
+                <p>${state.description}</p>
+            </div>`;
+        grid.appendChild(card);
+    }
+
+    section.appendChild(grid);
+    root.appendChild(section);
+}
+
 /** @param {HTMLElement} root */
 function renderSpacing(root) {
     const section = document.createElement('section');
@@ -156,6 +207,7 @@ function mountTokensPage() {
     bindThemeToggle();
     renderColorGrid(root);
     renderTypography(root);
+    renderUiStatesGallery(root);
     renderSpacing(root);
     renderCssVars(root);
 }

@@ -47,7 +47,19 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | `webkit-mobile-landscape`   | 844×390        | oui   | hint paysage                                                                |
 | `chromium-tablet-landscape` | 1024×768       | oui   | jeu sans hint bloquant, `keyboard.spec.js` (smoke)                          |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux / **48 px** pour CTA et pause (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
+
+#### Smoke deploy (CI)
+
+Le job `e2e-smoke` gate le déploiement GitHub Pages sur **3 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`).
+
+#### Couverture Vitest
+
+`npm run test:coverage` instrumente le code et peut être plus lent en local (surtout sous Windows). Les timeouts Vitest sont à 20 s ; en cas d’échec sporadique, relancer la commande. La CI Linux reste la référence.
+
+#### PWA offline (e2e)
+
+Le test `offline.spec.js` « charge le jeu hors ligne après precache » peut échouer en local Windows (Playwright + service worker hors ligne). Il passe en CI Linux ; ne pas bloquer un push sur cet échec isolé en dev.
 
 ## Artefacts générés (ne pas committer)
 

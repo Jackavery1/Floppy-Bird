@@ -172,6 +172,121 @@
     opacity: 0.9;
 }
 
+.tokens-ui-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.tokens-ui-card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.tokens-ui-preview {
+    height: 120px;
+    background: linear-gradient(180deg, #1a237e 0%, #0d1117 55%, #263238 100%);
+    position: relative;
+}
+
+.tokens-ui-card--menu .tokens-ui-preview::before {
+    content: 'FLOPPY BIRD';
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--police-titre);
+    font-size: 9px;
+    color: var(--couleur-accent);
+}
+
+.tokens-ui-card--menu .tokens-ui-preview::after {
+    content: 'JOUER';
+    position: absolute;
+    bottom: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 72px;
+    text-align: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: var(--couleur-accent);
+    color: #0d1117;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.tokens-ui-card--playing .tokens-ui-preview::before {
+    content: '12';
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 2px #000;
+}
+
+.tokens-ui-card--playing .tokens-ui-preview::after {
+    content: '⏸';
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    font-size: 12px;
+}
+
+.tokens-ui-card--pause .tokens-ui-preview {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.tokens-ui-card--pause .tokens-ui-preview::after {
+    content: 'PAUSE';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--police-titre);
+    font-size: 10px;
+    color: var(--couleur-accent);
+}
+
+.tokens-ui-card--gameover .tokens-ui-preview::after {
+    content: 'GAME OVER';
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--police-titre);
+    font-size: 8px;
+    color: #fff;
+}
+
+.tokens-ui-meta {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+}
+
+.tokens-ui-meta strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--couleur-accent);
+}
+
+.tokens-ui-meta p {
+    margin: 0;
+    opacity: 0.85;
+    line-height: 1.4;
+}
+
 .tokens-footer {
     opacity: 0.7;
     font-size: 0.85rem;

@@ -36,8 +36,9 @@ const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
 const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 
 const SKIN_COLS = 4;
-const SKIN_CELL_W = 52;
+const SKIN_CELL_W = 54;
 const SKIN_CELL_H = 56;
+const SKIN_ROW_GAP = 10;
 
 /**
  * @param {import('./ui.js').UI} ui
@@ -98,7 +99,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         const col = index % SKIN_COLS;
         const row = Math.floor(index / SKIN_COLS);
         const cx = gridLeft + col * SKIN_CELL_W;
-        const cy = panel.skinsRow1 + row * (SKIN_CELL_H + 8);
+        const cy = panel.skinsRow1 + row * (SKIN_CELL_H + SKIN_ROW_GAP);
 
         const frame = scene.add.rectangle(
             cx,
