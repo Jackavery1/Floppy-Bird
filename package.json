@@ -21,11 +21,13 @@
         "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"e2e/**/*.js\" \"scripts/**/*.mjs\"",
         "format:check": "prettier --check \"src/**/*.js\" \"tests/**/*.js\" \"e2e/**/*.js\" \"scripts/**/*.mjs\"",
         "icons": "node scripts/generate-icons.mjs",
+        "sync:tokens": "node scripts/sync-shell-tokens.mjs",
+        "sync:tokens:check": "node scripts/sync-shell-tokens.mjs --check",
         "icons:optimize": "node scripts/optimize-icons.mjs",
         "measure": "node scripts/measure-bundle.mjs",
         "clean": "node scripts/clean-artifacts.mjs",
         "cycles": "madge --circular --extensions js src/",
-        "verify": "npm run lint && npm run format:check && npm test",
+        "verify": "npm run lint && npm run format:check && npm run sync:tokens:check && npm test",
         "prepare": "node scripts/install-git-hooks.mjs"
     },
     "dependencies": {

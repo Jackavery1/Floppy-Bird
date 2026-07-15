@@ -32,8 +32,7 @@ describe('GAME_CONFIG.round', () => {
 
     it('hardcore : marge post-invincibilité avant premier tuyau', () => {
         const gap =
-            GAME_CONFIG.round.pipeSpawnDelayMs -
-            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
+            GAME_CONFIG.round.pipeSpawnDelayMs - GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
         expect(gap).toBeGreaterThanOrEqual(400);
     });
 

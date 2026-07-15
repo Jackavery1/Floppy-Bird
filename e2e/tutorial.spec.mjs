@@ -1,11 +1,17 @@
 import { test, expect } from '@playwright/test';
 import {
+    expectGameState,
     isMobilePortraitProject,
     projectUsesTouch,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
-import { getTutorialState, getMenuPanels } from './helpers/testSeam.mjs';
+import {
+    getLastDeathMetrics,
+    getMenuPanels,
+    getTutorialState,
+    triggerDeath,
+} from './helpers/testSeam.mjs';
 
 test.describe('tutoriel première partie', () => {
     test.beforeEach(async ({ page }) => {
@@ -44,5 +50,22 @@ test.describe('tutoriel première partie', () => {
 
         const tutorial = await getTutorialState(page);
         expect(tutorial?.complete).toBe(false);
+    });
+
+    test('première mort enregistre earlyDeath sur profil vierge', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, false);
+        await triggerDeath(page, 'pipe');
+        await expectGameState(page, 'gameover', 15_000);
+        const death = await getLastDeathMetrics(page);
+        expect(death).toMatchObject({
+            cause: 'pipe',
+            score: 0,
+            isEarlyDeath: true,
+            beforeFirstPipe: true,
+        });
+        expect(death.elapsedMs).toBeGreaterThan(0);
+        expect(death.elapsedMs).toBeLessThan(30_000);
     });
 });

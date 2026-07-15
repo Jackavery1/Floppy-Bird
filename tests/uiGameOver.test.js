@@ -122,14 +122,7 @@ describe('uiGameOver', () => {
         const { sceneTween } = await import('../src/motion.js');
         const scene = createBaseScene();
         const ui = makeUi();
-        buildGameOverUI(
-            scene,
-            ui,
-            7,
-            { entries: [], highlightId: null },
-            true,
-            false
-        );
+        buildGameOverUI(scene, ui, 7, { entries: [], highlightId: null }, true, false);
         expect(sceneTween).toHaveBeenCalled();
         const scoreTween = sceneTween.mock.calls.find(([, cfg]) => cfg.targets?.v != null);
         expect(scoreTween).toBeTruthy();
@@ -139,14 +132,7 @@ describe('uiGameOver', () => {
         const scene = createBaseScene();
         const ui = makeUi();
         const rectBefore = scene.add.rectangle.mock.calls.length;
-        buildGameOverUI(
-            scene,
-            ui,
-            25,
-            { entries: [], highlightId: null },
-            false,
-            true
-        );
+        buildGameOverUI(scene, ui, 25, { entries: [], highlightId: null }, false, true);
         expect(scene.add.rectangle.mock.calls.length).toBeGreaterThan(rectBefore);
     });
 

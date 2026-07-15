@@ -2,7 +2,12 @@ import { setE2eBackgroundFrozen } from '../e2eVisualFreeze.js';
 import { GAME_CONFIG, SOUND } from '../config.js';
 import { isAudioAvailable, playSound } from '../audio.js';
 import { hapticLight, hapticMedium } from '../haptics.js';
-import { loadTutorialComplete, loadTutorialProgress } from '../tutorialStorage.js';
+import {
+    loadTutorialComplete,
+    loadTutorialProgress,
+    loadRoundsStarted,
+    SKIP_TUTORIAL_AFTER_ROUNDS,
+} from '../tutorialStorage.js';
 import { sampleGapSequence } from '../pipeGapSampling.js';
 import {
     effectivePipeGapForScore,
@@ -16,6 +21,12 @@ export function createMetaSeam(getScene) {
         getTutorialState: () => ({
             step: loadTutorialProgress(),
             complete: loadTutorialComplete(),
+        }),
+        getOnboardingMetrics: () => ({
+            tutorialStep: loadTutorialProgress(),
+            tutorialComplete: loadTutorialComplete(),
+            roundsStarted: loadRoundsStarted(),
+            skipAfterRounds: SKIP_TUTORIAL_AFTER_ROUNDS,
         }),
         getLastDeathMetrics: () => {
             const scene = getScene();

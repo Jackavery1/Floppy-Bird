@@ -35,9 +35,7 @@ describe('uiText', () => {
     });
 
     it('diffLabelColor met le bouton actif en blanc sur fond jaune', () => {
-        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
-            DESIGN_TOKENS.texteMenu
-        );
+        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(DESIGN_TOKENS.texteMenu);
     });
 
     it('fitLabelFontSize réduit jusqu’à tenir dans la largeur max', () => {

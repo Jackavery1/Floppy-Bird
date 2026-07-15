@@ -1,4 +1,5 @@
 import { GAME_CONFIG } from './config.js';
+import { announceScoreLive } from './sceneScoreAnnounce.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -27,4 +28,5 @@ export function handleScoreMilestones(scene, score) {
     if (streakMilestones.includes(score)) {
         scene.ui.showScoreStreak?.(score);
     }
+    announceScoreLive(score);
 }

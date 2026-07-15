@@ -151,5 +151,4 @@ describe('device', () => {
         expect(deathCauseLabel('ground')).toBe('Touché le sol');
         expect(deathCauseLabel(null)).toBe('');
     });
-
 });

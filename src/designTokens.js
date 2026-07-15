@@ -5,7 +5,7 @@
  * Matrice typo (Phaser + shell) :
  * | Rôle              | Taille   | Police              | Style helper           |
  * |-------------------|----------|---------------------|------------------------|
- * | Titre jeu / chrome| 12 px min| Press Start 2P      | panelChromeTextStyle   |
+ * | Titre jeu / chrome| 13 px min| Press Start 2P      | panelChromeTextStyle   |
  * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle      |
  * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle           |
  * | Bannières HUD     | 11 px    | Segoe UI            | hudTextStyle           |
@@ -150,7 +150,7 @@ export function menuTextStyle(overrides = {}) {
 export function panelChromeTextStyle(overrides = {}) {
     return menuTextStyle({
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '12px',
+        fontSize: '13px',
         ...overrides,
     });
 }
@@ -159,7 +159,7 @@ export function panelChromeTextStyle(overrides = {}) {
 export function yellowChromeButtonTextStyle(overrides = {}) {
     return {
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '12px',
+        fontSize: '13px',
         fill: DESIGN_TOKENS.texteBoutonJaune,
         fontStyle: 'bold',
         ...overrides,
@@ -169,7 +169,7 @@ export function yellowChromeButtonTextStyle(overrides = {}) {
 /** Texte lisible de l'écran d'accueil (hors titre du jeu). */
 export function menuHomeTextStyle(overrides = {}) {
     return hudTextStyle({
-        fontSize: '12px',
+        fontSize: '13px',
         fill: DESIGN_TOKENS.texteMenu,
         fontStyle: 'bold',
         ...overrides,

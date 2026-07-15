@@ -3,7 +3,13 @@ import { UI } from '../src/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import { GAME_STATE } from '../src/gameState.js';
-import { buildMenuOptions, toggleMenuOptions, refreshHardcoreLockState, teardownOptionsPanel, ensureOptionsPanelBuilt } from '../src/uiMenuOptions.js';
+import {
+    buildMenuOptions,
+    toggleMenuOptions,
+    refreshHardcoreLockState,
+    teardownOptionsPanel,
+    ensureOptionsPanelBuilt,
+} from '../src/uiMenuOptions.js';
 import { setOptionsTab } from '../src/uiMenuOptionsTabs.js';
 import { UI_LAYOUT } from '../src/uiLayout.js';
 
@@ -47,7 +53,7 @@ describe('uiMenuOptions', () => {
             bird: { setSkin: vi.fn() },
         });
         ui = new UI(scene);
-        ui._closeAllMenuPanels = vi.fn();
+        ui.closeAllMenuPanels = vi.fn();
         elements = [];
         buildMenuOptions(ui, elements, UI_LAYOUT.menu);
     });
@@ -100,9 +106,8 @@ describe('uiMenuOptions', () => {
 
     it('refreshHardcoreLockState désactive le hit quand hardcore verrouillé', async () => {
         const { isHardcoreUnlocked } = await import('../src/hardcoreUnlock.js');
-        const { setAccessibilityControlDisabled } = await import(
-            '../src/uiDomAccessibilityControls.js'
-        );
+        const { setAccessibilityControlDisabled } =
+            await import('../src/uiDomAccessibilityControls.js');
         isHardcoreUnlocked.mockReturnValue(false);
         ui._hardcoreLabel = { scene: ui.scene, setText: vi.fn(), setColor: vi.fn() };
         ui._hardcoreHit = {
@@ -117,9 +122,8 @@ describe('uiMenuOptions', () => {
 
     it('refreshHardcoreLockState réactive le hit quand hardcore déverrouillé', async () => {
         const { isHardcoreUnlocked } = await import('../src/hardcoreUnlock.js');
-        const { setAccessibilityControlDisabled } = await import(
-            '../src/uiDomAccessibilityControls.js'
-        );
+        const { setAccessibilityControlDisabled } =
+            await import('../src/uiDomAccessibilityControls.js');
         isHardcoreUnlocked.mockReturnValue(true);
         ui._hardcoreLabel = { scene: ui.scene, setText: vi.fn(), setColor: vi.fn() };
         ui._hardcoreHit = {

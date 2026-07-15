@@ -26,6 +26,7 @@ jobs:
             - run: npm run lint
             - run: npm run cycles
             - run: npm run format:check
+            - run: npm run sync:tokens:check
             - run: npm test
             - run: npm run test:coverage
             - uses: actions/upload-artifact@v4

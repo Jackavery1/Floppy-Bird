@@ -12,10 +12,7 @@ export {
     hideAllAccessibilityControls,
     syncOptionsTabAccessibility,
 } from './uiDomAccessibilityControls.js';
-export {
-    setupMenuAccessibility,
-    setupGameOverAccessibility,
-} from './uiDomAccessibilityFlows.js';
+export { setupMenuAccessibility, setupGameOverAccessibility } from './uiDomAccessibilityFlows.js';
 export {
     setScoresPanelAccessibility,
     setSkinsPanelAccessibility,

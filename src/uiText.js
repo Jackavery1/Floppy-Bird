@@ -75,7 +75,7 @@ export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
             strokeThickness: 3,
         },
         maxWidth,
-        10,
+        11,
         1
     );
 }

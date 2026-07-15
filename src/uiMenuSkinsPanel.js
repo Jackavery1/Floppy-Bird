@@ -1,6 +1,9 @@
 import { skinsButtonLabel } from './device.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
-import { bindSkinsAccessibility, setSkinsPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
+import {
+    bindSkinsAccessibility,
+    setSkinsPanelAccessibility,
+} from './uiDomAccessibilityPanelFlows.js';
 import { UI_LAYOUT } from './uiLayout.js';
 import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
 import { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';

@@ -5,6 +5,7 @@ import {
     hideAccessibilityForRoundStart,
     announceRoundStarted,
     announceDeathStarted,
+    announceScoreReached,
     openMenuAccessibility,
     openGameOverAccessibility,
 } from '../src/sceneA11ySync.js';
@@ -38,13 +39,11 @@ describe('sceneA11ySync', () => {
             getItem: (k) => (k.includes('tutorial-progress') ? '3' : null),
             setItem: vi.fn(),
         });
-        const { hideAllAccessibilityControls, announceAccessibility } = await import(
-            '../src/uiDomAccessibilityControls.js'
-        );
+        const { hideAllAccessibilityControls, announceAccessibility } =
+            await import('../src/uiDomAccessibilityControls.js');
         const { setupMenuAccessibility } = await import('../src/uiDomAccessibilityFlows.js');
-        const { setOptionsPanelAccessibility } = await import(
-            '../src/uiDomAccessibilityPanelFlows.js'
-        );
+        const { setOptionsPanelAccessibility } =
+            await import('../src/uiDomAccessibilityPanelFlows.js');
         const scene = { game: { canvas: null } };
         openMenuAccessibility(scene);
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
@@ -69,16 +68,18 @@ describe('sceneA11ySync', () => {
     });
 
     it('hideAccessibilityForRoundStart masque tous les contrôles', async () => {
-        const { hideAllAccessibilityControls } = await import(
-            '../src/uiDomAccessibilityControls.js'
-        );
+        const { hideAllAccessibilityControls } =
+            await import('../src/uiDomAccessibilityControls.js');
         hideAccessibilityForRoundStart();
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
     });
 
     it('enterPauseAccessibility affiche les contrôles pause', async () => {
-        const { hideAllAccessibilityControls, setAccessibilityControlVisible, announceAccessibility } =
-            await import('../src/uiDomAccessibilityControls.js');
+        const {
+            hideAllAccessibilityControls,
+            setAccessibilityControlVisible,
+            announceAccessibility,
+        } = await import('../src/uiDomAccessibilityControls.js');
         const { syncAccessibilityLayer } = await import('../src/uiDomAccessibilityLayer.js');
         const scene = { game: { canvas: null } };
         enterPauseAccessibility(scene);
@@ -89,8 +90,11 @@ describe('sceneA11ySync', () => {
     });
 
     it('exitPauseAccessibility réactive les contrôles en jeu', async () => {
-        const { hideAllAccessibilityControls, setAccessibilityControlVisible, announceAccessibility } =
-            await import('../src/uiDomAccessibilityControls.js');
+        const {
+            hideAllAccessibilityControls,
+            setAccessibilityControlVisible,
+            announceAccessibility,
+        } = await import('../src/uiDomAccessibilityControls.js');
         const { syncAccessibilityLayer } = await import('../src/uiDomAccessibilityLayer.js');
         const scene = { game: { canvas: null } };
         exitPauseAccessibility(scene);
@@ -116,10 +120,20 @@ describe('sceneA11ySync', () => {
         expect(announceAccessibility).toHaveBeenCalledWith('Partie démarrée. Mode défi du jour.');
     });
 
-    it('announceDeathStarted annonce la cause de mort', async () => {
+    it('announceDeathStarted annonce la cause de mort et le score', async () => {
         const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
         announceDeathStarted('pipe');
         expect(announceAccessibility).toHaveBeenCalledWith('Mort : Collision tuyau.');
+        announceDeathStarted('ground', 5);
+        expect(announceAccessibility).toHaveBeenCalledWith('Mort : Touché le sol. Score 5.');
+    });
+
+    it('announceScoreReached annonce le palier', async () => {
+        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        announceScoreReached(10);
+        expect(announceAccessibility).toHaveBeenCalledWith('Score 10');
+        announceScoreReached(0);
+        expect(announceAccessibility).toHaveBeenCalledTimes(1);
     });
 
     it('openGameOverAccessibility délègue au flow DOM', async () => {

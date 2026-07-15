@@ -1,4 +1,9 @@
-export { showDailyGoalReached, showFlash, showGameOverLoading, hideGameOverLoading } from './uiHudBannerCore.js';
+export {
+    showDailyGoalReached,
+    showFlash,
+    showGameOverLoading,
+    hideGameOverLoading,
+} from './uiHudBannerCore.js';
 export {
     showRecordBroken,
     showDifficultyEscalation,

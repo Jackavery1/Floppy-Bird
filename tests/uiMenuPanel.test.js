@@ -1,9 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
-import {
-    buildMenuToggleButton,
-    setMenuPanelVisible,
-} from '../src/uiMenuPanel.js';
+import { buildMenuToggleButton, setMenuPanelVisible } from '../src/uiMenuPanel.js';
 import { createMenuPanelController } from '../src/uiMenuPanelController.js';
 import { MENU_BTN_COLOR } from '../src/uiLayout.js';
 import { hexVersPhaser, DESIGN_TOKENS } from '../src/designTokens.js';
@@ -58,7 +55,7 @@ describe('uiMenuPanel', () => {
             _scoresBackdrop: { setVisible: vi.fn() },
             _scoresPanelElements: [{ setVisible: vi.fn(), setAlpha: vi.fn() }],
             _scoresBtnLabel: { setText: vi.fn() },
-            _closeAllMenuPanels: vi.fn(),
+            closeAllMenuPanels: vi.fn(),
         };
         const controller = createMenuPanelController(ui, {
             openKey: '_scoresOpen',

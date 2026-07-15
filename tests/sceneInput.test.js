@@ -62,11 +62,11 @@ describe('sceneInput', () => {
             _optionsOpen: true,
             _scoresOpen: false,
             _skinsOpen: false,
-            _closeAllMenuPanels: vi.fn(),
+            closeAllMenuPanels: vi.fn(),
         };
         setupSceneInput(scene);
         scene._handlers['keydown-ESC']();
-        expect(scene.ui._closeAllMenuPanels).toHaveBeenCalled();
+        expect(scene.ui.closeAllMenuPanels).toHaveBeenCalled();
         expect(scene.togglePause).not.toHaveBeenCalled();
     });
 

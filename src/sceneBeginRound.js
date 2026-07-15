@@ -24,6 +24,7 @@ import {
 } from './sceneRound.js';
 import { preloadGameOverUI } from './uiGameOverLoader.js';
 import { announceRoundStarted } from './sceneA11ySync.js';
+import { resetScoreAnnounceState } from './sceneScoreAnnounce.js';
 import { clearStaleOverlays } from './sceneFlowOverlays.js';
 import { syncShellGameState } from './shellGameState.js';
 
@@ -36,6 +37,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
     scene.round.resetForRound();
+    resetScoreAnnounceState();
     resetCoyoteTime(scene);
 
     const skinId = resolvePlaySkin(scene);

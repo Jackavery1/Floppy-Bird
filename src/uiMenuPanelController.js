@@ -71,7 +71,7 @@ export function createMenuPanelController(ui, cfg) {
             setOpen(false);
             return;
         }
-        ui._closeAllMenuPanels?.();
+        ui.closeAllMenuPanels();
         setOpen(true);
     }
 

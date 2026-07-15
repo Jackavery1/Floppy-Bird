@@ -2,7 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
 import { createGameplaySeam } from '../src/testSeam/gameplaySeam.js';
-import { collidesWithPipeGroup, isBirdInPipeGap, birdClearedPipeForScore } from '../src/pipeCollision.js';
+import {
+    collidesWithPipeGroup,
+    isBirdInPipeGap,
+    birdClearedPipeForScore,
+} from '../src/pipeCollision.js';
 
 vi.mock('../src/sceneBeginRound.js', () => ({
     beginRound: vi.fn(),
@@ -188,7 +192,9 @@ describe('gameplaySeam', () => {
 
     it('alignBirdInFirstGap centre l’oiseau dans le corridor', () => {
         const result = seam.alignBirdInFirstGap();
-        expect(result?.gapMidY).toBe((scene.pipes.topPipes[0].y + scene.pipes.bottomPipes[0].y) / 2);
+        expect(result?.gapMidY).toBe(
+            (scene.pipes.topPipes[0].y + scene.pipes.bottomPipes[0].y) / 2
+        );
         expect(scene.bird.y).toBe(result?.gapMidY);
         expect(scene.bird.velocityY).toBe(0);
     });

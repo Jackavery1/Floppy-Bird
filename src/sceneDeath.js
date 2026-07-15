@@ -17,7 +17,7 @@ export function triggerDeath(scene, cause = 'pipe') {
     if (!canTriggerDeath(scene.state)) return;
     scene.state = GAME_STATE.DYING;
     syncShellGameState(GAME_STATE.DYING);
-    announceDeathStarted(cause);
+    announceDeathStarted(cause, scene.round.score ?? 0);
     scene.round.deathCause = cause;
     const startedAt = scene.round.startedAt ?? 0;
     const now = scene.time?.now ?? 0;
@@ -26,9 +26,7 @@ export function triggerDeath(scene, cause = 'pipe') {
         score: scene.round.score ?? 0,
         elapsedMs: startedAt > 0 ? Math.max(0, now - startedAt) : 0,
         isEarlyDeath:
-            startedAt > 0
-                ? Math.max(0, now - startedAt) < GAME_CONFIG.round.earlyDeathMs
-                : false,
+            startedAt > 0 ? Math.max(0, now - startedAt) < GAME_CONFIG.round.earlyDeathMs : false,
         beforeFirstPipe: (scene.round.score ?? 0) === 0,
     };
     scene.round.resetDeathAnimation();

@@ -6,12 +6,12 @@ import { syncShellGameState } from './shellGameState.js';
 
 /** Nettoie menu / pause / game over avant reconstruction du menu principal. */
 export function prepareMenuForDisplay(scene) {
-    scene.ui._prepareMenuRebuild?.();
+    scene.ui.prepareMenuRebuild();
 }
 
 /** Ferme les panneaux menu avant une nouvelle manche. */
 export function closeMenuPanelsForRoundStart(scene) {
-    scene.ui._closeAllMenuPanels?.({ force: true });
+    scene.ui.closeAllMenuPanels({ force: true });
 }
 
 /** @param {SceneContext} scene */

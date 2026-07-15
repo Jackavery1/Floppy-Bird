@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { SHELL_TOKEN_CSS_FALLBACKS, SHELL_HIGH_CONTRAST_CSS_VARS } from '../src/shellTokenDefaults.js';
+import {
+    SHELL_TOKEN_CSS_FALLBACKS,
+    SHELL_HIGH_CONTRAST_CSS_VARS,
+} from '../src/shellTokenDefaults.js';
 
 function normalizeCssValue(value) {
     return value.replace(/"/g, "'").replace(/\s+/g, ' ').trim();
@@ -30,5 +33,15 @@ describe('shellTokenSync', () => {
     it('shellHighContrast aligne shellTokenDefaults', () => {
         expect(SHELL_HIGH_CONTRAST_CSS_VARS['--couleur-accent']).toBe('#ffeb3b');
         expect(SHELL_HIGH_CONTRAST_CSS_VARS['--couleur-texte-chargement']).toBe('#bbdefb');
+    });
+
+    it('sync:tokens:check — shell-tokens.css à jour', () => {
+        const cssPath = resolve(process.cwd(), 'public/shell-tokens.css');
+        const parsed = parseShellTokensCss(readFileSync(cssPath, 'utf8'));
+        for (const [name, expected] of Object.entries(SHELL_TOKEN_CSS_FALLBACKS)) {
+            expect(normalizeCssValue(parsed[name]), `${name} après sync:tokens`).toBe(
+                normalizeCssValue(expected)
+            );
+        }
     });
 });

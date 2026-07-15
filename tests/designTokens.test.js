@@ -150,7 +150,7 @@ describe('designTokens', () => {
     });
 
     it('panelChromeTextStyle impose 12 px minimum', () => {
-        expect(panelChromeTextStyle().fontSize).toBe('12px');
+        expect(panelChromeTextStyle().fontSize).toBe('13px');
     });
 
     it('renforce le contour HUD en fond jour', async () => {

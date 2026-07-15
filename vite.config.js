@@ -61,6 +61,15 @@ export default defineConfig(({ mode }) => {
                         if (useVendorPhaser && normalized.includes('/src/uiGameOver')) {
                             return 'ui-gameover';
                         }
+                        if (useVendorPhaser && normalized.includes('/src/uiMenu')) {
+                            return 'ui-menu';
+                        }
+                        if (useVendorPhaser && normalized.includes('/src/uiHud')) {
+                            return 'ui-hud';
+                        }
+                        if (useVendorPhaser && normalized.includes('/src/uiDom')) {
+                            return 'ui-a11y';
+                        }
                         return undefined;
                     },
                 },

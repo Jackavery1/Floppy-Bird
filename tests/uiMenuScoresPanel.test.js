@@ -14,7 +14,7 @@ describe('uiMenuScoresPanel', () => {
     beforeEach(() => {
         scene = createBaseScene({ round: createRoundState(), state: GAME_STATE.MENU });
         ui = new UI(scene);
-        ui._closeAllMenuPanels = () => {};
+        ui.closeAllMenuPanels = () => {};
         elements = [];
         buildMenuScoresPanel(ui, elements, UI_LAYOUT.menu);
     });

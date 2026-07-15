@@ -1,8 +1,9 @@
-import { announceAccessibility, hideAllAccessibilityControls, setAccessibilityControlVisible } from './uiDomAccessibilityControls.js';
 import {
-    setupGameOverAccessibility,
-    setupMenuAccessibility,
-} from './uiDomAccessibilityFlows.js';
+    announceAccessibility,
+    hideAllAccessibilityControls,
+    setAccessibilityControlVisible,
+} from './uiDomAccessibilityControls.js';
+import { setupGameOverAccessibility, setupMenuAccessibility } from './uiDomAccessibilityFlows.js';
 import { setOptionsPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
 import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
@@ -35,10 +36,21 @@ export function announceRoundStarted(scene) {
     announceAccessibility(`Partie démarrée. Mode ${mode}.`);
 }
 
-/** @param {'pipe' | 'ground' | 'ceiling'} [cause] */
-export function announceDeathStarted(cause = 'pipe') {
+/** @param {'pipe' | 'ground' | 'ceiling'} [cause] @param {number} [score] */
+export function announceDeathStarted(cause = 'pipe', score = 0) {
     const label = deathCauseLabel(cause);
-    announceAccessibility(label ? `Mort : ${label}.` : 'Mort.');
+    const causePart = label ? `Mort : ${label}.` : 'Mort.';
+    if (score > 0) {
+        announceAccessibility(`${causePart} Score ${score}.`);
+        return;
+    }
+    announceAccessibility(causePart);
+}
+
+/** @param {number} score */
+export function announceScoreReached(score) {
+    if (score <= 0) return;
+    announceAccessibility(`Score ${score}`);
 }
 
 /** @param {import('phaser').Game | null | undefined} game */

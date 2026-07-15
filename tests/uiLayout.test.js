@@ -10,9 +10,7 @@ describe('uiLayout', () => {
     });
 
     it('colore le bouton actif en blanc sur fond jaune', () => {
-        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(
-            DESIGN_TOKENS.texteMenu
-        );
+        expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.NORMAL)).toBe(DESIGN_TOKENS.texteMenu);
         expect(diffLabelColor(DIFFICULTY.NORMAL, DIFFICULTY.HARD)).toBe('#ff8888');
     });
 

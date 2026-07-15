@@ -1,5 +1,10 @@
 import { GAME_CONFIG } from './config.js';
-import { DESIGN_TOKENS, menuTextStyle, panelChromeTextStyle, hexVersPhaser } from './designTokens.js';
+import {
+    DESIGN_TOKENS,
+    menuTextStyle,
+    panelChromeTextStyle,
+    hexVersPhaser,
+} from './designTokens.js';
 import { pauseResumeHint, menuHint } from './device.js';
 import {
     bindAccessibilityAction,

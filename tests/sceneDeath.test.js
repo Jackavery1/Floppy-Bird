@@ -48,7 +48,7 @@ describe('sceneDeath', () => {
         };
         triggerDeath(scene, 'ground');
         expect(scene.state).toBe(GAME_STATE.DYING);
-        expect(announceDeathStarted).toHaveBeenCalledWith('ground');
+        expect(announceDeathStarted).toHaveBeenCalledWith('ground', 5);
         expect(scene.round.deathCause).toBe('ground');
         expect(scene.round.lastDeathMetrics).toMatchObject({
             cause: 'ground',

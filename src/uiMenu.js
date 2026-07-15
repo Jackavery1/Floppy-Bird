@@ -22,10 +22,7 @@ import { buildMetaContext } from './metaContext.js';
 import { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { DEPTH } from './uiLayout.js';
-import {
-    closeAllMenuPanels,
-    ensureMenuActionRowVisible,
-} from './uiMenuPanels.js';
+import { closeAllMenuPanels, ensureMenuActionRowVisible } from './uiMenuPanels.js';
 
 export { closeAllMenuPanels, prepareMenuRebuild } from './uiMenuPanels.js';
 

@@ -13,13 +13,13 @@ vi.mock('../src/sceneA11ySync.js', () => ({
 describe('sceneMenuSync', () => {
     it('prepareMenuForDisplay délègue à la façade UI', () => {
         const prepare = vi.fn();
-        prepareMenuForDisplay({ ui: { _prepareMenuRebuild: prepare } });
+        prepareMenuForDisplay({ ui: { prepareMenuRebuild: prepare } });
         expect(prepare).toHaveBeenCalled();
     });
 
     it('closeMenuPanelsForRoundStart ferme les panneaux menu', () => {
         const close = vi.fn();
-        closeMenuPanelsForRoundStart({ ui: { _closeAllMenuPanels: close } });
+        closeMenuPanelsForRoundStart({ ui: { closeAllMenuPanels: close } });
         expect(close).toHaveBeenCalledWith({ force: true });
     });
 
@@ -36,7 +36,7 @@ describe('sceneMenuSync', () => {
             dailyChallengeMode: true,
             round: { score: 5 },
             ui: {
-                _prepareMenuRebuild: vi.fn(),
+                prepareMenuRebuild: vi.fn(),
                 showMenu,
                 setOverlay,
             },

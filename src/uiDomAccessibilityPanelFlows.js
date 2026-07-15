@@ -5,12 +5,7 @@ import {
     setAccessibilityControlLabel,
     setAccessibilityControlVisible,
 } from './uiDomAccessibilityControls.js';
-import {
-    hardcoreHint,
-    skinsCycleHint,
-    trainingHint,
-    trainingSpeedLabel,
-} from './device.js';
+import { hardcoreHint, skinsCycleHint, trainingHint, trainingSpeedLabel } from './device.js';
 import {
     MENU_CONTROL_KEYS,
     OPTIONS_CONTROL_KEYS,

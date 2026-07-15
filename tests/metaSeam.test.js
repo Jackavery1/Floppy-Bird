@@ -44,6 +44,17 @@ describe('metaSeam', () => {
         });
     });
 
+    it('getOnboardingMetrics agrège tutoriel et parties démarrées', () => {
+        const seam = createMetaSeam(() => undefined);
+        const metrics = seam.getOnboardingMetrics();
+        expect(metrics).toMatchObject({
+            tutorialStep: expect.any(Number),
+            tutorialComplete: expect.any(Boolean),
+            roundsStarted: expect.any(Number),
+            skipAfterRounds: expect.any(Number),
+        });
+    });
+
     it('getRoundRuntime retourne null sans scène', () => {
         const seam = createMetaSeam(() => undefined);
         expect(seam.getRoundRuntime()).toBeNull();

@@ -1,5 +1,6 @@
 import { cycleSoundLevel, formatSoundLabel, isAudioAvailable } from './audio.js';
 import { DESIGN_TOKENS, menuTextStyle } from './designTokens.js';
+import { FONT_SIZE_HINT } from './uiLayoutConstants.js';
 import {
     bindAccessibilityAction,
     bindUnifiedInteractiveFocus,
@@ -37,7 +38,7 @@ export function buildMuteControls(ui, add, y) {
         GAME_CONFIG.centerX,
         y,
         libelleMute(formatSoundLabel(isAudioAvailable())),
-        menuTextStyle({ fontSize: '12px', fill: DESIGN_TOKENS.texteClair }),
+        menuTextStyle({ fontSize: FONT_SIZE_HINT, fill: DESIGN_TOKENS.texteClair }),
         DEPTH.PANEL_FRAME
     );
     add(ui._muteText);

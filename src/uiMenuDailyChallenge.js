@@ -1,8 +1,5 @@
 import { GAME_CONFIG } from './config.js';
-import {
-    formatDailyMenuButtonLabel,
-    formatDailyMenuSubtitle,
-} from './dailyChallenge.js';
+import { formatDailyMenuButtonLabel, formatDailyMenuSubtitle } from './dailyChallenge.js';
 import { bindUnifiedInteractiveFocus } from './uiDomAccessibilityControls.js';
 import {
     DESIGN_TOKENS,

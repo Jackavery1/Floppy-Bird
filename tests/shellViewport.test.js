@@ -47,4 +47,13 @@ describe('shellViewport', () => {
         expect(viewportContentForState(GAME_STATE.PLAYING)).toContain('user-scalable=no');
         vi.unstubAllGlobals();
     });
+
+    it('syncShellViewport déclenche un resize pour resynchroniser le letterbox', () => {
+        const resize = vi.fn();
+        vi.stubGlobal('window', { dispatchEvent: resize });
+        const doc = mockDoc('');
+        syncShellViewport(GAME_STATE.MENU, doc);
+        expect(resize).toHaveBeenCalledWith(expect.objectContaining({ type: 'resize' }));
+        vi.unstubAllGlobals();
+    });
 });

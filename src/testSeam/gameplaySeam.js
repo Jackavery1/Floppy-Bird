@@ -281,7 +281,10 @@ export function createGameplaySeam(getScene) {
             return new Promise((resolve) => {
                 const started = scene.time.now;
                 const tick = () => {
-                    if (scene.state !== GAME_STATE.PLAYING || scene.time.now - started >= durationMs) {
+                    if (
+                        scene.state !== GAME_STATE.PLAYING ||
+                        scene.time.now - started >= durationMs
+                    ) {
                         resolve({ score: scene.round?.score ?? 0, state: scene.state });
                         return;
                     }

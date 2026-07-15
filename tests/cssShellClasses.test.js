@@ -10,6 +10,7 @@ const REFERENCED_SHELL_CLASSES = Object.freeze([
     'loading-label',
     'loading-dots',
     'visually-hidden',
+    'skip-link',
     'a11y-btn',
     'partie-active',
     'game-ready',
@@ -61,9 +62,10 @@ describe('cssShellClasses', () => {
         expect(css).toMatch(/env\(safe-area-inset-bottom\)/);
     });
 
-    it('a11y-btn : repère tactile coarse pointer sans masquer le canvas', () => {
+    it('a11y-btn : repère discret desktop et tactile coarse pointer', () => {
         const css = readFileSync(resolve(ROOT, 'style.css'), 'utf8');
+        expect(css).toMatch(/\.a11y-btn\s*\{[\s\S]*opacity:\s*0\.12/);
         const coarseBlock = css.match(/@media \(pointer: coarse\)\s*\{([\s\S]*?)\n\}/);
-        expect(coarseBlock?.[1]).toMatch(/\.a11y-btn\s*\{[\s\S]*opacity:\s*0\.08/);
+        expect(coarseBlock?.[1]).toMatch(/\.a11y-btn\s*\{[\s\S]*opacity:\s*0\.14/);
     });
 });

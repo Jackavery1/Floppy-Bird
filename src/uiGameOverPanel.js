@@ -17,13 +17,7 @@ export function drawGameOverPanelFrame(graphics, P, opts = {}) {
     graphics.strokeRoundedRect(P.x, P.y, P.w, P.h, P.radius);
     if (innerStrokeAlpha > 0) {
         graphics.lineStyle(1, liseré, innerStrokeAlpha);
-        graphics.strokeRoundedRect(
-            P.x + 5,
-            P.y + 5,
-            P.w - 10,
-            P.h - 10,
-            Math.max(P.radius - 4, 2)
-        );
+        graphics.strokeRoundedRect(P.x + 5, P.y + 5, P.w - 10, P.h - 10, Math.max(P.radius - 4, 2));
     }
 }
 

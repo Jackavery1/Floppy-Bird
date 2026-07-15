@@ -35,7 +35,7 @@ export function setupSceneInput(scene) {
             const panelOpen =
                 scene.ui?._optionsOpen || scene.ui?._scoresOpen || scene.ui?._skinsOpen;
             if (panelOpen) {
-                scene.ui._closeAllMenuPanels?.();
+                scene.ui.closeAllMenuPanels();
                 return;
             }
         }

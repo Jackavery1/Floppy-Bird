@@ -1,8 +1,15 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { handleScoreMilestones } from '../src/sceneScoreMilestones.js';
 import { GAME_CONFIG } from '../src/config.js';
 
+vi.mock('../src/sceneA11ySync.js', () => ({
+    announceScoreReached: vi.fn(),
+}));
+
 describe('sceneScoreMilestones', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
     it('affiche l’escalade à 20 points', () => {
         const showDifficultyEscalation = vi.fn();
         const scene = { ui: { showDifficultyEscalation, showScoreStreak: vi.fn() } };
@@ -41,6 +48,34 @@ describe('sceneScoreMilestones', () => {
         handleScoreMilestones(scene, gapTightenAfterScore - difficultyPreviewOffset);
         expect(showSpeedBoostPreview).toHaveBeenCalled();
         expect(showDifficultyEscalationPreview).toHaveBeenCalled();
+    });
+
+    it('annonce les paliers de score accessibles', async () => {
+        const { announceScoreReached } = await import('../src/sceneA11ySync.js');
+        const scene = {
+            ui: { showDifficultyEscalation: vi.fn(), showScoreStreak: vi.fn() },
+        };
+        handleScoreMilestones(scene, 1);
+        handleScoreMilestones(scene, 5);
+        handleScoreMilestones(scene, 10);
+        expect(announceScoreReached).toHaveBeenCalledWith(1);
+        expect(announceScoreReached).toHaveBeenCalledWith(5);
+        expect(announceScoreReached).toHaveBeenCalledWith(10);
+        handleScoreMilestones(scene, 7);
+        expect(announceScoreReached).toHaveBeenCalledTimes(3);
+    });
+
+    it('planifie une annonce debounced pour les scores inter-paliers', async () => {
+        vi.useFakeTimers();
+        const { announceScoreReached } = await import('../src/sceneA11ySync.js');
+        const scene = {
+            ui: { showDifficultyEscalation: vi.fn(), showScoreStreak: vi.fn() },
+        };
+        handleScoreMilestones(scene, 3);
+        expect(announceScoreReached).not.toHaveBeenCalled();
+        vi.advanceTimersByTime(700);
+        expect(announceScoreReached).toHaveBeenCalledWith(3);
+        vi.useRealTimers();
     });
 
     it('ignore les scores hors paliers', () => {

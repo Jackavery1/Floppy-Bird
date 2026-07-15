@@ -12,4 +12,4 @@
  */
 
 /** Façade principale Phaser */
-export { UI } from './ui.js';
+export { UI } from './ui/core/index.js';

@@ -2,6 +2,7 @@ import { GAME_STATE } from './gameState.js';
 import { createRoundState } from './roundState.js';
 import { createSceneModesState } from './sceneModes.js';
 import { syncShellGameState } from './shellGameState.js';
+import { bindSceneFlowApi } from './sceneSceneApi.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -26,4 +27,6 @@ export function initSceneCore(scene) {
     scene._groundSprite = null;
     scene.fps = null;
     scene.achievementNotifier = undefined;
+
+    bindSceneFlowApi(scene);
 }

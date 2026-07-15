@@ -20,15 +20,8 @@ import { buildGameOverSummaryScore } from './uiGameOverSummaryScore.js';
  * }} opts
  */
 export function buildGameOverSummary(scene, cx, y, ui, opts) {
-    const {
-        finalScore,
-        fadeIn,
-        isNewRecord,
-        deathCause,
-        hardcoreMode,
-        dailyGoal,
-        activeSkinId,
-    } = opts;
+    const { finalScore, fadeIn, isNewRecord, deathCause, hardcoreMode, dailyGoal, activeSkinId } =
+        opts;
     const isDaily = dailyGoal > 0;
     const special = !isDaily && isSpecialSkin(activeSkinId);
     const activeSkin = getSkin(activeSkinId);
