@@ -2,6 +2,7 @@ import { GAME_CONFIG } from './config.js';
 import { STORAGE_KEYS, trainingBestKey } from './storageKeys.js';
 import { routedSkinId } from './skinStorageRouting.js';
 import { loadBoolFlag, saveBoolFlag } from './boolStorage.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 export function loadTrainingEnabled() {
     return loadBoolFlag(STORAGE_KEYS.training);
@@ -37,7 +38,7 @@ export function saveBestTrainingScore(score, skinId = null) {
     try {
         localStorage.setItem(trainingBestKey(routedSkinId(skinId)), String(score));
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 
@@ -64,7 +65,7 @@ export function saveTrainingTimeScale(scale) {
             String(normalizeTrainingTimeScale(scale))
         );
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 

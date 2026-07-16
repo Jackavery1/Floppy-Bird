@@ -9,8 +9,6 @@ import {
 } from '../shared/uiLayout.js';
 import { syncDifficultyButtonLabel } from '../shared/uiText.js';
 
-export { bestScoreLabel } from '../../scoreLabels.js';
-
 export function drawDiffButtons(ui, difficulty, layout) {
     if (!ui._diffBtnGraphics) return;
     const g = ui._diffBtnGraphics;

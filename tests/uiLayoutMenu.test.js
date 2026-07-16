@@ -51,7 +51,7 @@ describe('uiLayout menu', () => {
         expect(hintTop).toBeGreaterThanOrEqual(menuRowBottom);
     });
 
-    it('la rangée SCORES · OPTIONS · SKINS est centrée', () => {
+    it('la rangée SCORES · OPT. · STYLE est centrée', () => {
         const { scoresBtn, optionsBtn, skinsBtn, menuBtnW } = UI_LAYOUT.menu;
         expect(optionsBtn).toBe(GAME_CONFIG.centerX);
         expect(scoresBtn).toBeLessThan(optionsBtn);

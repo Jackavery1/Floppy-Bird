@@ -14,7 +14,6 @@ import {
     getRoundScore,
     getScoreHud,
     holdBirdAtCenter,
-    requestJump,
     waitForNaturalPipeScore,
 } from './helpers/testSeam.mjs';
 

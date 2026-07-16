@@ -49,6 +49,8 @@ export const DESIGN_TOKENS = Object.freeze({
     difficulteNormal: '#ffff00',
     difficulteDifficile: '#ff8888',
     accentTitre: '#FDD835',
+    /** Score HUD en jour — ambre plus sombre sur ciel clair (AA via contour + fill). */
+    accentTitreJour: '#F9A825',
     accentTitreContour: '#E65100',
     accentTitreOmbre: '#BF360C',
     badgeDailyContour: '#4A148C',

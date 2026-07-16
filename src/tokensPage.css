@@ -138,11 +138,23 @@
     font-family: var(--police-interface);
     font-size: 14px;
     font-weight: 600;
-    color: #fff;
+    color: #fdd835;
     text-shadow:
-        0 0 2px #000,
-        0 1px 2px #000,
-        1px 0 2px #000;
+        0 0 2px #e65100,
+        0 1px 2px #e65100,
+        1px 0 2px #e65100;
+}
+
+.tokens-type-hud-day {
+    font-family: var(--police-interface);
+    font-size: 14px;
+    font-weight: 600;
+    color: #f9a825;
+    text-shadow:
+        0 0 3px #000,
+        0 1px 3px #000,
+        1px 0 3px #000,
+        -1px 0 3px #000;
 }
 
 .tokens-type-menu {
@@ -260,7 +272,7 @@
 }
 
 .tokens-ui-card--gameover .tokens-ui-preview::after {
-    content: 'GAME OVER';
+    content: 'FIN DE PARTIE';
     position: absolute;
     top: 28%;
     left: 50%;

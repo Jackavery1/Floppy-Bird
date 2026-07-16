@@ -110,7 +110,7 @@ export function createInGameControls(
             ui.scene,
             GAME_CONFIG.centerX,
             badgeY,
-            'HARDCORE',
+            'HC',
             hudTextStyle({
                 fontSize: FONT_SIZE_BADGE,
                 fill: hudBannerFill('badgeHardcore'),

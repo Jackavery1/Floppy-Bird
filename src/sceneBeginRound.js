@@ -119,7 +119,5 @@ export function beginRound(scene, { resetBird = false } = {}) {
     }
     if (scene.trainingMode) {
         scene.ghost.beginRound({ record: true });
-    } else if (scene.playMode === 'daily') {
-        scene.ghost.beginRound({ record: false });
     }
 }

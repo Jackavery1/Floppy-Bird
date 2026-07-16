@@ -9,7 +9,7 @@ import {
 } from '../shared/uiLayout.js';
 
 /**
- * Titre GAME OVER, cause de mort et liseré du récap game over.
+ * Titre FIN DE PARTIE, cause de mort et liseré du récap game over.
  * @param {import('phaser').Scene} scene
  * @param {number} cx
  * @param {(offset: number) => number} y
@@ -24,7 +24,7 @@ export function buildGameOverSummaryHeader(scene, cx, y, opts) {
             scene,
             cx,
             y(28),
-            'GAME OVER',
+            'FIN DE PARTIE',
             menuTextStyle({
                 fontFamily: FONT_TITLE,
                 fontSize: FONT_SIZE_CHROME,

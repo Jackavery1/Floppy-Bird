@@ -2,6 +2,7 @@ import { GAME_CONFIG } from '../../config.js';
 import { formatDailyHudLabel } from '../../dailyChallenge.js';
 import { getSkin } from '../../skins/index.js';
 import { DESIGN_TOKENS } from '../../designTokens.js';
+import { getBackgroundPeriod } from '../../backgroundPeriod.js';
 import { sceneTween } from '../../motion.js';
 import { addReliefText, DEPTH, FONT_TITLE, UI_LAYOUT } from '../shared/uiLayout.js';
 
@@ -12,15 +13,16 @@ const SCORE_RELIEF = Object.freeze({
     alpha: 0.65,
 });
 
-/** Style score HUD — Press Start 2P + relief (comme le titre), jamais remappé noir en jour. */
+/** Style score HUD — jaune nuit / ambre jour + contour renforcé de jour. */
 function scoreHudStyle() {
+    const day = getBackgroundPeriod() === 'day';
     return {
         fontFamily: FONT_TITLE,
         fontSize: '28px',
-        fill: DESIGN_TOKENS.accentTitre,
+        fill: day ? DESIGN_TOKENS.accentTitreJour : DESIGN_TOKENS.accentTitre,
         fontStyle: 'normal',
-        stroke: DESIGN_TOKENS.accentTitreContour,
-        strokeThickness: 4,
+        stroke: day ? DESIGN_TOKENS.contourHud : DESIGN_TOKENS.accentTitreContour,
+        strokeThickness: day ? 6 : 4,
     };
 }
 

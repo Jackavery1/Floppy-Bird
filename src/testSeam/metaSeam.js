@@ -1,5 +1,5 @@
 import { setE2eBackgroundFrozen } from '../e2eVisualFreeze.js';
-import { GAME_CONFIG, SOUND } from '../config.js';
+import { DIFFICULTY, GAME_CONFIG, SOUND } from '../config.js';
 import { isAudioAvailable, playSound } from '../audio.js';
 import { hapticLight, hapticMedium } from '../haptics.js';
 import {
@@ -14,6 +14,11 @@ import {
     maxGapDeltaForScore,
     speedBoostMultiplierForScore,
 } from '../gapDifficulty.js';
+import { saveDailyCompletion, isDailyCompletedToday } from '../dailyChallengeProgress.js';
+import { buildMetaContext } from '../metaContext.js';
+import { listUnlockedSkins } from '../skins/index.js';
+import { notifyNewlyUnlockedSkins, snapshotUnlockedSkins } from '../metaAchievements.js';
+import { saveHighScore } from '../storage.js';
 
 /** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */
 export function createMetaSeam(getScene) {
@@ -69,6 +74,44 @@ export function createMetaSeam(getScene) {
                 pipeGap: effectivePipeGapForScore(baseGap, score),
                 maxGapDelta: maxGapDeltaForScore(score),
                 baseGap,
+            };
+        },
+        /** @param {{ goal: number, score: number, difficulty?: string, skinId?: string }} payload */
+        saveDailyCompletion: (payload) => {
+            saveDailyCompletion({
+                goal: payload.goal,
+                score: payload.score,
+                difficulty: payload.difficulty ?? 'normal',
+                skinId: payload.skinId ?? 'classic',
+            });
+            return isDailyCompletedToday();
+        },
+        isDailyCompletedToday: () => isDailyCompletedToday(),
+        listUnlockedSkins: () => {
+            const scene = getScene();
+            if (!scene) return [];
+            return listUnlockedSkins(buildMetaContext(scene));
+        },
+        /**
+         * Simule un déblocage skin pour e2e : snapshot → record → notify.
+         * @param {number} [score]
+         */
+        simulateSkinUnlockAtScore: (score = 10) => {
+            const scene = getScene();
+            if (!scene?.round) return null;
+            snapshotUnlockedSkins(scene);
+            const before = [...(scene.round.unlockedSkinIdsAtStart ?? [])];
+            saveHighScore(score, DIFFICULTY.NORMAL, undefined, false, null);
+            scene.round.score = score;
+            const newly = notifyNewlyUnlockedSkins(scene);
+            return {
+                before,
+                after: listUnlockedSkins(buildMetaContext(scene)),
+                newly: newly.map((a) => ({
+                    title: a.title,
+                    kind: a.kind,
+                    id: a.id,
+                })),
             };
         },
         probeAudio: () => {

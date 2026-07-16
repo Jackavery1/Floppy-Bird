@@ -40,5 +40,24 @@ describe('uiGameOverLeaderboard', () => {
             activeSkin: { label: 'Classic' },
         });
         expect(elements.length).toBeGreaterThan(4);
+        expect(scene.add.text.mock.calls.some((c) => c[2] === '— CLASSEMENT · 5 —')).toBe(true);
+    });
+
+    it('affiche le titre classement HC en hardcore', () => {
+        const scene = createBaseScene();
+        const y = (offset) => 100 + offset;
+        buildGameOverLeaderboard(scene, {
+            cx: 144,
+            y,
+            entries: [{ score: 5, id: 'a', skinId: 'classic' }],
+            highlightId: 'a',
+            isDaily: false,
+            dailyGoal: 0,
+            finalScore: 5,
+            special: false,
+            hardcoreMode: true,
+            activeSkin: { label: 'Classic' },
+        });
+        expect(scene.add.text.mock.calls.some((c) => c[2] === '— CLASSEMENT HC —')).toBe(true);
     });
 });

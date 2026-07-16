@@ -100,6 +100,6 @@ function recordDailyStatsCompletion(date = new Date()) {
             consecutiveDays,
         });
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }

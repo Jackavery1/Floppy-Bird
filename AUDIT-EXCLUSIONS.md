@@ -31,4 +31,13 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 - Branches : **82 %**
 - Functions : **91 %**
 
-Dernière mise à jour : 2026-07-16 (v2.0.0 — dettes résiduelles P0/P1).
+## Dettes volontairement non traitées
+
+| Élément | Raison |
+|---------|--------|
+| Façade UI (`ui/core/ui.js`) | God-object déjà découpé via `uiFacadeBind` ; refactor A5 non prioritaire |
+| Deploy Pages = smoke only | Gate produit documentée : matrice 8 VP bloquante en PR, smoke en deploy |
+| `style-src 'unsafe-inline'` | Nécessaire CSSOM (`shellTheme` / a11y / letterbox) — documenté ARCHITECTURE |
+| Libellé mode « HARDCORE : … » (menu) | Nom de mode produit ; badge HUD / classement utilisent `HC` |
+
+Dernière mise à jour : 2026-07-16 (v2.0.0 — P0–P2 + dettes audit UI/gameplay traitées).

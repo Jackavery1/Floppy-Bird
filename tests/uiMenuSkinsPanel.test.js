@@ -19,7 +19,7 @@ describe('uiMenuSkinsPanel', () => {
         buildMenuSkinsPanel(ui, elements, UI_LAYOUT.menu);
     });
 
-    it('crée un bouton SKINS et un panneau', () => {
+    it('crée un bouton STYLE et un panneau', () => {
         expect(ui._skinsBtnLabel).toBeTruthy();
         expect(ui._skinsBackdrop).toBeTruthy();
         expect(ui._skinsOpen).toBe(false);
@@ -32,7 +32,7 @@ describe('uiMenuSkinsPanel', () => {
         expect(ui._skinsOpen).toBe(false);
     });
 
-    it('le bouton SKINS reste au-dessus du fond du panneau (pas de bleed-through)', () => {
+    it('le bouton STYLE reste au-dessus du fond du panneau (pas de bleed-through)', () => {
         const btnDepth = ui._skinsBtnBg.setDepth.mock.calls.at(-1)?.[0];
         const backdropDepth = ui._skinsBackdrop.frame.setDepth.mock.calls.at(-1)?.[0];
         expect(btnDepth).toBeGreaterThan(backdropDepth);

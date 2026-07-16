@@ -45,6 +45,21 @@ describe('uiHudScore', () => {
         expect(ui._scoreTextShadow).toBeTruthy();
     });
 
+    it('en jour applique un contour noir plus épais sur le score', async () => {
+        vi.resetModules();
+        vi.doMock('../src/backgroundPeriod.js', () => ({
+            getBackgroundPeriod: () => 'day',
+        }));
+        const { createScoreDisplay } = await import('../src/ui/hud/uiHudScore.js');
+        const { DESIGN_TOKENS } = await import('../src/designTokens.js');
+        createScoreDisplay(ui);
+        const labelStyle = scene.add.text.mock.calls
+            .map((c) => c[3])
+            .find((style) => style?.strokeThickness === 6);
+        expect(labelStyle?.stroke).toBe(DESIGN_TOKENS.contourHud);
+        expect(labelStyle?.fill).toBe(DESIGN_TOKENS.accentTitreJour);
+    });
+
     it('showInGameScore repositionne et affiche le score', async () => {
         const { showInGameScore } = await import('../src/ui/hud/uiHudScore.js');
         const { DEPTH, UI_LAYOUT } = await import('../src/ui/shared/uiLayout.js');

@@ -129,11 +129,11 @@ describe('sceneBeginRound', () => {
         expect(scene.ghost.beginRound).toHaveBeenCalledWith({ record: true });
     });
 
-    it('beginRound affiche le ghost en défi daily sans enregistrer', () => {
+    it('beginRound n’affiche pas de fantôme en défi du jour', () => {
         const scene = makeScene();
         scene.playMode = 'daily';
         scene.trainingMode = false;
         beginRound(scene);
-        expect(scene.ghost.beginRound).toHaveBeenCalledWith({ record: false });
+        expect(scene.ghost.beginRound).not.toHaveBeenCalled();
     });
 });

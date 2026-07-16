@@ -15,6 +15,7 @@ const REFERENCED_SHELL_CLASSES = Object.freeze([
     'partie-active',
     'game-ready',
     'hidden',
+    'pwa-install',
 ]);
 
 /** Héritent d’un parent stylé (#loading) — pas de règle dédiée requise. */
@@ -34,18 +35,27 @@ function extractCssClasses(css) {
 }
 
 describe('cssShellClasses', () => {
-    it('classes shell référencées ont une règle CSS (style.css)', () => {
-        const cssPath = resolve(ROOT, 'style.css');
-        const defined = extractCssClasses(readFileSync(cssPath, 'utf8'));
+    function definedShellClasses() {
+        const files = ['style.css', 'style-pwa.css'];
+        const defined = new Set();
+        for (const file of files) {
+            for (const name of extractCssClasses(readFileSync(resolve(ROOT, file), 'utf8'))) {
+                defined.add(name);
+            }
+        }
+        return defined;
+    }
+
+    it('classes shell référencées ont une règle CSS (style.css / style-pwa.css)', () => {
+        const defined = definedShellClasses();
         const missing = REFERENCED_SHELL_CLASSES.filter(
             (name) => !defined.has(name) && !ALLOW_INHERITED_CLASSES.includes(name)
         );
-        expect(missing, `classes sans règle dans style.css: ${missing.join(', ')}`).toEqual([]);
+        expect(missing, `classes sans règle CSS: ${missing.join(', ')}`).toEqual([]);
     });
 
     it('style.css n’accumule pas de sélecteurs orphelins connus', () => {
-        const cssPath = resolve(ROOT, 'style.css');
-        const defined = extractCssClasses(readFileSync(cssPath, 'utf8'));
+        const defined = extractCssClasses(readFileSync(resolve(ROOT, 'style.css'), 'utf8'));
         const allowUnused = new Set(['offline-shell']);
         const likelyOrphans = [...defined].filter(
             (name) =>
@@ -54,6 +64,12 @@ describe('cssShellClasses', () => {
                 !name.startsWith('tokens-')
         );
         expect(likelyOrphans).toEqual([]);
+    });
+
+    it('style-pwa.css ne contient que le CTA install', () => {
+        const defined = extractCssClasses(readFileSync(resolve(ROOT, 'style-pwa.css'), 'utf8'));
+        expect(defined.has('pwa-install')).toBe(true);
+        expect([...defined].every((n) => n === 'pwa-install' || n === 'partie-active')).toBe(true);
     });
 
     it('style.css déclare safe-area via env()', () => {

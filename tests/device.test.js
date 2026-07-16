@@ -70,8 +70,10 @@ describe('device', () => {
     it('firstRunMenuHintText adapte le libellé', async () => {
         const { firstRunMenuHintText } = await loadDevice(true);
         expect(firstRunMenuHintText()).toMatch(/TAP/);
+        expect(firstRunMenuHintText()).toMatch(/STYLE/);
         const { firstRunMenuHintText: fine } = await loadDevice(false);
         expect(fine()).toMatch(/ESPACE/);
+        expect(fine()).toMatch(/S \/ O \/ K/);
     });
 
     it('difficultyA11yLabel mentionne les touches clavier', async () => {
@@ -95,15 +97,15 @@ describe('device', () => {
         expect(fine()).toBe('H : hardcore');
     });
 
-    it('hardcoreToggleLabel indique ON/OFF sans détail invincibilité', async () => {
+    it('hardcoreToggleLabel indique ACTIVÉ/DÉSACTIVÉ sans détail invincibilité', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toBe('HARDCORE : ON');
-        expect(hardcoreToggleLabel(false)).toBe('HARDCORE : OFF');
+        expect(hardcoreToggleLabel(true)).toBe('HARDCORE : ACTIVÉ');
+        expect(hardcoreToggleLabel(false)).toBe('HARDCORE : DÉSACTIVÉ');
     });
 
     it('hardcoreToggleLabel mobile utilise HC (≠ Difficile)', async () => {
         const { hardcoreToggleLabel } = await loadDevice(true);
-        expect(hardcoreToggleLabel(true)).toBe('HC ON');
+        expect(hardcoreToggleLabel(true)).toBe('HC ACTIF');
         expect(hardcoreToggleLabel(false, false)).toMatch(/^HC · score ≥/);
     });
 
@@ -125,7 +127,9 @@ describe('device', () => {
         expect(rows.some((r) => r.key === 'ESPACE' && r.action === 'sauter')).toBe(true);
         expect(rows.some((r) => r.key === 'D' && r.action === 'défi du jour')).toBe(true);
         expect(rows.some((r) => r.key === 'T' && r.action === 'entraînement')).toBe(true);
-        expect(rows.some((r) => r.key === 'S·K' && r.action === 'scores · skins')).toBe(true);
+        expect(rows.some((r) => r.key === 'S·O·K' && r.action === 'scores · options · style')).toBe(
+            true
+        );
     });
 
     it('optionsControlRows adapte le tactile', async () => {
@@ -133,7 +137,7 @@ describe('device', () => {
         const rows = optionsControlRows();
         expect(rows.some((r) => r.key === 'TAP' && r.action === 'sauter')).toBe(true);
         expect(rows.some((r) => r.key === 'ENTR.' && r.action === 'entraînement')).toBe(true);
-        expect(rows.some((r) => r.key === '···' && r.action === 'scores · skins · options')).toBe(
+        expect(rows.some((r) => r.key === '···' && r.action === 'scores · style · options')).toBe(
             true
         );
     });

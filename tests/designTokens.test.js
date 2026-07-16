@@ -111,6 +111,16 @@ describe('designTokens', () => {
         getBackgroundPeriod.mockReturnValue('night');
     });
 
+    it('accentTitreJour est plus sombre que accentTitre pour le score en jour', () => {
+        expect(DESIGN_TOKENS.accentTitreJour).toBe('#F9A825');
+        expect(relativeLuminance(DESIGN_TOKENS.accentTitreJour)).toBeLessThan(
+            relativeLuminance(DESIGN_TOKENS.accentTitre)
+        );
+        expect(
+            contrastRatio(DESIGN_TOKENS.contourHud, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
     it('accent record atteint AA sur fond nuit', () => {
         expect(contrastRatio(DESIGN_TOKENS.accent, DESIGN_TOKENS.fondNuit)).toBeGreaterThanOrEqual(
             4.5

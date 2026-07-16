@@ -1,10 +1,7 @@
-import { isMuted, getVolume } from './audioVolume.js';
 import { prefersReducedMotion } from './motion.js';
 
 function hapticsAllowed() {
-    if (prefersReducedMotion()) return false;
-    if (isMuted() || getVolume() === 0) return false;
-    return true;
+    return !prefersReducedMotion();
 }
 
 export function hapticLight() {

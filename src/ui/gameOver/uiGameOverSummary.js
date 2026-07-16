@@ -55,5 +55,3 @@ export function buildGameOverSummary(scene, cx, y, ui, opts) {
         activeSkin,
     };
 }
-
-export { medalColorForScore } from './uiGameOverSummaryMedal.js';

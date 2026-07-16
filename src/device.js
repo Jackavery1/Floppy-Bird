@@ -34,8 +34,8 @@ export function menuHint() {
 
 export function firstRunMenuHintText() {
     return isCoarsePointer()
-        ? 'Première partie : TAP pour démarrer et sauter'
-        : 'Première partie : ESPACE pour démarrer et sauter';
+        ? 'Première partie : TAP pour démarrer · SCORES / OPT. / STYLE en bas'
+        : 'Première partie : ESPACE pour démarrer · S / O / K panneaux';
 }
 
 /** @param {'easy' | 'normal' | 'hard'} level */
@@ -53,9 +53,9 @@ export function trainingHint() {
 
 export function trainingToggleLabel(enabled) {
     if (enabled) {
-        return isCoarsePointer() ? 'ENTR. ON' : 'ENTRAÎNEMENT : ON (ralenti + fantôme)';
+        return isCoarsePointer() ? 'ENTR. ACTIF' : 'ENTRAÎNEMENT : ACTIVÉ (ralenti + fantôme)';
     }
-    return isCoarsePointer() ? 'ENTR. OFF' : 'ENTRAÎNEMENT : OFF';
+    return isCoarsePointer() ? 'ENTR. INACT.' : 'ENTRAÎNEMENT : DÉSACTIVÉ';
 }
 
 export function hardcoreHint() {
@@ -69,9 +69,9 @@ export function hardcoreToggleLabel(enabled, unlocked = true) {
             : `HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
     }
     if (enabled) {
-        return isCoarsePointer() ? 'HC ON' : 'HARDCORE : ON';
+        return isCoarsePointer() ? 'HC ACTIF' : 'HARDCORE : ACTIVÉ';
     }
-    return isCoarsePointer() ? 'HC OFF' : 'HARDCORE : OFF';
+    return isCoarsePointer() ? 'HC INACT.' : 'HARDCORE : DÉSACTIVÉ';
 }
 
 export function dailyChallengeHint() {
@@ -92,7 +92,7 @@ export function optionsControlRows() {
             { key: 'ENTR.', action: 'entraînement' },
             { key: 'VIT.', action: 'vitesse entraînement' },
             { key: 'HC', action: 'hardcore' },
-            { key: '···', action: 'scores · skins · options' },
+            { key: '···', action: 'scores · style · options' },
         ];
     }
     return [
@@ -103,12 +103,12 @@ export function optionsControlRows() {
         { key: 'H', action: 'hardcore' },
         { key: 'ESC', action: 'pause / retour' },
         { key: 'M', action: 'menu' },
-        { key: 'S·K', action: 'scores · skins' },
+        { key: 'S·O·K', action: 'scores · options · style' },
     ];
 }
 
 export function optionsButtonLabel(_open) {
-    return 'OPTS';
+    return 'OPT.';
 }
 
 export function optionsAccessibilityLabel() {
@@ -116,11 +116,11 @@ export function optionsAccessibilityLabel() {
 }
 
 export function scoresButtonLabel(_open) {
-    return 'SCORE';
+    return 'SCORES';
 }
 
 export function skinsButtonLabel(_open) {
-    return 'SKINS';
+    return 'STYLE';
 }
 
 export function gameOverRestartLabel(_isDaily) {
@@ -128,7 +128,9 @@ export function gameOverRestartLabel(_isDaily) {
 }
 
 export function skinsCycleHint() {
-    return isCoarsePointer() ? 'Tap une case pour choisir' : '← → : skin précédent / suivant';
+    return isCoarsePointer()
+        ? 'Tap une case pour choisir'
+        : '← → : apparence précédente / suivante';
 }
 
 export function jumpTutorialText() {

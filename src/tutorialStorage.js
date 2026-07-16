@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from './storageKeys.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 const TUTORIAL_STEPS = 3;
 
@@ -32,7 +33,7 @@ export function setTutorialProgress(step) {
             localStorage.setItem(STORAGE_KEYS.tutorialSeen, '1');
         }
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
     return clamped;
 }
@@ -63,7 +64,7 @@ export function incrementRoundsStarted() {
     try {
         localStorage.setItem(STORAGE_KEYS.roundsStarted, String(next));
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
     return next;
 }

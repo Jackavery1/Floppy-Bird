@@ -43,7 +43,7 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         }
     });
 
-    test('boutons menu secondaires SCORE / OPTS / SKINS après letterbox', async ({
+    test('boutons menu secondaires SCORES / OPT. / STYLE après letterbox', async ({
         page,
     }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');

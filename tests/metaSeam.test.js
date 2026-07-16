@@ -1,8 +1,24 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createMetaSeam } from '../src/testSeam/metaSeam.js';
 import { GAME_STATE } from '../src/gameState.js';
 
 describe('metaSeam', () => {
+    let store;
+
+    beforeEach(() => {
+        store = {};
+        vi.stubGlobal('localStorage', {
+            getItem: (k) => store[k] ?? null,
+            setItem: (k, v) => {
+                store[k] = v;
+            },
+        });
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
     it('getLastDeathMetrics retourne null sans mort enregistrée', () => {
         const seam = createMetaSeam(() => ({ round: { lastDeathMetrics: null } }));
         expect(seam.getLastDeathMetrics()).toBeNull();
@@ -68,5 +84,29 @@ describe('metaSeam', () => {
         };
         const seam = createMetaSeam(() => scene);
         expect(seam.getRoundRuntime()?.elapsedMs).toBe(0);
+    });
+
+    it('saveDailyCompletion expose un ✓ non rétrogradable', () => {
+        const seam = createMetaSeam(() => undefined);
+        expect(seam.saveDailyCompletion({ goal: 5, score: 8 })).toBe(true);
+        expect(seam.isDailyCompletedToday()).toBe(true);
+        expect(seam.saveDailyCompletion({ goal: 5, score: 1 })).toBe(true);
+        expect(seam.isDailyCompletedToday()).toBe(true);
+    });
+
+    it('simulateSkinUnlockAtScore signale les skins nouvellement débloqués', () => {
+        const newly = [];
+        const scene = {
+            trainingMode: false,
+            difficulty: 'normal',
+            hardcoreMode: false,
+            round: { score: 0, unlockedSkinIdsAtStart: ['classic'] },
+            achievementNotifier: (list) => newly.push(...list),
+        };
+        const seam = createMetaSeam(() => scene);
+        const result = seam.simulateSkinUnlockAtScore(10);
+        expect(result.after.length).toBeGreaterThan(result.before.length);
+        expect(result.newly.some((n) => n.kind === 'skin')).toBe(true);
+        expect(newly.some((n) => n.kind === 'skin')).toBe(true);
     });
 });

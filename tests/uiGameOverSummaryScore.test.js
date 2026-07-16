@@ -29,7 +29,7 @@ describe('uiGameOverSummaryScore', () => {
         expect(scoreText).toBeTruthy();
         expect(elements.length).toBe(4);
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
-        expect(texts).toContain('SCORE');
+        expect(texts).toContain('POINTS');
         expect(texts).toContain('12');
         expect(texts).toContain('20');
     });

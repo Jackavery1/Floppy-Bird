@@ -59,8 +59,13 @@ function renderTypography(root) {
             text: 'FLOPPY BIRD',
         },
         {
-            label: 'HUD in-game — policeInterface bold + contour',
+            label: 'HUD nuit — accentTitre + contour',
             className: 'tokens-type-hud',
+            text: 'Score 42',
+        },
+        {
+            label: 'HUD jour — accentTitreJour + contour 6 px',
+            className: 'tokens-type-hud-day',
             text: 'Score 42',
         },
         {
@@ -109,7 +114,7 @@ export const UI_STATE_GALLERY = Object.freeze([
     },
     {
         id: 'gameover',
-        title: 'Game over',
+        title: 'Fin de partie',
         description: 'Panneau score, record, CTA REJOUER 48 px.',
     },
 ]);

@@ -38,7 +38,7 @@ test.describe('annonces screen reader', () => {
         const announcer = page.locator('#ui-announcer');
         await startPlayingFromMenu(page, false);
         await forceGameOver(page, { isDaily: false });
-        await expect(announcer).toContainText(/Mort|Game over/i, { timeout: 8_000 });
+        await expect(announcer).toContainText(/Mort|Partie terminée/i, { timeout: 8_000 });
     });
 
     test('annonce ouverture/fermeture du panneau options et changement d’onglet', async ({

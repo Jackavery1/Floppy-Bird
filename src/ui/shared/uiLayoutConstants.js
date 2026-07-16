@@ -4,7 +4,7 @@ import { DESIGN_TOKENS, hexVersPhaser } from '../../designTokens.js';
 export const MIN_TOUCH = 44;
 /** CTA primaires (démarrer, sauter, rejouer) — recommandation Material 48 px. */
 export const MIN_CTA_TOUCH = 48;
-/** Hit zone SCORE / OPTS / SKINS — hauteur Material 48, largeur visuelle inchangée. */
+/** Hit zone SCORES / OPT. / STYLE — hauteur Material 48, largeur visuelle inchangée. */
 export const MENU_SECONDARY_HIT = MIN_CTA_TOUCH;
 
 /** Grille spacing 4 px — référence layout menu / HUD. */
@@ -99,7 +99,7 @@ export const UI_LAYOUT = {
         scoresBtn: 52,
         optionsBtn: 144,
         skinsBtn: 236,
-        /** Largeur visuelle SCORE/OPTS/SKINS ; hit hauteur = MENU_SECONDARY_HIT (48). */
+        /** Largeur visuelle SCORES/OPT./STYLE ; hit hauteur = MENU_SECONDARY_HIT (48). */
         menuBtnW: 80,
         hint1: 424,
     },
@@ -119,14 +119,15 @@ export const UI_LAYOUT = {
         })
     ),
     scoresPanel: withPanelCloseBtn({
-        panelTop: 104,
-        panelH: 364,
+        panelTop: 96,
+        panelH: 400,
         w: 260,
-        scoresTitle: 142,
-        scoresFirst: 180,
-        scoresGap: 34,
-        scoresHardcore: 292,
-        scoresAchievements: 330,
+        scoresTitle: 132,
+        scoresFirst: 168,
+        scoresGap: 30,
+        scoresHardcoreFirst: 268,
+        scoresHardcoreGap: 28,
+        scoresAchievements: 360,
     }),
     skinsPanel: withPanelCloseBtn({
         panelTop: 100,

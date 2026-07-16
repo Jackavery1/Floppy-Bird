@@ -64,7 +64,7 @@ export const GAME_CONFIG = {
     },
 
     round: {
-        pipeSpawnDelayMs: 1250,
+        pipeSpawnDelayMs: 1300,
         spawnInvincibilityMs: 900,
         /** Plus court qu'en classique ; marge ≥400 ms avant le 1er tuyau (pipeSpawnDelayMs). */
         hardcoreSpawnInvincibilityMs: 620,
@@ -112,10 +112,10 @@ export const GAME_CONFIG = {
 
     /** Modificateurs exclusifs défi du jour (classique inchangé). */
     daily: {
-        gapMult: 0.88,
-        speedMult: 1.1,
-        pipeIntervalMult: 0.92,
-        spawnInvincibilityMs: 700,
+        gapMult: 0.92,
+        speedMult: 1.06,
+        pipeIntervalMult: 0.95,
+        spawnInvincibilityMs: 800,
         /** Plancher / plafond des patterns skin trop permissifs. */
         minGravityMult: 0.92,
         maxJumpMult: 1.05,
@@ -124,20 +124,20 @@ export const GAME_CONFIG = {
 
     difficulties: {
         easy: {
-            speed: 2.15,
-            gap: 124,
-            gravity: 0.35,
-            jumpPower: -5.75,
+            speed: 2.05,
+            gap: 130,
+            gravity: 0.33,
+            jumpPower: -5.7,
             maxFallSpeed: 10.5,
-            pipeInterval: 82,
+            pipeInterval: 86,
         },
         normal: {
-            speed: 3.05,
-            gap: 100,
-            gravity: 0.42,
-            jumpPower: -6.05,
+            speed: 2.95,
+            gap: 104,
+            gravity: 0.41,
+            jumpPower: -6.02,
             maxFallSpeed: 11,
-            pipeInterval: 68,
+            pipeInterval: 71,
         },
         hard: {
             speed: 3.72,

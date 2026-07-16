@@ -44,6 +44,10 @@
         />
         <meta name="author" content="Joris Martinez" />
         <meta name="robots" content="index, follow" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; media-src 'self'; base-uri 'self'; form-action 'self'"
+        />
         <link rel="canonical" href="https://jackavery1.github.io/Floppy-Bird/" />
         <title>Floppy Bird</title>
         <script type="application/ld+json">
@@ -51,7 +55,7 @@
                 "@context": "https://schema.org",
                 "@type": "WebApplication",
                 "name": "Floppy Bird",
-                "description": "Jeu arcade arcade 2D avec scores locaux et mode hors-ligne. Évite les tuyaux et bats ton record !",
+                "description": "Jeu arcade 2D avec scores locaux et mode hors-ligne. Évite les tuyaux et bats ton record !",
                 "url": "https://jackavery1.github.io/Floppy-Bird/",
                 "applicationCategory": "Game",
                 "offers": {
@@ -93,26 +97,18 @@
                 Jeu arcade Floppy Bird. Tab pour les contrôles clavier ; tap ou espace pour jouer.
             </p>
             <div id="game-container"></div>
+            <button
+                type="button"
+                id="pwa-install"
+                class="pwa-install"
+                hidden
+                aria-hidden="true"
+            >
+                Installer l’appli
+            </button>
         </main>
-        <script>
-            (function () {
-                if (navigator.onLine !== false) return;
-                if (navigator.serviceWorker && navigator.serviceWorker.controller) return;
-                location.replace('offline.html');
-            })();
-        </script>
+        <script src="./boot-offline.js"></script>
         <script type="module" src="./src/main.js"></script>
-        <script>
-            setTimeout(function () {
-                var el = document.getElementById('loading');
-                if (el && !el.classList.contains('hidden')) {
-                    el.innerHTML =
-                        'Impossible de charger le jeu.<br><br>' +
-                        'Recharge la page. Si le problème continue : WebGL/Canvas indisponible, ' +
-                        'ou en local utilise <strong>npm run dev</strong> (pas Live Server).<br>' +
-                        'Après build : <strong>npm run preview</strong>.';
-                }
-            }, 6000);
-        </script>
+        <script src="./boot-loading-timeout.js"></script>
     </body>
 </html>

@@ -107,7 +107,7 @@ describe('training', () => {
         expect(saved.path.some((p) => p.j === 1)).toBe(true);
     });
 
-    it('GhostReplay rejoue en daily sans enregistrer', () => {
+    it('GhostReplay ne rejoue plus en daily (seed tuyaux distinct)', () => {
         saveGhostData(3, [{ t: 0, y: 256 }], { difficulty: 'normal', hardcore: false });
         const sprite = {
             setScale: vi.fn(),
@@ -129,8 +129,8 @@ describe('training', () => {
         };
         const ghost = new GhostReplay(scene);
         ghost.beginRound({ record: false });
-        expect(scene.add.sprite).toHaveBeenCalled();
-        ghost.update(1);
+        expect(scene.add.sprite).not.toHaveBeenCalled();
+        expect(ghost.sprite).toBeNull();
         ghost.finishRound(10);
         expect(loadGhostData().score).toBe(3);
     });
@@ -153,7 +153,7 @@ describe('training', () => {
         expect(ghostMatchesMode({ difficulty: 'hard', hardcore: true }, 'hard', true)).toBe(true);
     });
 
-    it('GhostReplay détruit le sprite hors entraînement et hors daily', () => {
+    it('GhostReplay détruit le sprite hors entraînement', () => {
         const sprite = { destroy: vi.fn() };
         const scene = {
             trainingMode: false,

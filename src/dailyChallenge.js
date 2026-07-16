@@ -29,9 +29,9 @@ export function getDailyChallengeSkin(date = new Date()) {
 }
 
 const BASE_DAILY_GOALS = Object.freeze({
-    [DIFFICULTY.EASY]: 15,
-    [DIFFICULTY.NORMAL]: 22,
-    [DIFFICULTY.HARD]: 30,
+    [DIFFICULTY.EASY]: 12,
+    [DIFFICULTY.NORMAL]: 19,
+    [DIFFICULTY.HARD]: 28,
 });
 
 /** Objectif de score selon difficulté + pattern du skin du jour. */

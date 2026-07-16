@@ -81,20 +81,24 @@ export function buildScoresTab(ui, elements, panelElements) {
         return { diff, label };
     });
 
-    ui._hardcoreScoreLine = addCenteredText(
-        scene,
-        GAME_CONFIG.centerX,
-        panel.scoresHardcore,
-        formatHardcoreLine(),
-        {
-            ...scoreLineStyle(),
-            fill: DESIGN_TOKENS.badgeHardcore,
-        },
-        DEPTH.PANEL_FRAME
-    );
-    panelElements.push(ui._hardcoreScoreLine);
-    elements.push(ui._hardcoreScoreLine);
-    ui._scoresTabElements.push(ui._hardcoreScoreLine);
+    ui._hardcoreScoreLines = DIFFICULTY_ORDER.map((diff, i) => {
+        const y = panel.scoresHardcoreFirst + i * panel.scoresHardcoreGap;
+        const label = addCenteredText(
+            scene,
+            GAME_CONFIG.centerX,
+            y,
+            formatHardcoreScoreLine(diff),
+            {
+                ...scoreLineStyle(),
+                fill: DESIGN_TOKENS.badgeHardcore,
+            },
+            DEPTH.PANEL_FRAME
+        );
+        panelElements.push(label);
+        elements.push(label);
+        ui._scoresTabElements.push(label);
+        return { diff, label };
+    });
 
     ui._achievementsScoreLine = addCenteredText(
         scene,
@@ -131,19 +135,18 @@ export function buildScoresTab(ui, elements, panelElements) {
     ui._scoresClosePaint = closeBtn.paint;
 }
 
-/** @param {DifficultyId} diff @param {boolean} hardcore */
+/** @param {DifficultyId} diff */
 function formatScoreLine(diff) {
     const label = GAME_CONFIG.difficultyLabels[diff];
     const score = loadHighScore(diff, false);
     return `${label} · ${score}`;
 }
 
-function formatHardcoreLine() {
-    let best = 0;
-    for (const diff of DIFFICULTY_ORDER) {
-        best = Math.max(best, loadHighScore(diff, true));
-    }
-    return `HARDCORE · ${best}`;
+/** @param {DifficultyId} diff */
+function formatHardcoreScoreLine(diff) {
+    const label = GAME_CONFIG.difficultyLabels[diff];
+    const score = loadHighScore(diff, true);
+    return `HC ${label} · ${score}`;
 }
 
 function formatAchievementsLine() {
@@ -157,6 +160,8 @@ export function refreshScoresTab(ui) {
     ui._scoreLines.forEach(({ diff, label }) => {
         label.setText(formatScoreLine(diff));
     });
-    ui._hardcoreScoreLine?.setText(formatHardcoreLine());
+    ui._hardcoreScoreLines?.forEach(({ diff, label }) => {
+        label.setText(formatHardcoreScoreLine(diff));
+    });
     ui._achievementsScoreLine?.setText(formatAchievementsLine());
 }

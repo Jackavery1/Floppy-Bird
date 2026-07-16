@@ -227,3 +227,21 @@ export function freezeBackgroundAnimation(page, freeze = true) {
 export function probeHaptics(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.probeHaptics?.() ?? null);
 }
+
+/** @param {import('@playwright/test').Page} page @param {{ goal: number, score: number, difficulty?: string, skinId?: string }} payload */
+export function saveDailyCompletion(page, payload) {
+    return page.evaluate((p) => window.__FLOPPY_TEST__?.saveDailyCompletion?.(p) ?? null, payload);
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function isDailyCompletedToday(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.isDailyCompletedToday?.() ?? false);
+}
+
+/** @param {import('@playwright/test').Page} page @param {number} [score] */
+export function simulateSkinUnlockAtScore(page, score = 10) {
+    return page.evaluate(
+        (s) => window.__FLOPPY_TEST__?.simulateSkinUnlockAtScore?.(s) ?? null,
+        score
+    );
+}

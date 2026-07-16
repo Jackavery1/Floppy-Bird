@@ -47,7 +47,7 @@ describe('haptics', () => {
         expect(() => hapticMedium()).not.toThrow();
     });
 
-    it('ne vibre pas si muet', async () => {
+    it('vibre même si le son est muet', async () => {
         const vibrate = vi.fn();
         vi.stubGlobal('navigator', { vibrate });
         vi.stubGlobal('localStorage', {
@@ -57,7 +57,8 @@ describe('haptics', () => {
         const { hapticLight, hapticMedium } = await import('../src/haptics.js');
         hapticLight();
         hapticMedium();
-        expect(vibrate).not.toHaveBeenCalled();
+        expect(vibrate).toHaveBeenCalledWith(12);
+        expect(vibrate).toHaveBeenCalledWith(28);
     });
 
     it('ne vibre pas si prefers-reduced-motion', async () => {

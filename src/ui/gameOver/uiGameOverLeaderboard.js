@@ -80,10 +80,10 @@ export function buildGameOverLeaderboard(scene, opts) {
     }
 
     const boardTitle = special
-        ? `— TOP 5 · ${activeSkin.label.toUpperCase()}${hardcoreMode ? ' HC' : ''} —`
+        ? `— CLASSEMENT · ${activeSkin.label.toUpperCase()}${hardcoreMode ? ' HC' : ''} —`
         : hardcoreMode
-          ? '— TOP 5 HARDCORE —'
-          : '— TOP 5 —';
+          ? '— CLASSEMENT HC —'
+          : '— CLASSEMENT · 5 —';
     leaderboardElements.push(
         addCenteredText(
             scene,

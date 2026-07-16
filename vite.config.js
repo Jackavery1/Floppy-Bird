@@ -83,10 +83,20 @@ export default defineConfig(({ mode }) => {
                     handler(html) {
                         if (!useVendorPhaser) return html;
                         const { siteUrl, imageUrl } = socialMetaUrls(base);
+                        let integrityAttr = '';
+                        try {
+                            const sri = readFileSync(
+                                path.join(root, 'public/vendor/phaser.min.js.sri'),
+                                'utf8'
+                            ).trim();
+                            if (sri) integrityAttr = ` integrity="${sri}"`;
+                        } catch {
+                            /* copy-phaser.mjs produit le SRI avant vite build */
+                        }
                         return html
                             .replace(
                                 /(\s*<script type="module")/,
-                                `\n    <script src="${phaserScriptSrc(base)}" crossorigin="anonymous"></script>$1`
+                                `\n    <script src="${phaserScriptSrc(base)}"${integrityAttr} crossorigin="anonymous"></script>$1`
                             )
                             .replace(
                                 /<meta property="og:url" content="[^"]*" \/>/,
@@ -117,8 +127,6 @@ export default defineConfig(({ mode }) => {
                         '**/tokens.html',
                         '**/assets/tokens-*.js',
                         '**/assets/tokens-*.css',
-                        // latin-ext uniquement dans assets/ (jeu) — pas dans public/fonts
-                        '**/fonts/press-start-2p-latin-ext-*.woff2',
                         // Seam e2e uniquement si build VITE_ENABLE_TEST_SEAM (prod tree-shake déjà)
                         '**/assets/testSeam-*.js',
                     ],

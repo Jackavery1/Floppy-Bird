@@ -4,6 +4,7 @@ import { birdTextureKey } from './skins/index.js';
 import { birdSpriteScale } from './textures/birdTextures.js';
 import { ensureBirdTexture } from './textures/index.js';
 import { DEPTH } from './ui/shared/uiDepth.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
 
@@ -51,7 +52,7 @@ export function saveGhostData(score, path, { difficulty, hardcore } = {}) {
             })
         );
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 
@@ -122,12 +123,12 @@ export class GhostReplay {
 
     beginRound({ record = true } = {}) {
         this._record = record && this.scene.trainingMode;
-        this._replayOnly = !this.scene.trainingMode && this.scene.playMode === 'daily';
+        this._replayOnly = false;
         this._refreshPathForMode();
         this._recording = [];
         this._roundStartMs = this.scene.time.now;
         this._sampleAcc = 0;
-        if (this._record || this._replayOnly) {
+        if (this._record) {
             this.createSprite();
         } else {
             if (this.sprite) {

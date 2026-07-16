@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from './storageKeys.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 export const VOLUME_STEPS = Object.freeze([1, 0.5, 0.25, 0]);
 
@@ -27,7 +28,7 @@ export function setVolume(level) {
         if (level > 0) setMuted(false);
         else setMuted(true);
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 
@@ -43,7 +44,7 @@ export function setMuted(muted) {
     try {
         localStorage.setItem(STORAGE_KEYS.muted, muted ? '1' : '0');
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 
@@ -62,6 +63,6 @@ export function cycleSoundLevel() {
 
 export function formatSoundLabel(isAvailable = true) {
     if (!isAvailable) return 'indisponible';
-    if (isMuted() || getVolume() === 0) return 'OFF';
+    if (isMuted() || getVolume() === 0) return 'MUET';
     return `${Math.round(getVolume() * 100)} %`;
 }

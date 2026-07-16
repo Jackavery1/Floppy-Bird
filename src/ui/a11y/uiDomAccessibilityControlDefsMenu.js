@@ -36,7 +36,7 @@ export const MENU_CONTROL_DEFS = Object.freeze({
     },
     menuSkins: {
         id: 'a11y-skins',
-        label: 'Skins',
+        label: 'Apparence',
         x: TOUCH_TARGETS.menuSkins.x,
         y: TOUCH_TARGETS.menuSkins.y,
         width: UI_LAYOUT.menu.menuBtnW,
@@ -116,7 +116,7 @@ export const MENU_CONTROL_DEFS = Object.freeze({
     },
     menuSkinsPrev: {
         id: 'a11y-skin-prev',
-        label: 'Skin précédent',
+        label: 'Apparence précédente',
         x: TOUCH_TARGETS.menuSkinsPrev.x,
         y: TOUCH_TARGETS.menuSkinsPrev.y,
         width: MIN_TOUCH,
@@ -124,7 +124,7 @@ export const MENU_CONTROL_DEFS = Object.freeze({
     },
     menuSkinsNext: {
         id: 'a11y-skin-next',
-        label: 'Skin suivant',
+        label: 'Apparence suivante',
         x: TOUCH_TARGETS.menuSkinsNext.x,
         y: TOUCH_TARGETS.menuSkinsNext.y,
         width: MIN_TOUCH,
@@ -148,7 +148,7 @@ export const MENU_CONTROL_DEFS = Object.freeze({
     },
     menuSkinsClose: {
         id: 'a11y-skins-close',
-        label: 'Fermer les skins',
+        label: 'Fermer l’apparence',
         x: TOUCH_TARGETS.menuSkinsClose.x,
         y: TOUCH_TARGETS.menuSkinsClose.y,
         width: 160,

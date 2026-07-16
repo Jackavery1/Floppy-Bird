@@ -39,7 +39,7 @@ export function buildGameOverSummaryScore(scene, cx, y, ui, opts) {
             scene,
             cx,
             y(82),
-            'SCORE',
+            'POINTS',
             menuTextStyle({ fontSize: FONT_SIZE_BADGE, fill: DESIGN_TOKENS.texteMenu }),
             DEPTH.MENU_RAISED
         )

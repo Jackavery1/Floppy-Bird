@@ -23,7 +23,7 @@ describe('GAME_CONFIG.round', () => {
 
     it('laisse une marge post-invincibilité avant le premier tuyau', () => {
         const gap = GAME_CONFIG.round.pipeSpawnDelayMs - GAME_CONFIG.round.spawnInvincibilityMs;
-        expect(gap).toBeGreaterThanOrEqual(300);
+        expect(gap).toBeGreaterThanOrEqual(400);
     });
 
     it('bufferise les sauts sur plusieurs frames', () => {
@@ -45,20 +45,20 @@ describe('GAME_CONFIG.round', () => {
 describe('GAME_CONFIG.getDifficulty', () => {
     it('normal applique speed/gap/intervalle renforcés', () => {
         const n = GAME_CONFIG.getDifficulty('normal');
-        expect(n.gravity).toBe(0.42);
-        expect(n.jumpPower).toBe(-6.05);
-        expect(n.speed).toBe(3.05);
-        expect(n.gap).toBe(100);
-        expect(n.pipeInterval).toBe(68);
+        expect(n.gravity).toBe(0.41);
+        expect(n.jumpPower).toBe(-6.02);
+        expect(n.speed).toBe(2.95);
+        expect(n.gap).toBe(104);
+        expect(n.pipeInterval).toBe(71);
     });
 
     it('easy reste plus permissif que normal, mais plus exigeant qu’avant', () => {
         const e = GAME_CONFIG.getDifficulty('easy');
         const n = GAME_CONFIG.getDifficulty('normal');
-        expect(e.gravity).toBe(0.35);
-        expect(e.gap).toBe(124);
-        expect(e.pipeInterval).toBe(82);
-        expect(e.speed).toBe(2.15);
+        expect(e.gravity).toBe(0.33);
+        expect(e.gap).toBe(130);
+        expect(e.pipeInterval).toBe(86);
+        expect(e.speed).toBe(2.05);
         expect(e.gap).toBeGreaterThan(n.gap);
         expect(e.speed).toBeLessThan(n.speed);
         expect(e.pipeInterval).toBeGreaterThan(n.pipeInterval);
@@ -76,7 +76,7 @@ describe('GAME_CONFIG.getDifficulty', () => {
 
     it('retombe sur normal pour une clé invalide', () => {
         const x = GAME_CONFIG.getDifficulty('invalid');
-        expect(x.speed).toBe(3.05);
+        expect(x.speed).toBe(2.95);
     });
 });
 
@@ -95,7 +95,7 @@ describe('getDifficultyForRound', () => {
         const hard = GAME_CONFIG.getDifficulty('hard');
         const normalHc = getDifficultyForRound('normal', true);
         expect(normalHc.gravity).toBeGreaterThan(hard.gravity);
-        expect(normalHc.gap).toBeLessThanOrEqual(hard.gap + 4);
+        expect(normalHc.gap).toBeLessThanOrEqual(hard.gap + 8);
     });
 
     it('identique au mode normal sans hardcore', () => {

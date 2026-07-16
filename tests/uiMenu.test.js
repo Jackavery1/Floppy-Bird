@@ -85,7 +85,7 @@ describe('uiMenu', () => {
         expect(ui._skinsBtnLabel.visible).toBe(true);
     });
 
-    it('showMenu n’instancie pas le panneau options tant qu’OPTS n’est pas ouvert', () => {
+    it('showMenu n’instancie pas le panneau options tant qu’OPT. n’est pas ouvert', () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
         expect(ui._optionsPanelBuilt).toBe(false);
         expect(ui._optionsPanelRoot).toBeFalsy();
@@ -123,7 +123,7 @@ describe('uiMenu', () => {
         expect(ui.highScore).toBe(42);
     });
 
-    it("la rangée SCORE/OPTS/SKINS se cache quand un panneau s'ouvre (anti-chevauchement)", () => {
+    it("la rangée SCORES/OPT./STYLE se cache quand un panneau s'ouvre (anti-chevauchement)", () => {
         showMenu(ui, DIFFICULTY.NORMAL, false, false);
 
         expect(ui._menuChromeElements).toContain(ui._scoresBtnBg);

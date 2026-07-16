@@ -48,7 +48,7 @@ describe('audioVolume', () => {
         setVolume(0.5);
         expect(formatSoundLabel(true)).toBe('50 %');
         setMuted(true);
-        expect(formatSoundLabel(true)).toBe('OFF');
+        expect(formatSoundLabel(true)).toBe('MUET');
         expect(formatSoundLabel(false)).toBe('indisponible');
     });
 });

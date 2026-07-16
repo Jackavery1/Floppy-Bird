@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { expectGameState, startPlayingFromMenu, waitForGameReady } from './helpers/gameCoords.mjs';
+import { mockBeforeInstallPrompt } from './helpers/pwaInstall.mjs';
 
 test.describe('viewport PWA et métadonnées', () => {
     test('expose og:image et twitter:card pour le partage social', async ({ page }) => {
@@ -104,5 +105,25 @@ test.describe('viewport état partie', () => {
             'content',
             /maximum-scale=3\.0/
         );
+    });
+});
+
+test.describe('CTA install PWA', () => {
+    test('affiche #pwa-install après beforeinstallprompt et lance prompt au clic', async ({
+        page,
+    }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await expect(page.locator('#pwa-install')).toBeHidden();
+        const mock = await mockBeforeInstallPrompt(page);
+        const btn = page.locator('#pwa-install');
+        await expect(btn).toBeVisible();
+        await expect(btn).toHaveAttribute('aria-hidden', 'false');
+        const box = await btn.boundingBox();
+        expect(box).toBeTruthy();
+        expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+        await btn.click();
+        expect(await mock.promptCalls()).toBe(1);
+        await expect(btn).toBeHidden();
     });
 });

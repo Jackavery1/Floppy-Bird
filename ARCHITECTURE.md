@@ -62,7 +62,7 @@ src/
 ├── uiIndex.js                 # Entrée publique UI
 │
 ├── Media
-├── haptics.js                 # Retours haptiques (respecte mute / reduced-motion)
+├── haptics.js                 # Retours haptiques (indépendant du mute ; respecte reduced-motion)
 ├── audio.js                   # Gestion du son
 ├── motion.js                  # Animations (tweens, shake)
 ├── textures/                  # Sprites générés
@@ -70,7 +70,10 @@ src/
 └── PWA
     ├── public/shell-tokens.css  # Variables CSS shell (style.css + offline.html)
     ├── public/offline-page.css  # Styles page fallback offline
-    └── (VitePWA : `globPatterns` + `globIgnores` tokens ; polices jeu via @fontsource → assets/, latin offline via `public/fonts/`)
+    ├── src/pwaInstall.js        # CTA « Installer l’appli » (beforeinstallprompt)
+    └── (VitePWA : `globPatterns` + `globIgnores` tokens ; police jeu `@fontsource` latin → assets/ + `public/fonts/` offline)
+    └── (prod : `copy-phaser.mjs` + SRI sha384 ; CSP `script-src 'self'` via `public/boot-*.js` ;
+         `style-src 'unsafe-inline'` conservé pour CSSOM `element.style` — shellTheme / a11y / letterbox)
 
 tests/
 ├── Unit tests (Vitest)
@@ -134,11 +137,11 @@ uiIndex.js → ui/core/ui.js (façade SceneContext)
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader) |
 
-Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORE / OPTS / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORES / OPT. / STYLE ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORES / OPT. / STYLE** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
 #### Index modules `ui*`
 
-Modules physiques sous `src/ui/{menu,hud,gameOver,a11y,shared,core}/` ; entrée publique `uiIndex.js` (plus de shims `src/ui*.js`).
+Modules physiques sous `src/ui/{menu,hud,gameOver,a11y,shared,core}/` ; entrée publique `uiIndex.js` → `ui/core/` (pas de barrels domaine inutilisés).
 
 | Module | Rôle |
 | ------ | ---- |
@@ -343,17 +346,11 @@ Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run me
 
 ### Exclusions coverage (justifiées)
 
-| Fichier                  | Raison                                                  |
-| ------------------------ | ------------------------------------------------------- |
-| `src/phaser-shim.js`     | Alias build vendor Phaser — pas de logique applicative  |
-| `src/testSeam.js`        | API Playwright E2E uniquement (`VITE_ENABLE_TEST_SEAM`) |
-| `src/skins/skinIds.js`   | Constantes d’identifiants                               |
-| `src/skins/skinTypes.js` | Typedef JSDoc sans runtime                              |
-| `src/sceneTypes.js`      | Contrat JSDoc `SceneContext` — documenté, non exécuté   |
+Source de vérité : [`AUDIT-EXCLUSIONS.md`](AUDIT-EXCLUSIONS.md) (aligné sur `vite.config.js`).
 
 - **Types** : JSDoc comments
 - **Accessibility** : Lighthouse a11y **≥ 90** (seuil CI)
 
 ---
 
-Last updated: 2026-07-14
+Last updated: 2026-07-16

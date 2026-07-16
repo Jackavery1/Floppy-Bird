@@ -14,7 +14,7 @@
         "test:watch": "vitest",
         "test:e2e": "playwright test",
         "test:e2e:ci": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait --project=chromium-mobile-landscape --project=webkit-mobile-portrait --project=webkit-mobile-landscape --project=webkit-tablet-portrait --project=chromium-tablet-portrait --project=chromium-tablet-landscape",
-        "test:e2e:smoke": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait --project=chromium-tablet-portrait --project=chromium-tablet-landscape e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/natural-scoring.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js",
+        "test:e2e:smoke": "playwright test --workers=1 --project=chromium-desktop --project=chromium-mobile-portrait --project=chromium-tablet-portrait --project=chromium-tablet-landscape e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/viewport-a11y-resize.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/natural-scoring.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js e2e/daily-progress.spec.mjs e2e/skin-unlock.spec.mjs",
         "test:e2e:install": "playwright install chromium webkit",
         "lighthouse": "node scripts/lighthouse-ci.mjs",
         "lint": "eslint .",

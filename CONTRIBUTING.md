@@ -59,7 +59,7 @@ Serveur local : voir l’avertissement Live Server dans [README.md](README.md).
 | `chromium-tablet-portrait`  | 768×1024       | oui   | `viewport.spec.js` ratio + resync a11y mid-game                               |
 | `chromium-tablet-landscape` | 1024×768       | oui   | `viewport.spec.js` ratio + resync a11y mid-game, `keyboard.spec.js` (smoke) |
 
-Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), resync des contrôles a11y après redimensionnement en partie (mobile portrait + tablette portrait/paysage, `viewport.spec.js`), ratio letterbox WebKit portrait (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), cibles tactiles ≥ 44 px menu et panneaux / **48 px** pour CTA et pause (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
+Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navigateur 200 % simulé (`viewport.spec.js`), resync des contrôles a11y après redimensionnement en partie (mobile portrait + tablette portrait/paysage, `viewport-a11y-resize.spec.js`), ratio letterbox WebKit portrait (`viewport.spec.js`), classe `partie-active` + viewport `user-scalable=no` en jeu **tactile** (desktop : zoom navigateur conservé), PWA offline (`offline.spec.js`), CTA install (`viewport-pwa.spec.js`), cibles tactiles ≥ 44 px menu et panneaux / **48 px** pour CTA et pause (`touchTargets.spec.js`), scoring naturel (`natural-scoring.spec.mjs`), tutoriel (`tutorial.spec.mjs`), équité gameplay et métriques scores 15–25 (`gameplay-equity.spec.mjs`).
 
 Matrice clavier détaillée (desktop vs mobile vs tablette) : [README.md — Matrice clavier et entrées](README.md#matrice-clavier-et-entrées).
 
@@ -80,6 +80,8 @@ npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports : desktop, mobile 
 #### PWA offline (e2e)
 
 Le test « charge le jeu hors ligne après precache » utilise `expect.poll` (pas `waitForFunction` async — Promise truthy) et un timeout 120 s. Le precache Workbox ne doit pas doubler `includeAssets` + `globPatterns` (sinon `add-to-cache-list-conflicting-entries`). Reload via `location.reload` ; tolère `ERR_INTERNET_DISCONNECTED` Playwright Windows.
+
+Boots shell (hors bundle) : `public/boot-offline.js` (redirect offline sans SW) et `public/boot-loading-timeout.js` (message si chargement bloqué) — chargés par `index.html` sous CSP `script-src 'self'`.
 
 ## Artefacts générés (ne pas committer)
 

@@ -69,6 +69,7 @@ describe('uiHud', () => {
         expect(elements.length).toBeGreaterThan(2);
         expect(ui._trainingBadge).toBeTruthy();
         expect(ui._hardcoreBadge).toBeTruthy();
+        expect(scene.add.text.mock.calls.some((c) => c[2] === 'HC')).toBe(true);
         const pauseHit = scene.add.rectangle.mock.calls.find(
             ([, , w, h]) => w === PAUSE_BTN_HIT && h === PAUSE_BTN_HIT
         );

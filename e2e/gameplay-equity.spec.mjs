@@ -20,7 +20,6 @@ import {
     getTrainingRuntime,
     getRoundRuntime,
     getLastDeathMetrics,
-    grantCoyoteGrace,
     alignBirdInFirstGap,
     holdBirdAtCenter,
     keepBirdAliveForPipeSpawn,

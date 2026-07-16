@@ -23,8 +23,9 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 |-------|-----|--------|
 | `fondNuit` | `#1a1a2e` | Fond shell / nuit |
 | `fondJour` | `#87ceeb` | Ciel jour |
-| `accent` | `#fdd835` | Titres, focus, CTA jaune |
-| `texteHud` | `#ffffff` | Score, HUD (contour noir obligatoire en jour) |
+| `accent` / `accentTitre` | `#fdd835` | Titres, focus, CTA ; score HUD **nuit** |
+| `accentTitreJour` | `#F9A825` | Score HUD **jour** (ambre plus lisible) |
+| `texteHud` | `#ffffff` | Hints / badges HUD (contour noir obligatoire en jour) |
 | `texteBoutonJaune` | sombre sur `#fdd835` | REJOUER, pills actives |
 
 ## Typographie
@@ -33,7 +34,7 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 |------|--------|----------------|
 | Titre arcade / chrome | Press Start 2P | 14 px défaut (`panelChromeTextStyle`) ; titres/onglets/REJOUER 13–14 px |
 | Corps menu / HUD | Segoe UI (Phaser) | 12–15 px |
-| Score in-game | Segoe UI bold | 40 px + contour |
+| Score in-game | Press Start 2P | 28 px + relief ; jour = `accentTitreJour` + contour noir 6 px |
 | Chargement shell | `--police-interface` | 14–16 px clamp |
 
 ## Spacing
@@ -64,6 +65,7 @@ Le fond ciel (`fondJour` `#87ceeb`) est clair : le texte HUD blanc seul **ne pas
 2. **Contraste mesuré sur le contour**, pas sur le fill blanc — validé dans `tests/designTokens.test.js`.
 3. **Assombrissement des bannières** en jour via `hudBannerFill()` pour les fonds semi-opaques.
 4. **`prefers-contrast: more`** : épaisseur contour +3 px, accent renforcé (`shellTheme.js` + `style.css`).
+5. **Score HUD** : nuit = `accentTitre` ; jour = `accentTitreJour` + stroke `contourHud` 6 px (`uiHudScore.js`).
 
 Ne pas retirer le contour en mode jour sans recalculer les ratios.
 
@@ -87,7 +89,7 @@ Ne pas retirer le contour en mode jour sans recalculer les ratios.
 | Signal | Token / module | Rôle |
 |--------|----------------|------|
 | Coyote actif | `teinteCoyoteActif` (`#FFD54F`) | Teinte sprite oiseau hors gap (`sceneCoyote.js`) |
-| Game over chargement | `showGameOverLoading` | Overlay + panneau squelette + pulse alpha (`ui/hud/uiHudBannerCore.js`) |
+| Fin de partie (chargement) | `showGameOverLoading` | Overlay + panneau squelette + pulse alpha (`ui/hud/uiHudBannerCore.js`) |
 | Cadre GO partagé | `ui/shared/uiGameOverChrome.js` | Frame + coins plaque (skeleton HUD + panneau) |
 
 ## Profondeur (z-order)
