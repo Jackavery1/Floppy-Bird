@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { DIFFICULTY } from '../src/config.js';
-import { MIN_CTA_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
+import { MIN_CTA_TOUCH, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -37,7 +37,7 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuHeader ajoute le titre avec relief', async () => {
-        const { buildMenuHeader } = await import('../src/uiMenuHeader.js');
+        const { buildMenuHeader } = await import('../src/ui/menu/uiMenuHeader.js');
         const title = buildMenuHeader(ui, elements, layout);
         expect(title).toBeTruthy();
         expect(ui._menuTitleShadow).toBeTruthy();
@@ -46,14 +46,14 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuDifficulty crée un bouton par niveau', async () => {
-        const { buildMenuDifficulty } = await import('../src/uiMenuHeader.js');
+        const { buildMenuDifficulty } = await import('../src/ui/menu/uiMenuHeader.js');
         buildMenuDifficulty(ui, elements, layout, DIFFICULTY.NORMAL);
         expect(ui._diffBtnLabels).toHaveLength(3);
         expect(ui._diffBtnGraphics).toBeTruthy();
     });
 
     it('buildMenuFooter ajoute start et zone tactile CTA 48 px', async () => {
-        const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
+        const { buildMenuFooter } = await import('../src/ui/menu/uiMenuBuild.js');
         const start = buildMenuFooter(ui, elements, layout);
         expect(start).toBe(ui._startText);
         expect(ui._startHit).toBeTruthy();
@@ -71,8 +71,8 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuFooter n’enregistre pas le focus clavier (délégué à bindMenuAccessibilityFocusVisuals)', async () => {
-        const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
-        const { focusHandlers } = await import('../src/uiDomAccessibilityState.js');
+        const { buildMenuFooter } = await import('../src/ui/menu/uiMenuBuild.js');
+        const { focusHandlers } = await import('../src/ui/a11y/uiDomAccessibilityState.js');
         buildMenuFooter(ui, elements, layout);
         expect(focusHandlers['a11y-start']).toBeUndefined();
         const pointerCalls = ui._startHit.on.mock.calls;
@@ -82,7 +82,7 @@ describe('uiMenuBuild', () => {
     it('buildMenuFooter laisse le CTA visible sans pulse si reduced motion', async () => {
         const { prefersReducedMotion } = await import('../src/motion.js');
         prefersReducedMotion.mockReturnValue(true);
-        const { buildMenuFooter } = await import('../src/uiMenuBuild.js');
+        const { buildMenuFooter } = await import('../src/ui/menu/uiMenuBuild.js');
         buildMenuFooter(ui, elements, layout);
         expect(ui._startText.setAlpha).toHaveBeenCalledWith(1);
     });
@@ -92,7 +92,7 @@ describe('uiMenuBuild', () => {
             getItem: () => null,
             setItem: vi.fn(),
         });
-        const { buildMenuFirstRunHint } = await import('../src/uiMenuBuild.js');
+        const { buildMenuFirstRunHint } = await import('../src/ui/menu/uiMenuBuild.js');
         buildMenuFirstRunHint(ui, elements, layout);
         expect(ui._firstRunHint).toBeTruthy();
         vi.unstubAllGlobals();
@@ -103,7 +103,7 @@ describe('uiMenuBuild', () => {
             getItem: (k) => (k.includes('tutorial-progress') ? '3' : null),
             setItem: vi.fn(),
         });
-        const { buildMenuFirstRunHint } = await import('../src/uiMenuBuild.js');
+        const { buildMenuFirstRunHint } = await import('../src/ui/menu/uiMenuBuild.js');
         buildMenuFirstRunHint(ui, elements, layout);
         expect(ui._firstRunHint).toBeUndefined();
         vi.unstubAllGlobals();
@@ -113,7 +113,7 @@ describe('uiMenuBuild', () => {
         const { sceneTween } = await import('../src/motion.js');
         ui._firstRunHint = { setAlpha: vi.fn() };
         const title = { setAlpha: vi.fn() };
-        const { playMenuIntroTween } = await import('../src/uiMenuBuild.js');
+        const { playMenuIntroTween } = await import('../src/ui/menu/uiMenuBuild.js');
         playMenuIntroTween(ui, title);
         expect(sceneTween).toHaveBeenCalledWith(
             ui.scene,
@@ -124,7 +124,7 @@ describe('uiMenuBuild', () => {
     });
 
     it('buildMenuOptions crée le bouton sans construire le panneau tant qu’il est fermé', async () => {
-        const { buildMenuOptions } = await import('../src/uiMenuOptions.js');
+        const { buildMenuOptions } = await import('../src/ui/menu/uiMenuOptions.js');
         buildMenuOptions(ui, elements, layout);
         expect(ui._optionsBtnLabel).toBeTruthy();
         expect(ui._optionsBtnHit).toBeTruthy();

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import {
@@ -7,9 +7,9 @@ import {
     applyHardcoreLabel,
     setOptionsContentVisible,
     TOGGLE_ICON_X_OFFSET,
-} from '../src/uiMenuOptionsLabels.js';
+} from '../src/ui/menu/uiMenuOptionsLabels.js';
 
-vi.mock('../src/uiToggleIcons.js', () => ({
+vi.mock('../src/ui/shared/uiToggleIcons.js', () => ({
     drawTrainingToggleIcon: vi.fn(),
     drawHardcoreToggleIcon: vi.fn(),
 }));

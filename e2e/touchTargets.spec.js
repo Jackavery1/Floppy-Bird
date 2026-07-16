@@ -50,7 +50,7 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         await waitForGameReady(page);
         for (const id of ['a11y-scores', 'a11y-options', 'a11y-skins']) {
             const minPx = await minA11yButtonScreenPx(page, id);
-            expect(minPx, id).toBeGreaterThanOrEqual(44);
+            expect(minPx, id).toBeGreaterThanOrEqual(48);
         }
     });
 

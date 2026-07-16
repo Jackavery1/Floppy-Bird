@@ -8,7 +8,7 @@ import {
     HILLS_NEAR_H,
 } from './textures/index.js';
 import { createCelestialSprite } from './textures/celestialTextures.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 

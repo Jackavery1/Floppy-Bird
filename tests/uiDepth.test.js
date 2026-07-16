@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DEPTH } from '../src/uiDepth.js';
+import { DEPTH } from '../src/ui/shared/uiDepth.js';
 
 describe('uiDepth', () => {
     it('expose les profondeurs monde < UI < HUD', () => {

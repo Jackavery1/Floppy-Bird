@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import { buildGameOverActions, animateGameOverReveal } from '../src/uiGameOverActions.js';
+import {
+    buildGameOverActions,
+    animateGameOverReveal,
+} from '../src/ui/gameOver/uiGameOverActions.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({

@@ -3,7 +3,7 @@ import { STORAGE_KEYS } from './storageKeys.js';
 import { birdTextureKey } from './skins/index.js';
 import { birdSpriteScale } from './textures/birdTextures.js';
 import { ensureBirdTexture } from './textures/index.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 
 const STORAGE_KEY = STORAGE_KEYS.ghost;
 

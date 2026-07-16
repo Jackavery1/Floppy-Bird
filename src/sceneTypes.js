@@ -12,7 +12,7 @@
  *
  * @typedef {import('./bird.js').Bird} Bird
  * @typedef {import('./pipes.js').Pipes} Pipes
- * @typedef {import('./ui.js').UI} UI
+ * @typedef {import('./ui/core/ui.js').UI} UI
  * @typedef {import('./scoreEffects.js').ScoreEffects} ScoreEffects
  * @typedef {import('./training.js').GhostReplay} GhostReplay
  * @typedef {ReturnType<import('./roundState.js').createRoundState>} RoundState

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { computeLetterboxSize } from '../src/viewport.js';
 
-vi.mock('../src/uiDomAccessibility.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibility.js', () => ({
     initAccessibilityLayer: vi.fn(),
     syncAccessibilityLayer: vi.fn(),
     bindAccessibilityAction: vi.fn(),

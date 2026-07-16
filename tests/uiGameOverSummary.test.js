@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildGameOverSummary } from '../src/uiGameOverSummary.js';
+import { buildGameOverSummary } from '../src/ui/gameOver/uiGameOverSummary.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 function makeUi(overrides = {}) {

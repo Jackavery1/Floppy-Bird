@@ -55,20 +55,22 @@ export default defineConfig(({ mode }) => {
                         if (normalized.includes('node_modules')) {
                             return useVendorPhaser ? undefined : 'phaser';
                         }
-                        if (useVendorPhaser && normalized.includes('/src/skins/')) {
-                            return 'skins';
-                        }
-                        if (useVendorPhaser && normalized.includes('/src/uiGameOver')) {
+                        if (!useVendorPhaser) return undefined;
+                        // skins + UI eager ensemble (évite cycle chunks / TDZ menu↔skins).
+                        // gameOver hors loader → chunk async `ui-gameover` (skeleton HUD
+                        // n’importe plus que le chrome partagé).
+                        if (
+                            normalized.includes('/src/ui/gameOver/') &&
+                            !normalized.endsWith('/uiGameOverLoader.js')
+                        ) {
                             return 'ui-gameover';
                         }
-                        if (useVendorPhaser && normalized.includes('/src/uiMenu')) {
-                            return 'ui-menu';
-                        }
-                        if (useVendorPhaser && normalized.includes('/src/uiHud')) {
-                            return 'ui-hud';
-                        }
-                        if (useVendorPhaser && normalized.includes('/src/uiDom')) {
-                            return 'ui-a11y';
+                        if (
+                            normalized.includes('/src/skins/') ||
+                            normalized.includes('/src/ui/') ||
+                            normalized.endsWith('/src/uiIndex.js')
+                        ) {
+                            return 'ui';
                         }
                         return undefined;
                     },
@@ -105,20 +107,20 @@ export default defineConfig(({ mode }) => {
             },
             VitePWA({
                 registerType: 'autoUpdate',
-                includeAssets: [
-                    'icons/*.png',
-                    'icons/*.svg',
-                    'fonts/*.woff2',
-                    'vendor/*.js',
-                    'manifest.webmanifest',
-                    'offline.html',
-                    'shell-tokens.css',
-                    'offline-page.css',
-                ],
+                // Pas d’includeAssets : globPatterns couvre déjà public/ + build ;
+                // doubler (ex. manifest.webmanifest) → add-to-cache-list-conflicting-entries
+                // et precache vide (hors ligne cassé).
                 manifest: pwaManifest,
                 workbox: {
                     globPatterns: [
                         '**/*.{js,css,html,png,json,ico,webp,svg,webmanifest,woff2}',
+                    ],
+                    globIgnores: [
+                        '**/tokens.html',
+                        '**/assets/tokens-*.js',
+                        '**/assets/tokens-*.css',
+                        // latin-ext uniquement dans assets/ (jeu) — pas dans public/fonts
+                        '**/fonts/press-start-2p-latin-ext-*.woff2',
                     ],
                     navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
                     navigateFallbackDenylist: [/\/offline\.html$/, /\/tokens\.html$/],

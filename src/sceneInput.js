@@ -3,7 +3,8 @@ import { GAME_STATE, canReturnToMenu, canTogglePause, isMenuPanelOpen } from './
 import { resumeAudio } from './audio.js';
 import { skipTutorialIfActive } from './tutorialProgress.js';
 import { loadTutorialComplete } from './tutorialStorage.js';
-import { MIN_TOUCH, UI_LAYOUT } from './uiLayout.js';
+import { MENU_SECONDARY_HIT, UI_LAYOUT } from './ui/shared/uiLayout.js';
+import { setAccessibilityEscapeHandler } from './ui/a11y/uiDomAccessibilityFocusTrap.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -11,11 +12,25 @@ import { MIN_TOUCH, UI_LAYOUT } from './uiLayout.js';
 function isMenuSecondaryRowPointer(pointer) {
     const y = pointer?.worldY ?? pointer?.y;
     if (typeof y !== 'number') return false;
-    return y >= UI_LAYOUT.menu.menuRow - MIN_TOUCH;
+    return y >= UI_LAYOUT.menu.menuRow - MENU_SECONDARY_HIT;
+}
+
+/** @param {SceneContext} scene */
+export function handleEscapeKey(scene) {
+    if (scene.state === GAME_STATE.MENU) {
+        const panelOpen = scene.ui?._optionsOpen || scene.ui?._scoresOpen || scene.ui?._skinsOpen;
+        if (panelOpen) {
+            scene.ui.closeAllMenuPanels();
+            return;
+        }
+    }
+    if (canTogglePause(scene.state)) scene.togglePause();
 }
 
 /** @param {SceneContext} scene */
 export function setupSceneInput(scene) {
+    setAccessibilityEscapeHandler(() => handleEscapeKey(scene));
+
     scene.input.keyboard.on('keydown-SPACE', (event) => {
         if (event?.repeat) return;
         scene.handlePrimaryAction();
@@ -31,15 +46,7 @@ export function setupSceneInput(scene) {
     });
 
     scene.input.keyboard.on('keydown-ESC', () => {
-        if (scene.state === GAME_STATE.MENU) {
-            const panelOpen =
-                scene.ui?._optionsOpen || scene.ui?._scoresOpen || scene.ui?._skinsOpen;
-            if (panelOpen) {
-                scene.ui.closeAllMenuPanels();
-                return;
-            }
-        }
-        if (canTogglePause(scene.state)) scene.togglePause();
+        handleEscapeKey(scene);
     });
 
     scene.input.keyboard.on('keydown-M', () => {

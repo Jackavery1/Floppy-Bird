@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { SPACING, MIN_TOUCH } from '../src/uiLayout.js';
+import { SPACING, MIN_TOUCH } from '../src/ui/shared/uiLayout.js';
 
 describe('uiLayout spacing', () => {
     it('expose une grille spacing cohérente', () => {

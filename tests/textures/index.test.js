@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
     preloadTextures,
+    preloadTexturesEssential,
     ensureBirdTextures,
     ensureBirdTexture,
 } from '../../src/textures/index.js';
@@ -177,10 +178,25 @@ describe('textures', () => {
         expect(scene.anims.create).toHaveBeenCalledTimes(SKIN_IDS.length);
     });
 
-    it('preloadTextures génère le monde et les skins initiaux seulement', () => {
+    it('preloadTexturesEssential génère fond, sol, tuyaux et oiseau', () => {
         const scene = sceneWithGraphicsList();
         scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
-        preloadTextures(scene);
+        preloadTexturesEssential(scene);
+        const keys = scene._graphicsList.flatMap((g) =>
+            g.generateTexture.mock.calls.map((c) => c[0])
+        );
+        expect(keys).toEqual(
+            expect.arrayContaining(['background', 'ground', 'pipe-top', 'pipe-bottom'])
+        );
+        expect(keys.filter((k) => k.startsWith('bird-sheet-'))).toEqual(['bird-sheet-classic']);
+        expect(keys).not.toEqual(expect.arrayContaining(['sun', 'cloud', 'star']));
+        resetBackgroundCache();
+    });
+
+    it('preloadTextures génère le monde et les skins initiaux seulement', async () => {
+        const scene = sceneWithGraphicsList();
+        scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
+        await preloadTextures(scene);
         const keys = scene._graphicsList.flatMap((g) =>
             g.generateTexture.mock.calls.map((c) => c[0])
         );
@@ -224,7 +240,7 @@ describe('textures', () => {
         const { preloadTextures: preloadAvecOcean } = await import('../../src/textures/index.js');
         const scene = sceneWithGraphicsList();
         scene.anims = { exists: vi.fn(() => false), create: vi.fn() };
-        preloadAvecOcean(scene);
+        await preloadAvecOcean(scene);
         const keys = scene._graphicsList.flatMap((g) =>
             g.generateTexture.mock.calls.map((c) => c[0])
         );

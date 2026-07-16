@@ -4,6 +4,7 @@ import {
     UI_LAYOUT,
     MIN_TOUCH,
     MIN_CTA_TOUCH,
+    MENU_SECONDARY_HIT,
     TOUCH_TARGETS,
     panelCloseBtnY,
     PANEL_CLOSE_INSET,
@@ -11,7 +12,7 @@ import {
     GAME_OVER_PANEL,
     gameOverMenuBtnY,
     gameOverRestartBtnY,
-} from '../src/uiLayout.js';
+} from '../src/ui/shared/uiLayout.js';
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('uiLayout menu', () => {
@@ -43,9 +44,9 @@ describe('uiLayout menu', () => {
         const startTop = menu.start - MIN_CTA_TOUCH / 2;
         expect(startTop).toBeGreaterThanOrEqual(diffBottom);
         const dailyBottom = menu.dailyBtn + MIN_TOUCH / 2;
-        const menuRowTop = menu.menuRow - MIN_TOUCH / 2;
+        const menuRowTop = menu.menuRow - MENU_SECONDARY_HIT / 2;
         expect(menuRowTop).toBeGreaterThanOrEqual(dailyBottom + 8);
-        const menuRowBottom = menu.menuRow + MIN_TOUCH / 2;
+        const menuRowBottom = menu.menuRow + MENU_SECONDARY_HIT / 2;
         const hintTop = menu.hint1 - 16;
         expect(hintTop).toBeGreaterThanOrEqual(menuRowBottom);
     });
@@ -104,8 +105,8 @@ describe('uiLayout menu', () => {
 
     it('les boutons RETOUR des panneaux sont hors de la bande tactile de menuRow', () => {
         const band = [
-            UI_LAYOUT.menu.menuRow - MIN_TOUCH / 2,
-            UI_LAYOUT.menu.menuRow + MIN_TOUCH / 2,
+            UI_LAYOUT.menu.menuRow - MENU_SECONDARY_HIT / 2,
+            UI_LAYOUT.menu.menuRow + MENU_SECONDARY_HIT / 2,
         ];
         const closeButtons = [
             UI_LAYOUT.optionsPanel.closeBtn,

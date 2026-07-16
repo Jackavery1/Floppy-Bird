@@ -12,6 +12,7 @@ import {
     cycleTrainingSpeedTimes,
     getDifficultyMetrics,
     getGameplayEquity,
+    getHudBannerText,
     getPipeState,
     getRoundScore,
     getScoreHud,
@@ -27,10 +28,12 @@ import {
     requestJump,
     restartRoundWithModes,
     runCoyoteGapExitScenario,
+    runCoyoteBoundsScenario,
     sampleGapVariance,
     triggerDeath,
     probeAudio,
     probeHaptics,
+    advancePipeSpawnWait,
 } from './helpers/testSeam.mjs';
 
 test.describe('gameplay equity via test seam', () => {
@@ -58,8 +61,10 @@ test.describe('gameplay equity via test seam', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
 
-        await requestJump(page);
-        const equity = await getGameplayEquity(page);
+        const equity = await page.evaluate(() => {
+            window.__FLOPPY_TEST__?.requestJump?.();
+            return window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null;
+        });
 
         expect(equity?.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
@@ -70,13 +75,15 @@ test.describe('gameplay equity via test seam', () => {
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
 
-        await grantCoyoteGrace(page, GAME_CONFIG.bird.coyoteTimeFrames);
-        await expect
-            .poll(async () => getGameplayEquity(page))
-            .toMatchObject({
-                coyoteFrames: GAME_CONFIG.bird.coyoteTimeFrames,
-                hasCoyoteGrace: true,
-            });
+        const equity = await page.evaluate((frames) => {
+            window.__FLOPPY_TEST__?.grantCoyoteGrace?.(frames);
+            return window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null;
+        }, GAME_CONFIG.bird.coyoteTimeFrames);
+
+        expect(equity).toMatchObject({
+            coyoteFrames: GAME_CONFIG.bird.coyoteTimeFrames,
+            hasCoyoteGrace: true,
+        });
     });
 
     test('coyote réel protège après sortie de gap puis expire', async ({ page }, testInfo) => {
@@ -91,6 +98,17 @@ test.describe('gameplay equity via test seam', () => {
         expect(result?.noDeathDuringCoyote).toBe(true);
         expect(result?.coyoteExpired).toBe(true);
         expect(result?.deathAfterCoyoteExpired).toBe(true);
+    });
+
+    test('coyote protège le plafond mais pas le sol', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        await waitForGameReady(page);
+        await restartRoundWithModes(page, { hardcore: false });
+
+        const result = await runCoyoteBoundsScenario(page);
+        expect(result?.diedOnGroundWithCoyote).toBe(true);
+        expect(result?.survivedCeilingWithCoyote).toBe(true);
+        expect(result?.diedOnCeilingWithoutCoyote).toBe(true);
     });
 
     test('délai premier tuyau laisse une fenêtre après invincibilité spawn', async ({
@@ -124,23 +142,16 @@ test.describe('gameplay equity via test seam', () => {
         page,
     }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
-        const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
-        await startPlayingFromMenu(page, usesTouch);
+        await restartRoundWithModes(page, { hardcore: false });
+        await holdBirdAtCenter(page);
 
-        await page.waitForTimeout(GAME_CONFIG.round.spawnInvincibilityMs - 50);
         expect((await getPipeState(page))?.pipeCount ?? 0).toBe(0);
 
-        const waitAfterInvincibility =
-            GAME_CONFIG.round.pipeSpawnDelayMs - (GAME_CONFIG.round.spawnInvincibilityMs - 50);
-        for (let elapsed = 0; elapsed < waitAfterInvincibility + 600; elapsed += 250) {
-            await requestJump(page);
-            await page.waitForTimeout(250);
-        }
+        await advancePipeSpawnWait(page, GAME_CONFIG.round.pipeSpawnDelayMs + 100);
 
-        await expect
-            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0, { timeout: 5_000 })
-            .toBeGreaterThan(0);
+        expect((await getPipeState(page))?.pipeCount ?? 0).toBeGreaterThan(0);
+        await expectGameState(page, 'playing');
     });
 
     test('hardcore : invincibilité spawn avec marge avant premier tuyau', async ({
@@ -221,8 +232,9 @@ test.describe('gameplay equity via test seam', () => {
         await startPlayingFromMenu(page, usesTouch);
 
         for (let i = 0; i < 8; i++) {
+            await holdBirdAtCenter(page);
             await requestJump(page);
-            await page.waitForTimeout(250);
+            await page.waitForTimeout(180);
         }
         await expectGameState(page, 'playing');
     });
@@ -305,11 +317,7 @@ test.describe('gameplay equity via test seam', () => {
     test('mode entraînement applique timeScale 0.8 (choix gameplay)', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
-        await page.locator('#a11y-options').click();
-        await expect(page.locator('#a11y-training')).toBeVisible();
-        await page.locator('#a11y-training').click();
-        await page.locator('#a11y-options-close').click();
-        await startPlayingFromMenu(page, false);
+        await restartRoundWithModes(page, { training: true });
         await expect
             .poll(async () => getTrainingRuntime(page))
             .toMatchObject({
@@ -341,23 +349,41 @@ test.describe('gameplay equity via test seam', () => {
         const at20 = await getDifficultyMetrics(page, 20);
         expect(at20?.score).toBe(20);
         expect(at20?.speedMultiplier).toBeCloseTo(1.06, 2);
-        expect(at20?.pipeGap).toBe(
-            GAME_CONFIG.getDifficulty('normal').gap - GAME_CONFIG.round.gapTightenStep
-        );
+        expect(at20?.pipeGap).toBe(GAME_CONFIG.getDifficulty('normal').gap);
 
         const at25 = await getDifficultyMetrics(page, 25);
         expect(at25?.speedMultiplier).toBeCloseTo(1.06, 2);
-        expect(at25?.pipeGap).toBe(at20?.pipeGap);
+        expect(at25?.pipeGap).toBe(
+            GAME_CONFIG.getDifficulty('normal').gap - GAME_CONFIG.round.gapTightenStep
+        );
     });
 
-    test('score 20 via seam reflète resserrement des gaps', async ({ page }, testInfo) => {
+    test('preview HUD annonce le resserrement des gaps avant le palier', async ({
+        page,
+    }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         await startPlayingFromMenu(page, usesTouch);
-        await bumpScore(page, 20);
+        const previewAt =
+            GAME_CONFIG.round.gapTightenAfterScore - GAME_CONFIG.round.difficultyPreviewOffset;
+        await bumpScore(page, previewAt);
+        await expect
+            .poll(async () => getHudBannerText(page, '_escalationPreviewBanner'))
+            .toMatch(/GAPS/i);
+        await expect
+            .poll(async () => getHudBannerText(page, '_escalationPreviewBanner'))
+            .toContain(String(GAME_CONFIG.round.gapTightenAfterScore));
+    });
+
+    test('score gapTighten via seam reflète resserrement des gaps', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await bumpScore(page, GAME_CONFIG.round.gapTightenAfterScore);
         const metrics = await getDifficultyMetrics(page);
-        expect(metrics?.score).toBe(20);
+        expect(metrics?.score).toBe(GAME_CONFIG.round.gapTightenAfterScore);
         expect(metrics?.pipeGap).toBe(
             GAME_CONFIG.getDifficulty('normal').gap - GAME_CONFIG.round.gapTightenStep
         );
@@ -368,8 +394,7 @@ test.describe('gameplay equity via test seam', () => {
         await waitForGameReady(page);
         const scales = await cycleTrainingSpeedTimes(page, 4);
         expect(scales).toEqual([1, 0.6, 0.7, 0.8]);
-        await page.locator('#a11y-training').click();
-        await startPlayingFromMenu(page, false);
+        await restartRoundWithModes(page, { training: true });
         await expect
             .poll(async () => getTrainingRuntime(page))
             .toMatchObject({ trainingMode: true, trainingTimeScale: 0.8, timeScale: 0.8 });

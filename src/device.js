@@ -136,7 +136,9 @@ export function jumpTutorialText() {
 }
 
 export function gapTutorialText() {
-    return isCoarsePointer() ? 'Vise le corridor entre les tuyaux' : 'Passe entre les tuyaux';
+    return isCoarsePointer()
+        ? 'Vise le corridor\n(le sol reste mortel)'
+        : 'Passe entre les tuyaux\n(le sol reste mortel)';
 }
 
 export function scoreTutorialText() {

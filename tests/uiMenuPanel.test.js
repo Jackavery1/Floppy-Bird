@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
-import { buildMenuToggleButton, setMenuPanelVisible } from '../src/uiMenuPanel.js';
-import { createMenuPanelController } from '../src/uiMenuPanelController.js';
-import { MENU_BTN_COLOR } from '../src/uiLayout.js';
+import { buildMenuToggleButton, setMenuPanelVisible } from '../src/ui/menu/uiMenuPanel.js';
+import { createMenuPanelController } from '../src/ui/menu/uiMenuPanelController.js';
+import { MENU_BTN_COLOR } from '../src/ui/shared/uiLayout.js';
 import { hexVersPhaser, DESIGN_TOKENS } from '../src/designTokens.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { GAME_STATE } from '../src/gameState.js';

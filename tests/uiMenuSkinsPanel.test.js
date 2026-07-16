@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import { GAME_STATE } from '../src/gameState.js';
-import { buildMenuSkinsPanel, toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
-import { UI_LAYOUT } from '../src/uiLayout.js';
+import { buildMenuSkinsPanel, toggleMenuSkins } from '../src/ui/menu/uiMenuSkinsPanel.js';
+import { UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 
 describe('uiMenuSkinsPanel', () => {
     let scene;

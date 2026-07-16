@@ -39,7 +39,9 @@ export const GAME_CONFIG = {
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        jumpBufferFrames: 6,
+        /** Latch 1 frame : l’input est consommé au prochain `processJumpBuffer` (pas une fenêtre multi-frames). */
+        jumpBufferFrames: 1,
+        /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },
 
@@ -72,7 +74,7 @@ export const GAME_CONFIG = {
         speedBoostMaxBoosts: 5,
         /** Aperçu vitesse un point avant le 1er palier (+3 % à score 10). */
         speedBoostPreviewOffset: 1,
-        gapTightenAfterScore: 20,
+        gapTightenAfterScore: 25,
         /** Aperçu HUD N points avant l’escalade (gaps + vitesse). */
         difficultyPreviewOffset: 5,
         gapTightenEvery: 10,
@@ -80,7 +82,7 @@ export const GAME_CONFIG = {
         streakMilestones: [10, 15, 20, 30, 40, 50],
         /** Seuil debug : mort avant cette durée (ms) depuis le début de manche. */
         earlyDeathMs: 30_000,
-        deathSlowMoMs: 80,
+        deathSlowMoMs: 140,
         deathSlowMoScale: 0.3,
     },
 

@@ -22,7 +22,7 @@ import {
     startSpawnInvincibility,
     onPipeSpawned,
 } from './sceneRound.js';
-import { preloadGameOverUI } from './uiGameOverLoader.js';
+import { preloadGameOverUI } from './ui/gameOver/uiGameOverLoader.js';
 import { announceRoundStarted } from './sceneA11ySync.js';
 import { resetScoreAnnounceState } from './sceneScoreAnnounce.js';
 import { clearStaleOverlays } from './sceneFlowOverlays.js';

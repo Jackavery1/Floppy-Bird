@@ -78,24 +78,28 @@ describe('sceneFeedback', () => {
         expect(hapticLight).toHaveBeenCalled();
     });
 
-    it('playScoreFeedback déclenche audio, haptique et juice si scène fournie', async () => {
+    it('playScoreFeedback déclenche audio, haptique, popup et juice palier ×10', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
         const { playSound } = await import('../src/audio.js');
         const { hapticLight, hapticMedium } = await import('../src/haptics.js');
-        const scene = createScene();
+        const scene = createScene({ scoreEffects: { show: vi.fn() } });
         playScoreFeedback(10, scene);
         expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 10);
         expect(hapticMedium).toHaveBeenCalled();
         expect(hapticLight).not.toHaveBeenCalled();
+        expect(scene.scoreEffects.show).toHaveBeenCalledWith(80, 200);
         expect(spawnScoreJuice).toHaveBeenCalledWith(scene, 80, 200, 10);
     });
 
-    it('playScoreFeedback utilise haptique léger hors palier ×10', async () => {
+    it('playScoreFeedback utilise haptique léger et popup hors palier ×10', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
         const { hapticLight, hapticMedium } = await import('../src/haptics.js');
-        playScoreFeedback(3, createScene());
+        const scene = createScene({ scoreEffects: { show: vi.fn() } });
+        playScoreFeedback(3, scene);
         expect(hapticLight).toHaveBeenCalled();
         expect(hapticMedium).not.toHaveBeenCalled();
+        expect(scene.scoreEffects.show).toHaveBeenCalledWith(80, 200);
+        expect(spawnScoreJuice).not.toHaveBeenCalled();
     });
 
     it('playGroundImpactFeedback déclenche son sol et haptique léger', async () => {

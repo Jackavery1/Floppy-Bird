@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { TOUCH_TARGETS } from '../src/uiLayout.js';
+import { TOUCH_TARGETS } from '../src/ui/shared/uiLayout.js';
 import {
     enterPausedFromPlaying,
     expectGameState,

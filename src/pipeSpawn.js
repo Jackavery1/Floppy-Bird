@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { ensurePipeTextures } from './textures/pipeTextures.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 
 /**
  * Crée un sprite tuyau positionné hors-écran à droite.

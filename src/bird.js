@@ -1,8 +1,8 @@
 import { GAME_CONFIG } from './config.js';
-import { BIRD_COLLISION_INSET } from './uiPhaserComponents.js';
+import { BIRD_COLLISION_INSET } from './ui/shared/uiPhaserComponents.js';
 import { birdAnimKey, birdTextureKey } from './skins/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 import { birdSpriteScale } from './textures/birdTextures.js';
 import { ensureBirdTexture } from './textures/index.js';
 

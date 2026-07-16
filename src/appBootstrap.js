@@ -1,6 +1,6 @@
 import { GAME_CONFIG } from './config.js';
 import { syncShellTheme } from './shellTheme.js';
-import { initAccessibilityLayer, syncAccessibilityLayer } from './uiDomAccessibility.js';
+import { initAccessibilityLayer, syncAccessibilityLayer } from './ui/a11y/uiDomAccessibility.js';
 import {
     computeLetterboxSize,
     computeLetterboxPosition,

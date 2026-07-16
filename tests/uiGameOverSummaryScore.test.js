@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildGameOverSummaryScore } from '../src/uiGameOverSummaryScore.js';
+import { buildGameOverSummaryScore } from '../src/ui/gameOver/uiGameOverSummaryScore.js';
 import { getSkin } from '../src/skins/index.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 

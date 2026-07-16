@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildSkinsTab, refreshSkinsTab } from '../src/uiMenuSkins.js';
-import { UI } from '../src/ui.js';
+import { buildSkinsTab, refreshSkinsTab } from '../src/ui/menu/uiMenuSkins.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import { SKIN_IDS } from '../src/skins/index.js';

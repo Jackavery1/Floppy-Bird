@@ -8,7 +8,7 @@ import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 import { announceDeathStarted, openGameOverAccessibility } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
-import { preloadGameOverUI } from './uiGameOverLoader.js';
+import { preloadGameOverUI } from './ui/gameOver/uiGameOverLoader.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 

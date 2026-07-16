@@ -79,7 +79,7 @@ npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports : desktop, mobile 
 
 #### PWA offline (e2e)
 
-Le test `offline.spec.js` « charge le jeu hors ligne après precache » peut échouer en local Windows (Playwright + service worker hors ligne). Il passe en CI Linux ; ne pas bloquer un push sur cet échec isolé en dev.
+Le test « charge le jeu hors ligne après precache » utilise `expect.poll` (pas `waitForFunction` async — Promise truthy) et un timeout 120 s. Le precache Workbox ne doit pas doubler `includeAssets` + `globPatterns` (sinon `add-to-cache-list-conflicting-entries`). Reload via `location.reload` ; tolère `ERR_INTERNET_DISCONNECTED` Playwright Windows.
 
 ## Artefacts générés (ne pas committer)
 
@@ -116,6 +116,20 @@ npm run test:e2e:ci      # matrice complète 7 viewports
 npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
+### Mesure bundle
+
+Après `npm run build`, `npm run measure` affiche JSON :
+
+| Champ | Signification |
+|-------|----------------|
+| `distKo` | Taille totale `dist/` |
+| `iconsKo` | `public/icons/` |
+| `vendorPhaserKo` | Phaser externalisé |
+| `appJsGzipKo` | Somme gzip des chunks JS app |
+| `jsAssets` / `cssAssets` | Détail par fichier |
+
+Référence locale : `scripts/bundle-baseline.json` — régénérer après un gain mesurable (`npm run build && npm run measure`).
+
 La CI exécute `npm run icons` puis `npm run icons:optimize` automatiquement.
 
 `npm run cycles` détecte les imports circulaires dans `src/` (madge). Lighthouse CI : perf **informatif** (plancher conseillé 45, avertissement ⚠ sans échec) — seuils bloquants a11y / best-practices / seo (`scripts/lighthouse-ci.mjs`).
@@ -150,5 +164,5 @@ En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explici
 
 - **Identifiants** : anglais pour modules, fonctions exportées et API Phaser (`showMenu`, `buildOptionsContent`) — stabilité des imports et alignement avec l’écosystème. **Ne pas renommer massivement** les identifiants existants sans raison fonctionnelle. Textes joueur et commentaires en français.
 - **`SceneContext`** : contrat JSDoc dans `src/sceneTypes.js` — tout module `scene*` reçoit ce contexte ; ne pas accéder à la physique ou au storage depuis `ui*.js`. Résumé dans [ARCHITECTURE.md](ARCHITECTURE.md#contrat-scenecontext-srcscenetypesjs).
-- **`TOUCH_TARGETS`** (`src/uiLayoutConstants.js`) : coordonnées jeu pour les tests e2e — chaque clé doit avoir une spec Playwright associée (`e2e/touch.spec.js`, `e2e/scoreHud.spec.js`).
+- **`TOUCH_TARGETS`** (`src/ui/shared/uiLayoutConstants.js`) : coordonnées jeu pour les tests e2e — chaque clé doit avoir une spec Playwright associée (`e2e/touch.spec.js`, `e2e/scoreHud.spec.js`).
 - **Format** : Prettier sur `src/`, `tests/`, `e2e/`, `scripts/` (`npm run format` avant une PR si le diff touche plusieurs fichiers).

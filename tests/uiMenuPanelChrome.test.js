@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
 import { DESIGN_TOKENS, hexVersPhaser } from '../src/designTokens.js';
-import { MIN_TOUCH } from '../src/uiLayout.js';
+import { MIN_TOUCH } from '../src/ui/shared/uiLayout.js';
 import {
     buildPanelPillButton,
     buildStyledPanelBackdrop,
     drawPanelPillButton,
     PANEL_SHELL_RADIUS,
-} from '../src/uiMenuPanelChrome.js';
+} from '../src/ui/menu/uiMenuPanelChrome.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 describe('uiMenuPanelChrome', () => {

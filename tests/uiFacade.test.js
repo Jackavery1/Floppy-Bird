@@ -39,29 +39,29 @@ const menu = vi.hoisted(() => ({
     refreshHighScore: vi.fn(),
 }));
 
-vi.mock('../src/uiHud.js', () => hud);
-vi.mock('../src/uiMenu.js', () => menu);
-vi.mock('../src/uiMenuOptions.js', () => ({
+vi.mock('../src/ui/hud/uiHud.js', () => hud);
+vi.mock('../src/ui/menu/uiMenu.js', () => menu);
+vi.mock('../src/ui/menu/uiMenuOptions.js', () => ({
     toggleMenuOptions: vi.fn(),
     refreshHardcoreLockState: vi.fn(),
 }));
-vi.mock('../src/uiMenuScoresPanel.js', () => ({ toggleMenuScores: vi.fn() }));
-vi.mock('../src/uiMenuSkinsPanel.js', () => ({ toggleMenuSkins: vi.fn() }));
-vi.mock('../src/uiMenuSkinCycle.js', () => ({ cycleMenuSkin: vi.fn() }));
-vi.mock('../src/uiPause.js', () => ({ showPause: vi.fn(() => ({ elements: [] })) }));
-vi.mock('../src/uiGameOverLoader.js', () => ({
+vi.mock('../src/ui/menu/uiMenuScoresPanel.js', () => ({ toggleMenuScores: vi.fn() }));
+vi.mock('../src/ui/menu/uiMenuSkinsPanel.js', () => ({ toggleMenuSkins: vi.fn() }));
+vi.mock('../src/ui/menu/uiMenuSkinCycle.js', () => ({ cycleMenuSkin: vi.fn() }));
+vi.mock('../src/ui/core/uiPause.js', () => ({ showPause: vi.fn(() => ({ elements: [] })) }));
+vi.mock('../src/ui/gameOver/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
     buildGameOverUI: vi.fn(() => ({ elements: [] })),
 }));
 vi.mock('../src/storage.js', () => ({ loadHighScore: vi.fn(() => 0) }));
 
-import { UI } from '../src/ui.js';
-import { UI_FACADE_METHODS } from '../src/uiFacadeBind.js';
-import { toggleMenuOptions, refreshHardcoreLockState } from '../src/uiMenuOptions.js';
-import { toggleMenuScores } from '../src/uiMenuScoresPanel.js';
-import { toggleMenuSkins } from '../src/uiMenuSkinsPanel.js';
-import { cycleMenuSkin } from '../src/uiMenuSkinCycle.js';
-import { buildGameOverUI } from '../src/uiGameOverLoader.js';
+import { UI } from '../src/ui/core/ui.js';
+import { UI_FACADE_METHODS } from '../src/ui/core/uiFacadeBind.js';
+import { toggleMenuOptions, refreshHardcoreLockState } from '../src/ui/menu/uiMenuOptions.js';
+import { toggleMenuScores } from '../src/ui/menu/uiMenuScoresPanel.js';
+import { toggleMenuSkins } from '../src/ui/menu/uiMenuSkinsPanel.js';
+import { cycleMenuSkin } from '../src/ui/menu/uiMenuSkinCycle.js';
+import { buildGameOverUI } from '../src/ui/gameOver/uiGameOverLoader.js';
 
 describe('UI façade — délégation', () => {
     let ui;

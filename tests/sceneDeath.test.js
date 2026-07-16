@@ -26,7 +26,7 @@ vi.mock('../src/dailyChallengeProgress.js', () => ({
 vi.mock('../src/shellGameState.js', () => ({
     syncShellGameState: vi.fn(),
 }));
-vi.mock('../src/uiGameOverLoader.js', () => ({
+vi.mock('../src/ui/gameOver/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
 }));
 

@@ -3,7 +3,7 @@ import {
     BIRD_COLLISION_INSET,
     drawPauseChrome,
     drawTokenPanel,
-} from '../src/uiPhaserComponents.js';
+} from '../src/ui/shared/uiPhaserComponents.js';
 
 describe('uiPhaserComponents', () => {
     it('documente les insets hitbox oiseau', () => {

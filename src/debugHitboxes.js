@@ -1,8 +1,8 @@
 import { GAME_CONFIG } from './config.js';
 import { pipeCollider } from './pipeCollision.js';
 import { shouldUpdateGameplay } from './gameState.js';
-import { DEBUG_HITBOX_COLORS } from './uiPhaserComponents.js';
-import { DEPTH } from './uiDepth.js';
+import { DEBUG_HITBOX_COLORS } from './ui/shared/uiPhaserComponents.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 function isDebugHitboxesEnabled(scene) {

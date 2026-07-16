@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
     buildMenuDailyChallenge,
     refreshDailyChallengeButton,
-} from '../src/uiMenuDailyChallenge.js';
-import { UI } from '../src/ui.js';
+} from '../src/ui/menu/uiMenuDailyChallenge.js';
+import { UI } from '../src/ui/core/ui.js';
 import { DIFFICULTY } from '../src/config.js';
-import { DEPTH, MIN_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
+import { DEPTH, MIN_TOUCH, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 

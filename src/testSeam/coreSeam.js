@@ -1,4 +1,6 @@
-/** @param {() => import('./sceneTypes.js').SceneContext | undefined} getScene */
+import { handleScoreMilestones } from '../sceneScoreMilestones.js';
+
+/** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */
 export function createCoreSeam(getScene) {
     return {
         getState: () => getScene()?.state ?? null,
@@ -17,8 +19,12 @@ export function createCoreSeam(getScene) {
         bumpScore: (amount = 1) => {
             const scene = getScene();
             if (!scene?.ui) return;
+            const from = scene.round.score;
             scene.round.score += amount;
             scene.ui.updateScore(scene.round.score);
+            for (let score = from + 1; score <= scene.round.score; score++) {
+                handleScoreMilestones(scene, score);
+            }
         },
         getCanvasLayout: () => {
             const canvas = getScene()?.game?.canvas;

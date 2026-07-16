@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
@@ -12,9 +12,9 @@ import {
     updateHardcoreLabel,
     updateDifficultyButtons,
     refreshHighScore,
-} from '../src/uiMenu.js';
-import { toggleMenuOptions } from '../src/uiMenuOptions.js';
-import { setOptionsTab } from '../src/uiMenuOptionsTabs.js';
+} from '../src/ui/menu/uiMenu.js';
+import { toggleMenuOptions } from '../src/ui/menu/uiMenuOptions.js';
+import { setOptionsTab } from '../src/ui/menu/uiMenuOptionsTabs.js';
 
 vi.mock('../src/motion.js', () => ({
     sceneTween: vi.fn(),

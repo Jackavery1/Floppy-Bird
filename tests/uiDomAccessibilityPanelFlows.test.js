@@ -3,7 +3,7 @@ import { GAME_STATE } from '../src/gameState.js';
 
 const actionHandlers = new Map();
 
-vi.mock('../src/uiDomAccessibilityControls.js', async (importOriginal) => {
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', async (importOriginal) => {
     const actual = await importOriginal();
     return {
         ...actual,
@@ -17,13 +17,13 @@ vi.mock('../src/uiDomAccessibilityControls.js', async (importOriginal) => {
     };
 });
 
-vi.mock('../src/uiDomAccessibilityFocusVisuals.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityFocusVisuals.js', () => ({
     bindScoresAccessibilityFocusVisuals: vi.fn(),
     bindSkinsAccessibilityFocusVisuals: vi.fn(),
     bindOptionsAccessibilityFocusVisuals: vi.fn(),
 }));
 
-vi.mock('../src/uiMenuOptionsTabs.js', () => ({
+vi.mock('../src/ui/menu/uiMenuOptionsTabs.js', () => ({
     setOptionsTab: vi.fn(),
 }));
 
@@ -34,7 +34,7 @@ import {
     setOptionsPanelAccessibility,
     setScoresPanelAccessibility,
     setSkinsPanelAccessibility,
-} from '../src/uiDomAccessibilityPanelFlows.js';
+} from '../src/ui/a11y/uiDomAccessibilityPanelFlows.js';
 
 describe('uiDomAccessibilityPanelFlows', () => {
     beforeEach(() => {

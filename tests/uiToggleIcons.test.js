@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from '../src/uiToggleIcons.js';
+import { drawHardcoreToggleIcon, drawTrainingToggleIcon } from '../src/ui/shared/uiToggleIcons.js';
 
 function makeGraphics() {
     const calls = [];

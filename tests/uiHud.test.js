@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({
@@ -18,8 +18,8 @@ describe('uiHud', () => {
     });
 
     it('createScoreDisplay affiche 0 visible en haut du HUD', async () => {
-        const { createScoreDisplay } = await import('../src/uiHud.js');
-        const { DEPTH, UI_LAYOUT } = await import('../src/uiLayout.js');
+        const { createScoreDisplay } = await import('../src/ui/hud/uiHud.js');
+        const { DEPTH, UI_LAYOUT } = await import('../src/ui/shared/uiLayout.js');
         createScoreDisplay(ui);
         expect(ui.scoreText).toBeTruthy();
         expect(ui.scoreValue).toBe(0);
@@ -30,8 +30,8 @@ describe('uiHud', () => {
     });
 
     it('createInGameControls repositionne le score sous les badges', async () => {
-        const { createScoreDisplay, createInGameControls } = await import('../src/uiHud.js');
-        const { UI_LAYOUT } = await import('../src/uiLayout.js');
+        const { createScoreDisplay, createInGameControls } = await import('../src/ui/hud/uiHud.js');
+        const { UI_LAYOUT } = await import('../src/ui/shared/uiLayout.js');
         createScoreDisplay(ui);
         createInGameControls(ui, {
             trainingMode: true,
@@ -46,7 +46,7 @@ describe('uiHud', () => {
     });
 
     it('updateScore met à jour le texte', async () => {
-        const { createScoreDisplay, updateScore } = await import('../src/uiHud.js');
+        const { createScoreDisplay, updateScore } = await import('../src/ui/hud/uiHud.js');
         createScoreDisplay(ui);
         ui.scoreText.setText = vi.fn();
         updateScore(ui, 4);
@@ -55,9 +55,9 @@ describe('uiHud', () => {
     });
 
     it('createInGameControls ajoute pause et badges modes', async () => {
-        const { createInGameControls } = await import('../src/uiHud.js');
+        const { createInGameControls } = await import('../src/ui/hud/uiHud.js');
         const { MIN_TOUCH, MIN_CTA_TOUCH, PAUSE_BTN_HIT, PAUSE_BTN_VISUAL } =
-            await import('../src/uiLayout.js');
+            await import('../src/ui/shared/uiLayout.js');
         const onPause = vi.fn();
         const elements = createInGameControls(ui, {
             trainingMode: true,
@@ -77,7 +77,7 @@ describe('uiHud', () => {
 
     it('hideInGameScore masque le score et détruit les contrôles', async () => {
         const { createScoreDisplay, createInGameControls, hideInGameScore, showInGameScore } =
-            await import('../src/uiHud.js');
+            await import('../src/ui/hud/uiHud.js');
         createScoreDisplay(ui);
         ui.scoreText.setVisible = vi.fn();
         createInGameControls(ui, { trainingMode: false, hardcoreMode: false, onPause: vi.fn() });
@@ -89,7 +89,7 @@ describe('uiHud', () => {
     });
 
     it('dismissJumpTutorial détruit le hint', async () => {
-        const { showJumpTutorial, dismissJumpTutorial } = await import('../src/uiHud.js');
+        const { showJumpTutorial, dismissJumpTutorial } = await import('../src/ui/hud/uiHud.js');
         showJumpTutorial(ui);
         expect(dismissJumpTutorial(ui)).toBe(true);
         expect(ui._tutorialHint).toBeNull();

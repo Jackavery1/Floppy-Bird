@@ -12,32 +12,58 @@ test.describe('PWA hors ligne', () => {
     });
 
     test('charge le jeu hors ligne après precache', async ({ browser }) => {
+        // Precache (≤45s) + reload hors ligne + boot jeu : au-delà du timeout global 45s.
+        test.setTimeout(120_000);
         const context = await browser.newContext();
         const page = await context.newPage();
         await waitForGameReady(page);
         await expect
-            .poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller))
+            .poll(async () => page.evaluate(() => !!navigator.serviceWorker?.controller), {
+                timeout: 20_000,
+            })
             .toBe(true);
-        await page.waitForFunction(
-            async () => {
-                await navigator.serviceWorker.ready;
-                const names = await caches.keys();
-                for (const name of names) {
-                    const cache = await caches.open(name);
-                    const keys = await cache.keys();
-                    if (keys.some((req) => req.url.includes('index.html'))) return true;
-                }
-                return false;
-            },
-            null,
-            { timeout: 30_000 }
-        );
+        // expect.poll (pas waitForFunction async) : une async fn renvoie une Promise
+        // truthy et court-circuite l’attente du precache Workbox.
+        await expect
+            .poll(
+                async () =>
+                    page.evaluate(async () => {
+                        await navigator.serviceWorker.ready;
+                        const names = await caches.keys();
+                        for (const name of names) {
+                            const cache = await caches.open(name);
+                            const keys = await cache.keys();
+                            const urls = keys.map((req) => req.url);
+                            if (
+                                urls.some((u) => u.includes('index.html')) &&
+                                urls.some((u) => u.includes('phaser.min.js'))
+                            ) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }),
+                { timeout: 45_000 }
+            )
+            .toBe(true);
 
-        const url = new URL('./index.html', page.url()).href;
         await context.setOffline(true);
-        await page.goto(url, { waitUntil: 'domcontentloaded' });
-        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 20_000 });
-        await waitForTestSeamReady(page, 20_000);
+        // Navigation depuis le document : sous Playwright Windows, goto/reload API
+        // hors ligne peut lever ERR_INTERNET_DISCONNECTED avant l’interception SW.
+        try {
+            await Promise.all([
+                page.waitForNavigation({ waitUntil: 'domcontentloaded', timeout: 30_000 }),
+                page.evaluate(() => {
+                    window.location.reload();
+                }),
+            ]);
+        } catch (err) {
+            const msg = err?.message ?? String(err);
+            if (!/ERR_INTERNET_DISCONNECTED|net::ERR_/i.test(msg)) throw err;
+        }
+        await expect(page.locator('#game-container')).toBeVisible({ timeout: 30_000 });
+        await page.locator('#loading').waitFor({ state: 'hidden', timeout: 30_000 });
+        await waitForTestSeamReady(page, 30_000);
         await expect(page.locator('#game-container canvas')).toBeVisible();
         await expectGameState(page, 'menu');
 

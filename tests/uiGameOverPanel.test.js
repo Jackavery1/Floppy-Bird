@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { drawGameOverPanelFrame } from '../src/uiGameOverPanel.js';
+import { drawGameOverPanelFrame } from '../src/ui/shared/uiGameOverChrome.js';
 
 describe('uiGameOverPanel', () => {
     it('drawGameOverPanelFrame dessine le panneau avec opacités configurables', () => {

@@ -106,6 +106,13 @@ describe('device', () => {
         expect(trainingTutorialText()).toContain('×0.8');
     });
 
+    it('gapTutorialText rappelle que le sol reste mortel', async () => {
+        const fine = await loadDevice(false);
+        expect(fine.gapTutorialText()).toMatch(/sol reste mortel/i);
+        const coarse = await loadDevice(true);
+        expect(coarse.gapTutorialText()).toMatch(/sol reste mortel/i);
+    });
+
     it('optionsControlRows liste les commandes du jeu', async () => {
         const { optionsControlRows } = await loadDevice(false);
         const rows = optionsControlRows();

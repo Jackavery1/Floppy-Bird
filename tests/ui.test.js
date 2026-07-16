@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createRoundState } from '../src/roundState.js';
 import { createBaseScene } from './helpers/phaserMock.js';

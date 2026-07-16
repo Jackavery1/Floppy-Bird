@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { CONTROL_DEFS } from '../src/uiDomAccessibilityControlDefs.js';
-import { PLAYING_CONTROL_DEFS } from '../src/uiDomAccessibilityControlDefsPlaying.js';
-import { MENU_CONTROL_DEFS } from '../src/uiDomAccessibilityControlDefsMenu.js';
-import { GAME_OVER_CONTROL_DEFS } from '../src/uiDomAccessibilityControlDefsGameOver.js';
+import { CONTROL_DEFS } from '../src/ui/a11y/uiDomAccessibilityControlDefs.js';
+import { PLAYING_CONTROL_DEFS } from '../src/ui/a11y/uiDomAccessibilityControlDefsPlaying.js';
+import { MENU_CONTROL_DEFS } from '../src/ui/a11y/uiDomAccessibilityControlDefsMenu.js';
+import { GAME_OVER_CONTROL_DEFS } from '../src/ui/a11y/uiDomAccessibilityControlDefsGameOver.js';
 
 describe('uiDomAccessibilityControlDefs', () => {
     it('agrège les définitions par contexte sans perte', () => {

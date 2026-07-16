@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { setupSceneInput } from '../src/sceneInput.js';
 import { DIFFICULTY } from '../src/config.js';
 import { GAME_STATE } from '../src/gameState.js';
-import { UI_LAYOUT } from '../src/uiLayout.js';
+import { UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 
 vi.mock('../src/audio.js', () => ({ resumeAudio: vi.fn() }));
 

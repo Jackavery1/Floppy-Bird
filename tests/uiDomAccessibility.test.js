@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
-import { CONTROL_DEFS } from '../src/uiDomAccessibilityDefs.js';
+import { CONTROL_DEFS } from '../src/ui/a11y/uiDomAccessibilityDefs.js';
 import {
     initAccessibilityLayer,
     setAccessibilityControlVisible,
@@ -10,7 +10,7 @@ import {
     setupGameOverAccessibility,
     setupMenuAccessibility,
     syncAccessibilityLayer,
-} from '../src/uiDomAccessibility.js';
+} from '../src/ui/a11y/uiDomAccessibility.js';
 
 const CONTROL_COUNT = Object.keys(CONTROL_DEFS).length;
 

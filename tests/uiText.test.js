@@ -7,7 +7,7 @@ import {
     fitTitleFontSize,
     applyFittedLabel,
     addFittedCenteredText,
-} from '../src/uiText.js';
+} from '../src/ui/shared/uiText.js';
 import { DESIGN_TOKENS } from '../src/designTokens.js';
 import { DIFFICULTY } from '../src/config.js';
 import { createBaseScene } from './helpers/phaserMock.js';

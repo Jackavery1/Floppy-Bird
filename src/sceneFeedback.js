@@ -22,7 +22,9 @@ export function playScoreFeedback(score, scene = null) {
     } else {
         hapticLight();
     }
-    if (scene?.bird) {
+    if (!scene?.bird) return;
+    scene.scoreEffects?.show(scene.bird.x, scene.bird.y);
+    if (score > 0 && score % 10 === 0) {
         spawnScoreJuice(scene, scene.bird.x, scene.bird.y, score);
     }
 }

@@ -151,7 +151,7 @@ Une visite en ligne est requise avant le mode hors-ligne. Sans cache Service Wor
 
 | Dossier | Rôle |
 | ------- | ---- |
-| `src/` | Gameplay (`bird`, `pipes`, `scene*`), UI (`ui*`), meta, storage |
+| `src/` | Gameplay (`bird`, `pipes`, `scene*`), UI (`src/ui/`), meta, storage |
 | `src/scene*.js` | Orchestration Phaser — `GameScene.js` mince |
 | `src/skins/` | 16 skins et conditions de déblocage |
 | `tests/` | Vitest (miroir des modules métier) |
@@ -348,7 +348,7 @@ An online visit is required before offline mode. Without Service Worker cache, `
 
 | Folder | Role |
 | ------ | ---- |
-| `src/` | Gameplay (`bird`, `pipes`, `scene*`), UI (`ui*`), meta, storage |
+| `src/` | Gameplay (`bird`, `pipes`, `scene*`), UI (`src/ui/`), meta, storage |
 | `src/scene*.js` | Phaser orchestration — thin `GameScene.js` |
 | `src/skins/` | 16 skins and unlock conditions |
 | `tests/` | Vitest (mirror of business modules) |

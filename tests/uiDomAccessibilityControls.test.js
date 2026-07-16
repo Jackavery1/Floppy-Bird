@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { initAccessibilityLayer } from '../src/uiDomAccessibility.js';
+import { initAccessibilityLayer } from '../src/ui/a11y/uiDomAccessibility.js';
 
 describe('uiDomAccessibility contrôles', () => {
     afterEach(() => {
@@ -8,7 +8,7 @@ describe('uiDomAccessibility contrôles', () => {
 
     it('setAccessibilityControlDisabled marque le bouton hardcore verrouillé', async () => {
         const { setAccessibilityControlDisabled } =
-            await import('../src/uiDomAccessibilityControls.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const btn = {
             hidden: false,
             disabled: false,
@@ -65,7 +65,7 @@ describe('uiDomAccessibility contrôles', () => {
 
     it('setAccessibilityControlPressed met à jour aria-pressed', async () => {
         const { setAccessibilityControlPressed } =
-            await import('../src/uiDomAccessibilityControls.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const btn = { setAttribute: vi.fn() };
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => (id === 'a11y-training' ? btn : null)),
@@ -78,7 +78,7 @@ describe('uiDomAccessibility contrôles', () => {
 
     it('syncOptionsTabAccessibility met à jour aria-expanded des onglets', async () => {
         const { syncOptionsTabAccessibility } =
-            await import('../src/uiDomAccessibilityControls.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const buttons = new Map();
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => {
@@ -101,7 +101,7 @@ describe('uiDomAccessibility contrôles', () => {
 
     it('syncMenuToggleAccessibility reflète difficulté et modes', async () => {
         const { syncMenuToggleAccessibility } =
-            await import('../src/uiDomAccessibilityMenuToggles.js');
+            await import('../src/ui/a11y/uiDomAccessibilityMenuToggles.js');
         const buttons = new Map();
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => {

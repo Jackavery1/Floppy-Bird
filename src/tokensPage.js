@@ -1,5 +1,5 @@
 import { DESIGN_TOKENS } from './designTokens.js';
-import { MIN_TOUCH, MIN_CTA_TOUCH, SPACING } from './uiLayoutConstants.js';
+import { MIN_TOUCH, MIN_CTA_TOUCH, SPACING } from './ui/shared/uiLayoutConstants.js';
 import { syncShellTheme } from './shellTheme.js';
 
 /** @param {unknown} value */

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { shade, drawPlaqueCorners, drawDivider, spawnConfetti } from '../src/uiGameOverDecor.js';
+import { shade, drawDivider, spawnConfetti } from '../src/ui/gameOver/uiGameOverDecor.js';
+import { drawPlaqueCorners } from '../src/ui/shared/uiGameOverChrome.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({

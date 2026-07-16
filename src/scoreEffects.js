@@ -1,4 +1,5 @@
-import { FONT, DEPTH } from './uiLayout.js';
+import { DESIGN_TOKENS } from './designTokens.js';
+import { FONT, DEPTH } from './ui/shared/uiLayout.js';
 import { sceneTween } from './motion.js';
 
 const PARTICLE_DIRS = [
@@ -17,7 +18,7 @@ export class ScoreEffects {
         for (let i = 0; i < 3; i++) {
             const text = scene.add.text(0, 0, '+1', {
                 fontSize: '22px',
-                fill: '#ffff00',
+                fill: DESIGN_TOKENS.accentTitre,
                 fontFamily: FONT,
                 fontStyle: 'bold',
             });

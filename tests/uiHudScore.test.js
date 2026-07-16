@@ -15,7 +15,7 @@ vi.mock('../src/skins/index.js', () => ({
 
 describe('uiHudScore', () => {
     let scene;
-    /** @type {import('../src/ui.js').UI} */
+    /** @type {import('../src/ui/core/ui.js').UI} */
     let ui;
 
     beforeEach(() => {
@@ -24,7 +24,7 @@ describe('uiHudScore', () => {
     });
 
     it('createScoreDisplay détruit score et bannières existants', async () => {
-        const { createScoreDisplay } = await import('../src/uiHudScore.js');
+        const { createScoreDisplay } = await import('../src/ui/hud/uiHudScore.js');
         const oldScore = { destroy: vi.fn() };
         const oldRecord = { destroy: vi.fn() };
         const oldDaily = { destroy: vi.fn() };
@@ -42,8 +42,8 @@ describe('uiHudScore', () => {
     });
 
     it('showInGameScore repositionne et affiche le score', async () => {
-        const { showInGameScore } = await import('../src/uiHudScore.js');
-        const { DEPTH, UI_LAYOUT } = await import('../src/uiLayout.js');
+        const { showInGameScore } = await import('../src/ui/hud/uiHudScore.js');
+        const { DEPTH, UI_LAYOUT } = await import('../src/ui/shared/uiLayout.js');
         ui.scoreText = {
             setVisible: vi.fn(),
             setAlpha: vi.fn(),
@@ -60,7 +60,7 @@ describe('uiHudScore', () => {
     });
 
     it('updateScore met à jour le badge daily quand présent', async () => {
-        const { updateScore } = await import('../src/uiHudScore.js');
+        const { updateScore } = await import('../src/ui/hud/uiHudScore.js');
         const { formatDailyHudLabel } = await import('../src/dailyChallenge.js');
         ui.scoreText = { setText: vi.fn(), setScale: vi.fn() };
         ui._dailyBadge = { setText: vi.fn() };

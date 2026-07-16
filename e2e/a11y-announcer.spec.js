@@ -40,4 +40,19 @@ test.describe('annonces screen reader', () => {
         await forceGameOver(page, { isDaily: false });
         await expect(announcer).toContainText(/Mort|Game over/i, { timeout: 8_000 });
     });
+
+    test('annonce ouverture/fermeture du panneau options et changement d’onglet', async ({
+        page,
+    }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
+        const announcer = page.locator('#ui-announcer');
+        await page.locator('#a11y-options').click({ force: true });
+        await expect(announcer).toContainText(/Panneau options ouvert/i, { timeout: 5_000 });
+        await page.locator('#a11y-options-tab-controls').click({ force: true });
+        await expect(announcer).toContainText(/Onglet contrôles/i, { timeout: 5_000 });
+        await page.locator('#a11y-options-tab-preferences').click({ force: true });
+        await expect(announcer).toContainText(/Onglet réglages/i, { timeout: 5_000 });
+        await page.locator('#a11y-options-close').click({ force: true });
+        await expect(announcer).toContainText(/Panneau options fermé/i, { timeout: 5_000 });
+    });
 });

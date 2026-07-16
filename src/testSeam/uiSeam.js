@@ -1,4 +1,5 @@
-import { setupGameOverAccessibility } from '../uiDomAccessibility.js';
+import { setupGameOverAccessibility } from '../ui/a11y/uiDomAccessibility.js';
+import { preloadGameOverUI } from '../ui/gameOver/uiGameOverLoader.js';
 
 /** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */
 export function createUiSeam(getScene) {
@@ -8,25 +9,23 @@ export function createUiSeam(getScene) {
             const scene = getScene();
             if (!scene) return Promise.resolve();
             const dailyGoal = isDaily ? 5 : 0;
-            return import('../uiGameOverLoader.js')
-                .then((m) => m.preloadGameOverUI())
-                .then(() => {
-                    scene.state = 'gameover';
-                    scene.ui.clearOverlay('gameOver');
-                    const { elements } = scene.ui.showGameOver(
-                        scene.round.score,
-                        { entries: [], highlightId: null },
-                        false,
-                        false,
-                        scene.hardcoreMode,
-                        dailyGoal
-                    );
-                    scene.ui.setOverlay('gameOver', elements);
-                    setupGameOverAccessibility(scene, {
-                        score: scene.round.score,
-                        isDaily,
-                    });
+            return preloadGameOverUI().then(() => {
+                scene.state = 'gameover';
+                scene.ui.clearOverlay('gameOver');
+                const { elements } = scene.ui.showGameOver(
+                    scene.round.score,
+                    { entries: [], highlightId: null },
+                    false,
+                    false,
+                    scene.hardcoreMode,
+                    dailyGoal
+                );
+                scene.ui.setOverlay('gameOver', elements);
+                setupGameOverAccessibility(scene, {
+                    score: scene.round.score,
+                    isDaily,
                 });
+            });
         },
         getGameOverRestartLabel: () => getScene()?.ui?._restartBtnText?.text ?? null,
         getMenuPanels: () => {
@@ -57,6 +56,10 @@ export function createUiSeam(getScene) {
                 preferences: settings,
                 settings,
             };
+        },
+        getHudBannerText: (key) => {
+            const banner = getScene()?.ui?.[key];
+            return banner?.text ?? null;
         },
     };
 }

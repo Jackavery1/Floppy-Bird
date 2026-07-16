@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import { GAME_CONFIG } from '../src/config.js';
 import { handleScoreMilestones } from '../src/sceneScoreMilestones.js';
 
-describe('midGameDifficulty (intégration paliers 9–20)', () => {
-    it('enchaîne previews, séries et escalade aux scores 9, 15 et 20', () => {
+describe('midGameDifficulty (intégration paliers vitesse / gaps)', () => {
+    it('enchaîne previews, séries et escalade sans coincider gap+vitesse', () => {
         const calls = [];
         const scene = {
             ui: {
@@ -12,15 +13,28 @@ describe('midGameDifficulty (intégration paliers 9–20)', () => {
                 showScoreStreak: (s) => calls.push(`streak:${s}`),
             },
         };
-        for (const score of [9, 15, 20]) {
+        const {
+            speedBoostEvery,
+            speedBoostPreviewOffset,
+            gapTightenAfterScore,
+            difficultyPreviewOffset,
+        } = GAME_CONFIG.round;
+        const scores = [
+            speedBoostEvery - speedBoostPreviewOffset,
+            15,
+            gapTightenAfterScore - difficultyPreviewOffset,
+            gapTightenAfterScore,
+        ];
+        for (const score of scores) {
             handleScoreMilestones(scene, score);
         }
         expect(calls).toEqual([
             'speedPreview',
-            'escalationPreview',
             'streak:15',
-            'gapEscalation',
+            'escalationPreview',
             'streak:20',
+            'gapEscalation',
         ]);
+        expect(gapTightenAfterScore % speedBoostEvery).not.toBe(0);
     });
 });

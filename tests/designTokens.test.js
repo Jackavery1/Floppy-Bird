@@ -81,12 +81,34 @@ describe('designTokens', () => {
         ).toBeGreaterThanOrEqual(4.5);
     });
 
-    it('texte HUD blanc seul sous AA sur fond jour — contour noir requis', () => {
+    it('texte chargement jour atteint AA sur fond ciel', () => {
+        expect(contrastRatio(DESIGN_TOKENS.texteChargement, DESIGN_TOKENS.fondJour)).toBeLessThan(
+            4.5
+        );
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteChargementJour, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('texte HUD blanc seul sous AA sur fond jour — fill jour + contour noir', async () => {
         expect(contrastRatio(DESIGN_TOKENS.texteHud, DESIGN_TOKENS.fondJour)).toBeLessThan(4.5);
-        expect(hudTextStyle().stroke).toBe(DESIGN_TOKENS.contourHud);
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteHudJour, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
         expect(
             contrastRatio(DESIGN_TOKENS.contourHud, DESIGN_TOKENS.fondJour)
         ).toBeGreaterThanOrEqual(4.5);
+
+        const { getBackgroundPeriod } = await import('../src/backgroundPeriod.js');
+        getBackgroundPeriod.mockReturnValue('day');
+        vi.resetModules();
+        const { hudTextStyle: hudJour, DESIGN_TOKENS: tokens } =
+            await import('../src/designTokens.js');
+        const style = hudJour({ fill: tokens.texteHud });
+        expect(style.fill).toBe(tokens.texteHudJour);
+        expect(style.stroke).toBe(tokens.contourHud);
+        expect(hudJour({ fill: tokens.texteMenu }).fill).toBe(tokens.texteHudJour);
+        getBackgroundPeriod.mockReturnValue('night');
     });
 
     it('accent record atteint AA sur fond nuit', () => {
@@ -149,8 +171,8 @@ describe('designTokens', () => {
         vi.mocked(getBackgroundPeriod).mockReturnValue('night');
     });
 
-    it('panelChromeTextStyle impose 12 px minimum', () => {
-        expect(panelChromeTextStyle().fontSize).toBe('13px');
+    it('panelChromeTextStyle impose 14 px par défaut', () => {
+        expect(panelChromeTextStyle().fontSize).toBe('14px');
     });
 
     it('renforce le contour HUD en fond jour', async () => {

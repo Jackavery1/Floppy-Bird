@@ -37,6 +37,18 @@ describe('GameScene mort et shutdown', () => {
         vi.mocked(hasCoyoteGrace).mockReturnValue(false);
         const scene = createPlayingGameScene(GameScene);
         scene.bird.isHittingGround = vi.fn(() => true);
+        scene.bird.isOutOfBounds = vi.fn(() => false);
+
+        scene.update();
+
+        expect(triggerDeath).toHaveBeenCalledWith(scene, 'ground');
+    });
+
+    it('le sol tue même avec coyote actif', () => {
+        vi.mocked(hasCoyoteGrace).mockReturnValue(true);
+        const scene = createPlayingGameScene(GameScene);
+        scene.bird.isHittingGround = vi.fn(() => true);
+        scene.bird.isOutOfBounds = vi.fn(() => false);
 
         scene.update();
 

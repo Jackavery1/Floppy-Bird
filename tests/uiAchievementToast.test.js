@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { showAchievementToasts } from '../src/uiAchievementToast.js';
-import { UI } from '../src/ui.js';
+import { showAchievementToasts } from '../src/ui/hud/uiAchievementToast.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({

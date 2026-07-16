@@ -52,27 +52,17 @@ src/
 ├── storage.js                 # LocalStorage API
 ├── hardcoreUnlock.js          # Logique déverrouillage hardcore
 │
-├── UI
-├── ui.js                      # Orchestration UI
-├── uiLayout.js                # Layout constants et helpers
-├── uiMenu.js                  # Menu principal (build, labels, difficulté)
-├── uiMenuPanels.js            # Orchestration panneaux (fermeture, rebuild)
-├── uiMenuPanel.js             # Visibilité / toggle panneaux
-├── uiMenuPanelController.js   # Controller + shell panneaux
-├── uiMenuPanel.js             # Panels génériques (animations)
-├── uiMenuSkins.js             # Sélection des skins
-├── uiGameOver.js              # Écran de fin
-├── uiGameOverDecor.js         # Éléments visuels (confetti)
-├── uiGameOverSummary.js       # Orchestrateur récap game over
-├── uiGameOverSummaryHeader.js # Titre, cause de mort, liseré
-├── uiGameOverSummaryMedal.js  # Médaille ou bannière record
-├── uiGameOverSummaryScore.js  # Bloc score et libellés record/daily
-├── uiHudBanners.js            # Bannières HUD
+├── UI (`src/ui/`)
+│   ├── core/          # Façade UI, pause, bind scène
+│   ├── menu/          # Accueil, options, scores, skins, défi
+│   ├── hud/           # Score, bannières, tutoriel, toasts
+│   ├── gameOver/      # Panneau fin (lazy via loader → chunk ui-gameover)
+│   ├── a11y/          # Overlay DOM clavier / lecteurs d’écran
+│   └── shared/        # Layout, depth, chrome GO, texte, toggles
+├── uiIndex.js                 # Entrée publique UI
 │
-├── A11y
-├── uiDomAccessibilityFocusVisuals.js  # Focus clavier canvas (CTA menu, panneaux, skins)
-├── uiDomAccessibility*.js     # Layer d'accessibilité DOM
-├── haptics.js                 # Retours haptiques
+├── A11y (voir `src/ui/a11y/`)
+├── haptics.js                 # Retours haptiques (respecte mute / reduced-motion)
 │
 ├── Media
 ├── audio.js                   # Gestion du son
@@ -82,7 +72,7 @@ src/
 └── PWA
     ├── public/shell-tokens.css  # Variables CSS shell (style.css + offline.html)
     ├── public/offline-page.css  # Styles page fallback offline
-    └── (service worker géré par Vite PWA plugin)
+    └── (VitePWA : `globPatterns` + `globIgnores` tokens ; polices jeu via @fontsource → assets/, latin offline via `public/fonts/`)
 
 tests/
 ├── Unit tests (Vitest)
@@ -126,61 +116,52 @@ Chaque scene gère une responsabilité :
 ### 6. UI Architecture
 
 ```
-ui.js (orchestration — façade SceneContext)
-├── Menu Principal
-│   ├── uiMenu.js (navigation)
-│   ├── uiMenuPanel.js (animations)
-│   └── uiMenuSkins.js (sélection skins)
-├── HUD (pendant le jeu)
-│   └── uiHudBanners.js
-└── Game Over
-    ├── uiGameOver.js
-    └── uiGameOverDecor.js (confetti)
+uiIndex.js → ui/core/ui.js (façade SceneContext)
+├── menu/      # Accueil, options, scores, skins, défi
+├── hud/       # Score, bannières, tutoriel, toasts
+├── gameOver/  # Lazy via uiGameOverLoader → chunk ui-gameover
+├── a11y/      # Overlay DOM clavier / lecteurs d’écran
+└── shared/    # Layout, depth, chrome GO, texte
 ```
 
-#### Contrat façade `UI` (`ui.js`)
+#### Contrat façade `UI` (`ui/core/ui.js`)
 
 | Règle              | Détail                                                                                   |
 | ------------------ | ---------------------------------------------------------------------------------------- |
-| **Import**         | `import { UI } from './uiIndex.js'` en prod ; `ui.js` direct réservé aux tests de façade |
+| **Import**         | `import { UI } from './uiIndex.js'` en prod ; `ui/core/ui.js` réservé aux tests de façade |
 | **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
-| **Extension**      | Implémenter dans `ui*.js`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
-| **Délégation**     | 38 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans `ui.js`      |
+| **Extension**      | Implémenter sous `src/ui/**`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
+| **Délégation**     | 38 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans la façade |
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
-| **Découpage build**| Chunk `skins` seul ; pas de chunk `ui` (graphe eager `uiFacadeBind` ↔ `skins`)              |
+| **Découpage build**| Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader) |
 
-Cibles tactiles menu : hauteur **44 px** (`MIN_TOUCH`) pour les contrôles secondaires ; **48 px** (`MIN_CTA_TOUCH`) pour les CTA primaires (démarrer, sauter, rejouer). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORE / OPTS / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
 #### Index modules `ui*`
 
+Modules physiques sous `src/ui/{menu,hud,gameOver,a11y,shared,core}/` ; entrée publique `uiIndex.js` (plus de shims `src/ui*.js`).
+
 | Module | Rôle |
 | ------ | ---- |
-| `ui.js` / `uiIndex.js` | Façade orchestration ; délégation via `uiFacadeBind.js` |
-| `uiLayout.js` / `uiLayoutConstants.js` | Grille, cibles tactiles, coordonnées `TOUCH_TARGETS` |
-| `uiDepth.js` / `uiText.js` | Z-order Phaser, typo et labels adaptatifs |
-| `uiMenu.js` + `uiMenuBuild.js`, `uiMenuHeader.js`, `uiMenuLayout.js` | Menu principal (structure, intro, rangées) |
-| `uiMenuPanel.js` / `uiMenuPanelChrome.js` | Pilules, panneaux génériques, animations |
-| `uiMenuOptions*.js` | Panneau options (onglets, modes, mute, vitesse entraînement) |
-| `uiMenuScores*.js` / `uiMenuSkins*.js` | Scores, skins et cycle de sélection |
-| `uiMenuDailyChallenge.js` | Défi du jour |
-| `uiHud*.js` | Score, pause, badges difficulté, tutoriel, contrôles in-game |
-| `uiPause.js` | Overlay pause — réutilise `buildPanelPillButton` |
-| `uiGameOverPanel.js` | `drawGameOverPanelFrame` partagé avec skeleton chargement game over |
-| `uiGameOver*.js` | Panneau game over, récap (header/medal/score), actions, confetti, leaderboard |
-| `uiDomAccessibility*.js` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` unifie focus clavier et survol Phaser |
-| `uiAchievementToast.js` / `uiToggleIcons.js` | Toasts trophées, icônes toggle |
+| `ui/core/ui.js` / `uiIndex.js` | Façade orchestration ; délégation via `uiFacadeBind.js` |
+| `ui/shared/uiLayout.js` / `uiLayoutConstants.js` | Grille, cibles tactiles, `FONT_SIZE_*`, `TOUCH_TARGETS` |
+| `ui/shared/uiDepth.js` / `uiText.js` | Z-order Phaser, typo et labels adaptatifs |
+| `ui/shared/uiGameOverChrome.js` | Frame + coins plaque (skeleton HUD + panneau GO) |
+| `ui/menu/*` | Menu principal, options, scores, skins, défi du jour |
+| `ui/hud/*` | Score, pause, bannières, tutoriel, toasts |
+| `ui/gameOver/*` | Panneau game over (lazy via `uiGameOverLoader` → chunk `ui-gameover`) |
+| `ui/a11y/*` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` |
 
 #### Arbre modules `ui*` (vue rapide)
 
 ```
-uiIndex.js → ui.js (façade)
-├── Layout & chrome : uiLayout*, uiDepth, uiText, uiToggleIcons
-├── Menu accueil    : uiMenu.js → uiMenuBuild, uiMenuHeader, uiMenuLayout, uiMenuDailyChallenge
-├── Panneaux        : uiMenuPanel*, uiMenuScores*, uiMenuSkins*, uiMenuOptions*
-├── HUD in-game     : uiHud*, uiPause, uiAchievementToast
-├── Game over       : uiGameOver* (+ chunk lazy ui-gameover)
-└── A11y DOM        : uiDomAccessibility* (overlay #a11y-controls, bindUnifiedInteractiveFocus)
+uiIndex.js → ui/core/ui.js (façade)
+├── shared/   : layout, depth, text, chrome GO, toggles
+├── menu/     : accueil, options, scores, skins, daily
+├── hud/      : score, bannières, tutoriel, toasts
+├── gameOver/ : lazy via uiGameOverLoader → chunk ui-gameover
+└── a11y/     : overlay #a11y-controls, focus unifié
 ```
 
 #### Cluster a11y — graphe d'imports (évite les cycles `madge`)
@@ -287,7 +268,7 @@ Menu principal (input restart/menu)
 
 - **Object Pooling** : Pipes réutilisés
 - **Lazy Loading** : textures décor (`textures/decorPreload.js`, chunk Vite séparé) après fond/sol/oiseau ; skins additionnels au panneau skins
-- **Code splitting** : chunks Vite `skins` (~3 Ko gzip) et `ui-gameover` (~10 Ko gzip, préchargé au `beginRound`). Le barrel `uiIndex.js` n’exporte plus le game over pour éviter un import statique.
+- **Code splitting** : chunk Vite `ui` (modules `src/ui/**` hors gameOver, + `src/skins/**` — le graphe eager menu↔skins interdisait un chunk `skins` séparé). Chunk async `ui-gameover` pour `src/ui/gameOver/**` sauf `uiGameOverLoader.js` (précharge via `import()`). Chrome skeleton partagé : `src/ui/shared/uiGameOverChrome.js`. Décor hors `textures/index.js` : `import('./textures/decorPreload.js')` depuis `GameScene`.
 - **Shell jeu** : `shellGameState.js` (`partie-active`, `data-game-state`) + `shellViewport.js` (zoom menu ; pinch bloqué en partie tactile, zoom navigateur conservé sur desktop).
 - **Canvas Rendering** : Phaser optimise le rendu
 - **Event Delegation** : Minimal DOM updates
@@ -334,7 +315,7 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Modular Architecture** : Easy to add new features
 - **Configuration** : Centralized in `config.js`
-- **Design Tokens** : `src/designTokens.js`, `src/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
+- **Design Tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
 - **Test Coverage** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
 
 ## Workflow de développement

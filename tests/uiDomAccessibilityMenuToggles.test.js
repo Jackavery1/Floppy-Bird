@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { syncMenuToggleAccessibility } from '../src/uiDomAccessibilityMenuToggles.js';
+import { syncMenuToggleAccessibility } from '../src/ui/a11y/uiDomAccessibilityMenuToggles.js';
 
 describe('uiDomAccessibilityMenuToggles', () => {
     afterEach(() => {

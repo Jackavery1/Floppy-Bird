@@ -14,8 +14,8 @@ import {
     dismissGameplayTutorial,
     showGameOverLoading,
     hideGameOverLoading,
-} from '../src/uiHud.js';
-import { UI } from '../src/ui.js';
+} from '../src/ui/hud/uiHud.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 
@@ -114,6 +114,7 @@ describe('uiHudBanners', () => {
         expect(ui._gameOverLoadingText).toBeTruthy();
         expect(ui._gameOverLoadingOverlay).toBeTruthy();
         expect(ui._gameOverLoadingPanel).toBeTruthy();
+        expect(ui._gameOverLoadingSkeleton).toBeTruthy();
         expect(sceneTween).toHaveBeenCalled();
         showGameOverLoading(ui);
         expect(ui.scene.add.text).toHaveBeenCalledTimes(1);
@@ -121,6 +122,7 @@ describe('uiHudBanners', () => {
         expect(ui._gameOverLoadingText).toBeNull();
         expect(ui._gameOverLoadingOverlay).toBeNull();
         expect(ui._gameOverLoadingPanel).toBeNull();
+        expect(ui._gameOverLoadingSkeleton).toBeNull();
         hideGameOverLoading(ui);
     });
 });

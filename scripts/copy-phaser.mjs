@@ -13,10 +13,15 @@ copyFileSync(source, target);
 const fontDir = join(root, 'public', 'fonts');
 mkdirSync(fontDir, { recursive: true });
 
-for (const subset of ['latin', 'latin-ext']) {
-    const name = `press-start-2p-${subset}-400-normal.woff2`;
-    copyFileSync(
-        join(root, 'node_modules', '@fontsource', 'press-start-2p', 'files', name),
-        join(fontDir, name)
-    );
-}
+// offline.html : latin uniquement (pas de doublon latin-ext déjà émis dans assets/ via @fontsource).
+copyFileSync(
+    join(
+        root,
+        'node_modules',
+        '@fontsource',
+        'press-start-2p',
+        'files',
+        'press-start-2p-latin-400-normal.woff2'
+    ),
+    join(fontDir, 'press-start-2p-latin-400-normal.woff2')
+);

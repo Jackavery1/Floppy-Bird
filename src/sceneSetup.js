@@ -13,7 +13,7 @@ import { resumeAudio } from './audio.js';
 import { ensurePipeTextures } from './textures/index.js';
 import { loadSelectedSkin } from './metaStorage.js';
 import { wireSceneBindings } from './sceneBindings.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 

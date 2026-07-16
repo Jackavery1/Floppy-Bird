@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { DEPTH } from '../src/uiDepth.js';
-import { TOUCH_TARGETS, UI_LAYOUT } from '../src/uiLayout.js';
+import { DEPTH } from '../src/ui/shared/uiDepth.js';
+import { TOUCH_TARGETS, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import {
     isMobileLandscapeProject,
     projectUsesTouch,

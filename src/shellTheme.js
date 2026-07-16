@@ -1,6 +1,6 @@
 import { getBackgroundPeriod } from './backgroundPeriod.js';
 import { DESIGN_TOKENS, prefersHighContrast } from './designTokens.js';
-import { SPACING } from './uiLayoutConstants.js';
+import { SPACING } from './ui/shared/uiLayoutConstants.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
 
 import { SHELL_HIGH_CONTRAST_CSS_VARS } from './shellTokenDefaults.js';
@@ -9,7 +9,10 @@ const CONTRAST_CSS_VARS = SHELL_HIGH_CONTRAST_CSS_VARS;
 
 const CSS_VARS = Object.freeze({
     '--couleur-fond': () => getBackgroundCanvasColor(),
-    '--couleur-texte-chargement': () => DESIGN_TOKENS.texteChargement,
+    '--couleur-texte-chargement': () =>
+        getBackgroundPeriod() === 'day'
+            ? DESIGN_TOKENS.texteChargementJour
+            : DESIGN_TOKENS.texteChargement,
     '--couleur-texte-hint': () => DESIGN_TOKENS.texteHint,
     '--couleur-accent': () => DESIGN_TOKENS.accent,
     '--police-interface': () => DESIGN_TOKENS.policeInterface,

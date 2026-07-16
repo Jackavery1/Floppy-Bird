@@ -40,6 +40,11 @@ export function getOptionsPanel(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.getOptionsPanel?.() ?? null);
 }
 
+/** @param {import('@playwright/test').Page} page @param {string} key */
+export function getHudBannerText(page, key) {
+    return page.evaluate((k) => window.__FLOPPY_TEST__?.getHudBannerText?.(k) ?? null, key);
+}
+
 /** @param {import('@playwright/test').Page} page */
 export function getGameplayEquity(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.getGameplayEquity?.() ?? null);
@@ -143,6 +148,11 @@ export function restartRoundWithModes(page, modes = {}) {
 /** @param {import('@playwright/test').Page} page */
 export function runCoyoteGapExitScenario(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.runCoyoteGapExitScenario?.());
+}
+
+/** @param {import('@playwright/test').Page} page */
+export function runCoyoteBoundsScenario(page) {
+    return page.evaluate(() => window.__FLOPPY_TEST__?.runCoyoteBoundsScenario?.());
 }
 
 /** @param {import('@playwright/test').Page} page */

@@ -7,16 +7,18 @@ import {
 import { GAME_CONFIG } from '../src/config.js';
 
 describe('gapDifficulty', () => {
+    const { gapTightenAfterScore, gapTightenEvery, gapTightenStep } = GAME_CONFIG.round;
+
     it('maxGapDeltaForScore reste au max avant le seuil', () => {
-        expect(maxGapDeltaForScore(19)).toBe(GAME_CONFIG.pipes.maxGapDelta);
+        expect(maxGapDeltaForScore(gapTightenAfterScore - 1)).toBe(GAME_CONFIG.pipes.maxGapDelta);
     });
 
-    it('maxGapDeltaForScore resserre dès 20 points', () => {
-        expect(maxGapDeltaForScore(20)).toBe(
-            GAME_CONFIG.pipes.maxGapDelta - GAME_CONFIG.round.gapTightenStep
+    it('maxGapDeltaForScore resserre dès gapTightenAfterScore', () => {
+        expect(maxGapDeltaForScore(gapTightenAfterScore)).toBe(
+            GAME_CONFIG.pipes.maxGapDelta - gapTightenStep
         );
-        expect(maxGapDeltaForScore(30)).toBe(
-            GAME_CONFIG.pipes.maxGapDelta - 2 * GAME_CONFIG.round.gapTightenStep
+        expect(maxGapDeltaForScore(gapTightenAfterScore + gapTightenEvery)).toBe(
+            GAME_CONFIG.pipes.maxGapDelta - 2 * gapTightenStep
         );
         expect(maxGapDeltaForScore(50)).toBe(GAME_CONFIG.pipes.minGapDelta);
     });
@@ -25,12 +27,12 @@ describe('gapDifficulty', () => {
         expect(maxGapDeltaForScore(999)).toBe(GAME_CONFIG.pipes.minGapDelta);
     });
 
-    it('effectivePipeGapForScore resserre le gap physique dès 20 points', () => {
+    it('effectivePipeGapForScore resserre le gap physique dès le seuil', () => {
         const base = GAME_CONFIG.getDifficulty('normal').gap;
-        expect(effectivePipeGapForScore(base, 19)).toBe(base);
-        expect(effectivePipeGapForScore(base, 20)).toBe(base - GAME_CONFIG.round.gapTightenStep);
-        expect(effectivePipeGapForScore(base, 30)).toBe(
-            base - 2 * GAME_CONFIG.round.gapTightenStep
+        expect(effectivePipeGapForScore(base, gapTightenAfterScore - 1)).toBe(base);
+        expect(effectivePipeGapForScore(base, gapTightenAfterScore)).toBe(base - gapTightenStep);
+        expect(effectivePipeGapForScore(base, gapTightenAfterScore + gapTightenEvery)).toBe(
+            base - 2 * gapTightenStep
         );
         expect(effectivePipeGapForScore(base, 999)).toBe(GAME_CONFIG.pipes.minPipeGap);
     });
@@ -40,5 +42,9 @@ describe('gapDifficulty', () => {
         expect(speedBoostMultiplierForScore(10)).toBeCloseTo(1.03);
         expect(speedBoostMultiplierForScore(50)).toBeCloseTo(1.15);
         expect(speedBoostMultiplierForScore(100)).toBeCloseTo(1.15);
+    });
+
+    it('ne fait pas coincider premier gap tighten et palier vitesse', () => {
+        expect(gapTightenAfterScore % GAME_CONFIG.round.speedBoostEvery).not.toBe(0);
     });
 });

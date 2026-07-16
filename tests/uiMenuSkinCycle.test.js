@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { cycleMenuSkin } from '../src/uiMenuSkinCycle.js';
+import { cycleMenuSkin } from '../src/ui/menu/uiMenuSkinCycle.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 
 vi.mock('../src/metaContext.js', () => ({
     buildMetaContext: vi.fn(() => ({ unlockedSkinCount: 3 })),
@@ -25,11 +25,11 @@ vi.mock('../src/skins/index.js', async (importOriginal) => {
     };
 });
 
-vi.mock('../src/uiDomAccessibilityControls.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
     announceAccessibility: vi.fn(),
 }));
 
-vi.mock('../src/uiMenuSkinsRefresh.js', () => ({
+vi.mock('../src/ui/menu/uiMenuSkinsRefresh.js', () => ({
     refreshSkinsTab: vi.fn(),
 }));
 
@@ -48,8 +48,9 @@ describe('uiMenuSkinCycle', () => {
 
     it('ne change rien si cycleUnlockedSkin renvoie le skin courant', async () => {
         const { applySelectedSkin } = await import('../src/skins/skinSelection.js');
-        const { refreshSkinsTab } = await import('../src/uiMenuSkinsRefresh.js');
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { refreshSkinsTab } = await import('../src/ui/menu/uiMenuSkinsRefresh.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
 
         cycleMenuSkin(ui, 1);
 
@@ -61,8 +62,9 @@ describe('uiMenuSkinCycle', () => {
     it('applique le skin suivant, rafraîchit l’onglet et annonce le libellé', async () => {
         const { cycleUnlockedSkin, getSkin } = await import('../src/skins/index.js');
         const { applySelectedSkin } = await import('../src/skins/skinSelection.js');
-        const { refreshSkinsTab } = await import('../src/uiMenuSkinsRefresh.js');
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { refreshSkinsTab } = await import('../src/ui/menu/uiMenuSkinsRefresh.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
 
         vi.mocked(cycleUnlockedSkin).mockReturnValue('cosmos');
         vi.mocked(getSkin).mockReturnValue({ label: 'Cosmos' });

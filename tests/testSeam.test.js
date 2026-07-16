@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { installTestSeam } from '../src/testSeam.js';
-import { DEPTH } from '../src/uiDepth.js';
+import { DEPTH } from '../src/ui/shared/uiDepth.js';
 
 describe('testSeam', () => {
     beforeEach(() => {

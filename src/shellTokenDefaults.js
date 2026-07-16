@@ -1,5 +1,5 @@
 import { DESIGN_TOKENS } from './designTokens.js';
-import { SPACING } from './uiLayoutConstants.js';
+import { SPACING } from './ui/shared/uiLayoutConstants.js';
 
 /** Fallbacks statiques du shell — doivent rester alignés avec public/shell-tokens.css */
 export const SHELL_TOKEN_CSS_FALLBACKS = Object.freeze({

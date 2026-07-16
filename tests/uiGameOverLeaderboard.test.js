@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildGameOverLeaderboard } from '../src/uiGameOverLeaderboard.js';
+import { buildGameOverLeaderboard } from '../src/ui/gameOver/uiGameOverLeaderboard.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 describe('uiGameOverLeaderboard', () => {

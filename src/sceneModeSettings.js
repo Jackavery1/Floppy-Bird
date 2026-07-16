@@ -7,8 +7,11 @@ import { saveHardcoreEnabled } from './hardcoreStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { buildMetaContext } from './metaContext.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
-import { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
-import { setAccessibilityControlLabel } from './uiDomAccessibilityControls.js';
+import { syncMenuToggleAccessibility } from './ui/a11y/uiDomAccessibilityMenuToggles.js';
+import {
+    announceAccessibility,
+    setAccessibilityControlLabel,
+} from './ui/a11y/uiDomAccessibilityControls.js';
 import { trainingSpeedLabel } from './device.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
@@ -30,6 +33,7 @@ export function setTrainingMode(scene, enabled) {
     scene.ui.refreshHardcoreLockState();
     scene.ui.refreshHighScore(scene.difficulty, scene.hardcoreMode);
     syncMenuToggleAccessibility(scene);
+    announceAccessibility(enabled ? 'Mode entraînement activé' : 'Mode entraînement désactivé');
 }
 
 /** @param {SceneContext} scene @param {boolean} enabled */
@@ -51,6 +55,7 @@ export function setHardcoreMode(scene, enabled) {
 
     scene.ui.updateHardcoreLabel(enabled);
     syncMenuToggleAccessibility(scene);
+    announceAccessibility(enabled ? 'Mode hardcore activé' : 'Mode hardcore désactivé');
 }
 
 /** @param {SceneContext} scene */
@@ -59,7 +64,9 @@ export function cycleTrainingSpeed(scene) {
     saveTrainingTimeScale(scene.trainingTimeScale);
     applyTrainingTimeScale(scene);
     scene.ui.updateTrainingSpeedLabel(scene.trainingTimeScale, scene.trainingMode);
-    setAccessibilityControlLabel('menuTrainingSpeed', trainingSpeedLabel(scene.trainingTimeScale));
+    const label = trainingSpeedLabel(scene.trainingTimeScale);
+    setAccessibilityControlLabel('menuTrainingSpeed', label);
+    announceAccessibility(label);
 }
 
 /** @param {SceneContext} scene */

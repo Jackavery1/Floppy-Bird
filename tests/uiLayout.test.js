@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { diffButtonCenter, diffLabelColor } from '../src/uiLayout.js';
+import { diffButtonCenter, diffLabelColor } from '../src/ui/shared/uiLayout.js';
 import { DIFFICULTY, GAME_CONFIG } from '../src/config.js';
 import { DESIGN_TOKENS } from '../src/designTokens.js';
 
@@ -24,7 +24,7 @@ describe('uiLayout', () => {
             PAUSE_BTN_VISUAL,
             PAUSE_BTN_INSET,
             FONT_TITLE,
-        } = await import('../src/uiLayout.js');
+        } = await import('../src/ui/shared/uiLayout.js');
         expect(FONT_TITLE).toContain('Press Start 2P');
         expect(TOUCH_TARGETS.pauseButton).toEqual({
             x: UI_LAYOUT.playing.pauseBtnX,

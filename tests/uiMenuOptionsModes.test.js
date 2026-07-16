@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildModeControls } from '../src/uiMenuOptionsModes.js';
-import { UI } from '../src/ui.js';
+import { buildModeControls } from '../src/ui/menu/uiMenuOptionsModes.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import { UI_LAYOUT } from '../src/uiLayout.js';
+import { UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import { isHardcoreUnlocked } from '../src/hardcoreUnlock.js';
 
 vi.mock('../src/hardcoreUnlock.js', async (importOriginal) => {
@@ -14,7 +14,7 @@ vi.mock('../src/hardcoreUnlock.js', async (importOriginal) => {
     };
 });
 
-vi.mock('../src/uiDomAccessibilityControls.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
     bindUnifiedInteractiveFocus: vi.fn(() => ({
         attachHit: vi.fn(),
     })),

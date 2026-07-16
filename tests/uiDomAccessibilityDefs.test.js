@@ -8,7 +8,7 @@ import {
     SCORES_PANEL_CONTROL_KEYS,
     SKINS_PANEL_CONTROL_KEYS,
     GAME_OVER_CONTROL_KEYS,
-} from '../src/uiDomAccessibilityDefs.js';
+} from '../src/ui/a11y/uiDomAccessibilityDefs.js';
 
 describe('uiDomAccessibilityDefs', () => {
     it('expose tous les contrôles avec id et label', () => {

@@ -4,7 +4,6 @@ import { loadSelectedSkin } from '../metaStorage.js';
 import { ensurePipeTextures } from './pipeTextures.js';
 import { createBackgroundSprite } from './backgroundTextures.js';
 import { createGroundTexture } from './groundTextures.js';
-import { preloadDecorTextures } from './decorPreload.js';
 
 export { getBackgroundPeriod } from '../backgroundPeriod.js';
 export { resetBackgroundCache, getBackgroundCanvasColor } from './backgroundTextures.js';
@@ -50,11 +49,14 @@ export function ensureBirdTextures(scene, skinIds) {
 export function preloadTexturesEssential(scene) {
     createBackgroundSprite(scene);
     createGroundTexture(scene);
+    ensurePipeTextures(scene);
     ensureBirdTextures(scene, initialBirdSkinIds());
 }
 
-export function preloadTextures(scene) {
+/** Monde complet — décor en chunk séparé (même voie que `GameScene.create`). */
+export async function preloadTextures(scene) {
     preloadTexturesEssential(scene);
+    const { preloadDecorTextures } = await import('./decorPreload.js');
     preloadDecorTextures(scene);
 }
 

@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { GAME_CONFIG } from '../../src/config.js';
-import { TOUCH_TARGETS } from '../../src/uiLayout.js';
+import { TOUCH_TARGETS } from '../../src/ui/shared/uiLayout.js';
 import { getTestState, waitForTestSeamReady, waitForScoreHud } from './testSeam.mjs';
 
 export async function getCanvasBox(page) {

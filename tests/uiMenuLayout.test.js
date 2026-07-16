@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { GAME_CONFIG } from '../src/config.js';
-import { UI_LAYOUT } from '../src/uiLayout.js';
-import { applyMenuLayout, bestScoreLabel, drawDiffButtons } from '../src/uiMenuLayout.js';
+import { UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
+import { applyMenuLayout, bestScoreLabel, drawDiffButtons } from '../src/ui/menu/uiMenuLayout.js';
 
 function createUiStub() {
     const graphics = { clear: vi.fn(), fillStyle: vi.fn(), fillRoundedRect: vi.fn() };

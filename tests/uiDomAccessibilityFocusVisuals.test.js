@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { DIFFICULTY } from '../src/config.js';
-import { focusHandlers, blurHandlers } from '../src/uiDomAccessibilityState.js';
+import { focusHandlers, blurHandlers } from '../src/ui/a11y/uiDomAccessibilityState.js';
 import {
     bindMenuAccessibilityFocusVisuals,
     bindOptionsAccessibilityFocusVisuals,
     bindPlayingAccessibilityFocusVisuals,
     bindScoresAccessibilityFocusVisuals,
     bindSkinsAccessibilityFocusVisuals,
-} from '../src/uiDomAccessibilityFocusVisuals.js';
+} from '../src/ui/a11y/uiDomAccessibilityFocusVisuals.js';
 
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
-vi.mock('../src/uiMenuSkinsRefresh.js', () => ({
+vi.mock('../src/ui/menu/uiMenuSkinsRefresh.js', () => ({
     refreshSkinsTab: vi.fn(),
 }));
 
@@ -109,7 +109,7 @@ describe('uiDomAccessibilityFocusVisuals', () => {
 
     it('bindSkinsAccessibilityFocusVisuals surligne le skin sélectionné au cycle', async () => {
         const { loadSelectedSkin } = await import('../src/metaStorage.js');
-        const { refreshSkinsTab } = await import('../src/uiMenuSkinsRefresh.js');
+        const { refreshSkinsTab } = await import('../src/ui/menu/uiMenuSkinsRefresh.js');
         const frame = { setStrokeStyle: vi.fn() };
         const ui = {
             _skinCells: [{ skinId: 'classic', frame }],
@@ -126,7 +126,7 @@ describe('uiDomAccessibilityFocusVisuals', () => {
 
     it('bindAccessibilityFocus enregistre focus et blur', async () => {
         const { bindAccessibilityFocus, bindUnifiedInteractiveFocus } =
-            await import('../src/uiDomAccessibilityControls.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const onFocus = vi.fn();
         const onBlur = vi.fn();
         bindAccessibilityFocus('menuScores', onFocus, onBlur);

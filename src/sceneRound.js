@@ -114,7 +114,6 @@ export function checkScorePipes(scene) {
             scene.pipes.applySpeedForScore(round.score);
             playScoreFeedback(round.score, scene);
             handleScoreMilestones(scene, round.score);
-            scene.scoreEffects.show(scene.bird.x, scene.bird.y);
             maybeCelebrateDailyGoal(scene);
             if (shouldNotifyRecord(round.score, round.roundHighScore, round.recordNotified)) {
                 round.recordNotified = true;

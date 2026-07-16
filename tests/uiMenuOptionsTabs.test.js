@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
-import { buildOptionsTabs, setOptionsTab } from '../src/uiMenuOptionsTabs.js';
-import { UI_LAYOUT } from '../src/uiLayout.js';
+import { buildOptionsTabs, setOptionsTab } from '../src/ui/menu/uiMenuOptionsTabs.js';
+import { UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 
 describe('uiMenuOptionsTabs', () => {
     let scene;

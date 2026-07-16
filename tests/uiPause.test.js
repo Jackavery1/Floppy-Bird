@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { UI } from '../src/ui.js';
-import { MIN_TOUCH, UI_LAYOUT } from '../src/uiLayout.js';
+import { UI } from '../src/ui/core/ui.js';
+import { MIN_TOUCH, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({
@@ -17,7 +17,7 @@ describe('uiPause', () => {
     });
 
     it('showPause retourne overlay et boutons avec zones tactiles', async () => {
-        const { showPause } = await import('../src/uiPause.js');
+        const { showPause } = await import('../src/ui/core/uiPause.js');
         const onResume = vi.fn();
         const onMenu = vi.fn();
         const { elements } = showPause(ui, { onResume, onMenu });
@@ -33,7 +33,7 @@ describe('uiPause', () => {
     });
 
     it('showPause appelle onResume au tap reprendre', async () => {
-        const { showPause } = await import('../src/uiPause.js');
+        const { showPause } = await import('../src/ui/core/uiPause.js');
         const onResume = vi.fn();
         showPause(ui, { onResume, onMenu: vi.fn() });
 

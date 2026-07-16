@@ -10,23 +10,24 @@ import {
     openGameOverAccessibility,
 } from '../src/sceneA11ySync.js';
 
-vi.mock('../src/uiDomAccessibilityControls.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
     announceAccessibility: vi.fn(),
     hideAllAccessibilityControls: vi.fn(),
     setAccessibilityControlVisible: vi.fn(),
 }));
 
-vi.mock('../src/uiDomAccessibilityFlows.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityFlows.js', () => ({
     setupMenuAccessibility: vi.fn(),
     setupGameOverAccessibility: vi.fn(),
 }));
 
-vi.mock('../src/uiDomAccessibilityPanelFlows.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityPanelFlows.js', () => ({
     setOptionsPanelAccessibility: vi.fn(),
 }));
 
-vi.mock('../src/uiDomAccessibilityLayer.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityLayer.js', () => ({
     syncAccessibilityLayer: vi.fn(),
+    syncAndFocusAccessibilityLayer: vi.fn(),
 }));
 
 describe('sceneA11ySync', () => {
@@ -40,10 +41,11 @@ describe('sceneA11ySync', () => {
             setItem: vi.fn(),
         });
         const { hideAllAccessibilityControls, announceAccessibility } =
-            await import('../src/uiDomAccessibilityControls.js');
-        const { setupMenuAccessibility } = await import('../src/uiDomAccessibilityFlows.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
+        const { setupMenuAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityFlows.js');
         const { setOptionsPanelAccessibility } =
-            await import('../src/uiDomAccessibilityPanelFlows.js');
+            await import('../src/ui/a11y/uiDomAccessibilityPanelFlows.js');
         const scene = { game: { canvas: null } };
         openMenuAccessibility(scene);
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
@@ -58,7 +60,8 @@ describe('sceneA11ySync', () => {
             getItem: () => null,
             setItem: vi.fn(),
         });
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const scene = { game: { canvas: null } };
         openMenuAccessibility(scene);
         expect(announceAccessibility).toHaveBeenCalledWith(
@@ -69,7 +72,7 @@ describe('sceneA11ySync', () => {
 
     it('hideAccessibilityForRoundStart masque tous les contrôles', async () => {
         const { hideAllAccessibilityControls } =
-            await import('../src/uiDomAccessibilityControls.js');
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         hideAccessibilityForRoundStart();
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
     });
@@ -79,13 +82,14 @@ describe('sceneA11ySync', () => {
             hideAllAccessibilityControls,
             setAccessibilityControlVisible,
             announceAccessibility,
-        } = await import('../src/uiDomAccessibilityControls.js');
-        const { syncAccessibilityLayer } = await import('../src/uiDomAccessibilityLayer.js');
+        } = await import('../src/ui/a11y/uiDomAccessibilityControls.js');
+        const { syncAndFocusAccessibilityLayer } =
+            await import('../src/ui/a11y/uiDomAccessibilityLayer.js');
         const scene = { game: { canvas: null } };
         enterPauseAccessibility(scene);
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
         expect(setAccessibilityControlVisible).toHaveBeenCalledWith('pause', false);
-        expect(syncAccessibilityLayer).toHaveBeenCalledWith(scene.game);
+        expect(syncAndFocusAccessibilityLayer).toHaveBeenCalledWith(scene.game);
         expect(announceAccessibility).toHaveBeenCalledWith('Partie en pause');
     });
 
@@ -94,8 +98,9 @@ describe('sceneA11ySync', () => {
             hideAllAccessibilityControls,
             setAccessibilityControlVisible,
             announceAccessibility,
-        } = await import('../src/uiDomAccessibilityControls.js');
-        const { syncAccessibilityLayer } = await import('../src/uiDomAccessibilityLayer.js');
+        } = await import('../src/ui/a11y/uiDomAccessibilityControls.js');
+        const { syncAccessibilityLayer } =
+            await import('../src/ui/a11y/uiDomAccessibilityLayer.js');
         const scene = { game: { canvas: null } };
         exitPauseAccessibility(scene);
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
@@ -105,7 +110,8 @@ describe('sceneA11ySync', () => {
     });
 
     it('announceRoundStarted annonce le mode de partie', async () => {
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         announceRoundStarted({
             trainingMode: true,
             dailyChallengeMode: false,
@@ -121,7 +127,8 @@ describe('sceneA11ySync', () => {
     });
 
     it('announceDeathStarted annonce la cause de mort et le score', async () => {
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         announceDeathStarted('pipe');
         expect(announceAccessibility).toHaveBeenCalledWith('Mort : Collision tuyau.');
         announceDeathStarted('ground', 5);
@@ -129,7 +136,8 @@ describe('sceneA11ySync', () => {
     });
 
     it('announceScoreReached annonce le palier', async () => {
-        const { announceAccessibility } = await import('../src/uiDomAccessibilityControls.js');
+        const { announceAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         announceScoreReached(10);
         expect(announceAccessibility).toHaveBeenCalledWith('Score 10');
         announceScoreReached(0);
@@ -137,7 +145,8 @@ describe('sceneA11ySync', () => {
     });
 
     it('openGameOverAccessibility délègue au flow DOM', async () => {
-        const { setupGameOverAccessibility } = await import('../src/uiDomAccessibilityFlows.js');
+        const { setupGameOverAccessibility } =
+            await import('../src/ui/a11y/uiDomAccessibilityFlows.js');
         const scene = { game: { canvas: null } };
         openGameOverAccessibility(scene, { score: 7, isDaily: true });
         expect(setupGameOverAccessibility).toHaveBeenCalledWith(scene, { score: 7, isDaily: true });

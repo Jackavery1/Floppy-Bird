@@ -6,8 +6,8 @@ import {
     destroyHudBanner,
     HUD_BANNER_BASE_Y,
     HUD_BANNER_ROW_GAP,
-} from '../src/uiHudBannerStack.js';
-import { UI } from '../src/ui.js';
+} from '../src/ui/hud/uiHudBannerStack.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 describe('uiHudBannerStack', () => {

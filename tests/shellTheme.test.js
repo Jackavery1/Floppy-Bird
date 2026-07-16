@@ -21,6 +21,10 @@ describe('shellTheme', () => {
         syncShellTheme(doc);
 
         expect(style.setProperty).toHaveBeenCalledWith('--couleur-fond', expect.any(String));
+        expect(style.setProperty).toHaveBeenCalledWith(
+            '--couleur-texte-chargement',
+            expect.any(String)
+        );
         expect(style.setProperty).toHaveBeenCalledWith('--spacing-md', '12px');
         expect(meta.setAttribute).toHaveBeenCalledWith('content', expect.any(String));
         expect(doc.body.style.background).toBeTruthy();

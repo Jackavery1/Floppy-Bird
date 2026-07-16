@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { buildGameOverSummaryMedal, medalColorForScore } from '../src/uiGameOverSummaryMedal.js';
+import {
+    buildGameOverSummaryMedal,
+    medalColorForScore,
+} from '../src/ui/gameOver/uiGameOverSummaryMedal.js';
 import { MEDAILLE_COLORS_PHASER } from '../src/designTokens.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 

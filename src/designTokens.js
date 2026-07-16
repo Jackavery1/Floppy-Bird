@@ -5,7 +5,7 @@
  * Matrice typo (Phaser + shell) :
  * | Rôle              | Taille   | Police              | Style helper           |
  * |-------------------|----------|---------------------|------------------------|
- * | Titre jeu / chrome| 13 px min| Press Start 2P      | panelChromeTextStyle   |
+ * | Titre jeu / chrome| 14 px min| Press Start 2P      | panelChromeTextStyle   |
  * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle      |
  * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle           |
  * | Bannières HUD     | 11 px    | Segoe UI            | hudTextStyle           |
@@ -18,11 +18,15 @@ export const DESIGN_TOKENS = Object.freeze({
     fondNuit: '#1a1a2e',
     fondJour: '#87ceeb',
     texteChargement: '#90caf9',
+    /** Texte chargement shell sur ciel jour (AA sur fondJour). */
+    texteChargementJour: '#0d47a1',
     texteHint: '#ffffff',
     accent: '#fdd835',
     accentGap: '#FFCC80',
     flashPlafond: '#b3e5fc',
     texteHud: '#ffffff',
+    /** Fill HUD score/hints sur ciel jour — contraste fill seul (stroke reste noir). */
+    texteHudJour: '#0d1117',
     contourHud: '#000000',
     texteSecondaire: '#B0BEC5',
     badgeDaily: '#CE93D8',
@@ -127,10 +131,24 @@ export function hudBannerFill(tokenKey) {
 
 /** Style Phaser texte HUD (contour noir systématique). */
 export function hudTextStyle(overrides = {}) {
+    const day = getBackgroundPeriod() === 'day';
+    const defaultFill = day ? DESIGN_TOKENS.texteHudJour : DESIGN_TOKENS.texteHud;
+    const rawFill = overrides.fill;
+    const needsDayRemap =
+        rawFill == null ||
+        rawFill === DESIGN_TOKENS.texteHud ||
+        rawFill === DESIGN_TOKENS.texteMenu ||
+        rawFill === DESIGN_TOKENS.texteHint;
+    const fill = needsDayRemap
+        ? day
+            ? DESIGN_TOKENS.texteHudJour
+            : (rawFill ?? defaultFill)
+        : rawFill;
     const style = {
         stroke: DESIGN_TOKENS.contourHud,
         strokeThickness: epaisseurContourHud(),
         ...overrides,
+        fill,
     };
     const shadow = ombreHudJour();
     if (shadow) style.shadow = shadow;
@@ -146,11 +164,11 @@ export function menuTextStyle(overrides = {}) {
     };
 }
 
-/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P), min 12 px. */
+/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P), défaut 14 px. */
 export function panelChromeTextStyle(overrides = {}) {
     return menuTextStyle({
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '13px',
+        fontSize: '14px',
         ...overrides,
     });
 }
@@ -159,7 +177,7 @@ export function panelChromeTextStyle(overrides = {}) {
 export function yellowChromeButtonTextStyle(overrides = {}) {
     return {
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '13px',
+        fontSize: '14px',
         fill: DESIGN_TOKENS.texteBoutonJaune,
         fontStyle: 'bold',
         ...overrides,

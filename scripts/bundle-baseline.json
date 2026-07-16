@@ -1,8 +1,10 @@
 {
-    "generated": "2026-07-11",
-    "distKo": 1414.2,
+    "generated": "2026-07-16",
+    "distKo": 1430.9,
     "iconsKo": 23.2,
     "vendorPhaserKo": 1168.1,
-    "appJsGzipKo": 48.5,
-    "note": "Référence locale — régénérer avec npm run build && npm run measure"
+    "appJsGzipKo": 54.8,
+    "precacheEntries": 32,
+    "precacheKiB": 1402.11,
+    "note": "Après dédup font offline (latin seul) + globIgnores tokens. Régénérer : npm run build && npm run measure"
 }

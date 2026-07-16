@@ -1,6 +1,6 @@
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { prefersReducedMotion, sceneCameraShake, sceneTween } from './motion.js';
-import { DEPTH } from './uiDepth.js';
+import { DEPTH } from './ui/shared/uiDepth.js';
 import { Utils } from './utils.js';
 
 /**

@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildMuteControls } from '../src/uiMenuOptionsMute.js';
-import { UI } from '../src/ui.js';
+import { buildMuteControls } from '../src/ui/menu/uiMenuOptionsMute.js';
+import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 import { createRoundState } from '../src/roundState.js';
 import { cycleSoundLevel, formatSoundLabel, isAudioAvailable } from '../src/audio.js';
-import { bindAccessibilityAction } from '../src/uiDomAccessibilityControls.js';
+import { bindAccessibilityAction } from '../src/ui/a11y/uiDomAccessibilityControls.js';
 
 vi.mock('../src/audio.js', () => ({
     cycleSoundLevel: vi.fn(),
@@ -12,11 +12,13 @@ vi.mock('../src/audio.js', () => ({
     isAudioAvailable: vi.fn(() => true),
 }));
 
-vi.mock('../src/uiDomAccessibilityControls.js', () => ({
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
+    announceAccessibility: vi.fn(),
     bindAccessibilityAction: vi.fn(),
     bindUnifiedInteractiveFocus: vi.fn(() => ({
         attachHit: vi.fn(),
     })),
+    setAccessibilityControlLabel: vi.fn(),
 }));
 
 describe('uiMenuOptionsMute', () => {

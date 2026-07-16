@@ -2,11 +2,20 @@ import {
     announceAccessibility,
     hideAllAccessibilityControls,
     setAccessibilityControlVisible,
-} from './uiDomAccessibilityControls.js';
-import { setupGameOverAccessibility, setupMenuAccessibility } from './uiDomAccessibilityFlows.js';
-import { setOptionsPanelAccessibility } from './uiDomAccessibilityPanelFlows.js';
-import { syncAccessibilityLayer } from './uiDomAccessibilityLayer.js';
-import { PLAYING_CONTROL_KEYS, PAUSE_OVERLAY_CONTROL_KEYS } from './uiDomAccessibilityDefs.js';
+} from './ui/a11y/uiDomAccessibilityControls.js';
+import {
+    setupGameOverAccessibility,
+    setupMenuAccessibility,
+} from './ui/a11y/uiDomAccessibilityFlows.js';
+import { setOptionsPanelAccessibility } from './ui/a11y/uiDomAccessibilityPanelFlows.js';
+import {
+    syncAccessibilityLayer,
+    syncAndFocusAccessibilityLayer,
+} from './ui/a11y/uiDomAccessibilityLayer.js';
+import {
+    PLAYING_CONTROL_KEYS,
+    PAUSE_OVERLAY_CONTROL_KEYS,
+} from './ui/a11y/uiDomAccessibilityDefs.js';
 import { deathCauseLabel, firstRunMenuHintText } from './device.js';
 import { loadRoundsStarted, loadTutorialComplete } from './tutorialStorage.js';
 
@@ -71,7 +80,7 @@ function syncPausedControls(game) {
     for (const key of PAUSE_OVERLAY_CONTROL_KEYS) {
         setAccessibilityControlVisible(key, true);
     }
-    syncAccessibilityLayer(game);
+    syncAndFocusAccessibilityLayer(game);
 }
 
 /** @param {SceneContext} scene */

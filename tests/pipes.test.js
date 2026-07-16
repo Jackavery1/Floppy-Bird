@@ -168,17 +168,18 @@ describe('Pipes', () => {
             expect(at50).toBeCloseTo(base * 1.15);
         });
 
-        it('resserre le gap physique dès 20 points', () => {
+        it('resserre le gap physique dès gapTightenAfterScore', () => {
             const { speed, gap, pipeInterval } = NORMAL_DIFF;
+            const { gapTightenAfterScore, gapTightenEvery, gapTightenStep } = GAME_CONFIG.round;
             pipes.applyRoundDifficulty({ speed, gap, pipeInterval });
-            pipes.applySpeedForScore(19);
+            pipes.applySpeedForScore(gapTightenAfterScore - 1);
             expect(pipes.pipeGap).toBe(gap);
-            pipes.applySpeedForScore(20);
-            expect(pipes.pipeGap).toBe(gap - GAME_CONFIG.round.gapTightenStep);
-            pipes.applySpeedForScore(30);
-            expect(pipes.pipeGap).toBe(gap - 2 * GAME_CONFIG.round.gapTightenStep);
-            expect(maxGapDeltaForScore(30)).toBe(
-                GAME_CONFIG.pipes.maxGapDelta - 2 * GAME_CONFIG.round.gapTightenStep
+            pipes.applySpeedForScore(gapTightenAfterScore);
+            expect(pipes.pipeGap).toBe(gap - gapTightenStep);
+            pipes.applySpeedForScore(gapTightenAfterScore + gapTightenEvery);
+            expect(pipes.pipeGap).toBe(gap - 2 * gapTightenStep);
+            expect(maxGapDeltaForScore(gapTightenAfterScore + gapTightenEvery)).toBe(
+                GAME_CONFIG.pipes.maxGapDelta - 2 * gapTightenStep
             );
         });
     });
