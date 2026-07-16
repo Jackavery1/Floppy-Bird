@@ -53,9 +53,9 @@ export function trainingHint() {
 
 export function trainingToggleLabel(enabled) {
     if (enabled) {
-        return isCoarsePointer() ? '🟦 ENTR. ON' : '🟦 ENTRAÎNEMENT : ON (ralenti + fantôme)';
+        return isCoarsePointer() ? 'ENTR. ON' : 'ENTRAÎNEMENT : ON (ralenti + fantôme)';
     }
-    return isCoarsePointer() ? '⬜ ENTR. OFF' : '⬜ ENTRAÎNEMENT : OFF';
+    return isCoarsePointer() ? 'ENTR. OFF' : 'ENTRAÎNEMENT : OFF';
 }
 
 export function hardcoreHint() {
@@ -65,13 +65,13 @@ export function hardcoreHint() {
 export function hardcoreToggleLabel(enabled, unlocked = true) {
     if (!unlocked) {
         return isCoarsePointer()
-            ? `🔒 HARD · score ≥ ${HARDCORE_UNLOCK_SCORE}`
-            : `🔒 HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
+            ? `HC · score ≥ ${HARDCORE_UNLOCK_SCORE}`
+            : `HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
     }
     if (enabled) {
-        return isCoarsePointer() ? '🟥 HARD ON' : '🟥 HARDCORE : ON';
+        return isCoarsePointer() ? 'HC ON' : 'HARDCORE : ON';
     }
-    return isCoarsePointer() ? '⬜ HARD OFF' : '⬜ HARDCORE : OFF';
+    return isCoarsePointer() ? 'HC OFF' : 'HARDCORE : OFF';
 }
 
 export function dailyChallengeHint() {
@@ -91,7 +91,7 @@ export function optionsControlRows() {
             { key: '1·2·3', action: 'difficulté' },
             { key: 'ENTR.', action: 'entraînement' },
             { key: 'VIT.', action: 'vitesse entraînement' },
-            { key: 'HARD', action: 'hardcore' },
+            { key: 'HC', action: 'hardcore' },
             { key: '···', action: 'scores · skins · options' },
         ];
     }
@@ -161,8 +161,8 @@ export function trainingTutorialText(scale = GAME_CONFIG.training.timeScale) {
 
 export function hardcoreTutorialText() {
     return isCoarsePointer()
-        ? 'Hardcore : plus difficile,\nTOP hardcore séparé'
-        : 'Hardcore : gravité et vitesse renforcées,\nTOP hardcore séparé';
+        ? 'Hardcore : gaps serrés, chute lourde,\nTOP hardcore séparé'
+        : 'Hardcore : gaps serrés, gravité et vitesse +\nTOP hardcore séparé (≠ difficulté Difficile)';
 }
 
 /** @param {'pipe' | 'ground' | 'ceiling' | null | undefined} cause */

@@ -1,6 +1,12 @@
 import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from '../../designTokens.js';
 import { deathCauseLabel } from '../../device.js';
-import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_TITLE } from '../shared/uiLayout.js';
+import {
+    addCenteredText,
+    DEPTH,
+    FONT_SIZE_BADGE,
+    FONT_SIZE_CHROME,
+    FONT_TITLE,
+} from '../shared/uiLayout.js';
 
 /**
  * Titre GAME OVER, cause de mort et liseré du récap game over.
@@ -21,7 +27,7 @@ export function buildGameOverSummaryHeader(scene, cx, y, opts) {
             'GAME OVER',
             menuTextStyle({
                 fontFamily: FONT_TITLE,
-                fontSize: '14px',
+                fontSize: FONT_SIZE_CHROME,
                 fill: DESIGN_TOKENS.texteGameOver,
                 fontStyle: 'normal',
                 stroke: DESIGN_TOKENS.contourGameOver,

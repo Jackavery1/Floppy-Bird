@@ -7,12 +7,7 @@ import {
     bindUnifiedInteractiveFocus,
 } from './uiDomAccessibilityControls.js';
 import { refreshSkinsTab } from '../menu/uiMenuSkinsRefresh.js';
-import {
-    MENU_BTN_COLOR,
-    MENU_BTN_HOVER,
-    PAUSE_BTN_COLOR,
-    PAUSE_BTN_HOVER,
-} from '../shared/uiLayout.js';
+import { MENU_BTN_COLOR } from '../shared/uiLayout.js';
 
 const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonScores);
 const SCORES_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonScoresHover);
@@ -121,9 +116,13 @@ export function bindPlayingAccessibilityFocusVisuals(ui) {
     if (!ui) return;
     bindAccessibilityFocus(
         'playJump',
-        () => ui.scoreText?.setScale?.(1.08),
-        () => ui.scoreText?.setScale?.(1)
+        () => {
+            ui.scoreText?.setScale?.(1.08);
+            ui._scoreTextShadow?.setScale?.(1.08);
+        },
+        () => {
+            ui.scoreText?.setScale?.(1);
+            ui._scoreTextShadow?.setScale?.(1);
+        }
     );
 }
-
-export { PAUSE_BTN_COLOR, PAUSE_BTN_HOVER, MENU_BTN_COLOR, MENU_BTN_HOVER };

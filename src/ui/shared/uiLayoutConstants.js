@@ -27,8 +27,14 @@ export const FONT_SIZE_COMPACT = '13px';
 export const FONT_SIZE_BODY = '12px';
 /** Micro-labels (previews HUD, médailles, leaderboard). */
 export const FONT_SIZE_SMALL = '11px';
-/** Légendes très compactes (sous-texte défi du jour). */
-export const FONT_SIZE_TINY = '10px';
+/** Légendes très compactes (sous-texte défi du jour) — plancher AA mobile. */
+export const FONT_SIZE_TINY = '11px';
+/** Chrome Press Start / toasts / tutoriel pulsant. */
+export const FONT_SIZE_CHROME = '14px';
+/** Bannières HUD moyennes (objectif daily, labels panneau). */
+export const FONT_SIZE_BANNER = '15px';
+/** Bannières emphase (nouveau record). */
+export const FONT_SIZE_EMPHASIS = '16px';
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
 /** Zone tactile du bouton pause (coin HUD) — alignée CTA 48 px. */
 export const PAUSE_BTN_HIT = MIN_CTA_TOUCH;
@@ -179,7 +185,7 @@ export const TOUCH_TARGETS = Object.freeze({
 export const GAME_OVER_RESTART_BTN_WIDTH = 100;
 export const GAME_OVER_RESTART_BTN_HEIGHT = MIN_CTA_TOUCH;
 export const GAME_OVER_RESTART_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.accent);
-export const GAME_OVER_RESTART_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentTitre);
+export const GAME_OVER_RESTART_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.accentHover);
 export const PAUSE_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonPause);
 export const PAUSE_BTN_HOVER = hexVersPhaser(DESIGN_TOKENS.boutonPauseHover);
 export const MENU_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonMenu);

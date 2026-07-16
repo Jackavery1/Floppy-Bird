@@ -70,15 +70,32 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         }
 
         await page.locator('#a11y-options-tab-preferences').tap({ force: true });
-        for (const id of ['a11y-mute', 'a11y-training', 'a11y-hardcore']) {
+        for (const id of ['a11y-mute', 'a11y-training', 'a11y-hardcore', 'a11y-training-speed']) {
             const minPx = await minA11yButtonScreenPx(page, id);
             expect(minPx, id).toBeGreaterThanOrEqual(44);
         }
 
         await page.locator('#a11y-options-close').tap({ force: true });
+        await page.locator('#a11y-scores').tap({ force: true });
+        await expect(page.locator('#a11y-scores-close')).toBeVisible();
+        expect(await minA11yButtonScreenPx(page, 'a11y-scores-close')).toBeGreaterThanOrEqual(44);
+        await page.locator('#a11y-scores-close').tap({ force: true });
+
         await page.locator('#a11y-skins').tap({ force: true });
         await expect(page.locator('#a11y-skins-close')).toBeVisible();
         for (const id of ['a11y-skin-prev', 'a11y-skin-next', 'a11y-skins-close']) {
+            const minPx = await minA11yButtonScreenPx(page, id);
+            expect(minPx, id).toBeGreaterThanOrEqual(44);
+        }
+    });
+
+    test('boutons pause / menu en jeu', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, true);
+        await page.locator('#a11y-pause').tap({ force: true });
+        await expect(page.locator('#a11y-resume')).toBeVisible();
+        for (const id of ['a11y-resume', 'a11y-menu']) {
             const minPx = await minA11yButtonScreenPx(page, id);
             expect(minPx, id).toBeGreaterThanOrEqual(44);
         }

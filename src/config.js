@@ -39,8 +39,8 @@ export const GAME_CONFIG = {
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        /** Latch 1 frame : l’input est consommé au prochain `processJumpBuffer` (pas une fenêtre multi-frames). */
-        jumpBufferFrames: 1,
+        /** Latch reporté jusqu’au prochain `processJumpBuffer` (ticks via `tickJumpBuffer`). */
+        jumpBufferFrames: 3,
         /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },
@@ -66,8 +66,8 @@ export const GAME_CONFIG = {
     round: {
         pipeSpawnDelayMs: 1250,
         spawnInvincibilityMs: 900,
-        /** Plus court qu'en classique ; 840 ms compense gravité hardcore (+12 %) tout en gardant ≥400 ms avant le 1er tuyau. */
-        hardcoreSpawnInvincibilityMs: 840,
+        /** Plus court qu'en classique ; marge ≥400 ms avant le 1er tuyau (pipeSpawnDelayMs). */
+        hardcoreSpawnInvincibilityMs: 620,
         speedBoostEvery: 10,
         speedBoostPercent: 0.03,
         /** Plafond d’accélération (+3 % / palier) — score 50+ sans montée supplémentaire. */
@@ -95,22 +95,50 @@ export const GAME_CONFIG = {
         sampleEveryFrames: 3,
     },
 
+    /**
+     * Modificateur hardcore (classique uniquement ; le défi du jour le force OFF).
+     * Gaps + cadence + physique — pas un simple +8 % de vitesse.
+     */
     hardcore: {
-        gravityMultiplier: 1.12,
-        maxFallSpeedMultiplier: 1.08,
-        speedMultiplier: 1.08,
+        gravityMultiplier: 1.2,
+        maxFallSpeedMultiplier: 1.12,
+        speedMultiplier: 1.18,
+        gapMult: 0.9,
+        pipeIntervalMult: 0.9,
+        jumpMult: 0.94,
+        /** Coyote réduit vs classique (5 → 3). */
+        coyoteTimeFrames: 3,
+    },
+
+    /** Modificateurs exclusifs défi du jour (classique inchangé). */
+    daily: {
+        gapMult: 0.88,
+        speedMult: 1.1,
+        pipeIntervalMult: 0.92,
+        spawnInvincibilityMs: 700,
+        /** Plancher / plafond des patterns skin trop permissifs. */
+        minGravityMult: 0.92,
+        maxJumpMult: 1.05,
+        minSpeedMult: 1.04,
     },
 
     difficulties: {
         easy: {
-            speed: 1.92,
-            gap: 136,
-            gravity: 0.32,
-            jumpPower: -5.65,
+            speed: 2.15,
+            gap: 124,
+            gravity: 0.35,
+            jumpPower: -5.75,
             maxFallSpeed: 10.5,
-            pipeInterval: 90,
+            pipeInterval: 82,
         },
-        normal: { speed: 2.85, gap: 108, pipeInterval: 74 },
+        normal: {
+            speed: 3.05,
+            gap: 100,
+            gravity: 0.42,
+            jumpPower: -6.05,
+            maxFallSpeed: 11,
+            pipeInterval: 68,
+        },
         hard: {
             speed: 3.72,
             gap: 88,
@@ -156,6 +184,9 @@ export function getDifficultyForRound(difficulty, hardcore = false) {
         gravity: cfg.gravity * hc.gravityMultiplier,
         maxFallSpeed: cfg.maxFallSpeed * hc.maxFallSpeedMultiplier,
         speed: cfg.speed * hc.speedMultiplier,
+        gap: Math.max(GAME_CONFIG.pipes.minPipeGap, Math.round(cfg.gap * hc.gapMult)),
+        pipeInterval: Math.max(48, Math.round(cfg.pipeInterval * hc.pipeIntervalMult)),
+        jumpPower: cfg.jumpPower * hc.jumpMult,
     };
 }
 

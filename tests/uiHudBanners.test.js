@@ -50,9 +50,11 @@ describe('uiHudBanners', () => {
         expect(ui._recordBanner.__bannerRow).not.toBe(ui._streakBanner.__bannerRow);
     });
 
-    it('showDifficultyEscalation crée une bannière', () => {
+    it('showDifficultyEscalation crée une bannière', async () => {
+        const { hapticMedium } = await import('../src/haptics.js');
         showDifficultyEscalation(ui);
         expect(ui._escalationBanner).toBeTruthy();
+        expect(hapticMedium).toHaveBeenCalled();
     });
 
     it('showScoreStreak affiche la série ou EN FEU', async () => {
@@ -71,10 +73,12 @@ describe('uiHudBanners', () => {
         expect(ui.scene.add.text).toHaveBeenCalled();
     });
 
-    it('showDailyGoalReached crée une bannière et un flash', () => {
+    it('showDailyGoalReached crée une bannière et un flash', async () => {
+        const { hapticMedium } = await import('../src/haptics.js');
         showDailyGoalReached(ui);
         expect(ui._dailyGoalBanner).toBeTruthy();
         expect(ui.scene.add.rectangle).toHaveBeenCalled();
+        expect(hapticMedium).toHaveBeenCalled();
     });
 
     it('showDifficultyEscalationPreview crée une bannière', () => {

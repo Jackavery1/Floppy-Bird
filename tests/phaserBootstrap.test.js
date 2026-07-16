@@ -43,4 +43,19 @@ describe('phaserBootstrap', () => {
         expect(Phaser.Game).toHaveBeenCalled();
         expect(onReady).toHaveBeenCalledWith(game);
     });
+
+    it('initGame affiche un message si Phaser.Game lève', async () => {
+        const loading = { classList: { remove: vi.fn() }, innerHTML: '' };
+        vi.stubGlobal('document', {
+            getElementById: vi.fn((id) => (id === 'loading' ? loading : null)),
+        });
+        Phaser.Game = vi.fn(() => {
+            throw new Error('WebGL unavailable');
+        });
+        const { initGame } = await import('../src/phaserBootstrap.js');
+        expect(() => initGame(Phaser, onReady)).toThrow(/WebGL unavailable/);
+        expect(loading.classList.remove).toHaveBeenCalledWith('hidden');
+        expect(loading.innerHTML).toMatch(/WebGL|Canvas|npm run dev/);
+        vi.unstubAllGlobals();
+    });
 });

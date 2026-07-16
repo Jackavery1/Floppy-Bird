@@ -104,7 +104,7 @@ export function buildMenuToggleButton(scene, elements, cfg) {
     const hit = scene.add.rectangle(cfg.cx, cfg.cy, touchW, hitH, 0x000000, 0);
     hit.setDepth(cfg.depth + 2);
     hit.setInteractive({ useHandCursor: true });
-    const onFocus = cfg.onFocus ?? (() => bg.setFillStyle(MENU_BTN_HOVER, 0.88));
+    const onFocus = cfg.onFocus ?? (() => bg.setFillStyle(cfg.hoverColor ?? MENU_BTN_HOVER, 0.88));
     const onBlur = cfg.onBlur ?? (() => bg.setFillStyle(cfg.color, 0.88));
     if (cfg.focusKey) {
         bindUnifiedInteractiveFocus(cfg.focusKey, onFocus, onBlur).attachHit(hit);

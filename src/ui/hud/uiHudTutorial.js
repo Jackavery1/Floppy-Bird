@@ -14,6 +14,7 @@ import { sceneTween } from '../../motion.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_CHROME,
     FONT_SIZE_HINT,
     MIN_TOUCH,
     stopUiEvent,
@@ -67,7 +68,7 @@ function showPulsingTutorialHint(ui, text, { skippable = false } = {}) {
         GAME_CONFIG.centerY - 30,
         text,
         hudTextStyle({
-            fontSize: '14px',
+            fontSize: FONT_SIZE_CHROME,
             fill: DESIGN_TOKENS.texteHud,
             fontStyle: 'bold',
         }),

@@ -11,7 +11,10 @@ export function updateCoyoteTime(scene, step) {
     const inGap = scene.pipes.isBirdInGap(scene.bird.getBounds());
 
     if (inGap) {
-        round.coyoteFrames = GAME_CONFIG.bird.coyoteTimeFrames;
+        const coyoteMax = scene.hardcoreMode
+            ? (GAME_CONFIG.hardcore.coyoteTimeFrames ?? GAME_CONFIG.bird.coyoteTimeFrames)
+            : GAME_CONFIG.bird.coyoteTimeFrames;
+        round.coyoteFrames = coyoteMax;
     } else if (round.coyoteFrames > 0) {
         round.coyoteFrames = Math.max(0, round.coyoteFrames - step);
     }

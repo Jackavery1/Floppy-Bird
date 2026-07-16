@@ -29,6 +29,12 @@ body.offline-shell p {
 body.offline-shell a {
     color: #ffe066;
     font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 16px;
 }
 
 body.offline-shell a:focus-visible {

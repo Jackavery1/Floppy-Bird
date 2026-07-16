@@ -1,4 +1,4 @@
-export const HARDCORE_UNLOCK_SCORE = 10;
+export const HARDCORE_UNLOCK_SCORE = 20;
 
 /** @param {import('./metaContext.js').MetaContext} ctx */
 export function isHardcoreUnlocked(ctx) {

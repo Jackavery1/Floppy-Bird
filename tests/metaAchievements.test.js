@@ -1,8 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
-import { notifyAchievementUnlocks, notifyEndOfRoundAchievements } from '../src/metaAchievements.js';
+import {
+    notifyAchievementUnlocks,
+    notifyEndOfRoundAchievements,
+    notifyNewlyUnlockedSkins,
+    snapshotUnlockedSkins,
+} from '../src/metaAchievements.js';
 
 vi.mock('../src/metaProgress.js', () => ({
     evaluateAchievements: vi.fn(() => []),
+}));
+
+vi.mock('../src/metaContext.js', () => ({
+    buildMetaContext: vi.fn(() => ({ bestScoreAny: 0 })),
+}));
+
+vi.mock('../src/skins/index.js', () => ({
+    listUnlockedSkins: vi.fn(() => ['classic']),
+    getSkin: vi.fn((id) => ({ label: id === 'ruby' ? 'Rubis' : 'Classique' })),
 }));
 
 describe('metaAchievements', () => {
@@ -52,5 +66,29 @@ describe('metaAchievements', () => {
         notifyAchievementUnlocks(scene);
 
         expect(notifier).not.toHaveBeenCalled();
+    });
+
+    it('notifie les skins nouvellement débloqués', async () => {
+        const { listUnlockedSkins } = await import('../src/skins/index.js');
+        const notifier = vi.fn();
+        const scene = {
+            achievementNotifier: notifier,
+            trainingMode: false,
+            round: { unlockedSkinIdsAtStart: ['classic'] },
+        };
+        vi.mocked(listUnlockedSkins).mockReturnValueOnce(['classic', 'ruby']);
+
+        const newly = notifyNewlyUnlockedSkins(scene);
+
+        expect(newly).toEqual([{ id: 'skin-ruby', title: 'Rubis', kind: 'skin' }]);
+        expect(notifier).toHaveBeenCalledWith(newly);
+    });
+
+    it('snapshotUnlockedSkins mémorise l’état de départ', async () => {
+        const { listUnlockedSkins } = await import('../src/skins/index.js');
+        vi.mocked(listUnlockedSkins).mockReturnValueOnce(['classic', 'ruby']);
+        const scene = { round: {} };
+        snapshotUnlockedSkins(scene);
+        expect(scene.round.unlockedSkinIdsAtStart).toEqual(['classic', 'ruby']);
     });
 });

@@ -5,11 +5,11 @@
  * Matrice typo (Phaser + shell) :
  * | Rôle              | Taille   | Police              | Style helper           |
  * |-------------------|----------|---------------------|------------------------|
- * | Titre jeu / chrome| 14 px min| Press Start 2P      | panelChromeTextStyle   |
- * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle      |
- * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle           |
- * | Bannières HUD     | 11 px    | Segoe UI            | hudTextStyle           |
- * | Grille skins      | 11 px    | Segoe UI            | menuTextStyle          |
+ * | Titre jeu / chrome| 14 px    | Press Start 2P      | panelChromeTextStyle / FONT_SIZE_CHROME |
+ * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle / FONT_SIZE_BODY |
+ * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle / FONT_SIZE_HINT–CHROME |
+ * | Bannières HUD     | 14–16 px | Segoe UI            | FONT_SIZE_CHROME / BANNER / EMPHASIS |
+ * | Grille skins      | 11–13 px | Segoe UI            | FONT_SIZE_TINY–COMPACT |
  * | Chargement shell  | 14–16 px | policeInterface     | CSS `#loading`         |
  */
 import { getBackgroundPeriod } from './backgroundPeriod.js';
@@ -22,6 +22,8 @@ export const DESIGN_TOKENS = Object.freeze({
     texteChargementJour: '#0d47a1',
     texteHint: '#ffffff',
     accent: '#fdd835',
+    /** Hover CTA jaune (REJOUER) — plus clair que `accent` / `accentTitre`. */
+    accentHover: '#ffeb3b',
     accentGap: '#FFCC80',
     flashPlafond: '#b3e5fc',
     texteHud: '#ffffff',
@@ -78,6 +80,7 @@ export const DESIGN_TOKENS = Object.freeze({
     boutonDaily: '#6a1b9a',
     boutonDailyHover: '#9c27b0',
     boutonSkins: '#00897b',
+    boutonSkinsHover: '#26a69a',
     boutonSkinsStroke: '#4db6ac',
     boutonScores: '#5e35b1',
     boutonScoresHover: '#7e57c2',
@@ -164,7 +167,7 @@ export function menuTextStyle(overrides = {}) {
     };
 }
 
-/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P), défaut 14 px. */
+/** Boutons et onglets de panneau — police pixel rétro (Press Start 2P), défaut 14 px (`FONT_SIZE_CHROME`). */
 export function panelChromeTextStyle(overrides = {}) {
     return menuTextStyle({
         fontFamily: DESIGN_TOKENS.policeTitre,
@@ -173,7 +176,7 @@ export function panelChromeTextStyle(overrides = {}) {
     });
 }
 
-/** Texte lisible sur bouton jaune (difficulté active, rejouer). */
+/** Texte lisible sur bouton jaune (difficulté active, rejouer) — 14 px (`FONT_SIZE_CHROME`). */
 export function yellowChromeButtonTextStyle(overrides = {}) {
     return {
         fontFamily: DESIGN_TOKENS.policeTitre,

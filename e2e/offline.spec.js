@@ -74,7 +74,11 @@ test.describe('PWA hors ligne', () => {
     test('offline.html affiche le fallback', async ({ page }) => {
         await page.goto('offline.html');
         await expect(page.getByRole('heading', { name: 'Hors ligne' })).toBeVisible();
-        await expect(page.getByRole('link', { name: 'Retour au jeu' })).toBeVisible();
+        const retour = page.getByRole('link', { name: 'Retour au jeu' });
+        await expect(retour).toBeVisible();
+        const box = await retour.boundingBox();
+        expect(box).not.toBeNull();
+        expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
         await expect(page.locator('link[rel="stylesheet"][href="shell-tokens.css"]')).toHaveCount(
             1
         );

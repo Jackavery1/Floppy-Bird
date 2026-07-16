@@ -1,5 +1,5 @@
 import { getSkin } from '../../skins/index.js';
-import { DESIGN_TOKENS, menuTextStyle } from '../../designTokens.js';
+import { DESIGN_TOKENS, hexVersPhaser, menuTextStyle } from '../../designTokens.js';
 import {
     addCenteredText,
     DEPTH,
@@ -11,7 +11,7 @@ import {
 function drawEntrySkinSwatch(scene, x, y, skinId, depth) {
     const color = getSkin(skinId).palette.body;
     const swatch = scene.add.rectangle(x, y, 7, 7, color, 1);
-    swatch.setStrokeStyle(1, 0x000000, 0.6);
+    swatch.setStrokeStyle(1, hexVersPhaser(DESIGN_TOKENS.contourHud), 0.6);
     swatch.setDepth(depth);
     return swatch;
 }

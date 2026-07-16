@@ -6,6 +6,7 @@ import {
     saveToLeaderboard,
 } from '../src/storage.js';
 import { DIFFICULTY } from '../src/config.js';
+import { consumeStorageWriteFailure } from '../src/storageFail.js';
 
 describe('storage', () => {
     let store;
@@ -105,5 +106,17 @@ describe('storage', () => {
         expect(loadHighScore(DIFFICULTY.HARD, true, 'cosmos')).toBe(28);
         expect(loadHighScore(DIFFICULTY.HARD, true, 'phoenix')).toBe(20);
         expect(loadHighScore(DIFFICULTY.HARD, true)).toBe(0);
+    });
+
+    it('signale un échec d’écriture localStorage', () => {
+        vi.stubGlobal('localStorage', {
+            getItem: () => null,
+            setItem: () => {
+                throw new Error('QuotaExceededError');
+            },
+        });
+        saveHighScore(99);
+        expect(consumeStorageWriteFailure()).toBe(true);
+        expect(consumeStorageWriteFailure()).toBe(false);
     });
 });

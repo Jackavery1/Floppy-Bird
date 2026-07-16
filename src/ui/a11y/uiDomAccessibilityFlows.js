@@ -17,7 +17,6 @@ import { syncAndFocusAccessibilityLayer } from './uiDomAccessibilityLayer.js';
 import { bindMenuAccessibilityFocusVisuals } from './uiDomAccessibilityFocusVisuals.js';
 import { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
 
-export { syncMenuToggleAccessibility } from './uiDomAccessibilityMenuToggles.js';
 export {
     setScoresPanelAccessibility,
     setSkinsPanelAccessibility,
@@ -67,5 +66,5 @@ export function setupGameOverAccessibility(scene, { score, isDaily = false }) {
     setAccessibilityControlLabel('gameOverRestart', restartHintForMode(isDaily));
     syncAndFocusAccessibilityLayer(scene.game);
     const mode = isDaily ? 'défi du jour' : 'partie';
-    announceAccessibility(`Game over. Score ${score}. ${mode}. Rejouer ou retour au menu.`);
+    announceAccessibility(`Partie terminée. Score ${score}. ${mode}. Rejouer ou retour au menu.`);
 }

@@ -170,8 +170,7 @@ test.describe('gameplay equity via test seam', () => {
             });
 
         const margin =
-            GAME_CONFIG.round.pipeSpawnDelayMs -
-            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
+            GAME_CONFIG.round.pipeSpawnDelayMs - GAME_CONFIG.round.hardcoreSpawnInvincibilityMs;
         expect(margin).toBeGreaterThanOrEqual(400);
         expect(GAME_CONFIG.round.pipeSpawnDelayMs).toBeGreaterThan(
             GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
@@ -314,7 +313,9 @@ test.describe('gameplay equity via test seam', () => {
         expect(death.elapsedMs).toBeLessThan(30_000);
     });
 
-    test('mode entraînement applique timeScale 0.8 (choix gameplay)', async ({ page }, testInfo) => {
+    test('mode entraînement applique timeScale 0.8 (choix gameplay)', async ({
+        page,
+    }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
         await restartRoundWithModes(page, { training: true });
@@ -333,6 +334,12 @@ test.describe('gameplay equity via test seam', () => {
         const variance = await sampleGapVariance(page, 32);
         expect(variance?.maxObservedDelta).toBeLessThanOrEqual(variance?.maxAllowedDelta);
         expect(variance?.spread).toBeGreaterThan(0);
+        const scripted = await sampleGapVariance(page, 12, {
+            gapIndex: 0,
+            lastGapY: null,
+            runScore: 0,
+        });
+        expect(scripted?.maxObservedDelta).toBeLessThanOrEqual(scripted?.maxAllowedDelta);
     });
 
     test('métriques difficulté cohérentes aux scores 15, 20 et 25', async ({ page }, testInfo) => {

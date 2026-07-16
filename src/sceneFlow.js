@@ -18,6 +18,7 @@ import { resetCoyoteTime } from './sceneCoyote.js';
 import { requestJump } from './sceneJumpBuffer.js';
 import { beginRound } from './sceneBeginRound.js';
 import { openMainMenu } from './sceneMenuSync.js';
+import { skipDyingToGameOver } from './sceneDeath.js';
 import {
     clearPauseOverlay,
     enterPauseOverlay,
@@ -113,6 +114,10 @@ function restartFromPrimary(scene) {
 export function handlePrimaryAction(scene) {
     if (scene.state === GAME_STATE.PAUSED) {
         togglePause(scene);
+        return;
+    }
+    if (scene.state === GAME_STATE.DYING) {
+        skipDyingToGameOver(scene);
         return;
     }
     if (!canHandlePrimaryAction(scene.state)) return;

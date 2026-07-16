@@ -9,7 +9,7 @@ describe('uiGameOverLoader', () => {
 
     it('buildGameOverUI exige un préchargement', async () => {
         const { buildGameOverUI } = await import('../src/ui/gameOver/uiGameOverLoader.js');
-        expect(() => buildGameOverUI()).toThrow(/preloaded/);
+        expect(() => buildGameOverUI()).toThrow(/préchargée/);
     });
 
     it('preloadGameOverUI charge buildGameOverUI', async () => {

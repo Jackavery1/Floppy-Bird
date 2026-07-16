@@ -22,8 +22,8 @@ export const ACHIEVEMENTS = Object.freeze([
     {
         id: 'hardcore_hero',
         title: 'Hardcore',
-        desc: '5 points en hardcore',
-        check: (ctx) => ctx.hardcore && ctx.score >= 5,
+        desc: '8 points en hardcore',
+        check: (ctx) => ctx.hardcore && ctx.score >= 8,
     },
     {
         id: 'daily_flyer',

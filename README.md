@@ -52,7 +52,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 | **Responsive** | Letterbox 288×512, mobile / tablette / desktop, safe-area, CTA primaires 48 px |
 | **Accessibilité** | WCAG 2.1 AA, clavier complet, overlay DOM, lecteurs d'écran |
 | **PWA** | Hors-ligne après 1re visite, installation sur l'écran d'accueil |
-| **Performance** | Bundle app ~45 Ko gzip (Phaser vendor ~1,1 Mo, précaché) |
+| **Performance** | Bundle app ~51 Ko gzip (Phaser vendor ~1,1 Mo, précaché) |
 
 ### Comment jouer
 
@@ -79,7 +79,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 #### Règles et mécaniques
 
 - **Coyote time** (5 frames) : marge à la sortie d'un gap — protège tuyaux **et plafond** (pas le sol) ; teinte oiseau `#FFD54F` (`teinteCoyoteActif`) pendant la protection.
-- **Invincibilité spawn** : ~900 ms (classique), **840 ms** (hardcore — compense la gravité renforcée, marge ≥400 ms avant le 1er tuyau).
+- **Invincibilité spawn** : ~900 ms (classique), **620 ms** (hardcore), marge ≥400 ms avant le 1er tuyau.
 - **Tutoriel** en 3 étapes à la première partie ; auto-skip après 3 parties si non terminé.
 - **Escalade** : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; gaps resserrés au score 20.
 - **Records** : bannière « NOUVEAU RECORD ! » en jeu ; TOP 5 par difficulté (classique et hardcore séparés).
@@ -91,8 +91,8 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 | ---- | ----------- |
 | **Classique** | 3 difficultés (vitesse, écart, intervalle — voir [`src/config.js`](src/config.js)) |
 | **Entraînement** | Ralenti ×0,8, fantôme du meilleur parcours, scores non enregistrés |
-| **Hardcore** | Gravité/vitesse renforcées, invincibilité spawn 840 ms, TOP 5 dédié |
-| **Défi du jour** | Séquence partagée, skin/pattern/objectif imposés, rejouable depuis le game over |
+| **Hardcore** | Modificateur : gaps ×0,9, vitesse/gravité ↑, coyote ↓, unlock score ≥ 20, TOP 5 dédié |
+| **Défi du jour** | Séquence partagée, skin/pattern imposés, objectifs 15/22/30 +, gaps/vitesse renforcés |
 
 Les **skins** modifient l'apparence en classique ; la **physique du pattern** (gravité/saut/vitesse) s'applique uniquement au défi du jour.
 
@@ -100,7 +100,7 @@ Les **skins** modifient l'apparence en classique ; la **physique du pattern** (g
 
 #### Prérequis
 
-- [Node.js](https://nodejs.org/) 18 ou supérieur
+- [Node.js](https://nodejs.org/) 20 (CI) — 18+ accepté en local
 - npm (inclus avec Node.js)
 
 #### Récupération et lancement
@@ -179,9 +179,10 @@ Documentation complémentaire : [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUT
 | `chromium-mobile-portrait` | 390×844 | oui |
 | `chromium-mobile-landscape` | 844×390 | matrice complète |
 | `webkit-mobile-portrait` / `-landscape` | iPhone 13 | matrice complète |
+| `chromium-tablet-portrait` | 768×1024 | oui |
 | `chromium-tablet-landscape` | 1024×768 | oui |
 
-Commande smoke : `npm run test:e2e:smoke` (desktop + mobile portrait + tablette paysage).
+Commande smoke : `npm run test:e2e:smoke` (desktop + mobile portrait + tablette portrait/paysage).
 
 #### Matrice clavier et entrées
 
@@ -249,7 +250,7 @@ Personal project built with **Phaser 3** and **Vite**, deployed as a **PWA** on 
 | **Responsive** | 288×512 letterbox, mobile / tablet / desktop, safe-area, 48 px primary CTAs |
 | **Accessibility** | WCAG 2.1 AA, full keyboard, DOM overlay, screen reader support |
 | **PWA** | Offline after first visit, install to home screen |
-| **Performance** | App bundle ~45 KB gzip (Phaser vendor ~1.1 MB, precached) |
+| **Performance** | App bundle ~51 KB gzip (Phaser vendor ~1.1 MB, precached) |
 
 ### How to Play
 
@@ -276,7 +277,7 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 #### Rules and Mechanics
 
 - **Coyote time** (5 frames): safety margin when leaving a gap — protects pipes **and ceiling** (not the floor); bird tint `#FFD54F` (`teinteCoyoteActif`) while active.
-- **Spawn invincibility**: ~900 ms (classic), **840 ms** (hardcore — offsets stronger gravity, ≥400 ms margin before first pipe).
+- **Spawn invincibility**: ~900 ms (classic), **620 ms** (hardcore), ≥400 ms margin before first pipe.
 - **Tutorial** in 3 steps on first run; auto-skip after 3 games if not completed.
 - **Scaling**: +3% speed / 10 pts (cap +15% from score 50); tighter gaps at score 20.
 - **Records**: « NEW RECORD! » banner in-game; TOP 5 per difficulty (classic and hardcore separate).
@@ -288,8 +289,8 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 | ---- | ----------- |
 | **Classic** | 3 difficulties (speed, gap, interval — see [`src/config.js`](src/config.js)) |
 | **Training** | ×0.8 slow motion, ghost of best run, scores not saved |
-| **Hardcore** | Increased gravity/speed, 840 ms spawn invincibility, dedicated TOP 5 |
-| **Daily challenge** | Shared sequence, forced skin/pattern/objective, replayable from game over |
+| **Hardcore** | Modifier: gaps ×0.9, higher speed/gravity, shorter coyote, unlock score ≥ 20, dedicated TOP 5 |
+| **Daily challenge** | Shared sequence, forced skin/pattern, goals 15/22/30+, tighter gaps & faster pipes |
 
 **Skins** change appearance in classic mode; **pattern physics** (gravity/jump/speed) apply only to the daily challenge.
 
@@ -297,7 +298,7 @@ Avoid pipes and the floor/ceiling. Each pipe passed = **+1 point**. Beat your re
 
 #### Prerequisites
 
-- [Node.js](https://nodejs.org/) 18 or later
+- [Node.js](https://nodejs.org/) 20 (CI) — 18+ accepted locally
 - npm (included with Node.js)
 
 #### Clone and Run
@@ -376,9 +377,10 @@ Additional docs: [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUTING.md](CONTRIB
 | `chromium-mobile-portrait` | 390×844 | yes |
 | `chromium-mobile-landscape` | 844×390 | full matrix |
 | `webkit-mobile-portrait` / `-landscape` | iPhone 13 | full matrix |
+| `chromium-tablet-portrait` | 768×1024 | yes |
 | `chromium-tablet-landscape` | 1024×768 | yes |
 
-Smoke command: `npm run test:e2e:smoke` (desktop + mobile portrait + tablet landscape).
+Smoke command: `npm run test:e2e:smoke` (desktop + mobile portrait + tablet portrait/landscape).
 
 #### Keyboard and input matrix
 

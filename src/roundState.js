@@ -4,6 +4,7 @@ export function createRoundState() {
         score: 0,
         dyingFalling: false,
         dyingGrounded: false,
+        dyingGameOverStarted: false,
         leaderboardData: null,
         pipeSpawnTimer: null,
         jumpBufferFrames: 0,
@@ -15,6 +16,7 @@ export function createRoundState() {
         recordNotified: false,
         isNewRecord: false,
         dailyGoalCelebrated: false,
+        unlockedSkinIdsAtStart: [],
         startedAt: 0,
         lastDeathMetrics: null,
 
@@ -24,10 +26,12 @@ export function createRoundState() {
             this.recordNotified = false;
             this.isNewRecord = false;
             this.dailyGoalCelebrated = false;
+            this.unlockedSkinIdsAtStart = [];
             this.coyoteFrames = 0;
             this.deathCause = null;
             this.dyingFalling = false;
             this.dyingGrounded = false;
+            this.dyingGameOverStarted = false;
             this.leaderboardData = null;
             this._pipeSpawnWaitMs = 0;
             this.startedAt = 0;
@@ -37,6 +41,7 @@ export function createRoundState() {
         resetDeathAnimation() {
             this.dyingFalling = false;
             this.dyingGrounded = false;
+            this.dyingGameOverStarted = false;
         },
     };
 }

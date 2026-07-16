@@ -96,9 +96,9 @@ describe('metaProgress achievements', () => {
         expect(evaluateAchievements(scene)).toEqual([]);
     });
 
-    it('débloque hardcore_hero en hardcore à 5 points', () => {
+    it('débloque hardcore_hero en hardcore à 8 points', () => {
         const round = createRoundState();
-        round.score = 5;
+        round.score = 8;
         const scene = { round, trainingMode: false, hardcoreMode: true };
         const newly = evaluateAchievements(scene);
         expect(newly.some((a) => a.id === 'hardcore_hero')).toBe(true);

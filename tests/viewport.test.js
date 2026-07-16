@@ -92,11 +92,42 @@ describe('viewport', () => {
         vi.stubGlobal('document', {
             body: { clientWidth: 350, clientHeight: 700 },
         });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0px',
+            paddingRight: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '0px',
+        }));
         expect(getLetterboxViewport()).toEqual({
             width: 350,
             height: 700,
             offsetTop: 5,
             offsetLeft: 2,
+            scale: 1,
+        });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport ajoute les safe-area au offset quand le body est prêt', () => {
+        vi.stubGlobal('window', {
+            innerWidth: 390,
+            innerHeight: 844,
+            visualViewport: { width: 390, height: 844, offsetTop: 0, offsetLeft: 0, scale: 1 },
+        });
+        vi.stubGlobal('document', {
+            body: { clientWidth: 390, clientHeight: 766 },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '44px',
+            paddingRight: '0px',
+            paddingBottom: '34px',
+            paddingLeft: '0px',
+        }));
+        expect(getLetterboxViewport()).toEqual({
+            width: 390,
+            height: 766,
+            offsetTop: 44,
+            offsetLeft: 0,
             scale: 1,
         });
         vi.unstubAllGlobals();
@@ -111,6 +142,12 @@ describe('viewport', () => {
         vi.stubGlobal('document', {
             body: { clientWidth: 390, clientHeight: 844 },
         });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '0px',
+            paddingRight: '0px',
+            paddingBottom: '0px',
+            paddingLeft: '0px',
+        }));
         expect(getLetterboxViewport()).toEqual({
             width: 390,
             height: 620,

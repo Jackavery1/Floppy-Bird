@@ -55,7 +55,7 @@ export function syncDifficultyButtonLabel(label, difficulty, diff) {
     if (selected) {
         label.setStroke?.(DESIGN_TOKENS.contourMenu);
         label.setStrokeThickness?.(2);
-        label.setShadow?.(0, 0, '#000000', 0, false, false);
+        label.setShadow?.(0, 0, DESIGN_TOKENS.contourHud, 0, false, false);
     } else {
         label.setStroke?.(DESIGN_TOKENS.contourHud);
         label.setStrokeThickness?.(4);

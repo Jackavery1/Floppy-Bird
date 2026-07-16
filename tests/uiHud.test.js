@@ -22,11 +22,13 @@ describe('uiHud', () => {
         const { DEPTH, UI_LAYOUT } = await import('../src/ui/shared/uiLayout.js');
         createScoreDisplay(ui);
         expect(ui.scoreText).toBeTruthy();
+        expect(ui._scoreTextShadow).toBeTruthy();
         expect(ui.scoreValue).toBe(0);
         expect(ui.scoreText.visible).toBe(true);
         expect(ui.scoreText.alpha).toBe(1);
         expect(ui.scoreText.depth).toBe(DEPTH.SCORE_HUD);
         expect(ui.scoreText.y).toBe(UI_LAYOUT.scoreHud);
+        expect(ui._scoreTextShadow.depth).toBe(DEPTH.SCORE_HUD - 1);
     });
 
     it('createInGameControls repositionne le score sous les badges', async () => {

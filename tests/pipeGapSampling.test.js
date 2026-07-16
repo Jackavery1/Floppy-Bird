@@ -15,4 +15,13 @@ describe('pipeGapSampling', () => {
         expect(gaps[0]).toBe(getScriptedPipeGapY(0, NORMAL_PIPE_GAP));
         expect(gaps[1]).toBe(getScriptedPipeGapY(1, NORMAL_PIPE_GAP));
     });
+
+    it('respecte maxGapDelta aussi sur la séquence scriptée (gapIndex 0)', () => {
+        const sampled = sampleGapSequence(12, {
+            gapIndex: 0,
+            lastGapY: null,
+            runScore: 0,
+        });
+        expect(sampled.maxObservedDelta).toBeLessThanOrEqual(sampled.maxAllowedDelta);
+    });
 });

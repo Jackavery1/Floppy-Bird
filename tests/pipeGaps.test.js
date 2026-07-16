@@ -9,6 +9,7 @@ import {
     applyScriptedGapJitter,
     buildScriptedGapOrder,
 } from '../src/pipeGaps.js';
+import { maxGapDeltaForScore } from '../src/gapDifficulty.js';
 import { Utils } from '../src/utils.js';
 
 const NORMAL_PIPE_GAP = GAME_CONFIG.getDifficulty('normal').gap;
@@ -136,6 +137,32 @@ describe('pipeGaps', () => {
             expect(result.lastGapY).toBe(result.gapY);
             vi.restoreAllMocks();
         });
+
+        it('plafonne aussi les deltas de la phase scriptée', () => {
+            const pipeGap = NORMAL_PIPE_GAP;
+            let lastGapY = null;
+            let prevGapDelta = 0;
+            let gapIndex = 0;
+            const deltas = [];
+            const scriptedCount = GAME_CONFIG.level.pipeGaps.length;
+            for (let i = 0; i < scriptedCount; i++) {
+                const result = resolveNextGapY({
+                    gapIndex,
+                    lastGapY,
+                    dailyRng: null,
+                    pipeGap,
+                    runScore: 0,
+                    prevGapDelta,
+                    gapJitterSeed: 424242,
+                });
+                if (lastGapY != null) deltas.push(Math.abs(result.gapY - lastGapY));
+                gapIndex = result.gapIndex;
+                lastGapY = result.lastGapY;
+                prevGapDelta = result.gapDelta;
+            }
+            const maxAllowed = maxGapDeltaForScore(0);
+            expect(Math.max(...deltas)).toBeLessThanOrEqual(maxAllowed);
+        });
     });
 
     describe('sampleGapSequence (équité RNG)', () => {
@@ -146,6 +173,17 @@ describe('pipeGaps', () => {
             });
             expect(maxObservedDelta).toBeLessThanOrEqual(maxAllowedDelta);
             expect(spread).toBeGreaterThan(0);
+        });
+
+        it('borne aussi la phase scriptée (gapIndex 0)', async () => {
+            const { sampleGapSequence } = await import('../src/pipeGapSampling.js');
+            const { maxObservedDelta, maxAllowedDelta } = sampleGapSequence(8, {
+                gapIndex: 0,
+                lastGapY: null,
+                runScore: 0,
+                gapJitterSeed: 424242,
+            });
+            expect(maxObservedDelta).toBeLessThanOrEqual(maxAllowedDelta);
         });
     });
 });

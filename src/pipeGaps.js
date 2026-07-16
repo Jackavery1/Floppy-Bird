@@ -83,7 +83,10 @@ export function resolveNextGapY({
         scriptedY = getScriptedPipeGapY(slot, pipeGap);
     }
     if (scriptedY !== null) {
-        const gapY = applyScriptedGapJitter(scriptedY, gapIndex, gapJitterSeed, pipeGap);
+        const { min, max } = gapBounds(pipeGap);
+        const raw = applyScriptedGapJitter(scriptedY, gapIndex, gapJitterSeed, pipeGap);
+        const maxDelta = maxGapDeltaForScore(runScore);
+        const gapY = smoothGapY(raw, lastGapY, maxDelta, min, max, prevGapDelta);
         const gapDelta = lastGapY != null ? gapY - lastGapY : 0;
         return { gapY, gapIndex: gapIndex + 1, lastGapY: gapY, gapDelta };
     }

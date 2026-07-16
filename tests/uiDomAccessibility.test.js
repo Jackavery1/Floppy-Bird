@@ -300,5 +300,6 @@ describe('uiDomAccessibility', () => {
         expect(buttons['a11y-gameover-restart'].hidden).toBe(false);
         expect(buttons['a11y-gameover-menu'].hidden).toBe(false);
         expect(announcer.textContent).toContain('12');
+        expect(announcer.textContent).toMatch(/Partie terminée/);
     });
 });

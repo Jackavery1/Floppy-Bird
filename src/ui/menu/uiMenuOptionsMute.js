@@ -10,14 +10,8 @@ import {
 import { addCenteredText, DEPTH, MIN_TOUCH, stopUiEvent } from '../shared/uiLayout.js';
 import { GAME_CONFIG } from '../../config.js';
 
-function iconeSon(label) {
-    if (label === 'OFF') return '🔇';
-    if (label === 'indisponible') return '🔈';
-    return '🔊';
-}
-
 function libelleMute(label) {
-    return `${iconeSon(label)} SON · ${label}`;
+    return `SON · ${label}`;
 }
 
 function muteA11yLabel(label) {

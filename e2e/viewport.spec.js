@@ -69,23 +69,39 @@ test.describe('jeu chargé', () => {
     test('conserve le ratio avec safe-area quatre côtés (encoche simulée)', async ({ page }) => {
         await waitForGameReady(page);
         const ratio = GAME_CONFIG.width / GAME_CONFIG.height;
-        const metrics = await page.evaluate(() => {
+        await page.evaluate(() => {
             document.body.style.setProperty('padding', '44px 20px 34px 16px', 'important');
             window.dispatchEvent(new Event('resize'));
+        });
+        await expect
+            .poll(async () => {
+                const box = await page.locator('#game-container canvas').boundingBox();
+                return box?.height ?? 0;
+            })
+            .toBeGreaterThan(280);
+        const metrics = await page.evaluate(() => {
             const canvas = document.querySelector('#game-container canvas');
             const box = canvas?.getBoundingClientRect();
-            const body = document.body.getBoundingClientRect();
+            const cs = getComputedStyle(document.body);
+            const padTop = Number.parseFloat(cs.paddingTop) || 0;
+            const padLeft = Number.parseFloat(cs.paddingLeft) || 0;
+            const padRight = Number.parseFloat(cs.paddingRight) || 0;
+            const padBottom = Number.parseFloat(cs.paddingBottom) || 0;
             return {
                 ratio: box && box.height > 0 ? box.width / box.height : 0,
                 canvasHeight: box?.height ?? 0,
-                insetLeft: box ? box.left - body.left : 0,
-                insetTop: box ? box.top - body.top : 0,
+                withinSafeTop: (box?.top ?? 0) >= padTop - 1,
+                withinSafeLeft: (box?.left ?? 0) >= padLeft - 1,
+                withinSafeRight: (box?.right ?? 0) <= window.innerWidth - padRight + 1,
+                withinSafeBottom: (box?.bottom ?? 0) <= window.innerHeight - padBottom + 1,
             };
         });
         expect(metrics.ratio).toBeCloseTo(ratio, 1);
         expect(metrics.canvasHeight).toBeGreaterThan(280);
-        expect(metrics.insetLeft).toBeGreaterThanOrEqual(0);
-        expect(metrics.insetTop).toBeGreaterThanOrEqual(0);
+        expect(metrics.withinSafeTop).toBe(true);
+        expect(metrics.withinSafeLeft).toBe(true);
+        expect(metrics.withinSafeRight).toBe(true);
+        expect(metrics.withinSafeBottom).toBe(true);
     });
 
     test('conserve le ratio en tablette portrait', async ({ page }, testInfo) => {

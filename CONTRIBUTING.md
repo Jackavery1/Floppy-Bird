@@ -112,7 +112,7 @@ Générées avant chaque build de production :
 npm run icons           # génère public/icons/
 npm run icons:optimize  # recompression PNG (exécuté en CI après icons)
 npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports)
-npm run test:e2e:ci      # matrice complète 7 viewports
+npm run test:e2e:ci      # matrice complète 8 viewports
 npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
@@ -129,6 +129,7 @@ Après `npm run build`, `npm run measure` affiche JSON :
 | `jsAssets` / `cssAssets` | Détail par fichier |
 
 Référence locale : `scripts/bundle-baseline.json` — régénérer après un gain mesurable (`npm run build && npm run measure`).
+Prod Pages : pas de chunk `testSeam` (tree-shake ; `VITE_ENABLE_TEST_SEAM` réservé e2e). Precache : `includeManifestIcons: false` évite le double listage des icônes déjà globs.
 
 La CI exécute `npm run icons` puis `npm run icons:optimize` automatiquement.
 
@@ -154,7 +155,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (desktop + mobile portrait). La matrice e2e complète (**8 viewports**) est **bloquante** en CI.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (4 viewports Chromium). La matrice e2e complète (**8 viewports**, job `e2e`) est **bloquante pour le statut CI / PR**, mais **ne gate pas** le déploiement Pages.
 
 En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 

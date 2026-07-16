@@ -1,10 +1,10 @@
 {
     "generated": "2026-07-16",
-    "distKo": 1430.9,
+    "distKo": 1420,
     "iconsKo": 23.2,
     "vendorPhaserKo": 1168.1,
-    "appJsGzipKo": 54.8,
-    "precacheEntries": 32,
-    "precacheKiB": 1402.11,
-    "note": "Après dédup font offline (latin seul) + globIgnores tokens. Régénérer : npm run build && npm run measure"
+    "appJsGzipKo": 51,
+    "precacheEntries": 26,
+    "precacheKiB": 1391.64,
+    "note": "Après includeManifestIcons:false (plus de doublons icônes SW) + tree-shake testSeam prod. Régénérer : npm run build && npm run measure"
 }

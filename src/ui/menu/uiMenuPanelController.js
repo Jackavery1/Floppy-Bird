@@ -121,6 +121,7 @@ export function buildMenuPanelShell(ui, elements, controller, cfg) {
         depth: DEPTH.MENU_ROW_BTN,
         color: cfg.btnColor,
         stroke: cfg.btnStroke,
+        hoverColor: cfg.btnHover,
         labelText: cfg.buttonLabelFn(false),
         labelStroke: cfg.labelStroke,
         labelStyle,

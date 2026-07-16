@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const base = process.env.BASE_PATH || './';
-const pwaScope = base === './' ? './' : (base.endsWith('/') ? base : `${base}/`);
+const pwaScope = base === './' ? './' : base.endsWith('/') ? base : `${base}/`;
 const pwaManifest = {
     ...JSON.parse(readFileSync(path.join(root, 'public/manifest.webmanifest'), 'utf8')),
     start_url: pwaScope,
@@ -39,9 +39,7 @@ export default defineConfig(({ mode }) => {
     return {
         base,
         resolve: {
-            alias: useVendorPhaser
-                ? { phaser: path.join(root, 'src/phaser-shim.js') }
-                : {},
+            alias: useVendorPhaser ? { phaser: path.join(root, 'src/phaser-shim.js') } : {},
         },
         build: {
             rollupOptions: {
@@ -110,17 +108,19 @@ export default defineConfig(({ mode }) => {
                 // Pas d’includeAssets : globPatterns couvre déjà public/ + build ;
                 // doubler (ex. manifest.webmanifest) → add-to-cache-list-conflicting-entries
                 // et precache vide (hors ligne cassé).
+                // Icônes déjà globs via public/icons — ne pas les réinjecter depuis le manifest.
+                includeManifestIcons: false,
                 manifest: pwaManifest,
                 workbox: {
-                    globPatterns: [
-                        '**/*.{js,css,html,png,json,ico,webp,svg,webmanifest,woff2}',
-                    ],
+                    globPatterns: ['**/*.{js,css,html,png,json,ico,webp,svg,webmanifest,woff2}'],
                     globIgnores: [
                         '**/tokens.html',
                         '**/assets/tokens-*.js',
                         '**/assets/tokens-*.css',
                         // latin-ext uniquement dans assets/ (jeu) — pas dans public/fonts
                         '**/fonts/press-start-2p-latin-ext-*.woff2',
+                        // Seam e2e uniquement si build VITE_ENABLE_TEST_SEAM (prod tree-shake déjà)
+                        '**/assets/testSeam-*.js',
                     ],
                     navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
                     navigateFallbackDenylist: [/\/offline\.html$/, /\/tokens\.html$/],

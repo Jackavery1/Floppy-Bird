@@ -60,7 +60,7 @@ export function createMetaSeam(getScene) {
             scene.cycleTrainingSpeed?.();
             return scene.trainingTimeScale ?? null;
         },
-        sampleGapVariance: (count = 24) => sampleGapSequence(count),
+        sampleGapVariance: (count = 24, opts = {}) => sampleGapSequence(count, opts),
         getDifficultyMetrics: (score = getScene()?.round?.score ?? 0) => {
             const baseGap = GAME_CONFIG.getDifficulty(getScene()?.difficulty ?? 'normal').gap;
             return {

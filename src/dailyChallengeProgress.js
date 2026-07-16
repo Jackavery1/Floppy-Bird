@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from './storageKeys.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 function dateKey(date = new Date()) {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
@@ -19,7 +20,10 @@ function loadDailyCompletion(date = new Date()) {
 
 /** @param {{ goal: number, score: number, difficulty: string, skinId: string, date?: Date }} payload */
 export function saveDailyCompletion({ goal, score, difficulty, skinId, date = new Date() }) {
-    const completed = score >= goal;
+    const prev = loadDailyCompletion(date);
+    const reached = score >= goal;
+    const completed = prev?.completed === true || reached;
+    const bestScore = prev?.completed === true ? Math.max(Number(prev.score) || 0, score) : score;
     try {
         localStorage.setItem(
             STORAGE_KEYS.dailyCompletion,
@@ -27,15 +31,15 @@ export function saveDailyCompletion({ goal, score, difficulty, skinId, date = ne
                 dateKey: dateKey(date),
                 completed,
                 goal,
-                score,
+                score: bestScore,
                 difficulty,
                 skinId,
             })
         );
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
-    if (completed) {
+    if (reached) {
         recordDailyStatsCompletion(date);
     }
 }
@@ -66,7 +70,7 @@ function saveDailyStats(stats) {
     try {
         localStorage.setItem(STORAGE_KEYS.dailyStats, JSON.stringify(stats));
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 

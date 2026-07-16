@@ -4,12 +4,8 @@ import {
     bindScoresAccessibility,
     setScoresPanelAccessibility,
 } from '../a11y/uiDomAccessibilityPanelFlows.js';
-import { UI_LAYOUT } from '../shared/uiLayout.js';
-import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
+import { createSecondaryMenuPanel } from './uiMenuSecondaryPanel.js';
 import { buildScoresTab, refreshScoresTab } from './uiMenuScores.js';
-
-const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonScores);
-const SCORES_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonScoresStroke);
 
 const PANEL_CFG = {
     openKey: '_scoresOpen',
@@ -20,50 +16,40 @@ const PANEL_CFG = {
     btnHitKey: '_scoresBtnHit',
     btnFocusKey: 'menuScores',
     buttonLabelFn: scoresButtonLabel,
-    btnColor: SCORES_BTN_COLOR,
-    btnStroke: SCORES_BTN_STROKE,
-    labelStroke: DESIGN_TOKENS.contourSkins,
+    btnColor: hexVersPhaser(DESIGN_TOKENS.boutonScores),
+    btnHover: hexVersPhaser(DESIGN_TOKENS.boutonScoresHover),
+    btnStroke: hexVersPhaser(DESIGN_TOKENS.boutonScoresStroke),
+    labelStroke: DESIGN_TOKENS.boutonScoresStroke,
 };
 
-const controllerCfg = {
-    ...PANEL_CFG,
-    onOpen: (targetUi) => {
-        refreshScoresTab(targetUi);
-        bindScoresAccessibility(targetUi.scene);
-        setScoresPanelAccessibility(targetUi.scene, true);
-    },
-    onClose: (targetUi) => setScoresPanelAccessibility(targetUi.scene, false),
-};
+const scoresPanel = createSecondaryMenuPanel({
+    controllerKey: '_scoresPanelController',
+    panelLayoutKey: 'scoresPanel',
+    btnLayoutKey: 'scoresBtn',
+    panelCfg: PANEL_CFG,
+    themeStroke: DESIGN_TOKENS.boutonScoresStroke,
+    refreshTab: refreshScoresTab,
+    bindA11y: bindScoresAccessibility,
+    setA11y: setScoresPanelAccessibility,
+    buildTab: buildScoresTab,
+});
 
 /** @param {import('../core/ui.js').UI} ui */
 export function refreshScoresButtonLabel(ui) {
-    ui._scoresPanelController?.refreshButtonLabel();
+    scoresPanel.refreshButtonLabel(ui);
 }
 
 /** @param {import('../core/ui.js').UI} ui @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
 export function setMenuScoresOpen(ui, open, panelOpts) {
-    ui._scoresPanelController?.setOpen(open, panelOpts);
+    scoresPanel.setOpen(ui, open, panelOpts);
 }
 
 /** @param {import('../core/ui.js').UI} ui */
 export function toggleMenuScores(ui) {
-    ui._scoresPanelController?.toggle();
+    scoresPanel.toggle(ui);
 }
 
 /** @param {import('../core/ui.js').UI} ui @param {import('phaser').GameObjects.GameObject[]} elements @param {ReturnType<import('../shared/uiLayout.js').computeMenuLayout>} layout */
 export function buildMenuScoresPanel(ui, elements, layout) {
-    const panel = UI_LAYOUT.scoresPanel;
-    ui._scoresPanelController = createMenuPanelController(ui, controllerCfg);
-    buildMenuPanelShell(ui, elements, ui._scoresPanelController, {
-        ...PANEL_CFG,
-        btnLayout: { cx: layout.scoresBtn, cy: layout.menuRow, width: layout.menuBtnW },
-        panelLayout: panel,
-        panelTheme: {
-            fill: DESIGN_TOKENS.fondPanneauGameOver,
-            stroke: DESIGN_TOKENS.boutonScoresStroke,
-        },
-        buildContent: (targetUi, targetElements, panelElements) => {
-            buildScoresTab(targetUi, targetElements, panelElements);
-        },
-    });
+    scoresPanel.build(ui, elements, layout);
 }

@@ -174,7 +174,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         depth: DEPTH.PANEL_FRAME,
         color: SKINS_BTN_COLOR,
         stroke: SKINS_BTN_STROKE,
-        hoverColor: hexVersPhaser(DESIGN_TOKENS.boutonSkins),
+        hoverColor: hexVersPhaser(DESIGN_TOKENS.boutonSkinsHover),
         labelText: '◂ RETOUR',
         labelStroke: DESIGN_TOKENS.contourSkins,
         rounded: true,

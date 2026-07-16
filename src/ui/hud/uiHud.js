@@ -34,5 +34,8 @@ export function hideInGameScore(ui) {
     if (ui.scoreText) {
         ui.scoreText.setVisible(false);
     }
+    if (ui._scoreTextShadow) {
+        ui._scoreTextShadow.setVisible(false);
+    }
     destroyInGameControls(ui);
 }

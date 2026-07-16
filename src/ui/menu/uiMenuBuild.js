@@ -6,6 +6,7 @@ import { loadRoundsStarted, loadTutorialComplete } from '../../tutorialStorage.j
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_BANNER,
     FONT_SIZE_SMALL,
     MIN_CTA_TOUCH,
     stopUiEvent,
@@ -37,7 +38,7 @@ export function buildMenuFooter(ui, elements, layout) {
         GAME_CONFIG.centerX,
         layout.start,
         'APPUYER POUR JOUER',
-        panelChromeTextStyle({ fontSize: '15px' }),
+        panelChromeTextStyle({ fontSize: FONT_SIZE_BANNER }),
         DEPTH.MENU_PANEL
     );
     if (prefersReducedMotion()) {

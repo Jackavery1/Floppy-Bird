@@ -1,6 +1,7 @@
 import { DIFFICULTY } from './config.js';
 import { STORAGE_KEYS, highScoreKey, leaderboardKey } from './storageKeys.js';
 import { routedSkinId } from './skinStorageRouting.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 function parseScore(raw) {
     const n = Number.parseInt(raw ?? '', 10);
@@ -63,7 +64,7 @@ export function saveHighScore(
                 String(score)
             );
         } catch {
-            /* quota localStorage */
+            noteStorageWriteFailure();
         }
         return score;
     }
@@ -118,7 +119,7 @@ export function saveToLeaderboard(
             JSON.stringify(top5)
         );
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
     return { entries: top5, highlightId };
 }

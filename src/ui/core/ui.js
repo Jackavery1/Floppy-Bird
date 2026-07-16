@@ -20,6 +20,7 @@ export class UI {
     constructor(scene) {
         this.scene = scene;
         this.scoreText = null;
+        this._scoreTextShadow = null;
         this.scoreValue = 0;
         this.highScore = loadHighScore(DIFFICULTY.NORMAL);
 
@@ -102,6 +103,8 @@ export class UI {
 
     destroy() {
         if (this.scoreText) this.scoreText.destroy();
+        if (this._scoreTextShadow) this._scoreTextShadow.destroy();
+        this._scoreTextShadow = null;
         destroyInGameControls(this);
         this.clearOverlay('menu');
         this.clearOverlay('pause');

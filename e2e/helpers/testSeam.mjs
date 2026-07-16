@@ -115,9 +115,12 @@ export function getTutorialState(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.getTutorialState?.() ?? null);
 }
 
-/** @param {import('@playwright/test').Page} page @param {number} [count] */
-export function sampleGapVariance(page, count = 32) {
-    return page.evaluate((n) => window.__FLOPPY_TEST__?.sampleGapVariance?.(n), count);
+/** @param {import('@playwright/test').Page} page @param {number} [count] @param {object} [opts] */
+export function sampleGapVariance(page, count = 32, opts = {}) {
+    return page.evaluate(({ n, o }) => window.__FLOPPY_TEST__?.sampleGapVariance?.(n, o), {
+        n: count,
+        o: opts,
+    });
 }
 
 /** @param {import('@playwright/test').Page} page */
@@ -214,7 +217,10 @@ export function probeAudio(page) {
 
 /** @param {import('@playwright/test').Page} page @param {boolean} [freeze] */
 export function freezeBackgroundAnimation(page, freeze = true) {
-    return page.evaluate((value) => window.__FLOPPY_TEST__?.freezeBackgroundAnimation?.(value), freeze);
+    return page.evaluate(
+        (value) => window.__FLOPPY_TEST__?.freezeBackgroundAnimation?.(value),
+        freeze
+    );
 }
 
 /** @param {import('@playwright/test').Page} page */

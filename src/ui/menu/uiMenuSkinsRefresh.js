@@ -21,7 +21,7 @@ export function refreshSkinsTab(ui) {
     ui._skinsPatternLine?.setText(
         selectedUnlocked
             ? `${selectedSkin.label} · ${selectedPattern.tagline}`
-            : `🔒 ${selectedSkin.hint}`
+            : `Verrouillé · ${selectedSkin.hint}`
     );
 
     ui._skinCells.forEach(({ skinId, frame, preview, nameLabel, recordLabel }) => {

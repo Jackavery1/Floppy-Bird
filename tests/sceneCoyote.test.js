@@ -38,6 +38,14 @@ describe('sceneCoyote', () => {
         expect(scene.round.coyoteFrames).toBe(GAME_CONFIG.bird.coyoteTimeFrames);
     });
 
+    it('updateCoyoteTime réduit le coyote en hardcore', () => {
+        const scene = makeScene(true);
+        scene.hardcoreMode = true;
+        updateCoyoteTime(scene, 1);
+        expect(scene.round.coyoteFrames).toBe(GAME_CONFIG.hardcore.coyoteTimeFrames);
+        expect(scene.round.coyoteFrames).toBeLessThan(GAME_CONFIG.bird.coyoteTimeFrames);
+    });
+
     it('updateCoyoteTime décrémente hors gap', () => {
         const scene = makeScene(false);
         scene.round.coyoteFrames = 4;

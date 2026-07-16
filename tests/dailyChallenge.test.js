@@ -37,9 +37,9 @@ describe('dailyChallenge', () => {
     it('getDailyChallengeGoal applique les bases relevées + bonus skin', () => {
         const skinId = getDailyChallengeSkin(date);
         const offset = getSkinPattern(skinId).goalOffset ?? 0;
-        expect(getDailyChallengeGoal(DIFFICULTY.EASY, date)).toBe(10 + offset);
-        expect(getDailyChallengeGoal(DIFFICULTY.NORMAL, date)).toBe(16 + offset);
-        expect(getDailyChallengeGoal(DIFFICULTY.HARD, date)).toBe(22 + offset);
+        expect(getDailyChallengeGoal(DIFFICULTY.EASY, date)).toBe(15 + offset);
+        expect(getDailyChallengeGoal(DIFFICULTY.NORMAL, date)).toBe(22 + offset);
+        expect(getDailyChallengeGoal(DIFFICULTY.HARD, date)).toBe(30 + offset);
     });
 
     it('formatDailyMenuButtonLabel affiche Défi du jour', () => {

@@ -1,5 +1,6 @@
 import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
+import { applyDailyRoundDifficulty } from './dailyChallengeDifficulty.js';
 import { GAME_STATE } from './gameState.js';
 import { loadHighScore } from './storage.js';
 import { getSkin } from './skins/index.js';
@@ -12,7 +13,7 @@ import { incrementRoundsStarted } from './tutorialStorage.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { resetCoyoteTime } from './sceneCoyote.js';
 import { resolvePlaySkin } from './playSkin.js';
-import { applySkinPatternToDifficulty, getSkinPattern } from './skinPatterns.js';
+import { getSkinPattern } from './skinPatterns.js';
 import { Utils } from './utils.js';
 import { ensurePipeTextures } from './textures/index.js';
 import {
@@ -27,6 +28,7 @@ import { announceRoundStarted } from './sceneA11ySync.js';
 import { resetScoreAnnounceState } from './sceneScoreAnnounce.js';
 import { clearStaleOverlays } from './sceneFlowOverlays.js';
 import { syncShellGameState } from './shellGameState.js';
+import { snapshotUnlockedSkins } from './metaAchievements.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -37,6 +39,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
     cancelPipeSpawnTimer(scene);
     clearSpawnInvincibility(scene);
     scene.round.resetForRound();
+    snapshotUnlockedSkins(scene);
     resetScoreAnnounceState();
     resetCoyoteTime(scene);
 
@@ -69,7 +72,7 @@ export function beginRound(scene, { resetBird = false } = {}) {
 
     let roundDiff = getDifficultyForRound(scene.difficulty, scene.hardcoreMode);
     if (scene.playMode === 'daily') {
-        roundDiff = applySkinPatternToDifficulty(roundDiff, skinId);
+        roundDiff = applyDailyRoundDifficulty(roundDiff, skinId);
     }
     scene.pipes.applyRoundDifficulty(roundDiff);
     scene.bird.applyDifficulty(roundDiff);
@@ -96,7 +99,9 @@ export function beginRound(scene, { resetBird = false } = {}) {
     scene.time.paused = false;
     scheduleFirstPipe(scene);
 
-    if (!scene.hardcoreMode) {
+    if (scene.playMode === 'daily') {
+        startSpawnInvincibility(scene, GAME_CONFIG.daily.spawnInvincibilityMs);
+    } else if (!scene.hardcoreMode) {
         startSpawnInvincibility(scene);
     } else {
         startSpawnInvincibility(scene, GAME_CONFIG.round.hardcoreSpawnInvincibilityMs);

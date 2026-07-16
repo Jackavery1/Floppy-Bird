@@ -61,10 +61,8 @@ src/
 │   └── shared/        # Layout, depth, chrome GO, texte, toggles
 ├── uiIndex.js                 # Entrée publique UI
 │
-├── A11y (voir `src/ui/a11y/`)
-├── haptics.js                 # Retours haptiques (respecte mute / reduced-motion)
-│
 ├── Media
+├── haptics.js                 # Retours haptiques (respecte mute / reduced-motion)
 ├── audio.js                   # Gestion du son
 ├── motion.js                  # Animations (tweens, shake)
 ├── textures/                  # Sprites générés
@@ -99,7 +97,7 @@ Chaque scene gère une responsabilité :
 ### 3. Input Handling
 
 - **sceneInput.js** : Normalization clavier/tactile
-- **uiDomAccessibility.js** : Accessibilité clavier
+- **`src/ui/a11y/uiDomAccessibility.js`** : Accessibilité clavier (barrel bootstrap)
 
 ### 4. Physics
 
@@ -132,11 +130,11 @@ uiIndex.js → ui/core/ui.js (façade SceneContext)
 | **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
 | **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
 | **Extension**      | Implémenter sous `src/ui/**`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
-| **Délégation**     | 38 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — zéro pass-through dans la façade |
+| **Délégation**     | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) ; `closeAllMenuPanels` / `prepareMenuRebuild` restent sur la classe (rebuild menu) |
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader) |
 
-Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORE / OPTS / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORE / OPTS / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORE / OPTS / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
 #### Index modules `ui*`
 
@@ -149,7 +147,8 @@ Modules physiques sous `src/ui/{menu,hud,gameOver,a11y,shared,core}/` ; entrée 
 | `ui/shared/uiDepth.js` / `uiText.js` | Z-order Phaser, typo et labels adaptatifs |
 | `ui/shared/uiGameOverChrome.js` | Frame + coins plaque (skeleton HUD + panneau GO) |
 | `ui/menu/*` | Menu principal, options, scores, skins, défi du jour |
-| `ui/hud/*` | Score, pause, bannières, tutoriel, toasts |
+| `ui/hud/*` | Score, bannières, tutoriel, toasts |
+| `ui/core/uiPause.js` | Pause in-game (hors HUD) |
 | `ui/gameOver/*` | Panneau game over (lazy via `uiGameOverLoader` → chunk `ui-gameover`) |
 | `ui/a11y/*` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` |
 
@@ -182,10 +181,12 @@ Règle : les modules UI Phaser (`uiMenu*`, `uiGameOver*`, `uiHud*`, `uiPause`), 
 `sceneA11ySync` importent depuis les feuilles (`uiDomAccessibilityPanelFlows.js`,
 `uiDomAccessibilityMenuToggles.js`, `uiDomAccessibilityControls.js`, `uiDomAccessibilityFlows.js`,
 `uiDomAccessibilityLayer.js`), jamais depuis le barrel `uiDomAccessibility.js` (réservé à
-`appBootstrap.js` et tests).
+`appBootstrap.js` et tests). Exception : `src/testSeam/uiSeam.js` importe `setupGameOverAccessibility`
+depuis `uiDomAccessibilityFlows.js` (feuille), pas le barrel.
 
 Panneaux menu : `uiMenuPanel.js` (visibilité, toggle, backdrop) + `uiMenuPanelController.js`
-(controller + shell) + `uiMenuPanels.js` (orchestration fermeture/rebuild). Overlays scène :
+(controller + shell) + `uiMenuSecondaryPanel.js` (factory scores/skins) + `uiMenuPanels.js`
+(orchestration fermeture/rebuild). Overlays scène :
 `sceneFlowOverlays.js`. Tokens shell : `shellTokenDefaults.js` (aligné `public/shell-tokens.css`).
 Garde-fous CSS : `tests/cssShellClasses.test.js`, `tests/cssStaticPages.test.js`.
 Seam debug mort : `getLastDeathMetrics()` (`metaSeam.js`) — `cause`, `elapsedMs`, `isEarlyDeath`, `beforeFirstPipe`.
@@ -289,7 +290,7 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Unitaires** : gameplay, UI, storage, accessibilité
 - **E2E** : navigation, clavier/touch, responsive, PWA offline
-- **CI** : `check` → `e2e-smoke` (desktop + mobile portrait, bloque deploy) + matrice e2e complète (6 viewports, bloquante) + lighthouse
+- **CI** : `check` → `e2e-smoke` (4 viewports Chromium : desktop, mobile portrait, tablette portrait/paysage — bloque deploy) + matrice e2e complète (**8** viewports, bloquante) + lighthouse
 
 ## Implémentation accessibilité
 
@@ -313,10 +314,10 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 ### Pérennisation
 
-- **Modular Architecture** : Easy to add new features
-- **Configuration** : Centralized in `config.js`
-- **Design Tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
-- **Test Coverage** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
+- **Architecture modulaire** : ajouts de features sans monolithe
+- **Configuration** : centralisée dans `config.js`
+- **Design tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
+- **Couverture de tests** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
 
 ## Workflow de développement
 
@@ -324,15 +325,15 @@ Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run me
 
 ## Dépendances
 
-| Package         | Version | Role           |
-| --------------- | ------- | -------------- |
-| phaser          | ^3.80.1 | Game engine    |
-| vite            | ^5.4.11 | Build tool     |
-| vite-plugin-pwa | ^0.21.1 | PWA generation |
-| vitest          | ^2.1.6  | Testing        |
-| playwright      | ^1.49.1 | E2E testing    |
-| eslint          | ^9.17.0 | Linting        |
-| prettier        | ^3.4.2  | Formatting     |
+| Package         | Version | Rôle            |
+| --------------- | ------- | --------------- |
+| phaser          | ^3.80.1 | Moteur de jeu   |
+| vite            | ^5.4.11 | Build           |
+| vite-plugin-pwa | ^0.21.1 | Génération PWA  |
+| vitest          | ^2.1.6  | Tests unitaires |
+| playwright      | ^1.49.1 | Tests E2E       |
+| eslint          | ^9.17.0 | Lint            |
+| prettier        | ^3.4.2  | Formatage       |
 
 ## Standards qualité code
 
@@ -351,7 +352,7 @@ Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run me
 | `src/sceneTypes.js`      | Contrat JSDoc `SceneContext` — documenté, non exécuté   |
 
 - **Types** : JSDoc comments
-- **Accessibility** : 100/100 Lighthouse
+- **Accessibility** : Lighthouse a11y **≥ 90** (seuil CI)
 
 ---
 

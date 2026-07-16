@@ -216,6 +216,9 @@ describe('designTokens', () => {
         expect(
             contrastRatio(DESIGN_TOKENS.texteBoutonJaune, DESIGN_TOKENS.accent)
         ).toBeGreaterThanOrEqual(4.5);
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteBoutonJaune, DESIGN_TOKENS.accentHover)
+        ).toBeGreaterThanOrEqual(4.5);
     });
 
     it('expose les couleurs Phaser médailles et confettis', async () => {

@@ -13,6 +13,9 @@ export {
     FONT_SIZE_BODY,
     FONT_SIZE_SMALL,
     FONT_SIZE_TINY,
+    FONT_SIZE_CHROME,
+    FONT_SIZE_BANNER,
+    FONT_SIZE_EMPHASIS,
     GAME_OVER_PANEL,
     UI_LAYOUT,
     TOUCH_TARGETS,
@@ -44,4 +47,10 @@ export {
 
 export { DEPTH } from './uiDepth.js';
 
-export { addCenteredText, diffLabelColor, fitTitleFontSize, applyFittedLabel } from './uiText.js';
+export {
+    addCenteredText,
+    addReliefText,
+    diffLabelColor,
+    fitTitleFontSize,
+    applyFittedLabel,
+} from './uiText.js';

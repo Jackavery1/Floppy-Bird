@@ -1,9 +1,13 @@
 import '../style.css';
 import Phaser from 'phaser';
-import { initGame } from './phaserBootstrap.js';
+import { initGame, showBootFailure } from './phaserBootstrap.js';
 import { ensureTitleFontLoaded, onGameReady } from './appBootstrap.js';
 
 (async () => {
-    await ensureTitleFontLoaded();
-    initGame(Phaser, onGameReady);
+    try {
+        await ensureTitleFontLoaded();
+        initGame(Phaser, onGameReady);
+    } catch (err) {
+        showBootFailure(err);
+    }
 })();

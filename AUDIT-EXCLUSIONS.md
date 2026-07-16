@@ -31,4 +31,4 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 - Branches : **82 %**
 - Functions : **91 %**
 
-Dernière mise à jour : 2026-07-14 (v2.0.0).
+Dernière mise à jour : 2026-07-16 (v2.0.0 — dettes résiduelles P0/P1).

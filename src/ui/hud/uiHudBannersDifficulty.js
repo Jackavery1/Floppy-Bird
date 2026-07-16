@@ -2,7 +2,13 @@ import { GAME_CONFIG } from '../../config.js';
 import { formatDailyStartBanner } from '../../dailyChallenge.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudBannerFill, hudTextStyle } from '../../designTokens.js';
 import { hapticMedium } from '../../haptics.js';
-import { FONT_SIZE_BODY, FONT_SIZE_HINT, FONT_SIZE_SMALL } from '../shared/uiLayoutConstants.js';
+import {
+    FONT_SIZE_BODY,
+    FONT_SIZE_CHROME,
+    FONT_SIZE_EMPHASIS,
+    FONT_SIZE_HINT,
+    FONT_SIZE_SMALL,
+} from '../shared/uiLayoutConstants.js';
 import { showFlash, showTransientBanner } from './uiHudBannerCore.js';
 
 export function showRecordBroken(ui) {
@@ -12,7 +18,7 @@ export function showRecordBroken(ui) {
         '_recordBanner',
         'NOUVEAU RECORD !',
         hudTextStyle({
-            fontSize: '16px',
+            fontSize: FONT_SIZE_EMPHASIS,
             fill: DESIGN_TOKENS.accent,
             fontStyle: 'bold',
         }),
@@ -21,6 +27,7 @@ export function showRecordBroken(ui) {
 }
 
 export function showDifficultyEscalation(ui) {
+    hapticMedium();
     showTransientBanner(
         ui,
         '_escalationBanner',
@@ -50,7 +57,7 @@ export function showScoreStreak(ui, score) {
         '_streakBanner',
         label,
         hudTextStyle({
-            fontSize: '14px',
+            fontSize: FONT_SIZE_CHROME,
             fill: hudBannerFill('bannerStreak'),
             fontStyle: 'bold',
         })

@@ -1,4 +1,4 @@
-import { setupGameOverAccessibility } from '../ui/a11y/uiDomAccessibility.js';
+import { setupGameOverAccessibility } from '../ui/a11y/uiDomAccessibilityFlows.js';
 import { preloadGameOverUI } from '../ui/gameOver/uiGameOverLoader.js';
 
 /** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */

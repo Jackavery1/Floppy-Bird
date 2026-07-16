@@ -19,6 +19,7 @@ export * from './uiMenuPanelController.js';
 export * from './uiMenuPanels.js';
 export * from './uiMenuScores.js';
 export * from './uiMenuScoresPanel.js';
+export * from './uiMenuSecondaryPanel.js';
 export * from './uiMenuSkinCycle.js';
 export * from './uiMenuSkins.js';
 export * from './uiMenuSkinsPanel.js';

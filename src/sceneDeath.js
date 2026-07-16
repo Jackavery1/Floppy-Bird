@@ -2,13 +2,15 @@ import { GAME_CONFIG } from './config.js';
 import { GAME_STATE, canTriggerDeath } from './gameState.js';
 import { frameStep } from './sceneBootstrap.js';
 import { persistRoundScore } from './roundScore.js';
-import { notifyEndOfRoundAchievements } from './metaAchievements.js';
+import { notifyEndOfRoundAchievements, notifyNewlyUnlockedSkins } from './metaAchievements.js';
 import { playDeathImpactFeedback, playGroundImpactFeedback } from './sceneFeedback.js';
 import { saveDailyCompletion } from './dailyChallengeProgress.js';
 import { getDailyChallengeSkin } from './dailyChallenge.js';
 import { announceDeathStarted, openGameOverAccessibility } from './sceneA11ySync.js';
 import { syncShellGameState } from './shellGameState.js';
 import { preloadGameOverUI } from './ui/gameOver/uiGameOverLoader.js';
+import { consumeStorageWriteFailure } from './storageFail.js';
+import { announceAccessibility } from './ui/a11y/uiDomAccessibilityControls.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -64,6 +66,8 @@ export function updateDying(scene) {
 
 function finishDying(scene) {
     const { round } = scene;
+    if (round.dyingGameOverStarted) return;
+    round.dyingGameOverStarted = true;
     playGroundImpactFeedback();
     if (scene.playMode === 'daily' && scene.dailyGoal > 0) {
         saveDailyCompletion({
@@ -74,6 +78,12 @@ function finishDying(scene) {
         });
     }
     notifyEndOfRoundAchievements(scene);
+    notifyNewlyUnlockedSkins(scene);
+    if (consumeStorageWriteFailure()) {
+        announceAccessibility(
+            'Sauvegarde locale indisponible. Les scores peuvent ne pas être conservés.'
+        );
+    }
     scene.ui.highScore = round.roundHighScore;
     scene.ui.showGameOverLoading?.();
     preloadGameOverUI().then(() => {
@@ -97,4 +107,15 @@ function finishDying(scene) {
             isDaily: scene.playMode === 'daily',
         });
     });
+}
+
+/** Skip l’animation de chute : mash espace/tap pendant DYING → game over immédiat. */
+export function skipDyingToGameOver(scene) {
+    if (scene.state !== GAME_STATE.DYING) return;
+    if (scene.round.dyingGameOverStarted) return;
+    scene.round.dyingFalling = true;
+    scene.bird.y = GAME_CONFIG.groundY - GAME_CONFIG.bird.height / 2;
+    scene.bird.sprite?.setPosition?.(scene.bird.x, scene.bird.y);
+    scene.round.dyingGrounded = true;
+    finishDying(scene);
 }

@@ -1,11 +1,14 @@
 import { GAME_CONFIG } from '../../config.js';
 import { DESIGN_TOKENS, hexVersPhaser, hudTextStyle } from '../../designTokens.js';
+import { hapticMedium } from '../../haptics.js';
 import { drawGameOverPanelFrame, drawPlaqueCorners } from '../shared/uiGameOverChrome.js';
 import { announceAccessibility } from '../a11y/uiDomAccessibilityControls.js';
 import { prefersReducedMotion, sceneTween } from '../../motion.js';
 import {
     addCenteredText,
     DEPTH,
+    FONT_SIZE_BANNER,
+    FONT_SIZE_CHROME,
     GAME_OVER_PANEL,
     gameOverMenuBtnY,
     gameOverRestartBtnY,
@@ -61,6 +64,7 @@ export function showTransientBanner(
 
 export function showDailyGoalReached(ui) {
     if (ui._dailyGoalBanner) return;
+    hapticMedium();
     const slot = acquireHudBannerSlot(ui);
     const y = slot.y;
     const banner = addCenteredText(
@@ -69,7 +73,7 @@ export function showDailyGoalReached(ui) {
         y,
         'OBJECTIF ATTEINT !',
         hudTextStyle({
-            fontSize: '15px',
+            fontSize: FONT_SIZE_BANNER,
             fill: DESIGN_TOKENS.bannerSuccess,
             fontStyle: 'bold',
         }),
@@ -148,7 +152,7 @@ export function showGameOverLoading(ui) {
         GAME_CONFIG.centerY,
         'Chargement…',
         hudTextStyle({
-            fontSize: '14px',
+            fontSize: FONT_SIZE_CHROME,
             fill: DESIGN_TOKENS.texteHintMenu,
             fontStyle: 'bold',
         }),

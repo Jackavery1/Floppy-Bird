@@ -97,8 +97,14 @@ describe('device', () => {
 
     it('hardcoreToggleLabel indique ON/OFF sans détail invincibilité', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toBe('🟥 HARDCORE : ON');
-        expect(hardcoreToggleLabel(false)).toBe('⬜ HARDCORE : OFF');
+        expect(hardcoreToggleLabel(true)).toBe('HARDCORE : ON');
+        expect(hardcoreToggleLabel(false)).toBe('HARDCORE : OFF');
+    });
+
+    it('hardcoreToggleLabel mobile utilise HC (≠ Difficile)', async () => {
+        const { hardcoreToggleLabel } = await loadDevice(true);
+        expect(hardcoreToggleLabel(true)).toBe('HC ON');
+        expect(hardcoreToggleLabel(false, false)).toMatch(/^HC · score ≥/);
     });
 
     it('trainingTutorialText mentionne le ralenti', async () => {

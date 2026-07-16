@@ -18,4 +18,12 @@ describe('uiAchievementToast', () => {
         const rows = scene.add.text.mock.results.map((r) => r.value.__bannerRow);
         expect(rows[0]).not.toBe(rows[1]);
     });
+
+    it('préfixe Skin pour un déblocage de skin', () => {
+        const scene = createBaseScene();
+        scene.ui = new UI(scene);
+        showAchievementToasts(scene, [{ title: 'Rubis', kind: 'skin' }]);
+        scene._delayedCalls.forEach((cb) => cb());
+        expect(scene.add.text.mock.calls[0][2]).toBe('Skin · Rubis');
+    });
 });

@@ -42,7 +42,7 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 
 Zones tactiles : **minimum 44×44 px** (`MIN_TOUCH`) ; CTA primaires et **pause HUD** **48 px** (`MIN_CTA_TOUCH`).
 
-Échelle typo UI : `FONT_SIZE_HINT/BADGE/COMPACT` = 13 px ; `FONT_SIZE_BODY` = 12 px ; `FONT_SIZE_SMALL` = 11 px ; `FONT_SIZE_TINY` = 10 px.
+Échelle typo UI : `FONT_SIZE_HINT/BADGE/COMPACT` = 13 px ; `FONT_SIZE_BODY` = 12 px ; `FONT_SIZE_SMALL` / `FONT_SIZE_TINY` = 11 px ; `FONT_SIZE_CHROME` = 14 px ; `FONT_SIZE_BANNER` = 15 px ; `FONT_SIZE_EMPHASIS` = 16 px.
 
 ## Référence visuelle
 

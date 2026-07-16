@@ -15,6 +15,7 @@ vi.mock('../src/roundScore.js', () => ({
 }));
 vi.mock('../src/metaAchievements.js', () => ({
     notifyEndOfRoundAchievements: vi.fn(),
+    notifyNewlyUnlockedSkins: vi.fn(),
 }));
 vi.mock('../src/sceneA11ySync.js', () => ({
     announceDeathStarted: vi.fn(),
@@ -28,6 +29,12 @@ vi.mock('../src/shellGameState.js', () => ({
 }));
 vi.mock('../src/ui/gameOver/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
+}));
+vi.mock('../src/storageFail.js', () => ({
+    consumeStorageWriteFailure: vi.fn(() => false),
+}));
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
+    announceAccessibility: vi.fn(),
 }));
 
 describe('sceneDeath', () => {
@@ -159,16 +166,37 @@ describe('sceneDeath', () => {
         expect(scene.state).toBe(GAME_STATE.GAME_OVER);
     });
 
-    it('triggerDeath planifie la chute après 166 ms', () => {
+    it('skipDyingToGameOver ouvre le game over immédiatement', async () => {
+        const { skipDyingToGameOver } = await import('../src/sceneDeath.js');
+        const { playGroundImpactFeedback } = await import('../src/sceneFeedback.js');
         const round = createRoundState();
+        round.score = 3;
+        round.leaderboardData = { entries: [], highlightId: null };
+        round.roundHighScore = 5;
         const scene = {
-            state: GAME_STATE.PLAYING,
+            state: GAME_STATE.DYING,
+            playMode: 'classic',
             round,
-            bird: { velocityY: 5 },
-            ghost: { finishRound: vi.fn() },
-            time: { delayedCall: vi.fn() },
+            hardcoreMode: false,
+            bird: {
+                y: 100,
+                x: 50,
+                sprite: { setPosition: vi.fn() },
+            },
+            ui: {
+                highScore: 0,
+                showGameOverLoading: vi.fn(),
+                hideGameOverLoading: vi.fn(),
+                showGameOver: vi.fn(() => ({ elements: [{ destroy: vi.fn() }] })),
+                setOverlay: vi.fn(),
+            },
         };
-        triggerDeath(scene, 'pipe');
-        expect(scene.time.delayedCall).toHaveBeenCalledWith(166, expect.any(Function));
+        skipDyingToGameOver(scene);
+        await Promise.resolve();
+        expect(scene.round.dyingGrounded).toBe(true);
+        expect(scene.state).toBe(GAME_STATE.GAME_OVER);
+        expect(playGroundImpactFeedback).toHaveBeenCalled();
+        skipDyingToGameOver(scene);
+        expect(scene.ui.showGameOver).toHaveBeenCalledTimes(1);
     });
 });

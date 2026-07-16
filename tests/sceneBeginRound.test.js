@@ -3,7 +3,6 @@ import { GAME_STATE } from '../src/gameState.js';
 import { DIFFICULTY } from '../src/config.js';
 import { beginRound } from '../src/sceneBeginRound.js';
 import { createRoundState } from '../src/roundState.js';
-import { applySkinPatternToDifficulty } from '../src/skinPatterns.js';
 
 vi.mock('../src/tutorialStorage.js', () => ({
     loadTutorialComplete: vi.fn(() => true),
@@ -24,6 +23,10 @@ vi.mock('../src/skinPatterns.js', async (importOriginal) => {
         applySkinPatternToDifficulty: vi.fn((diff) => ({ ...diff, gravity: diff.gravity * 2 })),
     };
 });
+
+vi.mock('../src/dailyChallengeDifficulty.js', () => ({
+    applyDailyRoundDifficulty: vi.fn((diff) => ({ ...diff, gap: Math.round(diff.gap * 0.88) })),
+}));
 
 vi.mock('../src/textures/pipeTextures.js', () => ({
     ensurePipeTextures: vi.fn(),
@@ -105,16 +108,17 @@ describe('sceneBeginRound', () => {
         expect(scene.pipes.setDailySeed).toHaveBeenCalledWith(null);
     });
 
-    it('beginRound applique la physique skin uniquement en défi du jour', () => {
+    it('beginRound applique la difficulté daily uniquement en défi du jour', async () => {
+        const { applyDailyRoundDifficulty } = await import('../src/dailyChallengeDifficulty.js');
         const scene = makeScene();
         scene.playMode = 'classic';
         beginRound(scene);
-        expect(applySkinPatternToDifficulty).not.toHaveBeenCalled();
+        expect(applyDailyRoundDifficulty).not.toHaveBeenCalled();
 
-        vi.mocked(applySkinPatternToDifficulty).mockClear();
+        vi.mocked(applyDailyRoundDifficulty).mockClear();
         scene.playMode = 'daily';
         beginRound(scene);
-        expect(applySkinPatternToDifficulty).toHaveBeenCalled();
+        expect(applyDailyRoundDifficulty).toHaveBeenCalled();
         expect(scene.ui.showDailyGoalBrief).toHaveBeenCalled();
     });
 

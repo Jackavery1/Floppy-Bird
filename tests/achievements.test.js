@@ -32,14 +32,16 @@ describe('achievements', () => {
         expect(def.check(ctx)).toBe(false);
     });
 
-    it('hardcore hero exige hardcore et score >= 5', () => {
+    it('hardcore hero exige hardcore et score >= 8', () => {
         const def = ACHIEVEMENTS.find((a) => a.id === 'hardcore_hero');
         const ctx = buildMetaContext({
             round: createRoundState(),
             trainingMode: false,
             hardcoreMode: true,
         });
-        ctx.score = 5;
+        ctx.score = 7;
+        expect(def.check(ctx)).toBe(false);
+        ctx.score = 8;
         expect(def.check(ctx)).toBe(true);
         ctx.hardcore = false;
         expect(def.check(ctx)).toBe(false);

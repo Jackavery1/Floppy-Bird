@@ -18,7 +18,7 @@ export function preloadGameOverUI() {
 /** @type {typeof import('./uiGameOver.js').buildGameOverUI} */
 export function buildGameOverUI(...args) {
     if (!buildFn) {
-        throw new Error('Game over UI not preloaded — call preloadGameOverUI() first');
+        throw new Error('UI game over non préchargée — appeler preloadGameOverUI() d’abord');
     }
     return buildFn(...args);
 }

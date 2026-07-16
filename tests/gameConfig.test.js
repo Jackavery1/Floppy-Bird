@@ -26,8 +26,8 @@ describe('GAME_CONFIG.round', () => {
         expect(gap).toBeGreaterThanOrEqual(300);
     });
 
-    it('bufferise les sauts sur plusieurs frames (standard 6–8)', () => {
-        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(1);
+    it('bufferise les sauts sur plusieurs frames', () => {
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(3);
     });
 
     it('hardcore : marge post-invincibilité avant premier tuyau', () => {
@@ -36,41 +36,66 @@ describe('GAME_CONFIG.round', () => {
         expect(gap).toBeGreaterThanOrEqual(400);
     });
 
-    it('hardcore : invincibilité initiale 840 ms (compense gravité +12 %, sans paliers par tuyau)', () => {
-        expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(840);
+    it('hardcore : invincibilité initiale 620 ms (marge ≥400 ms avant 1er tuyau)', () => {
+        expect(GAME_CONFIG.round.hardcoreSpawnInvincibilityMs).toBe(620);
         expect(GAME_CONFIG.round.spawnInvincibilityMs).toBe(900);
     });
 });
 
 describe('GAME_CONFIG.getDifficulty', () => {
-    it('normal hérite de bird pour la gravité', () => {
+    it('normal applique speed/gap/intervalle renforcés', () => {
         const n = GAME_CONFIG.getDifficulty('normal');
-        expect(n.gravity).toBe(GAME_CONFIG.bird.gravity);
-        expect(n.jumpPower).toBe(GAME_CONFIG.bird.jumpPower);
-        expect(n.speed).toBe(2.85);
-        expect(n.gap).toBe(108);
-        expect(n.pipeInterval).toBe(74);
+        expect(n.gravity).toBe(0.42);
+        expect(n.jumpPower).toBe(-6.05);
+        expect(n.speed).toBe(3.05);
+        expect(n.gap).toBe(100);
+        expect(n.pipeInterval).toBe(68);
     });
 
-    it('easy applique des overrides', () => {
+    it('easy reste plus permissif que normal, mais plus exigeant qu’avant', () => {
         const e = GAME_CONFIG.getDifficulty('easy');
-        expect(e.gravity).toBe(0.32);
-        expect(e.gap).toBe(136);
-        expect(e.pipeInterval).toBe(90);
+        const n = GAME_CONFIG.getDifficulty('normal');
+        expect(e.gravity).toBe(0.35);
+        expect(e.gap).toBe(124);
+        expect(e.pipeInterval).toBe(82);
+        expect(e.speed).toBe(2.15);
+        expect(e.gap).toBeGreaterThan(n.gap);
+        expect(e.speed).toBeLessThan(n.speed);
+        expect(e.pipeInterval).toBeGreaterThan(n.pipeInterval);
+    });
+
+    it('hard reste inchangé et plus serré que normal', () => {
+        const n = GAME_CONFIG.getDifficulty('normal');
+        const h = GAME_CONFIG.getDifficulty('hard');
+        expect(h.speed).toBe(3.72);
+        expect(h.gap).toBe(88);
+        expect(h.pipeInterval).toBe(62);
+        expect(h.gap).toBeLessThan(n.gap);
+        expect(h.speed).toBeGreaterThan(n.speed);
     });
 
     it('retombe sur normal pour une clé invalide', () => {
         const x = GAME_CONFIG.getDifficulty('invalid');
-        expect(x.speed).toBe(2.85);
+        expect(x.speed).toBe(3.05);
     });
 });
 
 describe('getDifficultyForRound', () => {
-    it('renforce gravité et vitesse en hardcore', () => {
+    it('renforce physique, gaps et cadence en hardcore', () => {
         const normal = GAME_CONFIG.getDifficulty('normal');
         const hardcore = getDifficultyForRound('normal', true);
         expect(hardcore.gravity).toBeGreaterThan(normal.gravity);
         expect(hardcore.speed).toBeGreaterThan(normal.speed);
+        expect(hardcore.gap).toBeLessThan(normal.gap);
+        expect(hardcore.pipeInterval).toBeLessThan(normal.pipeInterval);
+        expect(Math.abs(hardcore.jumpPower)).toBeLessThan(Math.abs(normal.jumpPower));
+    });
+
+    it('normal hardcore dépasse la difficulté Difficile classique sur plusieurs axes', () => {
+        const hard = GAME_CONFIG.getDifficulty('hard');
+        const normalHc = getDifficultyForRound('normal', true);
+        expect(normalHc.gravity).toBeGreaterThan(hard.gravity);
+        expect(normalHc.gap).toBeLessThanOrEqual(hard.gap + 4);
     });
 
     it('identique au mode normal sans hardcore', () => {

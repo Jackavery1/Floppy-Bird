@@ -35,12 +35,12 @@ describe('uiMenuOptionsMute', () => {
         buildMuteControls(ui, (...objs) => added.push(...objs), 200);
     });
 
-    it('affiche le libellé son avec icône', () => {
+    it('affiche le libellé son', () => {
         expect(ui._muteText).toBeTruthy();
         const textCall = scene.add.text.mock.calls.find(([, , content]) =>
             String(content).includes('SON')
         );
-        expect(textCall?.[2]).toBe('🔊 SON · 100 %');
+        expect(textCall?.[2]).toBe('SON · 100 %');
         expect(ui._muteHit.setInteractive).toHaveBeenCalled();
     });
 
@@ -49,7 +49,7 @@ describe('uiMenuOptionsMute', () => {
         expect(handlers.length).toBeGreaterThan(0);
         handlers[0][1](null, null, null, { stopPropagation: vi.fn() });
         expect(cycleSoundLevel).toHaveBeenCalled();
-        expect(ui._muteText.setText).toHaveBeenCalledWith('🔊 SON · 100 %');
+        expect(ui._muteText.setText).toHaveBeenCalledWith('SON · 100 %');
         expect(bindAccessibilityAction).toHaveBeenCalledWith('menuMute', expect.any(Function));
     });
 
@@ -71,7 +71,7 @@ describe('uiMenuOptionsMute', () => {
         const textCall = localScene.add.text.mock.calls.find(([, , content]) =>
             String(content).includes('SON')
         );
-        expect(textCall?.[2]).toBe('🔈 SON · indisponible');
+        expect(textCall?.[2]).toBe('SON · indisponible');
         expect(localUi._muteHit.setInteractive).not.toHaveBeenCalled();
     });
 });

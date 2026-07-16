@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from './storageKeys.js';
+import { noteStorageWriteFailure } from './storageFail.js';
 
 const DEFAULT = Object.freeze({
     achievements: [],
@@ -23,7 +24,7 @@ function writeMeta(meta) {
     try {
         localStorage.setItem(STORAGE_KEYS.meta, JSON.stringify(meta));
     } catch {
-        /* quota localStorage */
+        noteStorageWriteFailure();
     }
 }
 

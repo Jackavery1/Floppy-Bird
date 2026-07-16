@@ -1,21 +1,58 @@
 import { GAME_CONFIG } from '../../config.js';
 import { formatDailyHudLabel } from '../../dailyChallenge.js';
 import { getSkin } from '../../skins/index.js';
-import { DESIGN_TOKENS, hudTextStyle } from '../../designTokens.js';
+import { DESIGN_TOKENS } from '../../designTokens.js';
 import { sceneTween } from '../../motion.js';
-import { addCenteredText, DEPTH, UI_LAYOUT } from '../shared/uiLayout.js';
+import { addReliefText, DEPTH, FONT_TITLE, UI_LAYOUT } from '../shared/uiLayout.js';
 
+const SCORE_RELIEF = Object.freeze({
+    dx: 3,
+    dy: 4,
+    fill: DESIGN_TOKENS.accentTitreOmbre,
+    alpha: 0.65,
+});
+
+/** Style score HUD — Press Start 2P + relief (comme le titre), jamais remappé noir en jour. */
 function scoreHudStyle() {
-    return hudTextStyle({
-        fontSize: '40px',
-        fill: DESIGN_TOKENS.texteHud,
-        fontStyle: 'bold',
+    return {
+        fontFamily: FONT_TITLE,
+        fontSize: '28px',
+        fill: DESIGN_TOKENS.accentTitre,
+        fontStyle: 'normal',
+        stroke: DESIGN_TOKENS.accentTitreContour,
         strokeThickness: 4,
-    });
+    };
+}
+
+function destroyScoreHud(ui) {
+    ui.scoreText?.destroy();
+    ui.scoreText = null;
+    ui._scoreTextShadow?.destroy();
+    ui._scoreTextShadow = null;
+}
+
+function syncScoreHudVisibility(ui, visible) {
+    ui.scoreText?.setVisible?.(visible);
+    ui._scoreTextShadow?.setVisible?.(visible);
+}
+
+function syncScoreHudTransform(ui, { y, scale = 1, depth = DEPTH.SCORE_HUD } = {}) {
+    if (ui.scoreText) {
+        if (y != null) ui.scoreText.setY(y);
+        ui.scoreText.setAlpha?.(1);
+        ui.scoreText.setScale?.(scale);
+        ui.scoreText.setDepth?.(depth);
+    }
+    if (ui._scoreTextShadow) {
+        if (y != null) ui._scoreTextShadow.setY(y + SCORE_RELIEF.dy);
+        ui._scoreTextShadow.setAlpha?.(SCORE_RELIEF.alpha);
+        ui._scoreTextShadow.setScale?.(scale);
+        ui._scoreTextShadow.setDepth?.(depth - 1);
+    }
 }
 
 export function createScoreDisplay(ui) {
-    if (ui.scoreText) ui.scoreText.destroy();
+    destroyScoreHud(ui);
     if (ui._recordBanner) {
         ui._recordBanner.destroy();
         ui._recordBanner = null;
@@ -25,25 +62,25 @@ export function createScoreDisplay(ui) {
         ui._dailyGoalBanner = null;
     }
     ui.scoreValue = 0;
-    ui.scoreText = addCenteredText(
+    const { shadow, label } = addReliefText(
         ui.scene,
         GAME_CONFIG.centerX,
         UI_LAYOUT.scoreHud,
         '0',
         scoreHudStyle(),
-        DEPTH.SCORE_HUD
+        DEPTH.SCORE_HUD,
+        SCORE_RELIEF
     );
+    ui.scoreText = label;
+    ui._scoreTextShadow = shadow;
     showInGameScore(ui, UI_LAYOUT.scoreHud);
 }
 
 /** @param {import('../core/ui.js').UI} ui @param {number} scoreY */
 export function showInGameScore(ui, scoreY = UI_LAYOUT.scoreHud) {
     if (!ui.scoreText) return;
-    ui.scoreText.setVisible(true);
-    ui.scoreText.setAlpha(1);
-    ui.scoreText.setScale?.(1);
-    ui.scoreText.setY(scoreY);
-    ui.scoreText.setDepth?.(DEPTH.SCORE_HUD);
+    syncScoreHudVisibility(ui, true);
+    syncScoreHudTransform(ui, { y: scoreY, scale: 1 });
 }
 
 export function updateScore(ui, newScore) {
@@ -51,10 +88,12 @@ export function updateScore(ui, newScore) {
     const text = String(ui.scoreValue);
     if (ui.scoreText) {
         ui.scoreText.setText(text);
+        ui._scoreTextShadow?.setText?.(text);
+        const targets = [ui.scoreText, ui._scoreTextShadow].filter(Boolean);
         sceneTween(ui.scene, {
-            targets: ui.scoreText,
-            scaleX: 1.4,
-            scaleY: 1.4,
+            targets,
+            scaleX: 1.35,
+            scaleY: 1.35,
             duration: 100,
             yoyo: true,
             ease: 'Quad.easeOut',

@@ -4,12 +4,8 @@ import {
     bindSkinsAccessibility,
     setSkinsPanelAccessibility,
 } from '../a11y/uiDomAccessibilityPanelFlows.js';
-import { UI_LAYOUT } from '../shared/uiLayout.js';
-import { buildMenuPanelShell, createMenuPanelController } from './uiMenuPanelController.js';
+import { createSecondaryMenuPanel } from './uiMenuSecondaryPanel.js';
 import { buildSkinsTab, refreshSkinsTab } from './uiMenuSkins.js';
-
-const SKINS_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonSkins);
-const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 
 const PANEL_CFG = {
     openKey: '_skinsOpen',
@@ -20,50 +16,40 @@ const PANEL_CFG = {
     btnHitKey: '_skinsBtnHit',
     btnFocusKey: 'menuSkins',
     buttonLabelFn: skinsButtonLabel,
-    btnColor: SKINS_BTN_COLOR,
-    btnStroke: SKINS_BTN_STROKE,
+    btnColor: hexVersPhaser(DESIGN_TOKENS.boutonSkins),
+    btnHover: hexVersPhaser(DESIGN_TOKENS.boutonSkinsHover),
+    btnStroke: hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke),
     labelStroke: DESIGN_TOKENS.contourSkins,
 };
 
-const controllerCfg = {
-    ...PANEL_CFG,
-    onOpen: (targetUi) => {
-        refreshSkinsTab(targetUi);
-        bindSkinsAccessibility(targetUi.scene);
-        setSkinsPanelAccessibility(targetUi.scene, true);
-    },
-    onClose: (targetUi) => setSkinsPanelAccessibility(targetUi.scene, false),
-};
+const skinsPanel = createSecondaryMenuPanel({
+    controllerKey: '_skinsPanelController',
+    panelLayoutKey: 'skinsPanel',
+    btnLayoutKey: 'skinsBtn',
+    panelCfg: PANEL_CFG,
+    themeStroke: DESIGN_TOKENS.boutonSkinsStroke,
+    refreshTab: refreshSkinsTab,
+    bindA11y: bindSkinsAccessibility,
+    setA11y: setSkinsPanelAccessibility,
+    buildTab: buildSkinsTab,
+});
 
 /** @param {import('../core/ui.js').UI} ui */
 export function refreshSkinsButtonLabel(ui) {
-    ui._skinsPanelController?.refreshButtonLabel();
+    skinsPanel.refreshButtonLabel(ui);
 }
 
 /** @param {import('../core/ui.js').UI} ui @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
 export function setMenuSkinsOpen(ui, open, panelOpts) {
-    ui._skinsPanelController?.setOpen(open, panelOpts);
+    skinsPanel.setOpen(ui, open, panelOpts);
 }
 
 /** @param {import('../core/ui.js').UI} ui */
 export function toggleMenuSkins(ui) {
-    ui._skinsPanelController?.toggle();
+    skinsPanel.toggle(ui);
 }
 
 /** @param {import('../core/ui.js').UI} ui @param {import('phaser').GameObjects.GameObject[]} elements @param {ReturnType<import('../shared/uiLayout.js').computeMenuLayout>} layout */
 export function buildMenuSkinsPanel(ui, elements, layout) {
-    const panel = UI_LAYOUT.skinsPanel;
-    ui._skinsPanelController = createMenuPanelController(ui, controllerCfg);
-    buildMenuPanelShell(ui, elements, ui._skinsPanelController, {
-        ...PANEL_CFG,
-        btnLayout: { cx: layout.skinsBtn, cy: layout.menuRow, width: layout.menuBtnW },
-        panelLayout: panel,
-        panelTheme: {
-            fill: DESIGN_TOKENS.fondPanneauGameOver,
-            stroke: DESIGN_TOKENS.boutonSkinsStroke,
-        },
-        buildContent: (targetUi, targetElements, panelElements) => {
-            buildSkinsTab(targetUi, targetElements, panelElements);
-        },
-    });
+    skinsPanel.build(ui, elements, layout);
 }

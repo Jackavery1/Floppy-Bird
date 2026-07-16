@@ -93,4 +93,25 @@ describe('dailyChallengeProgress stats', () => {
         expect(loadDailyStats().totalCompletions).toBe(0);
         expect(isDailyCompletedToday(day)).toBe(false);
     });
+
+    it('ne retire pas le ✓ du jour après une rejouée ratée', () => {
+        saveDailyCompletion({
+            goal: 5,
+            score: 6,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
+        });
+        expect(isDailyCompletedToday(day)).toBe(true);
+
+        saveDailyCompletion({
+            goal: 5,
+            score: 2,
+            difficulty: 'normal',
+            skinId: 'classic',
+            date: day,
+        });
+        expect(isDailyCompletedToday(day)).toBe(true);
+        expect(loadDailyStats().totalCompletions).toBe(1);
+    });
 });

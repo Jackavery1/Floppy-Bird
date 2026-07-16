@@ -127,13 +127,25 @@ export function getSkinPattern(skinId) {
     return SKIN_PATTERNS[skinId] ?? SKIN_PATTERNS.classic;
 }
 
-/** @param {import('./config.js').DifficultyConfig} diffConfig @param {string} skinId */
-export function applySkinPatternToDifficulty(diffConfig, skinId) {
+/** @param {import('./config.js').DifficultyConfig} diffConfig @param {string} skinId @param {{
+ *   minGravityMult?: number,
+ *   maxJumpMult?: number,
+ *   minSpeedMult?: number,
+ * }} [clamp] */
+export function applySkinPatternToDifficulty(diffConfig, skinId, clamp = {}) {
     const p = getSkinPattern(skinId);
+    const gravityMult =
+        clamp.minGravityMult != null
+            ? Math.max(p.gravityMult, clamp.minGravityMult)
+            : p.gravityMult;
+    const jumpMult =
+        clamp.maxJumpMult != null ? Math.min(p.jumpMult, clamp.maxJumpMult) : p.jumpMult;
+    const speedMult =
+        clamp.minSpeedMult != null ? Math.max(p.speedMult, clamp.minSpeedMult) : p.speedMult;
     return {
         ...diffConfig,
-        gravity: diffConfig.gravity * p.gravityMult,
-        jumpPower: diffConfig.jumpPower * p.jumpMult,
-        speed: diffConfig.speed * p.speedMult,
+        gravity: diffConfig.gravity * gravityMult,
+        jumpPower: diffConfig.jumpPower * jumpMult,
+        speed: diffConfig.speed * speedMult,
     };
 }
