@@ -49,11 +49,6 @@ export function listUnlockedSkins(ctx) {
     return SKIN_IDS.filter((id) => SKINS[id].unlock(ctx));
 }
 
-/** @param {import('../metaContext.js').MetaContext} ctx */
-export function nextUnlockedSkin(currentId, ctx) {
-    return cycleUnlockedSkin(currentId, ctx, 1);
-}
-
 /** @param {import('../metaContext.js').MetaContext} ctx @param {1 | -1} step */
 export function cycleUnlockedSkin(currentId, ctx, step = 1) {
     const unlocked = listUnlockedSkins(ctx);

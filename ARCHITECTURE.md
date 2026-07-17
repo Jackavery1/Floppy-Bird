@@ -106,7 +106,8 @@ Chaque scene gère une responsabilité :
 
 ### 4. Physics
 
-- **bird.js** : Gravity, velocity, coyote timing
+- **bird.js** : Gravity, velocity, flap
+- **sceneCoyote.js** : Coyote time (tuyaux + plafond)
 - **pipeCollision.js** : AABB collision detection
 - **pipeGaps.js** : Gestion dynamique des espaces
 
@@ -322,11 +323,11 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 - **Architecture modulaire** : ajouts de features sans monolithe
 - **Configuration** : centralisée dans `config.js`
 - **Design tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
-- **Couverture de tests** : seuils dans `vite.config.js` ; snapshot bundle `npm run measure` → `scripts/bundle-baseline.json`
+- **Couverture de tests** : seuils dans `vite.config.js` ; mesure bundle → [CONTRIBUTING.md](CONTRIBUTING.md) (`npm run measure`)
 
 ## Workflow de développement
 
-Commandes : [README.md](README.md). Mesure bundle : `npm run build && npm run measure`.
+Commandes : [README.md](README.md). Qualité / mesure bundle : [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Dépendances
 
@@ -355,4 +356,4 @@ Source de vérité : [`AUDIT-EXCLUSIONS.md`](AUDIT-EXCLUSIONS.md) (aligné sur `
 
 ---
 
-Last updated: 2026-07-16
+Last updated: 2026-07-17

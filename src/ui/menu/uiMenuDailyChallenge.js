@@ -14,7 +14,7 @@ import {
     DEPTH,
     FONT_SIZE_BODY,
     FONT_SIZE_TINY,
-    MIN_TOUCH,
+    MIN_CTA_TOUCH,
     stopUiEvent,
 } from '../shared/uiLayout.js';
 
@@ -38,7 +38,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
         GAME_CONFIG.centerX,
         layout.dailyBtn,
         228,
-        MIN_TOUCH,
+        MIN_CTA_TOUCH,
         DAILY_BTN_COLOR,
         0.9
     );
@@ -84,7 +84,7 @@ export function buildMenuDailyChallenge(ui, elements, layout, difficulty) {
         GAME_CONFIG.centerX,
         layout.dailyBtn,
         228,
-        MIN_TOUCH,
+        MIN_CTA_TOUCH,
         0x000000,
         0
     );

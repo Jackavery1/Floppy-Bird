@@ -93,7 +93,7 @@ describe('sceneA11ySync', () => {
         expect(announceAccessibility).toHaveBeenCalledWith('Partie en pause');
     });
 
-    it('exitPauseAccessibility réactive les contrôles en jeu', async () => {
+    it('exitPauseAccessibility réactive pause/saut sans skip tutoriel fantôme', async () => {
         const {
             hideAllAccessibilityControls,
             setAccessibilityControlVisible,
@@ -101,12 +101,25 @@ describe('sceneA11ySync', () => {
         } = await import('../src/ui/a11y/uiDomAccessibilityControls.js');
         const { syncAccessibilityLayer } =
             await import('../src/ui/a11y/uiDomAccessibilityLayer.js');
-        const scene = { game: { canvas: null } };
+        const scene = { game: { canvas: null }, ui: {} };
         exitPauseAccessibility(scene);
         expect(hideAllAccessibilityControls).toHaveBeenCalled();
         expect(setAccessibilityControlVisible).toHaveBeenCalledWith('pause', true);
+        expect(setAccessibilityControlVisible).toHaveBeenCalledWith('playJump', true);
+        expect(setAccessibilityControlVisible).toHaveBeenCalledWith('playTutorialSkip', false);
         expect(syncAccessibilityLayer).toHaveBeenCalledWith(scene.game);
         expect(announceAccessibility).toHaveBeenCalledWith('Partie reprise');
+    });
+
+    it('exitPauseAccessibility réaffiche skip tutoriel si le hit Phaser est monté', async () => {
+        const { setAccessibilityControlVisible } =
+            await import('../src/ui/a11y/uiDomAccessibilityControls.js');
+        const scene = {
+            game: { canvas: null },
+            ui: { _tutorialSkipHit: { active: true } },
+        };
+        exitPauseAccessibility(scene);
+        expect(setAccessibilityControlVisible).toHaveBeenCalledWith('playTutorialSkip', true);
     });
 
     it('announceRoundStarted annonce le mode de partie', async () => {

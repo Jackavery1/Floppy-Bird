@@ -1,10 +1,9 @@
 {
-    "generated": "2026-07-16",
-    "distKo": 1416.3,
+    "generated": "2026-07-17",
+    "distKo": 1418.5,
     "iconsKo": 23.2,
     "vendorPhaserKo": 1168.1,
-    "appJsGzipKo": 52.6,
-    "precacheEntries": 28,
-    "precacheKiB": 1387.41,
-    "note": "Subset police latin seul (−latin-ext ~9,6 Ko assets). Régénérer : npm run build && npm run measure"
+    "appJsGzipKo": 53.5,
+    "precacheEntries": 29,
+    "note": "debugHitboxes en chunk async (main −0,2 Ko gzip). Régénérer : npm run build && npm run measure"
 }

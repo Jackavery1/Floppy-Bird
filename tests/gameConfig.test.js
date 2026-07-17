@@ -26,8 +26,8 @@ describe('GAME_CONFIG.round', () => {
         expect(gap).toBeGreaterThanOrEqual(400);
     });
 
-    it('bufferise les sauts sur plusieurs frames', () => {
-        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(6);
+    it('reporte le saut au prochain tick physique', () => {
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(1);
     });
 
     it('hardcore : marge post-invincibilité avant premier tuyau', () => {

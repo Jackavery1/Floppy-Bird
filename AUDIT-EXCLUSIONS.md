@@ -40,4 +40,4 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 | `style-src 'unsafe-inline'` | Nécessaire CSSOM (`shellTheme` / a11y / letterbox) — documenté ARCHITECTURE |
 | Libellé mode « HARDCORE : … » (menu) | Nom de mode produit ; badge HUD / classement utilisent `HC` |
 
-Dernière mise à jour : 2026-07-16 (v2.0.0 — P0–P2 + dettes audit UI/gameplay traitées).
+Dernière mise à jour : 2026-07-17 (v2.0.0 — P0–P2 + dettes audit traitées ; exclusions inchangées).

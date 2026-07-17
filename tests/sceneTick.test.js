@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GAME_STATE } from '../src/gameState.js';
-import { updateSceneFrame } from '../src/sceneTick.js';
+import { updateSceneFrame, resetDebugHitboxesLoaderForTests } from '../src/sceneTick.js';
 import { createRoundState } from '../src/roundState.js';
 
 vi.mock('../src/sceneBackground.js', () => ({
@@ -46,9 +46,10 @@ vi.mock('../src/debugHitboxes.js', () => ({
 describe('sceneTick', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        resetDebugHitboxesLoaderForTests();
     });
 
-    function baseScene(state) {
+    function baseScene(state, overrides = {}) {
         return {
             state,
             game: { loop: { delta: 16.67, actualFps: 60 } },
@@ -64,6 +65,8 @@ describe('sceneTick', () => {
             _hills: [],
             _groundSprite: {},
             triggerDeath: vi.fn(),
+            trainingMode: false,
+            ...overrides,
         };
     }
 
@@ -89,5 +92,25 @@ describe('sceneTick', () => {
         updateSceneFrame(scene);
         expect(scene.bird.update).not.toHaveBeenCalled();
         expect(scene.pipes.update).not.toHaveBeenCalled();
+    });
+
+    it('charge les hitboxes debug en lazy si entraînement', async () => {
+        const { updateDebugHitboxes } = await import('../src/debugHitboxes.js');
+        const scene = baseScene(GAME_STATE.PLAYING, { trainingMode: true });
+        updateSceneFrame(scene);
+        expect(updateDebugHitboxes).not.toHaveBeenCalled();
+        await vi.waitFor(() => {
+            updateSceneFrame(scene);
+            expect(updateDebugHitboxes).toHaveBeenCalledWith(scene);
+        });
+    });
+
+    it('ne charge pas les hitboxes debug hors debug/entraînement', async () => {
+        const { updateDebugHitboxes } = await import('../src/debugHitboxes.js');
+        const scene = baseScene(GAME_STATE.PLAYING);
+        updateSceneFrame(scene);
+        await Promise.resolve();
+        updateSceneFrame(scene);
+        expect(updateDebugHitboxes).not.toHaveBeenCalled();
     });
 });

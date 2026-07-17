@@ -29,6 +29,8 @@ jobs:
             - run: npm run sync:tokens:check
             - run: npm test
             - run: npm run test:coverage
+            - run: npm run build
+            - run: npm run measure
             - uses: actions/upload-artifact@v4
               if: always()
               with:

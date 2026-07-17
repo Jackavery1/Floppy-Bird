@@ -62,13 +62,16 @@ export function announceScoreReached(score) {
     announceAccessibility(`Score ${score}`);
 }
 
-/** @param {import('phaser').Game | null | undefined} game */
-function syncPlayingControls(game) {
+/**
+ * Réactive les contrôles de jeu après pause.
+ * `playTutorialSkip` seulement si le hit Phaser skip est encore monté.
+ * @param {SceneContext} scene
+ */
+function syncPlayingControls(scene) {
     setAccessibilityControlVisible('pause', true);
-    for (const key of PLAYING_CONTROL_KEYS) {
-        if (key !== 'pause') setAccessibilityControlVisible(key, true);
-    }
-    syncAccessibilityLayer(game);
+    setAccessibilityControlVisible('playJump', true);
+    setAccessibilityControlVisible('playTutorialSkip', Boolean(scene.ui?._tutorialSkipHit));
+    syncAccessibilityLayer(scene.game);
 }
 
 /** @param {import('phaser').Game | null | undefined} game */
@@ -93,7 +96,7 @@ export function enterPauseAccessibility(scene) {
 /** @param {SceneContext} scene */
 export function exitPauseAccessibility(scene) {
     hideAllAccessibilityControls();
-    syncPlayingControls(scene.game);
+    syncPlayingControls(scene);
     announceAccessibility('Partie reprise');
 }
 

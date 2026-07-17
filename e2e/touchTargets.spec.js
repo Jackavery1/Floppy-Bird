@@ -34,10 +34,11 @@ test.describe('cibles tactiques ≥ 44 px', () => {
     test('boutons difficulté et défi du jour au menu', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
         await waitForGameReady(page);
-        for (const id of ['a11y-diff-easy', 'a11y-diff-normal', 'a11y-diff-hard', 'a11y-daily']) {
+        for (const id of ['a11y-diff-easy', 'a11y-diff-normal', 'a11y-diff-hard']) {
             const minPx = await minA11yButtonScreenPx(page, id);
             expect(minPx, id).toBeGreaterThanOrEqual(44);
         }
+        expect(await minA11yButtonScreenPx(page, 'a11y-daily')).toBeGreaterThanOrEqual(48);
     });
 
     test('boutons menu secondaires SCORES / OPT. / SKINS après letterbox', async ({

@@ -46,7 +46,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 | Domaine | Détail |
 | ------- | ------ |
-| **Gameplay** | 60 FPS, coyote time, buffer de saut, gaps scriptés puis aléatoires, escalade de difficulté |
+| **Gameplay** | 60 FPS, coyote time, buffer de saut (1 frame), gaps scriptés puis aléatoires, escalade de difficulté |
 | **Modes** | Classique (3 difficultés), entraînement, hardcore, défi du jour |
 | **Meta** | 16 skins déblocables, 8 trophées, records et TOP 5 par difficulté |
 | **Responsive** | Letterbox 288×512, mobile / tablette / desktop, safe-area, CTA primaires 48 px |
@@ -64,7 +64,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 | Entrée | Action |
 | ------ | ------ |
-| **Espace** / **tap** | Saut, démarrer ou rejouer |
+| **Espace** / **tap** | Sauter, démarrer, rejouer ou **reprendre** (si pause) |
 | **1** / **2** / **3** | Difficulté facile / normal / difficile (menu) |
 | **T** | Mode entraînement ACTIVÉ/DÉSACTIVÉ (menu) |
 | **H** | Mode hardcore ACTIVÉ/DÉSACTIVÉ (menu) |
@@ -73,7 +73,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 | **O** | Options (menu) |
 | **K** | Skins (menu) |
 | **←** / **→** | Skin précédent / suivant (panneau skins) |
-| **ESC** | Pause |
+| **ESC** | Pause / reprendre |
 | **M** | Menu (pause ou game over) |
 
 #### Règles et mécaniques

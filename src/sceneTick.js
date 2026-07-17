@@ -4,12 +4,35 @@ import { updateClouds, updateGround, updateHills } from './sceneBackground.js';
 import { frameStep, splitPhysicsSteps, checkCollisions } from './sceneBootstrap.js';
 import { updateCoyoteTime, updateCoyoteVisual, hasCoyoteGrace } from './sceneCoyote.js';
 import { updateDying } from './sceneDeath.js';
-import { updateDebugHitboxes } from './debugHitboxes.js';
 import { processJumpBuffer, tickJumpBuffer } from './sceneJumpBuffer.js';
 import { checkScorePipes, tickPipeSpawnFallback } from './sceneRound.js';
 import { updateSpawnInvincibilityVisual } from './sceneSpawnFeedback.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
+
+/** @type {null | ((scene: SceneContext) => void)} */
+let updateDebugHitboxesFn = null;
+/** @type {Promise<void> | null} */
+let debugHitboxesLoad = null;
+
+function ensureDebugHitboxesLoaded(scene) {
+    if (!(GAME_CONFIG.debug || scene.trainingMode)) return;
+    if (updateDebugHitboxesFn) {
+        updateDebugHitboxesFn(scene);
+        return;
+    }
+    if (!debugHitboxesLoad) {
+        debugHitboxesLoad = import('./debugHitboxes.js').then((m) => {
+            updateDebugHitboxesFn = m.updateDebugHitboxes;
+        });
+    }
+}
+
+/** Réinitialise le lazy-load debug (tests). */
+export function resetDebugHitboxesLoaderForTests() {
+    updateDebugHitboxesFn = null;
+    debugHitboxesLoad = null;
+}
 
 /** @param {SceneContext} scene */
 export function updateSceneFrame(scene) {
@@ -50,7 +73,7 @@ export function updateSceneFrame(scene) {
         }
         updateSpawnInvincibilityVisual(scene);
         tickJumpBuffer(scene);
-        updateDebugHitboxes(scene);
+        ensureDebugHitboxesLoaded(scene);
     } else if (shouldUpdateDying(scene.state)) {
         updateDying(scene);
     }

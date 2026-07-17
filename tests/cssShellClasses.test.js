@@ -56,12 +56,8 @@ describe('cssShellClasses', () => {
 
     it('style.css n’accumule pas de sélecteurs orphelins connus', () => {
         const defined = extractCssClasses(readFileSync(resolve(ROOT, 'style.css'), 'utf8'));
-        const allowUnused = new Set(['offline-shell']);
         const likelyOrphans = [...defined].filter(
-            (name) =>
-                !REFERENCED_SHELL_CLASSES.includes(name) &&
-                !allowUnused.has(name) &&
-                !name.startsWith('tokens-')
+            (name) => !REFERENCED_SHELL_CLASSES.includes(name) && !name.startsWith('tokens-')
         );
         expect(likelyOrphans).toEqual([]);
     });

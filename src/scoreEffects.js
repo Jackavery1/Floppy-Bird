@@ -1,4 +1,5 @@
-import { DESIGN_TOKENS } from './designTokens.js';
+import { getBackgroundPeriod } from './backgroundPeriod.js';
+import { DESIGN_TOKENS, hudTextStyle } from './designTokens.js';
 import { FONT, FONT_SIZE_DISPLAY, DEPTH } from './ui/shared/uiLayout.js';
 import { sceneTween } from './motion.js';
 
@@ -9,6 +10,17 @@ const PARTICLE_DIRS = [
     [1, 1],
 ];
 
+function stylePopupScore() {
+    const day = getBackgroundPeriod() === 'day';
+    return hudTextStyle({
+        fontSize: FONT_SIZE_DISPLAY,
+        fill: day ? DESIGN_TOKENS.accentTitreJour : DESIGN_TOKENS.accentTitre,
+        fontFamily: FONT,
+        fontStyle: 'bold',
+        strokeThickness: day ? 6 : 4,
+    });
+}
+
 export class ScoreEffects {
     constructor(scene) {
         this.scene = scene;
@@ -16,12 +28,7 @@ export class ScoreEffects {
         this._stars = [];
 
         for (let i = 0; i < 3; i++) {
-            const text = scene.add.text(0, 0, '+1', {
-                fontSize: FONT_SIZE_DISPLAY,
-                fill: DESIGN_TOKENS.accentTitre,
-                fontFamily: FONT,
-                fontStyle: 'bold',
-            });
+            const text = scene.add.text(0, 0, '+1', stylePopupScore());
             text.setDepth(DEPTH.SCORE_EFFECT_TEXT).setVisible(false).setActive(false);
             this._popups.push(text);
         }
@@ -40,6 +47,7 @@ export class ScoreEffects {
 
     _showPopup(x, y) {
         const popup = this._popups.find((t) => !t.active) ?? this._popups[0];
+        popup.setStyle(stylePopupScore());
         popup.setPosition(x, y).setAlpha(1).setVisible(true).setActive(true);
 
         sceneTween(this.scene, {

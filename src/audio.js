@@ -13,7 +13,6 @@ import {
 import { playGameOver, playGround, playJump, playScore } from './audioSynthesis.js';
 
 export { getVolume, setVolume, isMuted, setMuted } from './audioVolume.js';
-export { getScoreToneType } from './audioSynthesis.js';
 export { isAudioAvailable, resumeAudio };
 
 export function cycleSoundLevel() {

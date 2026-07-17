@@ -5,7 +5,6 @@ import {
     getSkin,
     isSpecialSkin,
     listUnlockedSkins,
-    nextUnlockedSkin,
     cycleUnlockedSkin,
 } from '../src/skins/index.js';
 
@@ -111,11 +110,11 @@ describe('skins', () => {
         expect(listUnlockedSkins(ctxAllButNeon())).toHaveLength(16);
     });
 
-    it('nextUnlockedSkin boucle uniquement sur les skins débloqués', () => {
+    it('cycleUnlockedSkin boucle uniquement sur les skins débloqués', () => {
         const ctx = baseCtx({ bestScoreAny: 10 });
         expect(listUnlockedSkins(ctx)).toEqual(['classic', 'lavande', 'ruby']);
-        expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
-        expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
+        expect(cycleUnlockedSkin('classic', ctx, 1)).toBe('lavande');
+        expect(cycleUnlockedSkin('ruby', ctx, 1)).toBe('classic');
     });
 
     it('cycleUnlockedSkin accepte un pas négatif', () => {

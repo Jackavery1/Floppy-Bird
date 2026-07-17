@@ -86,11 +86,11 @@ export function skipTutorialHint() {
 export function optionsControlRows() {
     if (isCoarsePointer()) {
         return [
-            { key: 'TAP', action: 'sauter' },
+            { key: 'TAP', action: 'sauter · reprendre' },
             { key: 'PAUSE', action: 'mettre en pause' },
             { key: 'PASSER', action: 'passer le tutoriel' },
             { key: 'DÉFI', action: 'défi du jour' },
-            { key: '1·2·3', action: 'difficulté' },
+            { key: 'DIFF.', action: 'difficulté' },
             { key: 'ENTR.', action: 'entraînement' },
             { key: 'VIT.', action: 'vitesse entraînement' },
             { key: 'HC', action: 'hardcore' },
@@ -98,15 +98,16 @@ export function optionsControlRows() {
         ];
     }
     return [
-        { key: 'ESPACE', action: 'sauter' },
+        { key: 'ESPACE', action: 'sauter · reprendre' },
         { key: 'D', action: 'défi du jour' },
         { key: '1·2·3', action: 'difficulté' },
         { key: 'T', action: 'entraînement' },
         { key: 'H', action: 'hardcore' },
         { key: 'P', action: 'passer le tutoriel' },
-        { key: 'ESC·ESP', action: 'pause / reprendre' },
+        { key: 'ESC', action: 'pause · reprendre' },
         { key: 'M', action: 'menu' },
         { key: 'S·O·K', action: 'scores · options · skins' },
+        { key: '←·→', action: 'apparence' },
     ];
 }
 

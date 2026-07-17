@@ -16,7 +16,7 @@ export const MENU_CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.menuDaily.x,
         y: TOUCH_TARGETS.menuDaily.y,
         width: 228,
-        height: MIN_TOUCH,
+        height: MIN_CTA_TOUCH,
     },
     menuScores: {
         id: 'a11y-scores',

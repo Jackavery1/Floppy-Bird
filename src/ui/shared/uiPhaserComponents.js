@@ -2,7 +2,6 @@
  * Design system Phaser — primitives graphiques alignées sur {@link DESIGN_TOKENS}.
  * Point d’entrée unique pour panneaux, CTA et chrome HUD canvas (complète tokens.html).
  */
-import { DESIGN_TOKENS, hexVersPhaser } from '../../designTokens.js';
 import { UI_LAYOUT } from './uiLayoutConstants.js';
 
 /** Insets hitbox collision oiseau vs sprite visible (équité gameplay). */
@@ -14,26 +13,6 @@ export const DEBUG_HITBOX_COLORS = Object.freeze({
     sprite: 0x44ccff,
     pipe: 0xff6644,
 });
-
-/**
- * @param {import('phaser').GameObjects.Graphics} g
- * @param {number} x
- * @param {number} y
- * @param {number} w
- * @param {number} h
- * @param {keyof typeof DESIGN_TOKENS} fillKey
- * @param {keyof typeof DESIGN_TOKENS} strokeKey
- * @param {number} [radius]
- * @param {number} [fillAlpha]
- */
-export function drawTokenPanel(g, x, y, w, h, fillKey, strokeKey, radius = 10, fillAlpha = 0.94) {
-    const fill = hexVersPhaser(DESIGN_TOKENS[fillKey]);
-    const stroke = hexVersPhaser(DESIGN_TOKENS[strokeKey]);
-    g.fillStyle(fill, fillAlpha);
-    g.fillRoundedRect(x, y, w, h, radius);
-    g.lineStyle(2, stroke, 0.88);
-    g.strokeRoundedRect(x, y, w, h, radius);
-}
 
 /**
  * @param {import('phaser').GameObjects.Graphics} g

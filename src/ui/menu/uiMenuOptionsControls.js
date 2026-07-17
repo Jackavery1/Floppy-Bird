@@ -6,7 +6,13 @@ import {
     menuHomeTextStyle,
     panelChromeTextStyle,
 } from '../../designTokens.js';
-import { addCenteredText, DEPTH, FONT_SIZE_BODY, UI_LAYOUT } from '../shared/uiLayout.js';
+import {
+    addCenteredText,
+    applyFittedLabel,
+    DEPTH,
+    FONT_SIZE_BODY,
+    UI_LAYOUT,
+} from '../shared/uiLayout.js';
 import { beginOptionsSection } from './uiMenuOptionsSection.js';
 import { drawPanelPillButton } from './uiMenuPanelChrome.js';
 
@@ -65,6 +71,7 @@ export function buildControlsSection(ui, _elements) {
     const badgeSlotW = 118;
     const keyColX = listLeft + 10 + badgeSlotW / 2;
     const actionColX = listLeft + 14 + badgeSlotW;
+    const actionMaxW = Math.max(72, listW - badgeSlotW - 28);
 
     const title = addCenteredText(
         scene,
@@ -103,13 +110,13 @@ export function buildControlsSection(ui, _elements) {
         const [badgeBg, badgeLabel] = buildKeyBadge(scene, keyColX, y, row.key);
         add(badgeBg, badgeLabel);
 
-        const action = scene.add.text(actionColX, y, row.action, {
-            ...menuHomeTextStyle({
-                fontSize: FONT_SIZE_BODY,
-                fill: DESIGN_TOKENS.texteClair,
-            }),
+        const actionStyle = menuHomeTextStyle({
+            fontSize: FONT_SIZE_BODY,
+            fill: DESIGN_TOKENS.texteClair,
         });
+        const action = scene.add.text(actionColX, y, row.action, actionStyle);
         action.setOrigin(0, 0.5);
+        applyFittedLabel(scene, action, row.action, actionStyle, actionMaxW);
         add(action);
     });
 }

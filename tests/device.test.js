@@ -137,11 +137,13 @@ describe('device', () => {
     it('optionsControlRows liste les commandes du jeu', async () => {
         const { optionsControlRows } = await loadDevice(false);
         const rows = optionsControlRows();
-        expect(rows.some((r) => r.key === 'ESPACE' && r.action === 'sauter')).toBe(true);
-        expect(rows.some((r) => r.key === 'P' && r.action === 'passer le tutoriel')).toBe(true);
-        expect(rows.some((r) => r.key === 'ESC·ESP' && r.action === 'pause / reprendre')).toBe(
+        expect(rows.some((r) => r.key === 'ESPACE' && r.action === 'sauter · reprendre')).toBe(
             true
         );
+        expect(rows.some((r) => r.key === 'P' && r.action === 'passer le tutoriel')).toBe(true);
+        expect(rows.some((r) => r.key === 'ESC' && r.action === 'pause · reprendre')).toBe(true);
+        expect(rows.some((r) => r.key === '←·→' && r.action === 'apparence')).toBe(true);
+        expect(rows.some((r) => r.key === 'ESC·ESP')).toBe(false);
         expect(rows.some((r) => r.key === 'D' && r.action === 'défi du jour')).toBe(true);
         expect(rows.some((r) => r.key === 'T' && r.action === 'entraînement')).toBe(true);
         expect(rows.some((r) => r.key === 'S·O·K' && r.action === 'scores · options · skins')).toBe(
@@ -152,7 +154,8 @@ describe('device', () => {
     it('optionsControlRows adapte le tactile', async () => {
         const { optionsControlRows } = await loadDevice(true);
         const rows = optionsControlRows();
-        expect(rows.some((r) => r.key === 'TAP' && r.action === 'sauter')).toBe(true);
+        expect(rows.some((r) => r.key === 'TAP' && r.action === 'sauter · reprendre')).toBe(true);
+        expect(rows.some((r) => r.key === 'DIFF.' && r.action === 'difficulté')).toBe(true);
         expect(rows.some((r) => r.key === 'PAUSE' && r.action === 'mettre en pause')).toBe(true);
         expect(rows.some((r) => r.key === 'ENTR.' && r.action === 'entraînement')).toBe(true);
         expect(rows.some((r) => r.key === '···' && r.action === 'scores · skins · options')).toBe(

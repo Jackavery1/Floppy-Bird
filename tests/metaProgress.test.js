@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { listUnlockedSkins, nextUnlockedSkin, SKINS } from '../src/skins/index.js';
+import { listUnlockedSkins, cycleUnlockedSkin, SKINS } from '../src/skins/index.js';
 import { evaluateAchievements } from '../src/metaProgress.js';
 import { loadMeta, unlockAchievement } from '../src/metaStorage.js';
 import { createRoundState } from '../src/roundState.js';
@@ -52,7 +52,7 @@ describe('skins', () => {
         expect(listUnlockedSkins(ctx)).toContain('ruby');
     });
 
-    it('nextUnlockedSkin cycle les skins débloqués', () => {
+    it('cycleUnlockedSkin avance sur les skins débloqués', () => {
         const ctx = {
             bestScoreAny: 10,
             bestHardcoreScore: 0,
@@ -61,8 +61,8 @@ describe('skins', () => {
             dailyChallenge: true,
             unlockedSkinCount: 2,
         };
-        expect(nextUnlockedSkin('classic', ctx)).toBe('lavande');
-        expect(nextUnlockedSkin('ruby', ctx)).toBe('classic');
+        expect(cycleUnlockedSkin('classic', ctx, 1)).toBe('lavande');
+        expect(cycleUnlockedSkin('ruby', ctx, 1)).toBe('classic');
     });
 });
 

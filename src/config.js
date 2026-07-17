@@ -39,8 +39,8 @@ export const GAME_CONFIG = {
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        /** Latch reporté jusqu’au prochain `processJumpBuffer` (ticks via `tickJumpBuffer`). */
-        jumpBufferFrames: 6,
+        /** Report du flap au prochain tick physique (1 frame). */
+        jumpBufferFrames: 1,
         /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },

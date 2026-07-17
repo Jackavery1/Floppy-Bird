@@ -89,7 +89,7 @@ describe('audio', () => {
     });
 
     it('getScoreToneType varie selon le score', async () => {
-        const { getScoreToneType } = await import('../src/audio.js');
+        const { getScoreToneType } = await import('../src/audioSynthesis.js');
         expect(getScoreToneType(1)).toBe('triangle');
         expect(getScoreToneType(2)).toBe('square');
         expect(getScoreToneType(3)).toBe('sine');

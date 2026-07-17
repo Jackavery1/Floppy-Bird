@@ -6,10 +6,7 @@ import {
     hexVersPhaser,
 } from '../../designTokens.js';
 import { pauseResumeHint, menuHint } from '../../device.js';
-import {
-    bindAccessibilityAction,
-    setAccessibilityControlLabel,
-} from '../a11y/uiDomAccessibilityControls.js';
+import { bindAccessibilityAction } from '../a11y/uiDomAccessibilityControls.js';
 import { syncAccessibilityLayer } from '../a11y/uiDomAccessibilityLayer.js';
 import { buildPanelPillButton } from '../menu/uiMenuPanelChrome.js';
 import {
@@ -101,7 +98,6 @@ export function showPause(ui, { onResume, onMenu }) {
 
     bindAccessibilityAction('pauseResume', onResume);
     bindAccessibilityAction('pauseMenu', onMenu);
-    setAccessibilityControlLabel('pauseResume', pauseResumeHint());
     syncAccessibilityLayer(ui.scene.game);
 
     return { elements };

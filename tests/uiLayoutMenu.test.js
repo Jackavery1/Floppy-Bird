@@ -30,7 +30,7 @@ describe('uiLayout menu', () => {
             GAME_CONFIG.height - 8
         );
         expect(optionsPanel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(GAME_CONFIG.height - 4);
-        const lastControlY = optionsPanel.controlsFirst + 8 * optionsPanel.controlsGap;
+        const lastControlY = optionsPanel.controlsFirst + 9 * optionsPanel.controlsGap;
         expect(lastControlY).toBeLessThanOrEqual(optionsPanel.closeBtn - MIN_TOUCH / 2);
         expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(skinsPanel.closeBtn).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
@@ -45,7 +45,7 @@ describe('uiLayout menu', () => {
         const diffBottom = menu.difficulty + MIN_TOUCH / 2;
         const startTop = menu.start - MIN_CTA_TOUCH / 2;
         expect(startTop).toBeGreaterThanOrEqual(diffBottom);
-        const dailyBottom = menu.dailyBtn + MIN_TOUCH / 2;
+        const dailyBottom = menu.dailyBtn + MIN_CTA_TOUCH / 2;
         const menuRowTop = menu.menuRow - MENU_SECONDARY_HIT / 2;
         expect(menuRowTop).toBeGreaterThanOrEqual(dailyBottom + 8);
         const menuRowBottom = menu.menuRow + MENU_SECONDARY_HIT / 2;
