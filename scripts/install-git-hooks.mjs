@@ -10,11 +10,20 @@ const hooksDir = join(gitDir, 'hooks');
 mkdirSync(hooksDir, { recursive: true });
 
 const hookPath = join(hooksDir, 'pre-commit');
+/**
+ * Hook portable Windows/macOS/Linux :
+ * - Git Bash exécute le shebang ; `node` lance verify via shell npm.cmd sous Windows.
+ * - `git rev-parse` garantit le cwd dépôt (GUI / worktrees).
+ */
 const hook = `#!/bin/sh
-npm run verify
+set -e
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT"
+# verify ~1-2 min (lint + format + tokens + tests) — do not interrupt
+exec node ./scripts/run-pre-commit.mjs
 `;
 
-writeFileSync(hookPath, hook, 'utf8');
+writeFileSync(hookPath, hook, { encoding: 'utf8' });
 try {
     chmodSync(hookPath, 0o755);
 } catch {
