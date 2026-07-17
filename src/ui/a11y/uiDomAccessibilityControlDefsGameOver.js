@@ -1,4 +1,4 @@
-import { MIN_CTA_TOUCH, MIN_TOUCH, TOUCH_TARGETS, UI_LAYOUT } from '../shared/uiLayoutConstants.js';
+import { MIN_CTA_TOUCH, TOUCH_TARGETS, UI_LAYOUT } from '../shared/uiLayoutConstants.js';
 
 /** Boutons overlay a11y — écran game over. */
 export const GAME_OVER_CONTROL_DEFS = Object.freeze({
@@ -16,6 +16,6 @@ export const GAME_OVER_CONTROL_DEFS = Object.freeze({
         x: TOUCH_TARGETS.gameOverMenu.x,
         y: TOUCH_TARGETS.gameOverMenu.y,
         width: UI_LAYOUT.menuBtn.width,
-        height: MIN_TOUCH,
+        height: MIN_CTA_TOUCH,
     },
 });

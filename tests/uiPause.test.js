@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { UI } from '../src/ui/core/ui.js';
-import { MIN_TOUCH, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
+import { MIN_CTA_TOUCH, UI_LAYOUT } from '../src/ui/shared/uiLayout.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
 vi.mock('../src/motion.js', () => ({
@@ -26,7 +26,7 @@ describe('uiPause', () => {
         const rectangles = scene.add.rectangle.mock.calls;
         const pauseHits = rectangles.filter(
             ([, y, , h]) =>
-                h === MIN_TOUCH &&
+                h === MIN_CTA_TOUCH &&
                 (y === UI_LAYOUT.pause.resumeBtn || y === UI_LAYOUT.pause.menuBtn)
         );
         expect(pauseHits.length).toBe(2);

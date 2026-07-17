@@ -4,7 +4,13 @@ import { getSkin } from '../../skins/index.js';
 import { DESIGN_TOKENS } from '../../designTokens.js';
 import { getBackgroundPeriod } from '../../backgroundPeriod.js';
 import { sceneTween } from '../../motion.js';
-import { addReliefText, DEPTH, FONT_TITLE, UI_LAYOUT } from '../shared/uiLayout.js';
+import {
+    addReliefText,
+    DEPTH,
+    FONT_SIZE_SCORE,
+    FONT_TITLE,
+    UI_LAYOUT,
+} from '../shared/uiLayout.js';
 
 const SCORE_RELIEF = Object.freeze({
     dx: 3,
@@ -18,7 +24,7 @@ function scoreHudStyle() {
     const day = getBackgroundPeriod() === 'day';
     return {
         fontFamily: FONT_TITLE,
-        fontSize: '28px',
+        fontSize: FONT_SIZE_SCORE,
         fill: day ? DESIGN_TOKENS.accentTitreJour : DESIGN_TOKENS.accentTitre,
         fontStyle: 'normal',
         stroke: day ? DESIGN_TOKENS.contourHud : DESIGN_TOKENS.accentTitreContour,

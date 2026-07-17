@@ -5,6 +5,7 @@ import {
 } from '../a11y/uiDomAccessibilityControls.js';
 import {
     DEPTH,
+    FONT_SIZE_HINT,
     MENU_BTN_COLOR,
     MIN_TOUCH,
     stopUiEvent,
@@ -28,7 +29,7 @@ const TABS = Object.freeze([
 ]);
 
 const TAB_LABEL_STYLE = panelChromeTextStyle({
-    fontSize: '13px',
+    fontSize: FONT_SIZE_HINT,
     fill: DESIGN_TOKENS.texteMenu,
     fontStyle: 'bold',
     stroke: DESIGN_TOKENS.contourOptions,

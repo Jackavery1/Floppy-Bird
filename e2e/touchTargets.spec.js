@@ -1,22 +1,24 @@
 import { test, expect } from '@playwright/test';
 import {
+    enterPausedFromPlaying,
     isMobilePortraitProject,
     startPlayingFromMenu,
     waitForGameReady,
 } from './helpers/gameCoords.mjs';
 import { forceGameOver } from './helpers/testSeam.mjs';
 
-/** Dimension minimale écran (px) d’un bouton a11y DOM, via style inline + letterbox. */
+/** Dimension minimale écran (px) d’un bouton a11y DOM (styles déjà en CSS px). */
 async function minA11yButtonScreenPx(page, buttonId) {
     return page.evaluate((id) => {
-        const canvas = document.querySelector('#game-container canvas');
         const btn = document.getElementById(id);
-        if (!canvas || !btn) return 0;
-        const scale = canvas.getBoundingClientRect().height / 512;
+        if (!btn || btn.hidden) return 0;
+        const rect = btn.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+            return Math.min(rect.width, rect.height);
+        }
         const w = parseFloat(btn.style.width || '0');
         const h = parseFloat(btn.style.height || '0');
-        if (w > 0 && h > 0) return Math.min(w, h) * scale;
-        return (h || w || 44) * scale;
+        return Math.min(w || 0, h || 0) || 0;
     }, buttonId);
 }
 
@@ -25,13 +27,8 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
         await waitForGameReady(page);
         await startPlayingFromMenu(page, true);
-        const minScreenPx = await page.evaluate(() => {
-            const canvas = document.querySelector('#game-container canvas');
-            if (!canvas) return 0;
-            const scale = canvas.getBoundingClientRect().width / 288;
-            return 48 * scale;
-        });
-        expect(minScreenPx).toBeGreaterThanOrEqual(48);
+        await expect(page.locator('#a11y-pause')).toBeVisible();
+        expect(await minA11yButtonScreenPx(page, 'a11y-pause')).toBeGreaterThanOrEqual(48);
     });
 
     test('boutons difficulté et défi du jour au menu', async ({ page }, testInfo) => {
@@ -43,7 +40,7 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         }
     });
 
-    test('boutons menu secondaires SCORES / OPT. / STYLE après letterbox', async ({
+    test('boutons menu secondaires SCORES / OPT. / SKINS après letterbox', async ({
         page,
     }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
@@ -92,12 +89,11 @@ test.describe('cibles tactiques ≥ 44 px', () => {
     test('boutons pause / menu en jeu', async ({ page }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'portrait tactile uniquement');
         await waitForGameReady(page);
-        await startPlayingFromMenu(page, true);
-        await page.locator('#a11y-pause').tap({ force: true });
+        await enterPausedFromPlaying(page, true);
         await expect(page.locator('#a11y-resume')).toBeVisible();
         for (const id of ['a11y-resume', 'a11y-menu']) {
             const minPx = await minA11yButtonScreenPx(page, id);
-            expect(minPx, id).toBeGreaterThanOrEqual(44);
+            expect(minPx, id).toBeGreaterThanOrEqual(48);
         }
     });
 
@@ -124,7 +120,7 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         await forceGameOver(page);
         for (const id of ['a11y-gameover-restart', 'a11y-gameover-menu']) {
             const minPx = await minA11yButtonScreenPx(page, id);
-            expect(minPx, id).toBeGreaterThanOrEqual(44);
+            expect(minPx, id).toBeGreaterThanOrEqual(48);
         }
     });
 });

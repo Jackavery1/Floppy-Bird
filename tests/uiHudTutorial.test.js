@@ -26,6 +26,17 @@ vi.mock('../src/tutorialProgress.js', () => ({
     skipTutorialIfActive: vi.fn(),
 }));
 
+vi.mock('../src/ui/a11y/uiDomAccessibilityControls.js', () => ({
+    bindAccessibilityAction: vi.fn(),
+    bindUnifiedInteractiveFocus: vi.fn(() => ({ attachHit: vi.fn() })),
+    setAccessibilityControlLabel: vi.fn(),
+    setAccessibilityControlVisible: vi.fn(),
+}));
+
+vi.mock('../src/ui/a11y/uiDomAccessibilityLayer.js', () => ({
+    syncAccessibilityLayer: vi.fn(),
+}));
+
 describe('uiHudTutorial', () => {
     let ui;
 
@@ -49,6 +60,22 @@ describe('uiHudTutorial', () => {
         expect(handlers.length).toBeGreaterThan(0);
         handlers[0][1](null, null, null, { stopPropagation: vi.fn() });
         expect(skipTutorialIfActive).toHaveBeenCalledWith(ui.scene);
+    });
+
+    it('place le skip sous la zone jump a11y (96 px)', async () => {
+        const { GAME_CONFIG } = await import('../src/config.js');
+        const { MIN_CTA_TOUCH, TOUCH_TARGETS } = await import('../src/ui/shared/uiLayout.js');
+        showJumpTutorial(ui);
+        const skipCall = ui.scene.add.rectangle.mock.calls.find(
+            ([x, y, w, h]) =>
+                x === TOUCH_TARGETS.tutorialSkip.x &&
+                y === TOUCH_TARGETS.tutorialSkip.y &&
+                w === 140 &&
+                h === MIN_CTA_TOUCH
+        );
+        expect(skipCall).toBeTruthy();
+        const jumpBottom = GAME_CONFIG.centerY + MIN_CTA_TOUCH;
+        expect(TOUCH_TARGETS.tutorialSkip.y - MIN_CTA_TOUCH / 2).toBeGreaterThanOrEqual(jumpBottom);
     });
 
     it('showHardcoreTutorial active le flag et le hint', () => {

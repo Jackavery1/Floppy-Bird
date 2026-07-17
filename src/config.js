@@ -40,7 +40,7 @@ export const GAME_CONFIG = {
         jumpPower: -6,
         maxFallSpeed: 10.5,
         /** Latch reporté jusqu’au prochain `processJumpBuffer` (ticks via `tickJumpBuffer`). */
-        jumpBufferFrames: 3,
+        jumpBufferFrames: 6,
         /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },

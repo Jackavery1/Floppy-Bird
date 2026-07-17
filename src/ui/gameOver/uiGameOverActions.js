@@ -11,6 +11,7 @@ import {
     addCenteredText,
     applyFittedLabel,
     DEPTH,
+    FONT_SIZE_HINT,
     GAME_OVER_RESTART_BTN_COLOR,
     GAME_OVER_RESTART_BTN_HOVER,
     GAME_OVER_RESTART_BTN_WIDTH,
@@ -19,13 +20,12 @@ import {
     gameOverRestartBtnY,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
-    MIN_TOUCH,
     MIN_CTA_TOUCH,
     stopUiEvent,
     UI_LAYOUT,
 } from '../shared/uiLayout.js';
 
-const RESTART_LABEL_STYLE = yellowChromeButtonTextStyle({ fontSize: '13px' });
+const RESTART_LABEL_STYLE = yellowChromeButtonTextStyle({ fontSize: FONT_SIZE_HINT });
 
 /**
  * Pied de panneau game over : bouton rejouer, bouton menu et animation d’apparition.
@@ -116,13 +116,20 @@ export function buildGameOverActions(scene, ui, cx, y, P, opts, _scoreText) {
         menuBtnY,
         'MENU',
         panelChromeTextStyle({
-            fontSize: '13px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteMenu,
         }),
         DEPTH.MENU_BTN_BG
     );
 
-    const menuHitZone = scene.add.rectangle(cx, menuBtnY, menuBtn.width, MIN_TOUCH, 0x000000, 0);
+    const menuHitZone = scene.add.rectangle(
+        cx,
+        menuBtnY,
+        menuBtn.width,
+        menuBtn.height,
+        0x000000,
+        0
+    );
     menuHitZone.setDepth(DEPTH.MENU_HIT);
     menuHitZone.setInteractive({ useHandCursor: true });
     bindUnifiedInteractiveFocus(

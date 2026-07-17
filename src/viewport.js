@@ -69,9 +69,10 @@ function getViewportDimensions() {
 }
 
 /**
- * Espace utile pour le letterbox : client du body (padding safe-area déjà appliqué en CSS).
- * Les offsets incluent toujours les insets : le canvas est `position: fixed` (viewport),
- * pas relatif à la boîte de contenu du body.
+ * Espace utile pour le letterbox.
+ * `clientWidth` / `clientHeight` incluent le padding CSS : on retranche les insets
+ * pour obtenir la boîte de contenu, puis on ajoute les insets aux offsets car le
+ * canvas est en `position: fixed` (viewport), pas relatif au padding du body.
  * Retombe sur visualViewport si le DOM n’est pas prêt.
  */
 export function getLetterboxViewport() {
@@ -87,9 +88,11 @@ export function getLetterboxViewport() {
     if (body?.clientWidth > 0 && body?.clientHeight > 0) {
         const vvWidth = vv?.width ?? body.clientWidth;
         const vvHeight = vv?.height ?? body.clientHeight;
+        const rawW = Math.min(body.clientWidth, vvWidth);
+        const rawH = Math.min(body.clientHeight, vvHeight);
         return {
-            width: Math.min(body.clientWidth, vvWidth),
-            height: Math.min(body.clientHeight, vvHeight),
+            width: Math.max(1, rawW - insets.left - insets.right),
+            height: Math.max(1, rawH - insets.top - insets.bottom),
             offsetTop: offsetTop + insets.top,
             offsetLeft: offsetLeft + insets.left,
             scale,

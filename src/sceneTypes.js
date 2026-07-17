@@ -41,6 +41,7 @@
  * @property {import('phaser').Game} game
  * @property {() => void} handlePrimaryAction
  * @property {() => void} togglePause
+ * @property {boolean} [_pauseToggleLock] — garde anti double-tap (sceneFlow.togglePause)
  * @property {() => void} returnToMenu
  * @property {(d: string) => void} changeDifficulty
  * @property {() => void} toggleTraining

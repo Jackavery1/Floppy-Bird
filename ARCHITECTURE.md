@@ -25,6 +25,8 @@ src/
 ├── gameState.js               # État global du jeu
 ├── config.js                  # Configuration (résolution, physics, etc)
 ├── designTokens.js            # Design tokens (couleurs, polices)
+├── viewport.js                # Letterbox 288×512 + safe-area insets
+├── appBootstrap.js            # Bootstrap shell (resize canvas, a11y, thème)
 ├── utils.js                   # Utilités (random, lerp, etc)
 │
 ├── Game Loop
@@ -137,7 +139,7 @@ uiIndex.js → ui/core/ui.js (façade SceneContext)
 | **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
 | **Découpage build**| Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader) |
 
-Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORES / OPT. / STYLE ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORES / OPT. / STYLE** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
+Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORES / OPT. / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORES / OPT. / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
 #### Index modules `ui*`
 

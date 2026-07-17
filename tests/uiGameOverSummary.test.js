@@ -11,7 +11,7 @@ function makeUi(overrides = {}) {
 }
 
 describe('uiGameOverSummary', () => {
-    it('affiche FIN DE PARTIE et le score', () => {
+    it('affiche GAME OVER et le score', () => {
         const scene = createBaseScene();
         const ui = makeUi();
         const y = (offset) => 80 + offset;
@@ -27,7 +27,7 @@ describe('uiGameOverSummary', () => {
         expect(elements.length).toBeGreaterThan(2);
         expect(scoreText).toBeTruthy();
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
-        expect(texts).toContain('FIN DE PARTIE');
+        expect(texts).toContain('GAME OVER');
     });
 
     it('affiche la cause de mort quand elle est fournie', () => {

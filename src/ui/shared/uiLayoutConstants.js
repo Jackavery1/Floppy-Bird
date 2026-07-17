@@ -4,7 +4,7 @@ import { DESIGN_TOKENS, hexVersPhaser } from '../../designTokens.js';
 export const MIN_TOUCH = 44;
 /** CTA primaires (démarrer, sauter, rejouer) — recommandation Material 48 px. */
 export const MIN_CTA_TOUCH = 48;
-/** Hit zone SCORES / OPT. / STYLE — hauteur Material 48, largeur visuelle inchangée. */
+/** Hit zone SCORES / OPT. / SKINS — hauteur Material 48, largeur visuelle inchangée. */
 export const MENU_SECONDARY_HIT = MIN_CTA_TOUCH;
 
 /** Grille spacing 4 px — référence layout menu / HUD. */
@@ -17,24 +17,20 @@ export const SPACING = Object.freeze({
     xl: 24,
     touch: MIN_TOUCH,
 });
-/** Taille minimale des hints secondaires (menu, game over, HUD) — alignée panelChrome 13 px. */
-export const FONT_SIZE_HINT = '13px';
-/** Petits badges in-game (mode, objectif). */
-export const FONT_SIZE_BADGE = '13px';
-/** Petits labels compacts (grille skins). */
-export const FONT_SIZE_COMPACT = '13px';
-/** Corps menu dense (toggles, contrôles, scores). */
-export const FONT_SIZE_BODY = '12px';
-/** Micro-labels (previews HUD, médailles, leaderboard). */
-export const FONT_SIZE_SMALL = '11px';
-/** Légendes très compactes (sous-texte défi du jour) — plancher AA mobile. */
-export const FONT_SIZE_TINY = '11px';
-/** Chrome Press Start / toasts / tutoriel pulsant. */
-export const FONT_SIZE_CHROME = '14px';
-/** Bannières HUD moyennes (objectif daily, labels panneau). */
-export const FONT_SIZE_BANNER = '15px';
-/** Bannières emphase (nouveau record). */
-export const FONT_SIZE_EMPHASIS = '16px';
+export {
+    FONT_SIZE_HINT,
+    FONT_SIZE_BADGE,
+    FONT_SIZE_COMPACT,
+    FONT_SIZE_BODY,
+    FONT_SIZE_SMALL,
+    FONT_SIZE_TINY,
+    FONT_SIZE_CHROME,
+    FONT_SIZE_BANNER,
+    FONT_SIZE_EMPHASIS,
+    FONT_SIZE_TITLE,
+    FONT_SIZE_DISPLAY,
+    FONT_SIZE_SCORE,
+} from './fontSizes.js';
 export const PAUSE_BTN_VISUAL = MIN_TOUCH;
 /** Zone tactile du bouton pause (coin HUD) — alignée CTA 48 px. */
 export const PAUSE_BTN_HIT = MIN_CTA_TOUCH;
@@ -46,14 +42,14 @@ export const HUD_SAFE_TOP = 16;
 /** Marge entre le bas du panneau et le bouton RETOUR. */
 export const PANEL_CLOSE_INSET = SPACING.md;
 
-/** @param {number} panelTop @param {number} panelH @param {number} [inset] */
-export function panelCloseBtnY(panelTop, panelH, inset = PANEL_CLOSE_INSET) {
-    return panelTop + panelH - inset - MIN_TOUCH / 2;
+/** @param {number} panelTop @param {number} panelH @param {number} [inset] @param {number} [hit] */
+export function panelCloseBtnY(panelTop, panelH, inset = PANEL_CLOSE_INSET, hit = MIN_TOUCH) {
+    return panelTop + panelH - inset - hit / 2;
 }
 
 /** @param {{ y: number, h: number }} [panel] */
 export function gameOverMenuBtnY(panel = GAME_OVER_PANEL) {
-    return panelCloseBtnY(panel.y, panel.h);
+    return panelCloseBtnY(panel.y, panel.h, PANEL_CLOSE_INSET, MIN_CTA_TOUCH);
 }
 
 /** @param {{ y: number, h: number }} [panel] */
@@ -99,23 +95,23 @@ export const UI_LAYOUT = {
         scoresBtn: 52,
         optionsBtn: 144,
         skinsBtn: 236,
-        /** Largeur visuelle SCORES/OPT./STYLE ; hit hauteur = MENU_SECONDARY_HIT (48). */
+        /** Largeur visuelle SCORES/OPT./SKINS ; hit hauteur = MENU_SECONDARY_HIT (48). */
         menuBtnW: 80,
         hint1: 424,
     },
     optionsPanel: withPanelCloseBtn(
         withOptionsTabs({
-            panelTop: 96,
-            panelH: 388,
-            w: 260,
-            tabRow: 120,
-            controlsTitle: 164,
-            controlsFirst: 200,
-            controlsGap: 24,
-            settingsMute: 188,
-            training: 232,
-            trainingSpeed: 276,
-            hardcore: 320,
+            panelTop: 88,
+            panelH: 400,
+            w: 268,
+            tabRow: 112,
+            controlsTitle: 156,
+            controlsFirst: 190,
+            controlsGap: 23,
+            settingsMute: 180,
+            training: 224,
+            trainingSpeed: 268,
+            hardcore: 312,
         })
     ),
     scoresPanel: withPanelCloseBtn({
@@ -130,22 +126,25 @@ export const UI_LAYOUT = {
         scoresAchievements: 360,
     }),
     skinsPanel: withPanelCloseBtn({
-        panelTop: 100,
-        panelH: 404,
+        panelTop: 80,
+        panelH: 424,
         w: 268,
-        skinsTitle: 138,
-        skinsSubtitle: 158,
-        skinsRow1: 196,
+        skinsTitle: 118,
+        skinsSubtitle: 140,
+        skinsPattern: 164,
+        skinsRow1: 208,
     }),
     pause: { title: 210, resumeBtn: 250, menuBtn: 302 },
     playing: {
         trainingBadgeY: 30,
         hardcoreBadgeY: 44,
         pauseBtnX: GAME_CONFIG.width - PAUSE_BTN_HIT / 2 - PAUSE_BTN_INSET,
-        pauseBtnY: MIN_TOUCH / 2 + HUD_SAFE_TOP,
+        pauseBtnY: PAUSE_BTN_HIT / 2 + HUD_SAFE_TOP,
+        /** Sous la zone jump a11y (96×96 à centerY) — évite le conflit « TAP : passer ». */
+        tutorialSkipY: GAME_CONFIG.centerY + MIN_CTA_TOUCH + MIN_CTA_TOUCH / 2 + SPACING.sm,
     },
     diffBtn: { width: 68, height: MIN_TOUCH, gap: 10, radius: 6, x: [32, 110, 188] },
-    menuBtn: { width: 100, height: MIN_TOUCH, radius: 8 },
+    menuBtn: { width: 100, height: MIN_CTA_TOUCH, radius: 8 },
 };
 
 /** Coordonnées jeu (288×512) pour les tests e2e tactile / pointer. */
@@ -178,6 +177,7 @@ export const TOUCH_TARGETS = Object.freeze({
     pauseButton: { x: UI_LAYOUT.playing.pauseBtnX, y: UI_LAYOUT.playing.pauseBtnY },
     pauseResume: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.resumeBtn },
     pauseMenu: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.pause.menuBtn },
+    tutorialSkip: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.playing.tutorialSkipY },
     gameOverRestart: { x: GAME_CONFIG.centerX, y: gameOverRestartBtnY() },
     gameOverMenu: { x: GAME_CONFIG.centerX, y: gameOverMenuBtnY() },
     scoreHud: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.scoreHud },

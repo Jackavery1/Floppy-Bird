@@ -1,7 +1,15 @@
 import { GAME_CONFIG } from '../../config.js';
 import { DESIGN_TOKENS, menuTextStyle } from '../../designTokens.js';
 import { bestScoreLabel } from '../../scoreLabels.js';
-import { addCenteredText, DEPTH, FONT_SIZE_BADGE, FONT_SIZE_HINT } from '../shared/uiLayout.js';
+import {
+    addCenteredText,
+    DEPTH,
+    FONT_SIZE_BADGE,
+    FONT_SIZE_CHROME,
+    FONT_SIZE_DISPLAY,
+    FONT_SIZE_EMPHASIS,
+    FONT_SIZE_HINT,
+} from '../shared/uiLayout.js';
 
 /**
  * Bloc score et libellés record / daily / skin spécial.
@@ -51,7 +59,7 @@ export function buildGameOverSummaryScore(scene, cx, y, ui, opts) {
         y(102),
         fadeIn ? '0' : String(finalScore),
         menuTextStyle({
-            fontSize: '22px',
+            fontSize: FONT_SIZE_DISPLAY,
             fill: isNewRecord ? DESIGN_TOKENS.accentTitre : DESIGN_TOKENS.texteMenu,
             fontStyle: 'bold',
         }),
@@ -81,7 +89,7 @@ export function buildGameOverSummaryScore(scene, cx, y, ui, opts) {
             y(143),
             isDaily ? (finalScore >= dailyGoal ? '✓ RÉUSSI' : '✗ RATÉ') : String(ui.highScore),
             menuTextStyle({
-                fontSize: isDaily ? '14px' : '16px',
+                fontSize: isDaily ? FONT_SIZE_CHROME : FONT_SIZE_EMPHASIS,
                 fill: isDaily
                     ? finalScore >= dailyGoal
                         ? DESIGN_TOKENS.bannerSuccess

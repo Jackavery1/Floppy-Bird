@@ -35,6 +35,6 @@ export const SKINS_PANEL_CONTROL_KEYS = Object.freeze([
 
 export const GAME_OVER_CONTROL_KEYS = Object.freeze(['gameOverRestart', 'gameOverMenu']);
 
-export const PLAYING_CONTROL_KEYS = Object.freeze(['pause', 'playJump']);
+export const PLAYING_CONTROL_KEYS = Object.freeze(['pause', 'playJump', 'playTutorialSkip']);
 
 export const PAUSE_OVERLAY_CONTROL_KEYS = Object.freeze(['pauseResume', 'pauseMenu']);

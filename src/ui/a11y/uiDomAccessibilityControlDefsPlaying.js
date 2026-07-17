@@ -18,18 +18,26 @@ export const PLAYING_CONTROL_DEFS = Object.freeze({
         width: MIN_CTA_TOUCH * 2,
         height: MIN_CTA_TOUCH * 2,
     },
+    playTutorialSkip: {
+        id: 'a11y-tutorial-skip',
+        label: 'Passer le tutoriel',
+        x: TOUCH_TARGETS.tutorialSkip.x,
+        y: TOUCH_TARGETS.tutorialSkip.y,
+        width: 140,
+        height: MIN_CTA_TOUCH,
+    },
     pauseResume: {
         id: 'a11y-resume',
         label: 'Reprendre la partie',
         x: TOUCH_TARGETS.pauseResume.x,
         y: TOUCH_TARGETS.pauseResume.y,
-        size: 44,
+        size: MIN_CTA_TOUCH,
     },
     pauseMenu: {
         id: 'a11y-menu',
         label: 'Retour au menu',
         x: TOUCH_TARGETS.pauseMenu.x,
         y: TOUCH_TARGETS.pauseMenu.y,
-        size: 44,
+        size: MIN_CTA_TOUCH,
     },
 });

@@ -27,7 +27,7 @@ body.offline-shell p {
 }
 
 body.offline-shell a {
-    color: #ffe066;
+    color: var(--couleur-accent);
     font-weight: bold;
     display: inline-flex;
     align-items: center;
@@ -35,6 +35,10 @@ body.offline-shell a {
     min-height: 48px;
     min-width: 48px;
     padding: 12px 16px;
+}
+
+body.offline-shell a:hover {
+    filter: brightness(1.08);
 }
 
 body.offline-shell a:focus-visible {

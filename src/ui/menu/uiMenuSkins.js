@@ -57,7 +57,7 @@ export function buildSkinsTab(ui, elements, panelElements) {
         panel.skinsTitle,
         'APPARENCE',
         panelChromeTextStyle({
-            fontSize: '13px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.texteChargement,
             fontStyle: 'bold',
             stroke: DESIGN_TOKENS.contourSkins,
@@ -83,9 +83,9 @@ export function buildSkinsTab(ui, elements, panelElements) {
     ui._skinsPatternLine = addCenteredText(
         scene,
         GAME_CONFIG.centerX,
-        panel.skinsSubtitle + 18,
+        panel.skinsPattern,
         '',
-        menuHomeTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.badgeDailySecondary }),
+        menuHomeTextStyle({ fontSize: FONT_SIZE_COMPACT, fill: DESIGN_TOKENS.texteHintMenu }),
         DEPTH.PANEL_FRAME
     );
     panelElements.push(ui._skinsPatternLine);

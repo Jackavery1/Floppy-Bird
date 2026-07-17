@@ -57,7 +57,7 @@ describe('device', () => {
 
     it('pauseResumeHint clavier', async () => {
         const { pauseResumeHint } = await loadDevice(false);
-        expect(pauseResumeHint()).toBe('ESC : reprendre');
+        expect(pauseResumeHint()).toBe('ESPACE / ESC : reprendre');
     });
 
     it('menuHint adapte le libellé', async () => {
@@ -70,7 +70,7 @@ describe('device', () => {
     it('firstRunMenuHintText adapte le libellé', async () => {
         const { firstRunMenuHintText } = await loadDevice(true);
         expect(firstRunMenuHintText()).toMatch(/TAP/);
-        expect(firstRunMenuHintText()).toMatch(/STYLE/);
+        expect(firstRunMenuHintText()).toMatch(/SKINS/);
         const { firstRunMenuHintText: fine } = await loadDevice(false);
         expect(fine()).toMatch(/ESPACE/);
         expect(fine()).toMatch(/S \/ O \/ K/);
@@ -121,13 +121,30 @@ describe('device', () => {
         expect(coarse.gapTutorialText()).toMatch(/sol reste mortel/i);
     });
 
+    it('optionsAccessibilityLabel mentionne la touche O', async () => {
+        const coarse = await loadDevice(true);
+        expect(coarse.optionsAccessibilityLabel()).toBe('Options');
+        const fine = await loadDevice(false);
+        expect(fine.optionsAccessibilityLabel()).toBe('Options — touche O');
+    });
+
+    it('trainingSpeedLabel n’affiche pas de hint tap au clavier', async () => {
+        const { trainingSpeedLabel } = await loadDevice(false);
+        expect(trainingSpeedLabel(0.8)).toBe('VITESSE ENTRAÎNEMENT : 80 %');
+        expect(trainingSpeedLabel(0.8)).not.toMatch(/tap/i);
+    });
+
     it('optionsControlRows liste les commandes du jeu', async () => {
         const { optionsControlRows } = await loadDevice(false);
         const rows = optionsControlRows();
         expect(rows.some((r) => r.key === 'ESPACE' && r.action === 'sauter')).toBe(true);
+        expect(rows.some((r) => r.key === 'P' && r.action === 'passer le tutoriel')).toBe(true);
+        expect(rows.some((r) => r.key === 'ESC·ESP' && r.action === 'pause / reprendre')).toBe(
+            true
+        );
         expect(rows.some((r) => r.key === 'D' && r.action === 'défi du jour')).toBe(true);
         expect(rows.some((r) => r.key === 'T' && r.action === 'entraînement')).toBe(true);
-        expect(rows.some((r) => r.key === 'S·O·K' && r.action === 'scores · options · style')).toBe(
+        expect(rows.some((r) => r.key === 'S·O·K' && r.action === 'scores · options · skins')).toBe(
             true
         );
     });
@@ -136,8 +153,9 @@ describe('device', () => {
         const { optionsControlRows } = await loadDevice(true);
         const rows = optionsControlRows();
         expect(rows.some((r) => r.key === 'TAP' && r.action === 'sauter')).toBe(true);
+        expect(rows.some((r) => r.key === 'PAUSE' && r.action === 'mettre en pause')).toBe(true);
         expect(rows.some((r) => r.key === 'ENTR.' && r.action === 'entraînement')).toBe(true);
-        expect(rows.some((r) => r.key === '···' && r.action === 'scores · style · options')).toBe(
+        expect(rows.some((r) => r.key === '···' && r.action === 'scores · skins · options')).toBe(
             true
         );
     });

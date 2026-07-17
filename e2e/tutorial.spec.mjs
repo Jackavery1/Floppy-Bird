@@ -52,6 +52,21 @@ test.describe('tutoriel première partie', () => {
         expect(tutorial?.complete).toBe(false);
     });
 
+    test('skip tutoriel via a11y hors zone jump (mobile)', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        await startPlayingFromMenu(page, usesTouch);
+        await expect(page.locator('#a11y-tutorial-skip')).toBeVisible({ timeout: 5_000 });
+        const skipBox = await page.locator('#a11y-tutorial-skip').boundingBox();
+        const jumpBox = await page.locator('#a11y-jump').boundingBox();
+        expect(skipBox).toBeTruthy();
+        expect(jumpBox).toBeTruthy();
+        expect(skipBox.y).toBeGreaterThanOrEqual(jumpBox.y + jumpBox.height - 1);
+        await page.locator('#a11y-tutorial-skip').tap({ force: true });
+        await expect.poll(async () => (await getTutorialState(page))?.complete).toBe(true);
+    });
+
     test('première mort enregistre earlyDeath sur profil vierge', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);

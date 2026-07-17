@@ -13,7 +13,7 @@ import {
     gameOverMenuBtnY,
     gameOverRestartBtnY,
     MIN_CTA_TOUCH,
-    MIN_TOUCH,
+    UI_LAYOUT,
 } from '../shared/uiLayout.js';
 import { acquireHudBannerSlot, destroyHudBanner } from './uiHudBannerStack.js';
 
@@ -143,7 +143,13 @@ export function showGameOverLoading(ui) {
         MIN_CTA_TOUCH,
         8
     );
-    skeleton.fillRoundedRect(cx - 60, gameOverMenuBtnY(P) - MIN_TOUCH / 2, 120, MIN_TOUCH, 8);
+    skeleton.fillRoundedRect(
+        cx - UI_LAYOUT.menuBtn.width / 2,
+        gameOverMenuBtnY(P) - MIN_CTA_TOUCH / 2,
+        UI_LAYOUT.menuBtn.width,
+        MIN_CTA_TOUCH,
+        UI_LAYOUT.menuBtn.radius
+    );
     ui._gameOverLoadingSkeleton = skeleton;
 
     ui._gameOverLoadingText = addCenteredText(

@@ -8,7 +8,13 @@ import {
 import { loadHighScore } from '../../storage.js';
 import { loadUnlockedAchievements } from '../../metaStorage.js';
 import { ACHIEVEMENTS } from '../../achievements.js';
-import { addCenteredText, DEPTH, FONT_SIZE_BODY, UI_LAYOUT } from '../shared/uiLayout.js';
+import {
+    addCenteredText,
+    DEPTH,
+    FONT_SIZE_BODY,
+    FONT_SIZE_HINT,
+    UI_LAYOUT,
+} from '../shared/uiLayout.js';
 import { buildMenuToggleButton } from './uiMenuPanel.js';
 
 const SCORES_BTN_COLOR = hexVersPhaser(DESIGN_TOKENS.boutonScores);
@@ -39,7 +45,7 @@ export function buildScoresTab(ui, elements, panelElements) {
         panel.scoresTitle,
         'MEILLEURS SCORES',
         panelChromeTextStyle({
-            fontSize: '13px',
+            fontSize: FONT_SIZE_HINT,
             fill: DESIGN_TOKENS.accentTitre,
             fontStyle: 'bold',
             stroke: DESIGN_TOKENS.accentTitreContour,

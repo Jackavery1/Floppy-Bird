@@ -89,15 +89,23 @@ export function returnToMenu(scene) {
 
 /** @param {SceneContext} scene */
 export function togglePause(scene) {
-    if (scene.state === GAME_STATE.PLAYING) {
-        enterPauseOverlay(scene, {
-            onResume: () => {
-                if (scene.state === GAME_STATE.PAUSED) togglePause(scene);
-            },
-            onMenu: () => returnToMenu(scene),
+    if (scene._pauseToggleLock) return;
+    scene._pauseToggleLock = true;
+    try {
+        if (scene.state === GAME_STATE.PLAYING) {
+            enterPauseOverlay(scene, {
+                onResume: () => {
+                    if (scene.state === GAME_STATE.PAUSED) togglePause(scene);
+                },
+                onMenu: () => returnToMenu(scene),
+            });
+        } else if (scene.state === GAME_STATE.PAUSED) {
+            resumeFromPauseOverlay(scene);
+        }
+    } finally {
+        queueMicrotask(() => {
+            scene._pauseToggleLock = false;
         });
-    } else if (scene.state === GAME_STATE.PAUSED) {
-        resumeFromPauseOverlay(scene);
     }
 }
 

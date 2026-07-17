@@ -108,14 +108,14 @@ describe('viewport', () => {
         vi.unstubAllGlobals();
     });
 
-    it('getLetterboxViewport ajoute les safe-area au offset quand le body est prêt', () => {
+    it('getLetterboxViewport retranche le padding client (safe-area) quand le body est prêt', () => {
         vi.stubGlobal('window', {
             innerWidth: 390,
             innerHeight: 844,
             visualViewport: { width: 390, height: 844, offsetTop: 0, offsetLeft: 0, scale: 1 },
         });
         vi.stubGlobal('document', {
-            body: { clientWidth: 390, clientHeight: 766 },
+            body: { clientWidth: 390, clientHeight: 844 },
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '44px',
@@ -130,6 +130,50 @@ describe('viewport', () => {
             offsetLeft: 0,
             scale: 1,
         });
+        vi.unstubAllGlobals();
+    });
+
+    it('getLetterboxViewport respecte les insets sur les quatre côtés', () => {
+        vi.stubGlobal('window', {
+            innerWidth: 390,
+            innerHeight: 844,
+            visualViewport: { width: 390, height: 844, offsetTop: 0, offsetLeft: 0, scale: 1 },
+        });
+        vi.stubGlobal('document', {
+            body: { clientWidth: 390, clientHeight: 844 },
+        });
+        vi.stubGlobal('getComputedStyle', () => ({
+            paddingTop: '44px',
+            paddingRight: '20px',
+            paddingBottom: '34px',
+            paddingLeft: '16px',
+        }));
+        const vp = getLetterboxViewport();
+        expect(vp).toEqual({
+            width: 354,
+            height: 766,
+            offsetTop: 44,
+            offsetLeft: 16,
+            scale: 1,
+        });
+        const { width: targetW, height: targetH } = computeLetterboxSize(
+            vp.width,
+            vp.height,
+            288,
+            512
+        );
+        const { left, top } = computeLetterboxPosition(
+            vp.width,
+            vp.height,
+            targetW,
+            targetH,
+            vp.offsetTop,
+            vp.offsetLeft
+        );
+        expect(left).toBeGreaterThanOrEqual(16 - 1);
+        expect(top).toBeGreaterThanOrEqual(44 - 1);
+        expect(left + targetW).toBeLessThanOrEqual(390 - 20 + 1);
+        expect(top + targetH).toBeLessThanOrEqual(844 - 34 + 1);
         vi.unstubAllGlobals();
     });
 

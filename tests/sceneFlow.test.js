@@ -138,7 +138,7 @@ describe('sceneFlow', () => {
         expect(scene.state).toBe(GAME_STATE.PLAYING);
     });
 
-    it('togglePause bascule PLAYING ↔ PAUSED', () => {
+    it('togglePause bascule PLAYING ↔ PAUSED', async () => {
         const scene = makeScene(GAME_STATE.PLAYING);
         scene.togglePause = function () {
             togglePause(this);
@@ -146,9 +146,18 @@ describe('sceneFlow', () => {
         togglePause(scene);
         expect(scene.state).toBe(GAME_STATE.PAUSED);
         expect(scene.time.paused).toBe(true);
+        await Promise.resolve();
         togglePause(scene);
         expect(scene.state).toBe(GAME_STATE.PLAYING);
         expect(scene.time.paused).toBe(false);
+    });
+
+    it('togglePause ignore un second appel synchrone (anti double-tap)', () => {
+        const scene = makeScene(GAME_STATE.PLAYING);
+        togglePause(scene);
+        togglePause(scene);
+        expect(scene.state).toBe(GAME_STATE.PAUSED);
+        expect(scene.time.paused).toBe(true);
     });
 
     it('handlePrimaryAction reprend la pause sans sauter', () => {

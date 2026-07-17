@@ -35,6 +35,11 @@ describe('shellTokenSync', () => {
         expect(SHELL_HIGH_CONTRAST_CSS_VARS['--couleur-texte-chargement']).toBe('#bbdefb');
     });
 
+    it('expose les variables d’alerte shell AA', () => {
+        expect(SHELL_TOKEN_CSS_FALLBACKS['--couleur-alerte']).toBe('#C62828');
+        expect(SHELL_TOKEN_CSS_FALLBACKS['--couleur-alerte-texte']).toBe('#ffffff');
+    });
+
     it('sync:tokens:check — shell-tokens.css à jour', () => {
         const cssPath = resolve(process.cwd(), 'public/shell-tokens.css');
         const parsed = parseShellTokensCss(readFileSync(cssPath, 'utf8'));

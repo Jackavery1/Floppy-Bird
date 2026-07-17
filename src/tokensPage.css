@@ -272,7 +272,7 @@
 }
 
 .tokens-ui-card--gameover .tokens-ui-preview::after {
-    content: 'FIN DE PARTIE';
+    content: 'GAME OVER';
     position: absolute;
     top: 28%;
     left: 50%;

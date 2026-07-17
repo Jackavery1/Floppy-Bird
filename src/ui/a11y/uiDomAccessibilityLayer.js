@@ -46,6 +46,9 @@ export function initAccessibilityLayer(doc = getDocument()) {
             event.stopPropagation();
             handlers[def.id]?.();
         });
+        btn.addEventListener('pointerdown', (event) => {
+            event.stopPropagation();
+        });
         btn.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();

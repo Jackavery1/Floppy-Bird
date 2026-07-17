@@ -127,6 +127,18 @@ describe('designTokens', () => {
         );
     });
 
+    it('texteGameOver atteint AA sur fond panneau game over', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.texteGameOver, DESIGN_TOKENS.fondPanneauGameOver)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it('alerte shell atteint AA (texte sur fond rouge)', () => {
+        expect(
+            contrastRatio(DESIGN_TOKENS.alerteErreurTexte, DESIGN_TOKENS.alerteErreurFond)
+        ).toBeGreaterThanOrEqual(4.5);
+    });
+
     it('texteHintFaible reste lisible sur fond panneau game over', () => {
         expect(
             contrastRatio(DESIGN_TOKENS.texteHintFaible, DESIGN_TOKENS.fondPanneauGameOver)

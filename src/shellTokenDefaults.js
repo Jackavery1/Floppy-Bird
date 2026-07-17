@@ -7,6 +7,8 @@ export const SHELL_TOKEN_CSS_FALLBACKS = Object.freeze({
     '--couleur-texte-chargement': DESIGN_TOKENS.texteChargement,
     '--couleur-texte-hint': DESIGN_TOKENS.texteHint,
     '--couleur-accent': DESIGN_TOKENS.accent,
+    '--couleur-alerte': DESIGN_TOKENS.alerteErreurFond,
+    '--couleur-alerte-texte': DESIGN_TOKENS.alerteErreurTexte,
     '--police-interface': DESIGN_TOKENS.policeInterface,
     '--police-titre': DESIGN_TOKENS.policeTitre,
     '--spacing-xs': `${SPACING.xs}px`,
@@ -18,7 +20,7 @@ export const SHELL_TOKEN_CSS_FALLBACKS = Object.freeze({
 
 /** Overrides `prefers-contrast: more` — alignés avec shellTheme.js */
 export const SHELL_HIGH_CONTRAST_CSS_VARS = Object.freeze({
-    '--couleur-texte-chargement': '#bbdefb',
+    '--couleur-texte-chargement': DESIGN_TOKENS.texteChargementContraste,
     '--couleur-texte-hint': DESIGN_TOKENS.texteHint,
-    '--couleur-accent': '#ffeb3b',
+    '--couleur-accent': DESIGN_TOKENS.accentHover,
 });

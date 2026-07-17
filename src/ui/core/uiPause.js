@@ -16,9 +16,11 @@ import {
     addCenteredText,
     DEPTH,
     FONT_SIZE_HINT,
+    FONT_SIZE_TITLE,
     FONT_TITLE,
     MENU_BTN_COLOR,
     MENU_BTN_HOVER,
+    MIN_CTA_TOUCH,
     UI_LAYOUT,
 } from '../shared/uiLayout.js';
 
@@ -34,13 +36,17 @@ function buildPauseActionButton(scene, elements, { cy, label, focusKey, onAction
         cx: GAME_CONFIG.centerX,
         cy,
         width: UI_LAYOUT.menuBtn.width,
+        height: MIN_CTA_TOUCH,
         depth: DEPTH.PAUSE_BTN,
         color: MENU_BTN_COLOR,
         stroke: PAUSE_BTN_STROKE,
         hoverColor: MENU_BTN_HOVER,
         labelText: label,
         labelStroke: DESIGN_TOKENS.contourMenu,
-        labelStyle: panelChromeTextStyle({ fontSize: '13px', fill: DESIGN_TOKENS.texteMenu }),
+        labelStyle: panelChromeTextStyle({
+            fontSize: FONT_SIZE_HINT,
+            fill: DESIGN_TOKENS.texteMenu,
+        }),
         focusKey,
         onToggle: onAction,
     });
@@ -58,7 +64,7 @@ export function showPause(ui, { onResume, onMenu }) {
         'PAUSE',
         menuTextStyle({
             fontFamily: FONT_TITLE,
-            fontSize: '18px',
+            fontSize: FONT_SIZE_TITLE,
             fill: DESIGN_TOKENS.texteMenu,
             fontStyle: 'normal',
         }),

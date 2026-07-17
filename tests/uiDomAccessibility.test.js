@@ -51,6 +51,7 @@ describe('uiDomAccessibility', () => {
 
     it('initAccessibilityLayer crée la couche et l’announcer', () => {
         const stored = {};
+        const listeners = [];
         vi.stubGlobal('document', {
             getElementById: vi.fn((id) => stored[id] ?? null),
             createElement: vi.fn((tag) => ({
@@ -63,9 +64,12 @@ describe('uiDomAccessibility', () => {
                 setAttribute: vi.fn(function (name, value) {
                     if (name === 'id') this.id = value;
                 }),
-                addEventListener: vi.fn(),
+                addEventListener: vi.fn(function (type, fn) {
+                    listeners.push({ id: this.id, type, fn });
+                }),
                 appendChild: vi.fn(function (child) {
                     this.children.push(child);
+                    if (child.id) stored[child.id] = child;
                 }),
             })),
             body: {
@@ -79,6 +83,11 @@ describe('uiDomAccessibility', () => {
 
         expect(stored['a11y-controls']?.children.length).toBe(CONTROL_COUNT);
         expect(stored['ui-announcer']).toBeTruthy();
+        const pointerStops = listeners.filter((l) => l.type === 'pointerdown');
+        expect(pointerStops.length).toBe(CONTROL_COUNT);
+        const evt = { stopPropagation: vi.fn() };
+        pointerStops[0].fn(evt);
+        expect(evt.stopPropagation).toHaveBeenCalled();
     });
 
     it('setupMenuAccessibility active les contrôles menu et difficulté', () => {

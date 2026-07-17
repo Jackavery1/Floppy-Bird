@@ -52,7 +52,7 @@ describe('appBootstrap', () => {
         vi.stubGlobal('document', {
             body: {
                 clientWidth: 390,
-                clientHeight: 766,
+                clientHeight: 844,
                 style: { paddingTop: '44px', paddingBottom: '34px' },
             },
         });
@@ -73,6 +73,7 @@ describe('appBootstrap', () => {
             GAME_CONFIG.height
         ).height;
         expect(result.targetH).toBe(expectedH);
+        expect(result.offsetTop).toBe(44);
     });
 
     it('resizeGameCanvas réduit le letterbox quand visualViewport rétrécit (clavier)', async () => {

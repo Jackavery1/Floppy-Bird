@@ -27,7 +27,7 @@ describe('GAME_CONFIG.round', () => {
     });
 
     it('bufferise les sauts sur plusieurs frames', () => {
-        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(3);
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(6);
     });
 
     it('hardcore : marge post-invincibilité avant premier tuyau', () => {

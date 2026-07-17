@@ -18,8 +18,9 @@ const LIST_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonOptionsStroke);
 function keyBadgeWidth(key) {
     const compact = key.replace(/\s/g, '');
     if (compact.length <= 2) return 36;
-    if (compact.length <= 4) return 48;
-    return Math.min(68, compact.length * 9 + 14);
+    if (compact.length <= 4) return 52;
+    if (compact.length <= 7) return 76;
+    return Math.min(118, compact.length * 8 + 22);
 }
 
 /**
@@ -59,6 +60,11 @@ export function buildControlsSection(ui, _elements) {
     const firstY = panel.controlsFirst;
     const listTop = firstY - rowGap / 2 - 6;
     const listH = rows.length * rowGap + 10;
+    const listLeft = GAME_CONFIG.centerX - panel.w / 2 + 14;
+    const listW = panel.w - 28;
+    const badgeSlotW = 118;
+    const keyColX = listLeft + 10 + badgeSlotW / 2;
+    const actionColX = listLeft + 14 + badgeSlotW;
 
     const title = addCenteredText(
         scene,
@@ -86,15 +92,11 @@ export function buildControlsSection(ui, _elements) {
     add(titleRule);
 
     const listBg = scene.add.graphics();
-    const bgX = GAME_CONFIG.centerX - panel.w / 2 + 14;
     listBg.fillStyle(BADGE_FILL, 0.2);
-    listBg.fillRoundedRect(bgX, listTop, panel.w - 28, listH, 8);
+    listBg.fillRoundedRect(listLeft, listTop, listW, listH, 8);
     listBg.lineStyle(1, LIST_STROKE, 0.32);
-    listBg.strokeRoundedRect(bgX, listTop, panel.w - 28, listH, 8);
+    listBg.strokeRoundedRect(listLeft, listTop, listW, listH, 8);
     add(listBg);
-
-    const keyColX = GAME_CONFIG.centerX - 72;
-    const actionColX = GAME_CONFIG.centerX - 38;
 
     rows.forEach((row, index) => {
         const y = firstY + index * rowGap;

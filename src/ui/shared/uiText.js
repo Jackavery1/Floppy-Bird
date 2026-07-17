@@ -1,6 +1,12 @@
 import { GAME_CONFIG } from '../../config.js';
 import { DESIGN_TOKENS } from '../../designTokens.js';
-import { FONT, FONT_TITLE, PANEL_TEXT_MAX_WIDTH, TITLE_MAX_WIDTH } from './uiLayoutConstants.js';
+import {
+    FONT,
+    FONT_SIZE_DISPLAY,
+    FONT_TITLE,
+    PANEL_TEXT_MAX_WIDTH,
+    TITLE_MAX_WIDTH,
+} from './uiLayoutConstants.js';
 
 export function addCenteredText(scene, x, y, text, style, depth) {
     const label = scene.add.text(x, y, text, { fontFamily: FONT, ...style });
@@ -69,7 +75,7 @@ export function fitTitleFontSize(scene, text, maxWidth = TITLE_MAX_WIDTH) {
         text,
         {
             fontFamily: FONT_TITLE,
-            fontSize: '22px',
+            fontSize: FONT_SIZE_DISPLAY,
             fontStyle: 'normal',
             stroke: DESIGN_TOKENS.accentTitreContour,
             strokeThickness: 3,

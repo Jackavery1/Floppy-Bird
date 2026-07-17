@@ -4,6 +4,8 @@
     --couleur-texte-chargement: #90caf9;
     --couleur-texte-hint: #ffffff;
     --couleur-accent: #fdd835;
+    --couleur-alerte: #C62828;
+    --couleur-alerte-texte: #ffffff;
     --police-interface: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --police-titre: "Press Start 2P", "Courier New", monospace;
     --spacing-xs: 4px;

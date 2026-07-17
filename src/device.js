@@ -25,7 +25,7 @@ export function restartHintForMode(isDaily) {
 }
 
 export function pauseResumeHint() {
-    return isCoarsePointer() ? 'TAP : reprendre' : 'ESC : reprendre';
+    return isCoarsePointer() ? 'TAP : reprendre' : 'ESPACE / ESC : reprendre';
 }
 
 export function menuHint() {
@@ -34,7 +34,7 @@ export function menuHint() {
 
 export function firstRunMenuHintText() {
     return isCoarsePointer()
-        ? 'Première partie : TAP pour démarrer · SCORES / OPT. / STYLE en bas'
+        ? 'Première partie : TAP pour démarrer · SCORES / OPT. / SKINS en bas'
         : 'Première partie : ESPACE pour démarrer · S / O / K panneaux';
 }
 
@@ -87,12 +87,14 @@ export function optionsControlRows() {
     if (isCoarsePointer()) {
         return [
             { key: 'TAP', action: 'sauter' },
+            { key: 'PAUSE', action: 'mettre en pause' },
+            { key: 'PASSER', action: 'passer le tutoriel' },
             { key: 'DÉFI', action: 'défi du jour' },
             { key: '1·2·3', action: 'difficulté' },
             { key: 'ENTR.', action: 'entraînement' },
             { key: 'VIT.', action: 'vitesse entraînement' },
             { key: 'HC', action: 'hardcore' },
-            { key: '···', action: 'scores · style · options' },
+            { key: '···', action: 'scores · skins · options' },
         ];
     }
     return [
@@ -101,9 +103,10 @@ export function optionsControlRows() {
         { key: '1·2·3', action: 'difficulté' },
         { key: 'T', action: 'entraînement' },
         { key: 'H', action: 'hardcore' },
-        { key: 'ESC', action: 'pause / retour' },
+        { key: 'P', action: 'passer le tutoriel' },
+        { key: 'ESC·ESP', action: 'pause / reprendre' },
         { key: 'M', action: 'menu' },
-        { key: 'S·O·K', action: 'scores · options · style' },
+        { key: 'S·O·K', action: 'scores · options · skins' },
     ];
 }
 
@@ -112,7 +115,7 @@ export function optionsButtonLabel(_open) {
 }
 
 export function optionsAccessibilityLabel() {
-    return isCoarsePointer() ? 'Options' : 'Options — touche S ou O';
+    return isCoarsePointer() ? 'Options' : 'Options — touche O';
 }
 
 export function scoresButtonLabel(_open) {
@@ -120,7 +123,7 @@ export function scoresButtonLabel(_open) {
 }
 
 export function skinsButtonLabel(_open) {
-    return 'STYLE';
+    return 'SKINS';
 }
 
 export function gameOverRestartLabel(_isDaily) {
@@ -149,9 +152,7 @@ export function scoreTutorialText() {
 
 export function trainingSpeedLabel(scale) {
     const pct = Math.round(scale * 100);
-    return isCoarsePointer()
-        ? `Vitesse entraîn. : ${pct} %`
-        : `VITESSE ENTRAÎNEMENT : ${pct} % (tap)`;
+    return isCoarsePointer() ? `Vitesse entraîn. : ${pct} %` : `VITESSE ENTRAÎNEMENT : ${pct} %`;
 }
 
 export function trainingTutorialText(scale = GAME_CONFIG.training.timeScale) {

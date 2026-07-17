@@ -46,7 +46,7 @@ describe('uiLayout', () => {
         expect(PAUSE_BTN_VISUAL).toBe(MIN_TOUCH);
         expect(MIN_CTA_TOUCH).toBe(48);
         expect(GAME_OVER_RESTART_BTN_HEIGHT).toBe(MIN_CTA_TOUCH);
-        expect(UI_LAYOUT.menuBtn.height).toBe(MIN_TOUCH);
+        expect(UI_LAYOUT.menuBtn.height).toBe(MIN_CTA_TOUCH);
         expect(UI_LAYOUT.menu.menuBtnW).toBeGreaterThanOrEqual(MIN_TOUCH);
         expect(UI_LAYOUT.diffBtn.height).toBe(MIN_TOUCH);
     });

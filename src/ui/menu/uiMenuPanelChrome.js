@@ -63,6 +63,7 @@ export function buildStyledPanelBackdrop(scene, panel, theme) {
  * @param {import('phaser').GameObjects.GameObject[]} elements
  * @param {{
  *   cx: number, cy: number, width: number, depth: number,
+ *   height?: number,
  *   color: number, stroke: number, hoverColor?: number,
  *   labelText: string, labelStroke: string,
  *   labelStyle?: Phaser.Types.GameObjects.Text.TextStyle,
@@ -72,7 +73,7 @@ export function buildStyledPanelBackdrop(scene, panel, theme) {
  */
 export function buildPanelPillButton(scene, elements, cfg) {
     const touchW = Math.max(cfg.width, MIN_TOUCH);
-    const h = MIN_TOUCH;
+    const h = Math.max(cfg.height ?? MIN_TOUCH, MIN_TOUCH);
     const bg = scene.add.graphics().setDepth(cfg.depth);
     const hoverColor = cfg.hoverColor ?? hexVersPhaser(DESIGN_TOKENS.boutonMenuHover);
 

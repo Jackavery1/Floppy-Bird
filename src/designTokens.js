@@ -13,6 +13,7 @@
  * | Chargement shell  | 14–16 px | policeInterface     | CSS `#loading`         |
  */
 import { getBackgroundPeriod } from './backgroundPeriod.js';
+import { FONT_SIZE_CHROME, FONT_SIZE_HINT } from './ui/shared/fontSizes.js';
 
 export const DESIGN_TOKENS = Object.freeze({
     fondNuit: '#1a1a2e',
@@ -60,8 +61,14 @@ export const DESIGN_TOKENS = Object.freeze({
     accentScoreHardcore: '#FFAB91',
     contourOptions: '#0D47A1',
     contourSkins: '#004D40',
-    texteGameOver: '#FF1744',
+    /** Titre GAME OVER — AA ≥4,5:1 sur fondPanneauGameOver. */
+    texteGameOver: '#FF5252',
     contourGameOver: '#8B0000',
+    /** Bannière shell file:// / erreurs critiques (texte blanc dessus). */
+    alerteErreurFond: '#C62828',
+    alerteErreurTexte: '#ffffff',
+    /** Chargement shell sous `prefers-contrast: more` (fond nuit). */
+    texteChargementContraste: '#bbdefb',
     texteMuted: '#cccccc',
     texteHintFaible: '#aaaaaa',
     accentLeaderboardNew: '#ffff00',
@@ -173,7 +180,7 @@ export function menuTextStyle(overrides = {}) {
 export function panelChromeTextStyle(overrides = {}) {
     return menuTextStyle({
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '14px',
+        fontSize: FONT_SIZE_CHROME,
         ...overrides,
     });
 }
@@ -182,7 +189,7 @@ export function panelChromeTextStyle(overrides = {}) {
 export function yellowChromeButtonTextStyle(overrides = {}) {
     return {
         fontFamily: DESIGN_TOKENS.policeTitre,
-        fontSize: '14px',
+        fontSize: FONT_SIZE_CHROME,
         fill: DESIGN_TOKENS.texteBoutonJaune,
         fontStyle: 'bold',
         ...overrides,
@@ -192,7 +199,7 @@ export function yellowChromeButtonTextStyle(overrides = {}) {
 /** Texte lisible de l'écran d'accueil (hors titre du jeu). */
 export function menuHomeTextStyle(overrides = {}) {
     return hudTextStyle({
-        fontSize: '13px',
+        fontSize: FONT_SIZE_HINT,
         fill: DESIGN_TOKENS.texteMenu,
         fontStyle: 'bold',
         ...overrides,

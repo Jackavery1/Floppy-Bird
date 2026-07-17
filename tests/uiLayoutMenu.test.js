@@ -30,12 +30,14 @@ describe('uiLayout menu', () => {
             GAME_CONFIG.height - 8
         );
         expect(optionsPanel.closeBtn + MIN_TOUCH / 2).toBeLessThanOrEqual(GAME_CONFIG.height - 4);
-        const lastControlY = optionsPanel.controlsFirst + 7 * optionsPanel.controlsGap;
-        expect(lastControlY).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        const lastControlY = optionsPanel.controlsFirst + 8 * optionsPanel.controlsGap;
+        expect(lastControlY).toBeLessThanOrEqual(optionsPanel.closeBtn - MIN_TOUCH / 2);
         expect(scoresPanel.scoresAchievements).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(skinsPanel.closeBtn).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
         expect(optionsPanel.hardcore - optionsPanel.training).toBeGreaterThanOrEqual(44);
         expect(skinsPanel.panelTop + skinsPanel.panelH).toBeLessThanOrEqual(GAME_CONFIG.height - 8);
+        expect(skinsPanel.skinsPattern).toBeGreaterThan(skinsPanel.skinsSubtitle);
+        expect(skinsPanel.skinsRow1 - skinsPanel.skinsPattern).toBeGreaterThanOrEqual(36);
     });
 
     it('les zones tactiles du menu ne se chevauchent pas', () => {
@@ -51,7 +53,7 @@ describe('uiLayout menu', () => {
         expect(hintTop).toBeGreaterThanOrEqual(menuRowBottom);
     });
 
-    it('la rangée SCORES · OPT. · STYLE est centrée', () => {
+    it('la rangée SCORES · OPT. · SKINS est centrée', () => {
         const { scoresBtn, optionsBtn, skinsBtn, menuBtnW } = UI_LAYOUT.menu;
         expect(optionsBtn).toBe(GAME_CONFIG.centerX);
         expect(scoresBtn).toBeLessThan(optionsBtn);
@@ -123,7 +125,7 @@ describe('uiLayout menu', () => {
         const bottom = GAME_OVER_PANEL.y + GAME_OVER_PANEL.h;
         const menuY = gameOverMenuBtnY();
         const restartY = gameOverRestartBtnY();
-        expect(menuY + MIN_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
+        expect(menuY + MIN_CTA_TOUCH / 2).toBeLessThanOrEqual(bottom - PANEL_CLOSE_INSET);
         expect(restartY + MIN_CTA_TOUCH / 2).toBeLessThanOrEqual(
             menuY - MIN_CTA_TOUCH / 2 - SPACING.sm
         );
