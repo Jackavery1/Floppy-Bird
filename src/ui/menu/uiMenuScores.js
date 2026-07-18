@@ -5,7 +5,7 @@ import {
     menuHomeTextStyle,
     panelChromeTextStyle,
 } from '../../designTokens.js';
-import { loadHighScore } from '../../storage.js';
+import { loadHighScore } from '../../highScores.js';
 import { loadUnlockedAchievements } from '../../metaStorage.js';
 import { ACHIEVEMENTS } from '../../achievements.js';
 import {

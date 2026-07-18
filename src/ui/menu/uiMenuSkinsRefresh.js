@@ -1,6 +1,6 @@
 import { buildMetaContext } from '../../metaContext.js';
 import { loadSelectedSkin } from '../../metaStorage.js';
-import { loadHighScore } from '../../storage.js';
+import { loadHighScore } from '../../highScores.js';
 import { getSkin, listUnlockedSkins, SKIN_IDS } from '../../skins/index.js';
 import { getSkinPattern } from '../../skinPatterns.js';
 import { DESIGN_TOKENS, hexVersPhaser } from '../../designTokens.js';

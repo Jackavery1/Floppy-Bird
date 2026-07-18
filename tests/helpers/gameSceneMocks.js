@@ -46,8 +46,10 @@ vi.mock('../../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
 }));
 
-vi.mock('../../src/storage.js', () => ({
+vi.mock('../../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 0),
+    loadBestScoreAny: vi.fn(() => 0),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 vi.mock('../../src/sceneBackground.js', () => ({

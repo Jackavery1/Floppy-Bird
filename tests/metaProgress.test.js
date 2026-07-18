@@ -4,8 +4,10 @@ import { evaluateAchievements } from '../src/metaProgress.js';
 import { loadMeta, unlockAchievement } from '../src/metaStorage.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 0),
+    loadBestScoreAny: vi.fn(() => 0),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 const store = new Map();

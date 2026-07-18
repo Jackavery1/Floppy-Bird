@@ -52,6 +52,7 @@ src/
 ├── roundScore.js              # Calcul du score
 ├── metaProgress.js            # Progression meta (records, etc)
 ├── storage.js                 # LocalStorage API
+├── highScores.js              # API domaine records (UI/scène → pas d’I/O direct)
 ├── hardcoreUnlock.js          # Logique déverrouillage hardcore
 │
 ├── UI (`src/ui/`)
@@ -73,7 +74,7 @@ src/
     ├── public/shell-tokens.css  # Variables CSS shell (style.css + offline.html)
     ├── public/offline-page.css  # Styles page fallback offline
     ├── src/pwaInstall.js        # CTA « Installer l’appli » (beforeinstallprompt)
-    └── (VitePWA : `globPatterns` + `globIgnores` tokens ; police jeu `@fontsource` latin → assets/ + `public/fonts/` offline)
+    └── (VitePWA : `globPatterns` + `globIgnores` tokens ; police jeu → `public/fonts/` partagée jeu + offline)
     └── (prod : `copy-phaser.mjs` + SRI sha384 ; CSP `script-src 'self'` via `public/boot-*.js` ;
          `style-src 'unsafe-inline'` conservé pour CSSOM `element.style` — shellTheme / a11y / letterbox)
 
@@ -130,15 +131,15 @@ uiIndex.js → ui/core/ui.js (façade SceneContext)
 
 #### Contrat façade `UI` (`ui/core/ui.js`)
 
-| Règle              | Détail                                                                                   |
-| ------------------ | ---------------------------------------------------------------------------------------- |
-| **Import**         | `import { UI } from './uiIndex.js'` en prod ; `ui/core/ui.js` réservé aux tests de façade |
-| **Responsabilité** | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js` |
-| **Interdit**       | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`       |
-| **Extension**      | Implémenter sous `src/ui/**`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler |
-| **Délégation**     | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) ; `closeAllMenuPanels` / `prepareMenuRebuild` restent sur la classe (rebuild menu) |
-| **Cycles**         | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                       |
-| **Découpage build**| Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader) |
+| Règle               | Détail                                                                                                                                  |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **Import**          | `import { UI } from './uiIndex.js'` en prod ; `ui/core/ui.js` réservé aux tests de façade                                               |
+| **Responsabilité**  | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js`                                                                   |
+| **Interdit**        | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`                                                      |
+| **Extension**       | Implémenter sous `src/ui/**`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler                                           |
+| **Délégation**      | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) ; `closeAllMenuPanels` / `prepareMenuRebuild` restent sur la classe (rebuild menu) |
+| **Cycles**          | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                                                                   |
+| **Découpage build** | Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader)                                                            |
 
 Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`) pour SCORES / OPT. / SKINS ; **44 px** (`MIN_TOUCH`) pour les autres secondaires ; **48 px** pour les CTA primaires (démarrer, sauter, rejouer, pause). Boutons rangée secondaire **80 px** de large (`menuBtnW`) pour les libellés courts **SCORES / OPT. / SKINS** (`applyFittedLabel` dans `ui/menu/uiMenuPanel.js` et `uiMenuPanelController.js`). Raccourcis clavier desktop : panneau **OPTIONS → onglet CTRL** (`optionsControlRows` dans `device.js`, rendu par `uiMenuOptionsControls.js`).
 
@@ -146,17 +147,17 @@ Cibles tactiles menu : hauteur **48 px** (`MENU_SECONDARY_HIT` / `MIN_CTA_TOUCH`
 
 Modules physiques sous `src/ui/{menu,hud,gameOver,a11y,shared,core}/` ; entrée publique `uiIndex.js` → `ui/core/` (pas de barrels domaine inutilisés).
 
-| Module | Rôle |
-| ------ | ---- |
-| `ui/core/ui.js` / `uiIndex.js` | Façade orchestration ; délégation via `uiFacadeBind.js` |
-| `ui/shared/uiLayout.js` / `uiLayoutConstants.js` | Grille, cibles tactiles, `FONT_SIZE_*`, `TOUCH_TARGETS` |
-| `ui/shared/uiDepth.js` / `uiText.js` | Z-order Phaser, typo et labels adaptatifs |
-| `ui/shared/uiGameOverChrome.js` | Frame + coins plaque (skeleton HUD + panneau GO) |
-| `ui/menu/*` | Menu principal, options, scores, skins, défi du jour |
-| `ui/hud/*` | Score, bannières, tutoriel, toasts |
-| `ui/core/uiPause.js` | Pause in-game (hors HUD) |
-| `ui/gameOver/*` | Panneau game over (lazy via `uiGameOverLoader` → chunk `ui-gameover`) |
-| `ui/a11y/*` | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` |
+| Module                                           | Rôle                                                                   |
+| ------------------------------------------------ | ---------------------------------------------------------------------- |
+| `ui/core/ui.js` / `uiIndex.js`                   | Façade orchestration ; délégation via `uiFacadeBind.js`                |
+| `ui/shared/uiLayout.js` / `uiLayoutConstants.js` | Grille, cibles tactiles, `FONT_SIZE_*`, `TOUCH_TARGETS`                |
+| `ui/shared/uiDepth.js` / `uiText.js`             | Z-order Phaser, typo et labels adaptatifs                              |
+| `ui/shared/uiGameOverChrome.js`                  | Frame + coins plaque (skeleton HUD + panneau GO)                       |
+| `ui/menu/*`                                      | Menu principal, options, scores, skins, défi du jour                   |
+| `ui/hud/*`                                       | Score, bannières, tutoriel, toasts                                     |
+| `ui/core/uiPause.js`                             | Pause in-game (hors HUD)                                               |
+| `ui/gameOver/*`                                  | Panneau game over (lazy via `uiGameOverLoader` → chunk `ui-gameover`)  |
+| `ui/a11y/*`                                      | Overlay DOM clavier / lecteurs d'écran ; `bindUnifiedInteractiveFocus` |
 
 #### Arbre modules `ui*` (vue rapide)
 
@@ -208,12 +209,12 @@ métier : la logique vit dans les modules `scene*`.
 
 Contexte typé passé aux modules `scene*` (bird, pipes, round, ui, modes). Initialisé par `sceneContext.js` avant `create()`.
 
-| Zone | Modules autorisés à muter |
-| ---- | ------------------------- |
-| `state`, `difficulty`, modes | `sceneFlow.js`, `sceneBeginRound.js`, `sceneDeath.js` |
-| `round.*` | `sceneRound.js`, `roundState.js`, `sceneDeath.js`, `sceneBeginRound.js` |
-| `bird`, `pipes`, `ghost` | entités + `sceneBootstrap.js` |
-| `ui` | façade `UI` uniquement — pas de physique ni storage direct |
+| Zone                         | Modules autorisés à muter                                               |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| `state`, `difficulty`, modes | `sceneFlow.js`, `sceneBeginRound.js`, `sceneDeath.js`                   |
+| `round.*`                    | `sceneRound.js`, `roundState.js`, `sceneDeath.js`, `sceneBeginRound.js` |
+| `bird`, `pipes`, `ghost`     | entités + `sceneBootstrap.js`                                           |
+| `ui`                         | façade `UI` uniquement — pas de physique ni storage direct              |
 
 Détail complet des champs : JSDoc `@typedef SceneContext` dans `src/sceneTypes.js`.
 
@@ -329,30 +330,9 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 Commandes : [README.md](README.md). Qualité / mesure bundle : [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## Dépendances
+## Dépendances & standards
 
-| Package         | Version | Rôle            |
-| --------------- | ------- | --------------- |
-| phaser          | ^3.80.1 | Moteur de jeu   |
-| vite            | ^5.4.11 | Build           |
-| vite-plugin-pwa | ^0.21.1 | Génération PWA  |
-| vitest          | ^2.1.6  | Tests unitaires |
-| playwright      | ^1.49.1 | Tests E2E       |
-| eslint          | ^9.17.0 | Lint            |
-| prettier        | ^3.4.2  | Formatage       |
-
-## Standards qualité code
-
-- **ESLint** : 0 errors
-- **Prettier** : format check en CI
-- **Tests / couverture** : voir CI (`npm test`, `npm run test:coverage`)
-
-### Exclusions coverage (justifiées)
-
-Source de vérité : [`AUDIT-EXCLUSIONS.md`](AUDIT-EXCLUSIONS.md) (aligné sur `vite.config.js`).
-
-- **Types** : JSDoc comments
-- **Accessibility** : Lighthouse a11y **≥ 90** (seuil CI)
+Versions et rôles des packages : [package.json](package.json). Lint, format, tests, couverture et exclusions : [CONTRIBUTING.md](CONTRIBUTING.md) et [`AUDIT-EXCLUSIONS.md`](AUDIT-EXCLUSIONS.md). Accessibilité : Lighthouse a11y ≥ 90 (seuil CI).
 
 ---
 

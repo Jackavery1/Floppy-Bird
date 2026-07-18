@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn((diff, hardcore) => {
         if (!hardcore) return { easy: 1, normal: 2, hard: 3 }[diff] ?? 0;
         return { easy: 4, normal: 5, hard: 6 }[diff] ?? 0;
     }),
+    loadBestScoreAny: vi.fn(() => 3),
+    loadBestHardcoreScore: vi.fn(() => 6),
 }));
 
 vi.mock('../src/metaStorage.js', () => ({
@@ -21,7 +23,7 @@ describe('uiMenuScores hardcore par difficulté', () => {
     });
 
     it('affiche une ligne HC par difficulté et refresh les met à jour', async () => {
-        const { loadHighScore } = await import('../src/storage.js');
+        const { loadHighScore } = await import('../src/highScores.js');
         const texts = [];
         const makeLabel = (initial) => {
             const label = {

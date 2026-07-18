@@ -27,8 +27,10 @@ vi.mock('../src/audio.js', () => ({
     isAudioAvailable: vi.fn(() => true),
 }));
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn((difficulty, hardcore) => (hardcore ? 99 : 42)),
+    loadBestScoreAny: vi.fn(() => 42),
+    loadBestHardcoreScore: vi.fn(() => 99),
 }));
 
 describe('uiMenu', () => {

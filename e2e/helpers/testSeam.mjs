@@ -163,15 +163,21 @@ export function holdBirdAtCenter(page) {
     return page.evaluate(() => window.__FLOPPY_TEST__?.holdBirdAtCenter?.());
 }
 
-/** @param {import('@playwright/test').Page} page @param {number} spawnDelayMs @param {number} invincibilityMs */
-export async function keepBirdAliveForPipeSpawn(page, spawnDelayMs, invincibilityMs) {
-    await page.waitForTimeout(invincibilityMs - 50);
-    const remaining = spawnDelayMs - (invincibilityMs - 50) + 600;
-    for (let elapsed = 0; elapsed < remaining; elapsed += 180) {
-        await holdBirdAtCenter(page);
-        await requestJump(page);
-        await page.waitForTimeout(180);
-    }
+/** @param {import('@playwright/test').Page} page @param {number} [deltaMs] */
+export function advancePipeSpawnWait(page, deltaMs) {
+    return page.evaluate((ms) => window.__FLOPPY_TEST__?.advancePipeSpawnWait?.(ms), deltaMs);
+}
+
+/**
+ * Maintient l’oiseau centré et force le 1er spawn via le seam (déterministe, sans wall-clock).
+ * @param {import('@playwright/test').Page} page
+ * @param {number} spawnDelayMs
+ * @param {number} [_invincibilityMs] conservé pour compatibilité des appels existants
+ */
+export async function keepBirdAliveForPipeSpawn(page, spawnDelayMs, _invincibilityMs) {
+    await holdBirdAtCenter(page);
+    await advancePipeSpawnWait(page, spawnDelayMs + 100);
+    await holdBirdAtCenter(page);
 }
 
 /** @param {import('@playwright/test').Page} page */
@@ -203,11 +209,6 @@ export async function waitForNaturalPipeScore(page, timeoutMs = 15_000) {
         await page.waitForTimeout(120);
     }
     return null;
-}
-
-/** @param {import('@playwright/test').Page} page @param {number} [deltaMs] */
-export function advancePipeSpawnWait(page, deltaMs) {
-    return page.evaluate((ms) => window.__FLOPPY_TEST__?.advancePipeSpawnWait?.(ms), deltaMs);
 }
 
 /** @param {import('@playwright/test').Page} page */

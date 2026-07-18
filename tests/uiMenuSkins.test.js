@@ -21,11 +21,13 @@ vi.mock('../src/metaContext.js', () => ({
     })),
 }));
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn((difficulty, hardcore, skinId) => {
         if (skinId === 'cosmos') return 22;
         return 0;
     }),
+    loadBestScoreAny: vi.fn(() => 0),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 vi.mock('../src/metaStorage.js', () => ({

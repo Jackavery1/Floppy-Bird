@@ -163,6 +163,35 @@ En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explici
 
 **Pages** (Settings → Pages) : source **GitHub Actions** (recommandé) ou branche **`gh-pages`** / **`/ (root)`** si tu utilises peaceiris.
 
+## Commit & push (manuel)
+
+À faire toi-même depuis la racine du dépôt (PowerShell ou bash). Le hook `pre-commit` lance `npm run verify` (lint + format + sync tokens + tests) — laisse-le tourner jusqu’au bout.
+
+```bash
+git status
+git add -A
+git commit -m "Ton message (pourquoi, pas la liste des fichiers)."
+git push -u origin HEAD
+```
+
+Si le commit est rejeté par Prettier :
+
+```bash
+npm run format
+git add -A
+git commit -m "Même message."
+git push -u origin HEAD
+```
+
+Icônes PWA (générées, **ne pas** les committer) :
+
+```bash
+npm run icons
+npm run icons:optimize
+```
+
+Vérifier qu’elles restent ignorées : `git check-ignore -v public/icons/icon-192.png`.
+
 ## Conventions de code
 
 - **Identifiants** : anglais pour modules, fonctions exportées et API Phaser (`showMenu`, `buildOptionsContent`) — stabilité des imports et alignement avec l’écosystème. **Ne pas renommer massivement** les identifiants existants sans raison fonctionnelle. Textes joueur et commentaires en français.

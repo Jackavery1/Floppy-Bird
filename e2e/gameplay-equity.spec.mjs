@@ -186,16 +186,14 @@ test.describe('gameplay equity via test seam', () => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement');
         await waitForGameReady(page);
         await restartRoundWithModes(page, { hardcore: true });
+        await holdBirdAtCenter(page);
 
-        await keepBirdAliveForPipeSpawn(
-            page,
-            GAME_CONFIG.round.pipeSpawnDelayMs,
-            GAME_CONFIG.round.hardcoreSpawnInvincibilityMs
-        );
+        expect((await getPipeState(page))?.pipeCount ?? 0).toBe(0);
 
-        await expect
-            .poll(async () => (await getPipeState(page))?.pipeCount ?? 0, { timeout: 8_000 })
-            .toBeGreaterThan(0);
+        await advancePipeSpawnWait(page, GAME_CONFIG.round.pipeSpawnDelayMs + 100);
+
+        expect((await getPipeState(page))?.pipeCount ?? 0).toBeGreaterThan(0);
+        await expectGameState(page, 'playing');
     });
 
     test('hardcore : pas de mort avant 5 s avec sauts réguliers', async ({ page }, testInfo) => {

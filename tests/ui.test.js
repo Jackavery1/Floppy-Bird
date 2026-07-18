@@ -4,9 +4,14 @@ import { DIFFICULTY } from '../src/config.js';
 import { createRoundState } from '../src/roundState.js';
 import { createBaseScene } from './helpers/phaserMock.js';
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 12),
     saveHighScore: vi.fn((s) => s),
+    loadBestScoreAny: vi.fn(() => 12),
+    loadBestHardcoreScore: vi.fn(() => 0),
+}));
+
+vi.mock('../src/storage.js', () => ({
     saveToLeaderboard: vi.fn(() => ({ entries: [], highlightId: null })),
 }));
 
@@ -52,7 +57,7 @@ describe('UI', () => {
     });
 
     it('refreshHighScore charge le record par difficulté', async () => {
-        const { loadHighScore } = await import('../src/storage.js');
+        const { loadHighScore } = await import('../src/highScores.js');
         vi.mocked(loadHighScore).mockClear();
         ui.refreshHighScore(DIFFICULTY.HARD);
         expect(loadHighScore).toHaveBeenLastCalledWith(DIFFICULTY.HARD, false, null);

@@ -36,8 +36,10 @@ vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
 }));
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 42),
+    loadBestScoreAny: vi.fn(() => 42),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 describe('sceneBeginRound', () => {

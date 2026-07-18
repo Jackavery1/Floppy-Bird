@@ -1,6 +1,6 @@
 import { GAME_CONFIG, DIFFICULTY } from '../../config.js';
 import { Utils } from '../../utils.js';
-import { loadHighScore } from '../../storage.js';
+import { loadHighScore } from '../../highScores.js';
 import { bindUiFacade } from './uiFacadeBind.js';
 import {
     closeAllMenuPanels as closeAllMenuPanelsImpl,

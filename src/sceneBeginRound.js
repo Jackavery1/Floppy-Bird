@@ -2,7 +2,7 @@ import { GAME_CONFIG, getDifficultyForRound } from './config.js';
 import { getDailyChallengeSeed, getDailyChallengeGoal } from './dailyChallenge.js';
 import { applyDailyRoundDifficulty } from './dailyChallengeDifficulty.js';
 import { GAME_STATE } from './gameState.js';
-import { loadHighScore } from './storage.js';
+import { loadHighScore } from './highScores.js';
 import { getSkin } from './skins/index.js';
 import {
     showTutorialForProgress,

@@ -1,4 +1,5 @@
-import { saveHighScore, saveToLeaderboard } from './storage.js';
+import { saveHighScore } from './highScores.js';
+import { saveToLeaderboard } from './storage.js';
 import { saveBestTrainingScore } from './trainingStorage.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */

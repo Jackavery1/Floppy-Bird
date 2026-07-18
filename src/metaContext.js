@@ -1,5 +1,5 @@
-import { DIFFICULTY, DIFFICULTY_ORDER } from './config.js';
-import { loadHighScore } from './storage.js';
+import { DIFFICULTY } from './config.js';
+import { loadBestHardcoreScore, loadBestScoreAny, loadHighScore } from './highScores.js';
 import { listUnlockedSkins } from './skins/index.js';
 import { isHardcoreUnlocked } from './hardcoreUnlock.js';
 import { loadDailyStats } from './dailyChallengeProgress.js';
@@ -26,14 +26,8 @@ import { loadBestTrainingScore } from './trainingStorage.js';
 
 /** @param {import('./sceneTypes.js').SceneContext} scene */
 export function buildMetaContext(scene) {
-    let bestScoreAny = 0;
-    for (const diff of DIFFICULTY_ORDER) {
-        bestScoreAny = Math.max(bestScoreAny, loadHighScore(diff, false));
-    }
-    let bestHardcoreScore = 0;
-    for (const diff of DIFFICULTY_ORDER) {
-        bestHardcoreScore = Math.max(bestHardcoreScore, loadHighScore(diff, true));
-    }
+    const bestScoreAny = loadBestScoreAny();
+    const bestHardcoreScore = loadBestHardcoreScore();
     const ctx = {
         score: scene.round.score,
         hardcore: scene.hardcoreMode,

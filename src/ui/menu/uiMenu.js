@@ -1,5 +1,5 @@
-import { loadHighScore } from '../../storage.js';
-import { computeMenuLayout, UI_LAYOUT } from '../shared/uiLayout.js';
+import { loadHighScore } from '../../highScores.js';
+import { computeMenuLayout, DEPTH, UI_LAYOUT } from '../shared/uiLayout.js';
 import { syncDifficultyButtonLabel } from '../shared/uiText.js';
 import { applyMenuLayout, drawDiffButtons } from './uiMenuLayout.js';
 import { destroyInGameControls } from '../hud/uiHud.js';
@@ -21,7 +21,6 @@ import { setOptionsContentVisible } from './uiMenuOptionsContent.js';
 import { buildMetaContext } from '../../metaContext.js';
 import { syncMenuToggleAccessibility } from '../a11y/uiDomAccessibilityMenuToggles.js';
 import { isHardcoreUnlocked } from '../../hardcoreUnlock.js';
-import { DEPTH } from '../shared/uiLayout.js';
 import { closeAllMenuPanels, ensureMenuActionRowVisible } from './uiMenuPanels.js';
 
 export { closeAllMenuPanels, prepareMenuRebuild } from './uiMenuPanels.js';

@@ -12,8 +12,10 @@ vi.mock('../src/hardcoreStorage.js', () => ({
     saveHardcoreEnabled: vi.fn(),
 }));
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 0),
+    loadBestScoreAny: vi.fn(() => 0),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 describe('sceneModes', () => {
@@ -33,10 +35,10 @@ describe('sceneModes', () => {
         const { loadTrainingEnabled } = await import('../src/trainingStorage.js');
         const { loadHardcoreEnabled, saveHardcoreEnabled } =
             await import('../src/hardcoreStorage.js');
-        const { loadHighScore } = await import('../src/storage.js');
+        const { loadBestScoreAny } = await import('../src/highScores.js');
         vi.mocked(loadTrainingEnabled).mockReturnValueOnce(true);
         vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(true);
-        vi.mocked(loadHighScore).mockReturnValue(15);
+        vi.mocked(loadBestScoreAny).mockReturnValue(15);
 
         const modes = createSceneModesState();
 
@@ -47,9 +49,9 @@ describe('sceneModes', () => {
     it('désactive hardcore si non débloqué', async () => {
         const { loadHardcoreEnabled, saveHardcoreEnabled } =
             await import('../src/hardcoreStorage.js');
-        const { loadHighScore } = await import('../src/storage.js');
+        const { loadBestScoreAny } = await import('../src/highScores.js');
         vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(true);
-        vi.mocked(loadHighScore).mockReturnValue(0);
+        vi.mocked(loadBestScoreAny).mockReturnValue(0);
 
         const modes = createSceneModesState();
 

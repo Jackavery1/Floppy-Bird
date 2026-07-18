@@ -2,8 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { buildMetaContext } from '../src/metaContext.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 12),
+    loadBestScoreAny: vi.fn(() => 12),
+    loadBestHardcoreScore: vi.fn(() => 12),
 }));
 
 describe('metaContext', () => {

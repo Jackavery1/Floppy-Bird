@@ -18,7 +18,7 @@ import { saveDailyCompletion, isDailyCompletedToday } from '../dailyChallengePro
 import { buildMetaContext } from '../metaContext.js';
 import { listUnlockedSkins } from '../skins/index.js';
 import { notifyNewlyUnlockedSkins, snapshotUnlockedSkins } from '../metaAchievements.js';
-import { saveHighScore } from '../storage.js';
+import { saveHighScore } from '../highScores.js';
 
 /** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */
 export function createMetaSeam(getScene) {

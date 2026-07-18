@@ -2,8 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { persistRoundScore } from '../src/roundScore.js';
 import { createRoundState } from '../src/roundState.js';
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     saveHighScore: vi.fn((score, _diff, current) => Math.max(score, current ?? 0)),
+}));
+
+vi.mock('../src/storage.js', () => ({
     saveToLeaderboard: vi.fn(() => ({ entries: [{ score: 5, id: 'a' }], highlightId: 'a' })),
 }));
 
@@ -13,7 +16,8 @@ vi.mock('../src/trainingStorage.js', () => ({
 
 describe('roundScore', () => {
     beforeEach(async () => {
-        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
+        const { saveToLeaderboard } = await import('../src/storage.js');
         vi.mocked(saveHighScore).mockClear();
         vi.mocked(saveToLeaderboard).mockClear();
     });
@@ -38,7 +42,8 @@ describe('roundScore', () => {
     }
 
     it('persistRoundScore enregistre record et leaderboard en mode normal', async () => {
-        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
+        const { saveToLeaderboard } = await import('../src/storage.js');
         const scene = makeScene();
         const result = persistRoundScore(scene);
 
@@ -50,7 +55,8 @@ describe('roundScore', () => {
     });
 
     it('persistRoundScore ignore la persistance en mode entraînement', async () => {
-        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
+        const { saveToLeaderboard } = await import('../src/storage.js');
         const { saveBestTrainingScore } = await import('../src/trainingStorage.js');
         const scene = makeScene({ trainingMode: true });
         const result = persistRoundScore(scene);
@@ -69,7 +75,8 @@ describe('roundScore', () => {
     });
 
     it('persistRoundScore resynchronise le record si le classement contient un score plus élevé', async () => {
-        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
+        const { saveToLeaderboard } = await import('../src/storage.js');
         vi.mocked(saveHighScore).mockReturnValueOnce(0);
         vi.mocked(saveToLeaderboard).mockReturnValueOnce({
             entries: [
@@ -89,7 +96,8 @@ describe('roundScore', () => {
     });
 
     it('persistRoundScore route vers le classement dédié quand un skin spécial est actif', async () => {
-        const { saveHighScore, saveToLeaderboard } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
+        const { saveToLeaderboard } = await import('../src/storage.js');
         const scene = makeScene({ activeSkinId: 'cosmos' });
         persistRoundScore(scene);
 
@@ -98,7 +106,7 @@ describe('roundScore', () => {
     });
 
     it('persistRoundScore utilise "classic" par défaut si activeSkinId absent', async () => {
-        const { saveHighScore } = await import('../src/storage.js');
+        const { saveHighScore } = await import('../src/highScores.js');
         const scene = makeScene();
         delete scene.activeSkinId;
         persistRoundScore(scene);

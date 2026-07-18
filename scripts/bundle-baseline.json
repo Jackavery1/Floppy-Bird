@@ -1,9 +1,9 @@
 {
     "generated": "2026-07-17",
-    "distKo": 1418.5,
+    "distKo": 1406.2,
     "iconsKo": 23.2,
     "vendorPhaserKo": 1168.1,
     "appJsGzipKo": 53.5,
-    "precacheEntries": 29,
-    "note": "debugHitboxes en chunk async (main −0,2 Ko gzip). Régénérer : npm run build && npm run measure"
+    "precacheEntries": 28,
+    "note": "Police unique public/fonts (plus de doublon assets/). Régénérer : npm run build && npm run measure"
 }

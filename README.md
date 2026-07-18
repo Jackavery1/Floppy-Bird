@@ -62,6 +62,8 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 #### Contrôles
 
+<a id="matrice-clavier-et-entrées"></a>
+
 | Entrée | Action |
 | ------ | ------ |
 | **Espace** / **tap** | Sauter, démarrer, rejouer ou **reprendre** (si pause) |

@@ -53,7 +53,11 @@ vi.mock('../src/ui/gameOver/uiGameOverLoader.js', () => ({
     preloadGameOverUI: vi.fn(() => Promise.resolve()),
     buildGameOverUI: vi.fn(() => ({ elements: [] })),
 }));
-vi.mock('../src/storage.js', () => ({ loadHighScore: vi.fn(() => 0) }));
+vi.mock('../src/highScores.js', () => ({
+    loadHighScore: vi.fn(() => 0),
+    loadBestScoreAny: vi.fn(() => 0),
+    loadBestHardcoreScore: vi.fn(() => 0),
+}));
 
 import { UI } from '../src/ui/core/ui.js';
 import { UI_FACADE_METHODS } from '../src/ui/core/uiFacadeBind.js';

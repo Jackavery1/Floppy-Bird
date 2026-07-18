@@ -42,8 +42,10 @@ vi.mock('../src/tutorialStorage.js', () => ({
     incrementRoundsStarted: vi.fn(() => 1),
 }));
 
-vi.mock('../src/storage.js', () => ({
+vi.mock('../src/highScores.js', () => ({
     loadHighScore: vi.fn(() => 25),
+    loadBestScoreAny: vi.fn(() => 25),
+    loadBestHardcoreScore: vi.fn(() => 0),
 }));
 
 vi.mock('../src/metaStorage.js', () => ({
