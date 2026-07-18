@@ -64,10 +64,18 @@ jobs:
               env:
                   BASE_PATH: /Floppy-Bird/
                   VITE_ENABLE_TEST_SEAM: 'true'
-            - run: npx playwright test --workers=1 --project=${{ matrix.project }} e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/viewport-a11y-resize.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/natural-scoring.spec.mjs e2e/visual-regression.spec.js e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js e2e/daily-progress.spec.mjs e2e/skin-unlock.spec.mjs
+            - run: npx playwright test --workers=1 --project=${{ matrix.project }} e2e/loading.spec.js e2e/offline.spec.js e2e/viewport-pwa.spec.js e2e/viewport.spec.js e2e/viewport-a11y-resize.spec.js e2e/touchTargets.spec.js e2e/keyboard.spec.js e2e/gameplay-equity.spec.mjs e2e/natural-scoring.spec.mjs e2e/visual-font.spec.js e2e/audio.smoke.spec.js e2e/a11y-announcer.spec.js e2e/daily-progress.spec.mjs e2e/skin-unlock.spec.mjs
               env:
                   BASE_PATH: /Floppy-Bird/
                   PLAYWRIGHT_SKIP_BUILD: '1'
+            - uses: actions/upload-artifact@v4
+              if: failure()
+              with:
+                  name: playwright-smoke-${{ matrix.project }}
+                  path: |
+                      playwright-report/
+                      test-results/
+                  retention-days: 7
 
     e2e:
         needs: check

@@ -65,7 +65,7 @@ Matrice clavier détaillée (desktop vs mobile vs tablette) : [README.md — Mat
 
 #### Smoke deploy (CI)
 
-Le job `e2e-smoke` gate le déploiement GitHub Pages sur **4 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`).
+Le job `e2e-smoke` gate le déploiement GitHub Pages sur **4 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`). La régression visuelle canvas (`visual-regression.spec.js`) reste dans la matrice e2e complète, hors gate smoke (snapshots sensibles OS CI vs local).
 
 Le job `e2e` (matrice complète) couvre **8 viewports**, incluant paysage mobile, WebKit iPad et tablettes Chromium.
 

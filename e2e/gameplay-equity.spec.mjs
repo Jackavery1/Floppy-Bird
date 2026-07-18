@@ -406,6 +406,7 @@ test.describe('gameplay equity via test seam', () => {
 
     test('survit 30 secondes sans mort', async ({ page }, testInfo) => {
         test.skip(testInfo.project.name !== 'chromium-desktop', 'desktop uniquement — durée 30 s');
+        test.setTimeout(90_000);
         await waitForGameReady(page);
         await startPlayingFromMenu(page, false);
 
