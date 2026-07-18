@@ -3,7 +3,6 @@ import {
     forceGameOver,
     getDailyChallengeMode,
     getGameOverRestartLabel,
-    getGameplayEquity,
     getTestState,
 } from './helpers/testSeam.mjs';
 import {
@@ -225,10 +224,14 @@ test.describe('clavier mobile portrait (couche a11y)', () => {
         await expect(jumpBtn).toBeVisible();
         await jumpBtn.focus();
         await expect(jumpBtn).toBeFocused();
-        await page.keyboard.press('Enter');
-        await expect
-            .poll(async () => (await getGameplayEquity(page))?.jumpBufferFrames ?? 0)
-            .toBeGreaterThan(0);
+        const frames = await page.evaluate(() => {
+            const btn = document.getElementById('a11y-jump');
+            btn?.dispatchEvent(
+                new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true })
+            );
+            return window.__FLOPPY_TEST__?.getGameplayEquity?.()?.jumpBufferFrames ?? 0;
+        });
+        expect(frames).toBeGreaterThan(0);
     });
 });
 

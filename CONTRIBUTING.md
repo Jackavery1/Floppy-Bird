@@ -79,7 +79,7 @@ npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports : desktop, mobile 
 
 #### PWA offline (e2e)
 
-Le test « charge le jeu hors ligne après precache » utilise `expect.poll` (pas `waitForFunction` async — Promise truthy) et un timeout 120 s. Le precache Workbox ne doit pas doubler `includeAssets` + `globPatterns` (sinon `add-to-cache-list-conflicting-entries`). Reload via `location.reload` ; tolère `ERR_INTERNET_DISCONNECTED` Playwright Windows.
+Le test « charge le jeu hors ligne après precache » utilise `expect.poll` (pas `waitForFunction` async — Promise truthy) et un timeout 120 s. Le precache Workbox ne doit pas doubler `includeAssets` + `globPatterns` (sinon `add-to-cache-list-conflicting-entries`). Avec `VITE_ENABLE_TEST_SEAM=true`, le chunk `testSeam-*.js` est inclus dans le precache (requis pour le reload hors ligne) ; en prod Pages il est absent (tree-shake + `globIgnores`). Reload via `location.reload` ; tolère `ERR_INTERNET_DISCONNECTED` Playwright Windows.
 
 Boots shell (hors bundle) : `public/boot-offline.js` (redirect offline sans SW) et `public/boot-loading-timeout.js` (message si chargement bloqué) — chargés par `index.html` sous CSP `script-src 'self'`.
 

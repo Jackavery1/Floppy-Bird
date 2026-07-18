@@ -8,6 +8,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const base = process.env.BASE_PATH || './';
 const pwaScope = base === './' ? './' : base.endsWith('/') ? base : `${base}/`;
+const enableTestSeam = process.env.VITE_ENABLE_TEST_SEAM === 'true';
 const pwaManifest = {
     ...JSON.parse(readFileSync(path.join(root, 'public/manifest.webmanifest'), 'utf8')),
     start_url: pwaScope,
@@ -127,8 +128,9 @@ export default defineConfig(({ mode }) => {
                         '**/tokens.html',
                         '**/assets/tokens-*.js',
                         '**/assets/tokens-*.css',
-                        // Seam e2e uniquement si build VITE_ENABLE_TEST_SEAM (prod tree-shake déjà)
-                        '**/assets/testSeam-*.js',
+                        // Prod : pas de chunk seam. CI e2e (VITE_ENABLE_TEST_SEAM) : precache
+                        // requis pour le reload hors ligne (import dynamique).
+                        ...(enableTestSeam ? [] : ['**/assets/testSeam-*.js']),
                     ],
                     navigateFallback: pwaScope === './' ? 'index.html' : `${pwaScope}index.html`,
                     navigateFallbackDenylist: [/\/offline\.html$/, /\/tokens\.html$/],
