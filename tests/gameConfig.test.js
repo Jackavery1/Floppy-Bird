@@ -27,7 +27,7 @@ describe('GAME_CONFIG.round', () => {
     });
 
     it('reporte le saut au prochain tick physique', () => {
-        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(1);
+        expect(GAME_CONFIG.bird.jumpBufferFrames).toBe(3);
     });
 
     it('hardcore : marge post-invincibilité avant premier tuyau', () => {

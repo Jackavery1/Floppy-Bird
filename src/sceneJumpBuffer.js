@@ -22,7 +22,7 @@ export function requestJump(scene) {
 /** @param {SceneContext} scene */
 export function processJumpBuffer(scene) {
     if (scene.round.jumpBufferFrames <= 0) return;
-    scene.bird.bufferJump();
+    scene.bird.jump();
     playJumpFeedback();
     scene.ghost?.recordJump?.();
     scene.round.jumpBufferFrames = 0;

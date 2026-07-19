@@ -91,16 +91,16 @@ function finishDying(scene) {
         if (scene.state !== GAME_STATE.DYING && scene.state !== GAME_STATE.GAME_OVER) return;
         scene.state = GAME_STATE.GAME_OVER;
         syncShellGameState(GAME_STATE.GAME_OVER);
-        const { elements } = scene.ui.showGameOver(
-            round.score,
-            round.leaderboardData,
-            true,
-            round.isNewRecord,
-            scene.hardcoreMode,
-            scene.playMode === 'daily' ? scene.dailyGoal : 0,
-            scene.activeSkinId ?? 'classic',
-            round.deathCause
-        );
+        const { elements } = scene.ui.showGameOver({
+            finalScore: round.score,
+            leaderboardData: round.leaderboardData,
+            fadeIn: true,
+            isNewRecord: round.isNewRecord,
+            hardcoreMode: scene.hardcoreMode,
+            dailyGoal: scene.playMode === 'daily' ? scene.dailyGoal : 0,
+            activeSkinId: scene.activeSkinId ?? 'classic',
+            deathCause: round.deathCause,
+        });
         scene.ui.setOverlay('gameOver', elements);
         openGameOverAccessibility(scene, {
             score: round.score,

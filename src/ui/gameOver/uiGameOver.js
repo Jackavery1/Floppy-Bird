@@ -5,18 +5,32 @@ import { buildGameOverShell } from './uiGameOverPanel.js';
 import { buildGameOverSummary } from './uiGameOverSummary.js';
 import { DEPTH } from '../shared/uiLayout.js';
 
-export function buildGameOverUI(
-    scene,
-    ui,
-    finalScore,
-    leaderboardData,
-    fadeIn,
-    isNewRecord,
-    hardcoreMode = false,
-    dailyGoal = 0,
-    activeSkinId = 'classic',
-    deathCause = null
-) {
+/**
+ * @param {import('../../sceneTypes.js').SceneContext} scene
+ * @param {import('../core/ui.js').UI} ui
+ * @param {{
+ *   finalScore: number,
+ *   leaderboardData: { entries: unknown[], highlightId?: unknown },
+ *   fadeIn?: boolean,
+ *   isNewRecord?: boolean,
+ *   hardcoreMode?: boolean,
+ *   dailyGoal?: number,
+ *   activeSkinId?: string,
+ *   deathCause?: string | null,
+ * }} opts
+ */
+export function buildGameOverUI(scene, ui, opts) {
+    const {
+        finalScore,
+        leaderboardData,
+        fadeIn = false,
+        isNewRecord = false,
+        hardcoreMode = false,
+        dailyGoal = 0,
+        activeSkinId = 'classic',
+        deathCause = null,
+    } = opts;
+
     ui.hideInGameScore();
 
     const { entries, highlightId } = leaderboardData;

@@ -99,13 +99,13 @@ describe('device', () => {
 
     it('hardcoreToggleLabel indique ACTIVÉ/DÉSACTIVÉ sans détail invincibilité', async () => {
         const { hardcoreToggleLabel } = await loadDevice(false);
-        expect(hardcoreToggleLabel(true)).toBe('HARDCORE : ACTIVÉ');
-        expect(hardcoreToggleLabel(false)).toBe('HARDCORE : DÉSACTIVÉ');
+        expect(hardcoreToggleLabel(true)).toBe('HC · ACTIVÉ');
+        expect(hardcoreToggleLabel(false)).toBe('HC · DÉSACTIVÉ');
     });
 
     it('hardcoreToggleLabel mobile utilise HC (≠ Difficile)', async () => {
         const { hardcoreToggleLabel } = await loadDevice(true);
-        expect(hardcoreToggleLabel(true)).toBe('HC ACTIF');
+        expect(hardcoreToggleLabel(true)).toBe('HC · ACTIVÉ');
         expect(hardcoreToggleLabel(false, false)).toMatch(/^HC · score ≥/);
     });
 

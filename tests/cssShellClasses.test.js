@@ -80,4 +80,21 @@ describe('cssShellClasses', () => {
         const coarseBlock = css.match(/@media \(pointer: coarse\)\s*\{([\s\S]*?)\n\}/);
         expect(coarseBlock?.[1]).toMatch(/\.a11y-btn\s*\{[\s\S]*opacity:\s*0\.14/);
     });
+
+    it('index.html charge le shell via <link> (CSP style-src-elem self)', () => {
+        const html = readFileSync(resolve(ROOT, 'index.html'), 'utf8');
+        expect(html).toMatch(/<link\s+rel="stylesheet"\s+href="\.\/style\.css"\s*\/>/);
+        expect(html).toMatch(/<link\s+rel="stylesheet"\s+href="\.\/style-pwa\.css"\s*\/>/);
+        expect(html).toMatch(/style-src-elem 'self'/);
+    });
+
+    it('style.css préserve le texte chargement AA en jour sous contraste élevé', () => {
+        const css = readFileSync(resolve(ROOT, 'style.css'), 'utf8');
+        expect(css).toMatch(
+            /html\[data-theme='day'\]\[data-contrast-high='true'\]\s*\{[^}]*--couleur-texte-chargement:\s*#0d47a1/
+        );
+        expect(css).toMatch(
+            /@media \(prefers-contrast: more\)\s*\{[\s\S]*html\[data-theme='day'\]\s*\{[^}]*--couleur-texte-chargement:\s*#0d47a1/
+        );
+    });
 });

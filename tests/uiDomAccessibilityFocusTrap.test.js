@@ -96,7 +96,10 @@ describe('uiDomAccessibilityFocusTrap', () => {
     it('focusFirstVisibleAccessibilityControl focus le premier visible', () => {
         const { buttons } = setupLayer(['a', 'b', 'c']);
         expect(focusFirstVisibleAccessibilityControl()).toBe(true);
-        expect(buttons[0].focus).toHaveBeenCalled();
+        expect(buttons[0].focus).toHaveBeenCalledWith({
+            preventScroll: true,
+            focusVisible: false,
+        });
     });
 
     it('bindAccessibilityFocusTrap cycle Tab sur les boutons visibles', () => {
@@ -111,7 +114,7 @@ describe('uiDomAccessibilityFocusTrap', () => {
         };
         layer.dispatchEvent(event);
         expect(event.preventDefault).toHaveBeenCalled();
-        expect(buttons[0].focus).toHaveBeenCalled();
+        expect(buttons[0].focus).toHaveBeenCalledWith({ focusVisible: true });
     });
 
     it('bindAccessibilityFocusTrap appelle le handler Escape', async () => {

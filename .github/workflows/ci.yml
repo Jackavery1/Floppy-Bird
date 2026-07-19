@@ -128,7 +128,7 @@ jobs:
             - run: npm run lighthouse
 
     deploy:
-        needs: [check, lighthouse, e2e-smoke]
+        needs: [check, lighthouse, e2e]
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         runs-on: ubuntu-latest
         permissions:

@@ -58,8 +58,7 @@ Checklist rapide selon le type :
 - `page.goto` bloqué par SW → `waitUntil: 'domcontentloaded'`
 
 **CI / déploiement**
-- Le job `deploy` dépend de **`check` + `lighthouse` + `e2e-smoke`** (4 viewports Chromium) — pas de la matrice e2e complète (8 viewports)
-- La matrice `e2e` (8 viewports) est bloquante pour le **statut CI / PR**, mais **ne gate pas** Pages
+- Le job `deploy` dépend de **`check` + `lighthouse` + `e2e`** (matrice 8 viewports) — `e2e-smoke` reste un signal rapide PR
 - Build prod avec le bon `BASE_PATH` (`/Nom-Repo/`) ?
 - Pages : branche **`gh-pages`**, dossier **`/ (root)`** — pas `main`
 
@@ -130,9 +129,10 @@ Observé : …
 | Localhost OK, GitHub Pages KO | Correctif non poussé ; ou CI deploy en échec |
 | PWA mobile bloquée après fix | Cache service worker — vider données site / réinstaller PWA |
 | `npm run preview` échoue sous Windows | Préférer `npx vite preview --host 127.0.0.1 --port 4173` |
-| E2E smoke rouge | Bloque le deploy Pages (`e2e-smoke` dans `needs`) |
-| E2E matrice complète rouge, smoke OK | Site peut déployer ; statut PR / job `e2e` rouge |
-| E2E rouge, site OK | Vérifier si c’est smoke (bloque) ou matrice 8 viewports (ne bloque pas Pages) |
+| E2E matrice rouge | Bloque le deploy Pages (`e2e` dans `needs`) |
+| E2E matrice rouge | Bloque le deploy Pages (`e2e` dans `needs`) |
+| E2E smoke rouge | Signal PR rapide ; ne remplace pas la gate `e2e` |
+| E2E rouge, site OK | Vérifier si le dernier deploy a tourné avant le rouge ; `deploy.needs` inclut `e2e` |
 
 ## Hors scope
 

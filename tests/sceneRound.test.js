@@ -122,8 +122,9 @@ describe('sceneRound', () => {
         it('incrémente le score quand la hitbox dépasse le bord droit du tuyau', async () => {
             const { playScoreFeedback } = await import('../src/sceneFeedback.js');
             const pipe = { x: 100, scored: false };
+            const clearX = 100 + 40 / 2 + GAME_CONFIG.bird.width / 2 - 3 + 1;
             const scene = {
-                bird: birdAt(132),
+                bird: birdAt(clearX),
                 round: createRoundState(),
                 pipes: { topPipes: [pipe], pipeWidth: 40, applySpeedForScore: vi.fn() },
                 ui: { updateScore: vi.fn(), showRecordBroken: vi.fn() },
@@ -138,8 +139,9 @@ describe('sceneRound', () => {
 
         it('n’incrémente pas le score tant que la hitbox n’a pas dépassé le tuyau', () => {
             const pipe = { x: 100, scored: false };
+            const beforeClearX = 100 + 40 / 2 + GAME_CONFIG.bird.width / 2 - 3;
             const scene = {
-                bird: birdAt(130),
+                bird: birdAt(beforeClearX),
                 round: createRoundState(),
                 pipes: { topPipes: [pipe], pipeWidth: 40, applySpeedForScore: vi.fn() },
                 ui: { updateScore: vi.fn(), showRecordBroken: vi.fn() },

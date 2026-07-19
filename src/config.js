@@ -33,14 +33,14 @@ export const GAME_CONFIG = {
     debug: typeof location !== 'undefined' && new URLSearchParams(location.search).has('debug'),
 
     bird: {
-        width: 28,
-        height: 20,
+        width: 32,
+        height: 23,
         startX: 50,
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        /** Report du flap au prochain tick physique (1 frame). */
-        jumpBufferFrames: 1,
+        /** Report du flap sur les prochains ticks physiques (3 frames ≈ 50 ms @ 60 FPS). */
+        jumpBufferFrames: 3,
         /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },

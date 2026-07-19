@@ -109,9 +109,10 @@ export const UI_LAYOUT = {
             controlsFirst: 190,
             controlsGap: 23,
             settingsMute: 180,
-            training: 224,
-            trainingSpeed: 268,
-            hardcore: 312,
+            settingsHaptics: 224,
+            training: 268,
+            trainingSpeed: 312,
+            hardcore: 356,
         })
     ),
     scoresPanel: withPanelCloseBtn({
@@ -155,6 +156,7 @@ export const TOUCH_TARGETS = Object.freeze({
     menuOptions: { x: UI_LAYOUT.menu.optionsBtn, y: UI_LAYOUT.menu.menuRow },
     menuSkins: { x: UI_LAYOUT.menu.skinsBtn, y: UI_LAYOUT.menu.menuRow },
     menuMute: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.settingsMute },
+    menuHaptics: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.settingsHaptics },
     menuTraining: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.training },
     menuTrainingSpeed: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.trainingSpeed },
     menuHardcore: { x: GAME_CONFIG.centerX, y: UI_LAYOUT.optionsPanel.hardcore },

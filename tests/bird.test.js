@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Bird } from '../src/bird.js';
 import { GAME_CONFIG } from '../src/config.js';
 import { birdSpriteScale } from '../src/textures/birdTextures.js';
+import { BIRD_COLLISION_INSET } from '../src/ui/shared/uiPhaserComponents.js';
 
 vi.mock('../src/metaStorage.js', () => ({
     loadSelectedSkin: vi.fn(() => 'classic'),
@@ -50,19 +51,21 @@ describe('Bird', () => {
         it('retourne une hitbox légèrement réduite par rapport au sprite', () => {
             bird.x = 100;
             bird.y = 200;
+            const { width, height } = GAME_CONFIG.bird;
+            const { x: mx, y: my } = BIRD_COLLISION_INSET;
             const b = bird.getBounds();
             expect(b).toEqual({
-                x: 100 - 14 + 3,
-                y: 200 - 10 + 2,
-                width: 22,
-                height: 16,
+                x: 100 - width / 2 + mx,
+                y: 200 - height / 2 + my,
+                width: width - mx * 2,
+                height: height - my * 2,
             });
             const sprite = bird.getSpriteBounds();
             expect(sprite).toEqual({
-                x: 100 - 14,
-                y: 200 - 10,
-                width: 28,
-                height: 20,
+                x: 100 - width / 2,
+                y: 200 - height / 2,
+                width,
+                height,
             });
         });
     });
@@ -126,16 +129,6 @@ describe('Bird', () => {
         });
     });
 
-    describe('bufferJump', () => {
-        it('consomme le buffer au prochain update', () => {
-            bird.jumpPower = -8;
-            bird.bufferJump();
-            bird.update(1);
-            expect(bird.velocityY).toBe(-8 + bird.gravity);
-            expect(scene._sprite.play).toHaveBeenCalledWith('bird-bat-classic', true);
-        });
-    });
-
     describe('applyFall', () => {
         it('applique une rotation « death » fixe', () => {
             bird.applyFall(1, 'death');
@@ -155,12 +148,10 @@ describe('Bird', () => {
     describe('reset', () => {
         it('réinitialise position, vélocité et sprite', () => {
             bird.velocityY = 5;
-            bird._jumpBuffered = true;
             bird.reset(80, 400);
             expect(bird.x).toBe(80);
             expect(bird.y).toBe(400);
             expect(bird.velocityY).toBe(0);
-            expect(bird._jumpBuffered).toBe(false);
             expect(scene._sprite.setRotation).toHaveBeenCalledWith(0);
             expect(scene._sprite.setAlpha).toHaveBeenCalledWith(1);
         });

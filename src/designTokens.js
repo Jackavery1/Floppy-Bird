@@ -50,8 +50,8 @@ export const DESIGN_TOKENS = Object.freeze({
     difficulteNormal: '#ffff00',
     difficulteDifficile: '#ff8888',
     accentTitre: '#FDD835',
-    /** Score HUD en jour — ambre plus sombre sur ciel clair (AA via contour + fill). */
-    accentTitreJour: '#F9A825',
+    /** Score HUD en jour — ambre sombre (≥4,5:1 fill seul sur fondJour ; contour renforce AAA). */
+    accentTitreJour: '#7A3500',
     accentTitreContour: '#E65100',
     accentTitreOmbre: '#BF360C',
     badgeDailyContour: '#4A148C',
@@ -70,7 +70,6 @@ export const DESIGN_TOKENS = Object.freeze({
     /** Chargement shell sous `prefers-contrast: more` (fond nuit). */
     texteChargementContraste: '#bbdefb',
     texteMuted: '#cccccc',
-    texteHintFaible: '#aaaaaa',
     accentLeaderboardNew: '#ffff00',
     texteLeaderboard: '#90CAF9',
     boutonPause: '#37474f',
@@ -98,7 +97,7 @@ export const DESIGN_TOKENS = Object.freeze({
     toggleTrainingInner: '#e3f2fd',
     toggleHardcoreOn: '#e53935',
     toggleHardcoreInner: '#ffcdd2',
-    policeInterface: "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    policeInterface: "'Segoe UI', ui-sans-serif, system-ui, sans-serif",
     policeTitre: '"Press Start 2P", "Courier New", monospace',
 });
 

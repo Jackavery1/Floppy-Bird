@@ -111,11 +111,14 @@ describe('designTokens', () => {
         getBackgroundPeriod.mockReturnValue('night');
     });
 
-    it('accentTitreJour est plus sombre que accentTitre pour le score en jour', () => {
-        expect(DESIGN_TOKENS.accentTitreJour).toBe('#F9A825');
+    it('accentTitreJour atteint AA fill seul sur fond jour', () => {
+        expect(DESIGN_TOKENS.accentTitreJour).toBe('#7A3500');
         expect(relativeLuminance(DESIGN_TOKENS.accentTitreJour)).toBeLessThan(
             relativeLuminance(DESIGN_TOKENS.accentTitre)
         );
+        expect(
+            contrastRatio(DESIGN_TOKENS.accentTitreJour, DESIGN_TOKENS.fondJour)
+        ).toBeGreaterThanOrEqual(4.5);
         expect(
             contrastRatio(DESIGN_TOKENS.contourHud, DESIGN_TOKENS.fondJour)
         ).toBeGreaterThanOrEqual(4.5);
@@ -139,9 +142,9 @@ describe('designTokens', () => {
         ).toBeGreaterThanOrEqual(4.5);
     });
 
-    it('texteHintFaible reste lisible sur fond panneau game over', () => {
+    it('texteMuted reste lisible sur fond panneau game over', () => {
         expect(
-            contrastRatio(DESIGN_TOKENS.texteHintFaible, DESIGN_TOKENS.fondPanneauGameOver)
+            contrastRatio(DESIGN_TOKENS.texteMuted, DESIGN_TOKENS.fondPanneauGameOver)
         ).toBeGreaterThanOrEqual(4.5);
     });
 

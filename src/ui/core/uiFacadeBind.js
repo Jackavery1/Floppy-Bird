@@ -41,6 +41,13 @@ import { toggleMenuScores } from '../menu/uiMenuScoresPanel.js';
 import { toggleMenuSkins } from '../menu/uiMenuSkinsPanel.js';
 import { cycleMenuSkin } from '../menu/uiMenuSkinCycle.js';
 import { showPause } from './uiPause.js';
+import {
+    clearOverlay,
+    setOverlay,
+    createOverlay,
+    drawGameOverRestartButton,
+    drawGameOverMenuButton,
+} from './uiOverlayHelpers.js';
 
 const HUD_METHODS = {
     createScoreDisplay,
@@ -87,6 +94,11 @@ const PANEL_METHODS = {
 
 const OVERLAY_METHODS = {
     showPause,
+    clearOverlay,
+    setOverlay,
+    createOverlay,
+    drawGameOverRestartButton,
+    drawGameOverMenuButton,
 };
 
 /** Noms des méthodes déléguées sur `scene.ui` (source unique pour tests et doc). */
@@ -108,27 +120,7 @@ export function bindUiFacade(UiClass) {
         }
     }
 
-    UiClass.prototype.showGameOver = function (
-        finalScore,
-        leaderboardData,
-        fadeIn = false,
-        isNewRecord = false,
-        hardcoreMode = false,
-        dailyGoal = 0,
-        activeSkinId = 'classic',
-        deathCause = null
-    ) {
-        return buildGameOverUI(
-            this.scene,
-            this,
-            finalScore,
-            leaderboardData,
-            fadeIn,
-            isNewRecord,
-            hardcoreMode,
-            dailyGoal,
-            activeSkinId,
-            deathCause
-        );
+    UiClass.prototype.showGameOver = function (opts = {}) {
+        return buildGameOverUI(this.scene, this, opts);
     };
 }

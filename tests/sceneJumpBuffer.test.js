@@ -15,7 +15,7 @@ vi.mock('../src/sceneFeedback.js', () => ({
 describe('sceneJumpBuffer', () => {
     it('requestJump remplit le buffer', async () => {
         const { requestJump } = await import('../src/sceneJumpBuffer.js');
-        const scene = { round: createRoundState(), bird: { bufferJump: () => {} } };
+        const scene = { round: createRoundState(), bird: { jump: () => {} } };
         requestJump(scene);
         expect(scene.round.jumpBufferFrames).toBe(GAME_CONFIG.bird.jumpBufferFrames);
     });
@@ -25,29 +25,29 @@ describe('sceneJumpBuffer', () => {
         const { requestJump } = await import('../src/sceneJumpBuffer.js');
         const scene = {
             round: createRoundState(),
-            bird: { bufferJump: () => {} },
+            bird: { jump: () => {} },
             ui: {},
         };
         requestJump(scene);
         expect(onTutorialJump).toHaveBeenCalledWith(scene);
     });
 
-    it('processJumpBuffer consomme le buffer', async () => {
+    it('processJumpBuffer consomme le buffer via bird.jump', async () => {
         const { processJumpBuffer } = await import('../src/sceneJumpBuffer.js');
         const { playJumpFeedback } = await import('../src/sceneFeedback.js');
-        let buffered = false;
+        let jumped = false;
         const round = createRoundState();
         round.jumpBufferFrames = 4;
         const scene = {
             round,
             bird: {
-                bufferJump: () => {
-                    buffered = true;
+                jump: () => {
+                    jumped = true;
                 },
             },
         };
         processJumpBuffer(scene);
-        expect(buffered).toBe(true);
+        expect(jumped).toBe(true);
         expect(playJumpFeedback).toHaveBeenCalled();
         expect(scene.round.jumpBufferFrames).toBe(0);
     });

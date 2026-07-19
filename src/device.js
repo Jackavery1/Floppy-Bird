@@ -64,14 +64,12 @@ export function hardcoreHint() {
 
 export function hardcoreToggleLabel(enabled, unlocked = true) {
     if (!unlocked) {
-        return isCoarsePointer()
-            ? `HC · score ≥ ${HARDCORE_UNLOCK_SCORE}`
-            : `HARDCORE : score ≥ ${HARDCORE_UNLOCK_SCORE} requis`;
+        return `HC · score ≥ ${HARDCORE_UNLOCK_SCORE}`;
     }
     if (enabled) {
-        return isCoarsePointer() ? 'HC ACTIF' : 'HARDCORE : ACTIVÉ';
+        return 'HC · ACTIVÉ';
     }
-    return isCoarsePointer() ? 'HC INACT.' : 'HARDCORE : DÉSACTIVÉ';
+    return 'HC · DÉSACTIVÉ';
 }
 
 export function dailyChallengeHint() {

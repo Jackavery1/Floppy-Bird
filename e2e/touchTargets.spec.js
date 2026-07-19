@@ -68,7 +68,13 @@ test.describe('cibles tactiques ≥ 44 px', () => {
         }
 
         await page.locator('#a11y-options-tab-preferences').tap({ force: true });
-        for (const id of ['a11y-mute', 'a11y-training', 'a11y-hardcore', 'a11y-training-speed']) {
+        for (const id of [
+            'a11y-mute',
+            'a11y-haptics',
+            'a11y-training',
+            'a11y-hardcore',
+            'a11y-training-speed',
+        ]) {
             const minPx = await minA11yButtonScreenPx(page, id);
             expect(minPx, id).toBeGreaterThanOrEqual(44);
         }

@@ -22,6 +22,7 @@ export const OPTIONS_CONTROL_KEYS = Object.freeze([
     'menuTrainingSpeed',
     'menuHardcore',
     'menuMute',
+    'menuHaptics',
     'menuOptionsClose',
 ]);
 

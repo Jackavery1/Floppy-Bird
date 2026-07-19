@@ -21,7 +21,6 @@ export class Bird {
         this.gravity = cfg.gravity;
         this.jumpPower = cfg.jumpPower;
         this.maxFallSpeed = cfg.maxFallSpeed;
-        this._jumpBuffered = false;
 
         ensureBirdTexture(scene, skinId);
         this.sprite = scene.add.sprite(x, y, birdTextureKey(skinId), 1);
@@ -36,15 +35,7 @@ export class Bird {
     }
 
     update(step = 1) {
-        if (this._jumpBuffered) {
-            this._jumpBuffered = false;
-            this.jump();
-        }
         this.applyFall(step, 'live');
-    }
-
-    bufferJump() {
-        this._jumpBuffered = true;
     }
 
     /** Gravité + déplacement ; rotation « live » (vol) ou « death » (chute game over). */
@@ -105,7 +96,6 @@ export class Bird {
         this.x = x;
         this.y = y;
         this.velocityY = 0;
-        this._jumpBuffered = false;
         this.sprite.stop();
         this.sprite.setFrame(1);
         this.sprite.setRotation(0);

@@ -55,8 +55,8 @@ function createScene() {
         bird: {
             x: 74,
             y: gapY,
-            width: 28,
-            height: 20,
+            width: GAME_CONFIG.bird.width,
+            height: GAME_CONFIG.bird.height,
             sprite: { setPosition: vi.fn(), clearTint: vi.fn(), setTint: vi.fn() },
             getBounds() {
                 const mx = 3;

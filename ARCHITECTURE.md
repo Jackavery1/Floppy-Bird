@@ -19,6 +19,19 @@ Floppy Bird est un clone arcade 2D construit avec **Phaser 3** et **Vite**, dép
 
 ## Structure des fichiers
 
+### Carte des modules (onboarding)
+
+| Cluster | Entrées | Rôle |
+|---------|---------|------|
+| Bootstrap | `main.js`, `appBootstrap.js`, `phaserBootstrap.js` | Shell, Phaser, thème, viewport |
+| Scène | `GameScene.js`, `scene*.js` | Boucle, flux, feedback, equity |
+| Domaine | `bird.js`, `pipes*`, `round*`, `highScores.js`, `gapDifficulty.js` | Gameplay + scores |
+| I/O | `storage.js`, `*Storage.js`, `storageKeys.js` | Persistence locale |
+| UI | `uiIndex.js` → `src/ui/**` | Menu / HUD / game over / a11y |
+| Media | `audio*.js`, `haptics.js`, `motion.js` | Son, vibration (option + reduced-motion), motion |
+| PWA | `pwaInstall.js`, `public/*`, VitePWA | Install, offline, manifest |
+| Tests | `tests/`, `e2e/` | Vitest / Playwright |
+
 ```
 src/
 ├── main.js                    # Point d'entrée
@@ -65,7 +78,7 @@ src/
 ├── uiIndex.js                 # Entrée publique UI
 │
 ├── Media
-├── haptics.js                 # Retours haptiques (indépendant du mute ; respecte reduced-motion)
+├── haptics.js                 # Vibration (option persistée ; mute indépendant ; reduced-motion prioritaire)
 ├── audio.js                   # Gestion du son
 ├── motion.js                  # Animations (tweens, shake)
 ├── textures/                  # Sprites générés
@@ -76,7 +89,9 @@ src/
     ├── src/pwaInstall.js        # CTA « Installer l’appli » (beforeinstallprompt)
     └── (VitePWA : `globPatterns` + `globIgnores` tokens ; police jeu → `public/fonts/` partagée jeu + offline)
     └── (prod : `copy-phaser.mjs` + SRI sha384 ; CSP `script-src 'self'` via `public/boot-*.js` ;
-         `style-src 'unsafe-inline'` conservé pour CSSOM `element.style` — shellTheme / a11y / letterbox)
+         `style-src-elem 'self'` (CSS via `<link>` dans `index.html`, pas d’injection Vite) +
+         `style-src-attr 'unsafe-inline'` pour letterbox / a11y positions ;
+         thème jour/nuit via `data-theme` — pas de CSSOM dans `shellTheme.js`)
 
 tests/
 ├── Unit tests (Vitest)
@@ -103,6 +118,7 @@ Chaque scene gère une responsabilité :
 ### 3. Input Handling
 
 - **sceneInput.js** : Normalization clavier/tactile
+- **sceneJumpBuffer.js** : Buffer de saut (`requestJump` → `processJumpBuffer` → `bird.jump()`)
 - **`src/ui/a11y/uiDomAccessibility.js`** : Accessibilité clavier (barrel bootstrap)
 
 ### 4. Physics
@@ -137,7 +153,7 @@ uiIndex.js → ui/core/ui.js (façade SceneContext)
 | **Responsabilité**  | État UI Phaser (menu/HUD/overlays) ; délégation via `uiFacadeBind.js`                                                                   |
 | **Interdit**        | Physique, spawn, collision, persistance — rester dans `scene*`, `bird`, `*Storage`                                                      |
 | **Extension**       | Implémenter sous `src/ui/**`, enregistrer dans `uiFacadeBind.js` si `scene.ui` doit l’appeler                                           |
-| **Délégation**      | 36 méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) ; `closeAllMenuPanels` / `prepareMenuRebuild` restent sur la classe (rebuild menu) |
+| **Délégation**      | Méthodes via `bindUiFacade` (`UI_FACADE_METHODS`) — HUD/menu/panneaux/overlays GO ; `showGameOver(opts)` objet unique |
 | **Cycles**          | `npm run cycles` (madge) en CI — garde-fou imports circulaires `src/`                                                                   |
 | **Découpage build** | Chunk `ui` (menu/HUD/a11y + skins) ; chunk async `ui-gameover` (hors loader)                                                            |
 
@@ -297,13 +313,13 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Unitaires** : gameplay, UI, storage, accessibilité
 - **E2E** : navigation, clavier/touch, responsive, PWA offline
-- **CI** : `check` → `e2e-smoke` (4 viewports Chromium : desktop, mobile portrait, tablette portrait/paysage — bloque deploy) + matrice e2e complète (**8** viewports, bloquante) + lighthouse
+- **CI** : `check` → matrice e2e complète (**8** viewports, job `e2e` — **gate deploy**) + `e2e-smoke` (4 VP, feedback rapide PR) + lighthouse
 
 ## Implémentation accessibilité
 
 ### WCAG 2.1 Level AA (cible)
 
-- **Keyboard Navigation** : 26 boutons DOM overlay + canvas (`role="application"`, `aria-labelledby="game-description"`)
+- **Keyboard Navigation** : 27 boutons DOM overlay + canvas (`role="application"`, `aria-labelledby="game-description"`)
 - **Screen Readers** : `#ui-announcer`, labels ARIA, états `aria-pressed` / `aria-expanded` sur toggles
 - **Color Contrast** : tokens testés AA sur fond nuit ; HUD jour compensé par contour noir (`designTokens.test.js`)
 - **Motion** : `prefers-reduced-motion` respecté
@@ -323,7 +339,7 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Architecture modulaire** : ajouts de features sans monolithe
 - **Configuration** : centralisée dans `config.js`
-- **Design tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (shell synchronisé via `shellTheme.js`)
+- **Design tokens** : `src/designTokens.js`, `src/ui/shared/uiLayoutConstants.js`, `public/shell-tokens.css` + `style.css` (`data-theme` / `shellTheme.js` pour theme-color)
 - **Couverture de tests** : seuils dans `vite.config.js` ; mesure bundle → [CONTRIBUTING.md](CONTRIBUTING.md) (`npm run measure`)
 
 ## Workflow de développement

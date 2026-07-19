@@ -36,9 +36,10 @@ describe('sceneModes', () => {
         const { loadHardcoreEnabled, saveHardcoreEnabled } =
             await import('../src/hardcoreStorage.js');
         const { loadBestScoreAny } = await import('../src/highScores.js');
+        const { HARDCORE_UNLOCK_SCORE } = await import('../src/hardcoreUnlock.js');
         vi.mocked(loadTrainingEnabled).mockReturnValueOnce(true);
         vi.mocked(loadHardcoreEnabled).mockReturnValueOnce(true);
-        vi.mocked(loadBestScoreAny).mockReturnValue(15);
+        vi.mocked(loadBestScoreAny).mockReturnValue(HARDCORE_UNLOCK_SCORE);
 
         const modes = createSceneModesState();
 

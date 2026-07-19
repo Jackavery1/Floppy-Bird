@@ -82,6 +82,9 @@ test.describe('PWA hors ligne', () => {
         await expect(page.locator('link[rel="stylesheet"][href="shell-tokens.css"]')).toHaveCount(
             1
         );
+        await expect(page.locator('link[rel="stylesheet"][href="offline-page.css"]')).toHaveCount(
+            1
+        );
         await page.evaluate(async () => {
             await document.fonts.load('12px "Press Start 2P"');
             await document.fonts.ready;

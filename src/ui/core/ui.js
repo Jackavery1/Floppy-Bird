@@ -1,19 +1,10 @@
-import { GAME_CONFIG, DIFFICULTY } from '../../config.js';
-import { Utils } from '../../utils.js';
+import { DIFFICULTY } from '../../config.js';
 import { loadHighScore } from '../../highScores.js';
 import { bindUiFacade } from './uiFacadeBind.js';
 import {
     closeAllMenuPanels as closeAllMenuPanelsImpl,
     prepareMenuRebuild as prepareMenuRebuildImpl,
 } from '../menu/uiMenu.js';
-import {
-    DEPTH,
-    GAME_OVER_RESTART_BTN_COLOR,
-    GAME_OVER_RESTART_BTN_WIDTH,
-    GAME_OVER_RESTART_BTN_HEIGHT,
-    MENU_BTN_COLOR,
-    UI_LAYOUT,
-} from '../shared/uiLayout.js';
 import { destroyInGameControls } from '../hud/uiHud.js';
 
 export class UI {
@@ -46,59 +37,6 @@ export class UI {
 
     prepareMenuRebuild() {
         return prepareMenuRebuildImpl(this);
-    }
-
-    /** @param {'menu' | 'pause' | 'gameOver'} key */
-    clearOverlay(key) {
-        Utils.clearElements(this._overlays[key]);
-    }
-
-    /** @param {'menu' | 'pause' | 'gameOver'} key @param {import('phaser').GameObjects.GameObject[]} elements */
-    setOverlay(key, elements) {
-        this.clearOverlay(key);
-        this._overlays[key].push(...elements);
-    }
-
-    createOverlay(alpha = 0.7, depth = DEPTH.OVERLAY_DIM, color = 0x000000) {
-        return this.scene.add
-            .rectangle(
-                GAME_CONFIG.centerX,
-                GAME_CONFIG.centerY,
-                GAME_CONFIG.width,
-                GAME_CONFIG.height,
-                color,
-                alpha
-            )
-            .setDepth(depth);
-    }
-
-    drawGameOverRestartButton(restartBtnY, fillColor = GAME_OVER_RESTART_BTN_COLOR) {
-        const g = this._restartBtnGraphics;
-        if (!g) return;
-        g.clear();
-        g.fillStyle(fillColor, 1);
-        g.fillRoundedRect(
-            GAME_CONFIG.centerX - GAME_OVER_RESTART_BTN_WIDTH / 2,
-            restartBtnY - GAME_OVER_RESTART_BTN_HEIGHT / 2,
-            GAME_OVER_RESTART_BTN_WIDTH,
-            GAME_OVER_RESTART_BTN_HEIGHT,
-            UI_LAYOUT.menuBtn.radius
-        );
-    }
-
-    drawGameOverMenuButton(menuBtnY, fillColor = MENU_BTN_COLOR) {
-        const { menuBtn } = UI_LAYOUT;
-        const g = this._menuBtnGraphics;
-        if (!g) return;
-        g.clear();
-        g.fillStyle(fillColor, 1);
-        g.fillRoundedRect(
-            GAME_CONFIG.centerX - menuBtn.width / 2,
-            menuBtnY - menuBtn.height / 2,
-            menuBtn.width,
-            menuBtn.height,
-            menuBtn.radius
-        );
     }
 
     destroy() {

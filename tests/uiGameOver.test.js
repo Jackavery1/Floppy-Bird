@@ -24,6 +24,20 @@ function makeUi(overrides = {}) {
     };
 }
 
+function goOpts(partial = {}) {
+    return {
+        finalScore: 10,
+        leaderboardData: { entries: [], highlightId: null },
+        fadeIn: false,
+        isNewRecord: false,
+        hardcoreMode: false,
+        dailyGoal: 0,
+        activeSkinId: 'classic',
+        deathCause: null,
+        ...partial,
+    };
+}
+
 describe('uiGameOver', () => {
     it('buildGameOverUI construit le panneau game over', () => {
         const scene = createBaseScene();
@@ -31,10 +45,13 @@ describe('uiGameOver', () => {
         const { elements } = buildGameOverUI(
             scene,
             ui,
-            10,
-            { entries: [{ score: 10, id: 'a', skinId: 'classic' }], highlightId: 'a' },
-            false,
-            false
+            goOpts({
+                finalScore: 10,
+                leaderboardData: {
+                    entries: [{ score: 10, id: 'a', skinId: 'classic' }],
+                    highlightId: 'a',
+                },
+            })
         );
         expect(elements.length).toBeGreaterThan(5);
         expect(ui.drawGameOverRestartButton).toHaveBeenCalled();
@@ -44,16 +61,7 @@ describe('uiGameOver', () => {
     it('buildGameOverUI affiche le récap daily sans TOP 5', () => {
         const scene = createBaseScene();
         const ui = makeUi();
-        const { elements } = buildGameOverUI(
-            scene,
-            ui,
-            8,
-            { entries: [], highlightId: null },
-            false,
-            false,
-            false,
-            10
-        );
+        const { elements } = buildGameOverUI(scene, ui, goOpts({ finalScore: 8, dailyGoal: 10 }));
         expect(elements.length).toBeGreaterThan(5);
     });
 
@@ -64,19 +72,16 @@ describe('uiGameOver', () => {
         buildGameOverUI(
             scene,
             ui,
-            10,
-            {
-                entries: [
-                    { score: 48, id: 'a', skinId: 'ruby' },
-                    { score: 34, id: 'b', skinId: 'ocean' },
-                ],
-                highlightId: null,
-            },
-            false,
-            false,
-            false,
-            0,
-            'classic'
+            goOpts({
+                finalScore: 10,
+                leaderboardData: {
+                    entries: [
+                        { score: 48, id: 'a', skinId: 'ruby' },
+                        { score: 34, id: 'b', skinId: 'ocean' },
+                    ],
+                    highlightId: null,
+                },
+            })
         );
         expect(scene.add.rectangle.mock.calls.length).toBeGreaterThan(rectCallsBefore + 1);
     });
@@ -84,18 +89,7 @@ describe('uiGameOver', () => {
     it('buildGameOverUI affiche la cause de mort', () => {
         const scene = createBaseScene();
         const ui = makeUi();
-        buildGameOverUI(
-            scene,
-            ui,
-            5,
-            { entries: [], highlightId: null },
-            false,
-            false,
-            false,
-            0,
-            'classic',
-            'pipe'
-        );
+        buildGameOverUI(scene, ui, goOpts({ finalScore: 5, deathCause: 'pipe' }));
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
         expect(texts).toContain('Collision tuyau');
     });
@@ -106,13 +100,14 @@ describe('uiGameOver', () => {
         buildGameOverUI(
             scene,
             ui,
-            40,
-            { entries: [{ score: 40, id: 'a', skinId: 'cosmos' }], highlightId: null },
-            false,
-            false,
-            false,
-            0,
-            'cosmos'
+            goOpts({
+                finalScore: 40,
+                leaderboardData: {
+                    entries: [{ score: 40, id: 'a', skinId: 'cosmos' }],
+                    highlightId: null,
+                },
+                activeSkinId: 'cosmos',
+            })
         );
         const titles = scene.add.text.mock.calls.map((call) => call[2]);
         expect(titles.some((t) => t.includes('COSMOS'))).toBe(true);
@@ -122,7 +117,7 @@ describe('uiGameOver', () => {
         const { sceneTween } = await import('../src/motion.js');
         const scene = createBaseScene();
         const ui = makeUi();
-        buildGameOverUI(scene, ui, 7, { entries: [], highlightId: null }, true, false);
+        buildGameOverUI(scene, ui, goOpts({ finalScore: 7, fadeIn: true }));
         expect(sceneTween).toHaveBeenCalled();
         const scoreTween = sceneTween.mock.calls.find(([, cfg]) => cfg.targets?.v != null);
         expect(scoreTween).toBeTruthy();
@@ -132,7 +127,7 @@ describe('uiGameOver', () => {
         const scene = createBaseScene();
         const ui = makeUi();
         const rectBefore = scene.add.rectangle.mock.calls.length;
-        buildGameOverUI(scene, ui, 25, { entries: [], highlightId: null }, false, true);
+        buildGameOverUI(scene, ui, goOpts({ finalScore: 25, isNewRecord: true }));
         expect(scene.add.rectangle.mock.calls.length).toBeGreaterThan(rectBefore);
     });
 
@@ -142,13 +137,7 @@ describe('uiGameOver', () => {
         buildGameOverUI(
             scene,
             ui,
-            15,
-            { entries: [], highlightId: null },
-            false,
-            false,
-            true,
-            0,
-            'cosmos'
+            goOpts({ finalScore: 15, hardcoreMode: true, activeSkinId: 'cosmos' })
         );
         const texts = scene.add.text.mock.calls.map((call) => call[2]);
         expect(texts.some((t) => String(t).includes('HC'))).toBe(true);

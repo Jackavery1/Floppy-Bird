@@ -25,10 +25,27 @@ html {
 
 html[data-theme='day'] {
     color-scheme: light;
+    --couleur-fond: #87ceeb;
+    --couleur-texte-chargement: #0d47a1;
 }
 
 html[data-theme='night'] {
     color-scheme: dark;
+    --couleur-fond: #1a1a2e;
+    --couleur-texte-chargement: #90caf9;
+}
+
+html[data-contrast-high='true'] {
+    --couleur-texte-hint: #ffffff;
+    --couleur-accent: #ffeb3b;
+}
+
+html[data-theme='night'][data-contrast-high='true'] {
+    --couleur-texte-chargement: #bbdefb;
+}
+
+html[data-theme='day'][data-contrast-high='true'] {
+    --couleur-texte-chargement: #0d47a1;
 }
 
 html.partie-active {
@@ -132,7 +149,6 @@ body {
 @media (pointer: coarse) {
     .a11y-btn {
         opacity: 0.14;
-        border-color: rgba(253, 216, 53, 0.28);
     }
 
     .a11y-btn:focus-visible {
@@ -236,6 +252,10 @@ html.game-ready #loading {
         --couleur-texte-chargement: #bbdefb;
         --couleur-texte-hint: #ffffff;
         --couleur-accent: #ffeb3b;
+    }
+
+    html[data-theme='day'] {
+        --couleur-texte-chargement: #0d47a1;
     }
 
     .a11y-btn:focus-visible {

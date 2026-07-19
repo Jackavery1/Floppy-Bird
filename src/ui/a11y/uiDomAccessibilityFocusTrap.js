@@ -28,7 +28,7 @@ export function focusFirstVisibleAccessibilityControl(doc = getDocument()) {
     const buttons = getVisibleA11yButtons(doc);
     const first = buttons[0];
     if (!first || typeof first.focus !== 'function') return false;
-    first.focus();
+    first.focus({ preventScroll: true, focusVisible: false });
     return true;
 }
 
@@ -60,13 +60,13 @@ export function bindAccessibilityFocusTrap(doc = getDocument()) {
         if (event.shiftKey) {
             if (active === first || !layer.contains(active)) {
                 event.preventDefault();
-                last.focus();
+                last.focus({ focusVisible: true });
             }
             return;
         }
         if (active === last || !layer.contains(active)) {
             event.preventDefault();
-            first.focus();
+            first.focus({ focusVisible: true });
         }
     });
 }

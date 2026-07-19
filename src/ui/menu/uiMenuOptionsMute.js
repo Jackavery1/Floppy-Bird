@@ -54,8 +54,14 @@ export function buildMuteControls(ui, add, y) {
         ui._muteHit.setInteractive({ useHandCursor: true });
         bindUnifiedInteractiveFocus(
             'menuMute',
-            () => ui._muteText.setAlpha(1),
-            () => ui._muteText.setAlpha(0.92)
+            () => {
+                ui._muteText.setAlpha(1);
+                ui._muteText.setScale(1.06);
+            },
+            () => {
+                ui._muteText.setAlpha(1);
+                ui._muteText.setScale(1);
+            }
         ).attachHit(ui._muteHit);
         ui._muteHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);

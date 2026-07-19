@@ -1,5 +1,6 @@
 import { setupGameOverAccessibility } from '../ui/a11y/uiDomAccessibilityFlows.js';
 import { preloadGameOverUI } from '../ui/gameOver/uiGameOverLoader.js';
+import { isHapticsEnabled } from '../haptics.js';
 
 /** @param {() => import('../sceneTypes.js').SceneContext | undefined} getScene */
 export function createUiSeam(getScene) {
@@ -12,14 +13,14 @@ export function createUiSeam(getScene) {
             return preloadGameOverUI().then(() => {
                 scene.state = 'gameover';
                 scene.ui.clearOverlay('gameOver');
-                const { elements } = scene.ui.showGameOver(
-                    scene.round.score,
-                    { entries: [], highlightId: null },
-                    false,
-                    false,
-                    scene.hardcoreMode,
-                    dailyGoal
-                );
+                const { elements } = scene.ui.showGameOver({
+                    finalScore: scene.round.score,
+                    leaderboardData: { entries: [], highlightId: null },
+                    fadeIn: false,
+                    isNewRecord: false,
+                    hardcoreMode: scene.hardcoreMode,
+                    dailyGoal,
+                });
                 scene.ui.setOverlay('gameOver', elements);
                 setupGameOverAccessibility(scene, {
                     score: scene.round.score,
@@ -39,6 +40,7 @@ export function createUiSeam(getScene) {
                 difficulty: scene.difficulty ?? null,
                 trainingMode: Boolean(scene.trainingMode),
                 hardcoreMode: Boolean(scene.hardcoreMode),
+                hapticsEnabled: isHapticsEnabled(),
                 dailyChallengeMode: Boolean(scene.dailyChallengeMode),
                 firstRunHintVisible: Boolean(ui._firstRunHint?.visible),
                 firstRunHintText: ui._firstRunHint?.text ?? null,

@@ -63,14 +63,15 @@ Comportements validés : letterbox 288×512, safe-area, pinch-zoom et zoom navig
 
 Matrice clavier détaillée (desktop vs mobile vs tablette) : [README.md — Matrice clavier et entrées](README.md#matrice-clavier-et-entrées).
 
-#### Smoke deploy (CI)
+#### Smoke CI (feedback rapide)
 
-Le job `e2e-smoke` gate le déploiement GitHub Pages sur **4 viewports** : `chromium-desktop`, `chromium-mobile-portrait`, `chromium-tablet-portrait`, `chromium-tablet-landscape` (voir `.github/workflows/ci.yml`). La régression visuelle canvas (`visual-regression.spec.js`) reste dans la matrice e2e complète, hors gate smoke (snapshots sensibles OS CI vs local).
+Le job `e2e-smoke` tourne sur **4 viewports** Chromium (desktop, mobile portrait, tablette portrait/paysage) pour un signal rapide en PR. La régression visuelle canvas (`visual-regression.spec.js`) reste dans la matrice e2e complète (snapshots sensibles OS CI vs local).
 
-Le job `e2e` (matrice complète) couvre **8 viewports**, incluant paysage mobile, WebKit iPad et tablettes Chromium.
+Le job `e2e` (matrice **8 viewports**) **gate le déploiement** GitHub Pages (`deploy.needs`).
 
 ```bash
-npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports : desktop, mobile portrait, tablette portrait/paysage)
+npm run test:e2e:smoke   # smoke 4 viewports (feedback rapide)
+npm run test:e2e:ci      # matrice complète 8 viewports (gate deploy)
 ```
 
 #### Couverture Vitest
@@ -113,8 +114,6 @@ Générées avant chaque build de production :
 ```bash
 npm run icons           # génère public/icons/
 npm run icons:optimize  # recompression PNG (exécuté en CI après icons)
-npm run test:e2e:smoke   # smoke bloquant deploy (4 viewports)
-npm run test:e2e:ci      # matrice complète 8 viewports
 npm run measure         # tailles dist/ et assets (après npm run build)
 ```
 
@@ -157,7 +156,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (4 viewports Chromium). La matrice e2e complète (**8 viewports**, job `e2e`) est **bloquante pour le statut CI / PR**, mais **ne gate pas** le déploiement Pages.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e`** (matrice **8 viewports**). Le job `e2e-smoke` (4 viewports) reste un signal rapide en PR, sans remplacer la gate deploy.
 
 En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 
@@ -195,6 +194,6 @@ Vérifier qu’elles restent ignorées : `git check-ignore -v public/icons/icon-
 ## Conventions de code
 
 - **Identifiants** : anglais pour modules, fonctions exportées et API Phaser (`showMenu`, `buildOptionsContent`) — stabilité des imports et alignement avec l’écosystème. **Ne pas renommer massivement** les identifiants existants sans raison fonctionnelle. Textes joueur et commentaires en français.
-- **`SceneContext`** : contrat JSDoc dans `src/sceneTypes.js` — tout module `scene*` reçoit ce contexte ; ne pas accéder à la physique ou au storage depuis `ui*.js`. Résumé dans [ARCHITECTURE.md](ARCHITECTURE.md#contrat-scenecontext-srcscenetypesjs).
-- **`TOUCH_TARGETS`** (`src/ui/shared/uiLayoutConstants.js`) : coordonnées jeu pour les tests e2e — chaque clé doit avoir une spec Playwright associée (`e2e/touch.spec.js`, `e2e/scoreHud.spec.js`).
+- **`SceneContext`** : contrat JSDoc dans `src/sceneTypes.js` — tout module `scene*` reçoit ce contexte ; ne pas accéder à la physique ou au storage depuis `ui*.js`. Résumé dans [ARCHITECTURE.md](ARCHITECTURE.md#contrat-scenecontext-srcscenetypesjs). Carte clusters : [ARCHITECTURE.md — Carte des modules](ARCHITECTURE.md#carte-des-modules-onboarding).
+- **`TOUCH_TARGETS`** (`src/ui/shared/uiLayoutConstants.js`) : coordonnées jeu pour les e2e — chaque clé doit être couverte par au moins une spec Playwright (`e2e/touch.spec.js`, `e2e/touchTargets.spec.js`, `e2e/keyboard.spec.js`, `e2e/tutorial.spec.mjs`, ou helper `e2e/helpers/gameCoords.mjs`).
 - **Format** : Prettier sur `src/`, `tests/`, `e2e/`, `scripts/` (`npm run format` avant une PR si le diff touche plusieurs fichiers).

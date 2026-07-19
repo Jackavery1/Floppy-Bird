@@ -130,7 +130,16 @@ describe('UI façade — délégation', () => {
     });
 
     it('délègue showGameOver', () => {
-        ui.showGameOver(12, { entries: [] }, true, false, false, 0, 'classic', 'pipe');
+        ui.showGameOver({
+            finalScore: 12,
+            leaderboardData: { entries: [] },
+            fadeIn: true,
+            isNewRecord: false,
+            hardcoreMode: false,
+            dailyGoal: 0,
+            activeSkinId: 'classic',
+            deathCause: 'pipe',
+        });
         expect(buildGameOverUI).toHaveBeenCalled();
     });
 
@@ -148,7 +157,7 @@ describe('UI façade — délégation', () => {
     });
 
     it('expose les méthodes déléguées via uiFacadeBind', () => {
-        expect(UI_FACADE_METHODS).toHaveLength(36);
+        expect(UI_FACADE_METHODS).toHaveLength(41);
         for (const name of UI_FACADE_METHODS) {
             expect(typeof ui[name]).toBe('function');
         }

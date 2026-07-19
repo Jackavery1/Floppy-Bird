@@ -46,7 +46,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 | Domaine | Détail |
 | ------- | ------ |
-| **Gameplay** | 60 FPS, coyote time, buffer de saut (1 frame), gaps scriptés puis aléatoires, escalade de difficulté |
+| **Gameplay** | 60 FPS, coyote time, buffer de saut (2 frames), gaps scriptés puis aléatoires, escalade de difficulté |
 | **Modes** | Classique (3 difficultés), entraînement, hardcore, défi du jour |
 | **Meta** | 16 skins déblocables, 8 trophées, records et TOP 5 par difficulté |
 | **Responsive** | Letterbox 288×512, mobile / tablette / desktop, safe-area, CTA primaires 48 px |
@@ -166,7 +166,7 @@ Documentation complémentaire : [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUT
 
 #### Responsive et viewports
 
-Letterbox 288×512 ; mobile / tablette / desktop ; CTA primaires 48 px ; safe-area. Détail des projets Playwright (smoke deploy vs matrice PR) : [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright). Commande smoke : `npm run test:e2e:smoke`.
+Letterbox 288×512 ; mobile / tablette / desktop ; CTA primaires 48 px ; safe-area. Détail des projets Playwright (smoke PR vs matrice 8 VP gate deploy) : [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright). Commande smoke : `npm run test:e2e:smoke`.
 
 #### Clavier et entrées
 

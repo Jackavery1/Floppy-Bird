@@ -41,7 +41,7 @@ describe('appBootstrap a11y', () => {
                     this.children.push(child);
                 }),
             })),
-            documentElement: { style: rootStyle, classList: { add: vi.fn() } },
+            documentElement: { style: rootStyle, dataset: {}, classList: { add: vi.fn() } },
             body: {
                 clientWidth: 390,
                 clientHeight: 844,
@@ -51,6 +51,7 @@ describe('appBootstrap a11y', () => {
                 }),
             },
             querySelector: vi.fn(() => ({ setAttribute: vi.fn() })),
+            querySelectorAll: vi.fn(() => [{ setAttribute: vi.fn() }]),
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '0',

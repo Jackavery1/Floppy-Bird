@@ -114,6 +114,14 @@ export const MENU_CONTROL_DEFS = Object.freeze({
         width: 160,
         height: MIN_TOUCH,
     },
+    menuHaptics: {
+        id: 'a11y-haptics',
+        label: 'Vibration',
+        x: TOUCH_TARGETS.menuHaptics.x,
+        y: TOUCH_TARGETS.menuHaptics.y,
+        width: 180,
+        height: MIN_TOUCH,
+    },
     menuSkinsPrev: {
         id: 'a11y-skin-prev',
         label: 'Apparence précédente',

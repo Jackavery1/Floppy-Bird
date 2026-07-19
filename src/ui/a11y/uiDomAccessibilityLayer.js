@@ -1,9 +1,6 @@
 import { GAME_CONFIG } from '../../config.js';
 import { CONTROL_DEFS } from './uiDomAccessibilityDefs.js';
-import {
-    bindAccessibilityFocusTrap,
-    focusFirstVisibleAccessibilityControl,
-} from './uiDomAccessibilityFocusTrap.js';
+import { bindAccessibilityFocusTrap } from './uiDomAccessibilityFocusTrap.js';
 import {
     blurHandlers,
     focusHandlers,
@@ -106,8 +103,7 @@ export function syncAccessibilityLayer(game) {
     }
 }
 
-/** Après sync : place le focus clavier sur le premier contrôle visible. */
+/** Après sync : positions a11y à jour (sans autofocus — évite le chrome jaune sur REJOUER / JOUER). */
 export function syncAndFocusAccessibilityLayer(game) {
     syncAccessibilityLayer(game);
-    focusFirstVisibleAccessibilityControl();
 }

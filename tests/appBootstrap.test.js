@@ -131,12 +131,13 @@ describe('appBootstrap', () => {
             visualViewport: { addEventListener: addListener },
         });
         const loading = { classList: { add: vi.fn() } };
-        const rootStyle = { setProperty: vi.fn() };
+        const dataset = {};
         vi.stubGlobal('document', {
             getElementById: vi.fn(() => loading),
-            documentElement: { style: rootStyle, classList: { add: vi.fn() } },
-            body: { clientWidth: 390, clientHeight: 844, style: {} },
+            documentElement: { dataset, classList: { add: vi.fn() } },
+            body: { clientWidth: 390, clientHeight: 844 },
             querySelector: vi.fn(() => ({ setAttribute: vi.fn() })),
+            querySelectorAll: vi.fn(() => [{ setAttribute: vi.fn() }]),
         });
         vi.stubGlobal('getComputedStyle', () => ({
             paddingTop: '0',
@@ -149,7 +150,7 @@ describe('appBootstrap', () => {
         const { onGameReady } = await import('../src/appBootstrap.js');
         onGameReady(game);
 
-        expect(rootStyle.setProperty).toHaveBeenCalled();
+        expect(dataset.theme).toMatch(/^(day|night)$/);
         expect(addListener).toHaveBeenCalled();
         expect(loading.classList.add).toHaveBeenCalledWith('hidden');
     });

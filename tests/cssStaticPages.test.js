@@ -30,6 +30,8 @@ describe('cssStaticPages', () => {
         const referenced = extractHtmlClasses(html);
         const missing = [...referenced].filter((name) => !defined.has(name));
         expect(missing, `classes offline sans règle: ${missing.join(', ')}`).toEqual([]);
+        expect(html).toContain('href="offline-page.css"');
+        expect(html).toContain('href="shell-tokens.css"');
     });
 
     it('tokens.html référence des classes définies dans tokensPage.css', () => {

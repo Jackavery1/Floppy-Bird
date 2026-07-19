@@ -3,36 +3,30 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 describe('shellTheme', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
+        vi.resetModules();
     });
 
-    it('syncShellTheme applique les variables CSS et theme-color', async () => {
+    it('syncShellTheme pose data-theme et theme-color sans CSSOM', async () => {
         vi.stubGlobal(
             'matchMedia',
             vi.fn(() => ({ matches: false }))
         );
-        const style = { setProperty: vi.fn(), colorScheme: '' };
         const meta = { setAttribute: vi.fn() };
         const doc = {
-            documentElement: { style, dataset: {} },
-            body: { style: {} },
+            documentElement: { dataset: {} },
+            body: {},
             querySelector: vi.fn(() => meta),
+            querySelectorAll: vi.fn(() => [meta]),
         };
         const { syncShellTheme } = await import('../src/shellTheme.js');
         syncShellTheme(doc);
 
-        expect(style.setProperty).toHaveBeenCalledWith('--couleur-fond', expect.any(String));
-        expect(style.setProperty).toHaveBeenCalledWith(
-            '--couleur-texte-chargement',
-            expect.any(String)
-        );
-        expect(style.setProperty).toHaveBeenCalledWith('--spacing-md', '12px');
-        expect(meta.setAttribute).toHaveBeenCalledWith('content', expect.any(String));
-        expect(doc.body.style.background).toBeTruthy();
         expect(doc.documentElement.dataset.theme).toMatch(/^(day|night)$/);
-        expect(['light', 'dark']).toContain(doc.documentElement.style.colorScheme);
+        expect(meta.setAttribute).toHaveBeenCalledWith('content', expect.any(String));
+        expect(doc.documentElement.style).toBeUndefined();
     }, 10_000);
 
-    it('syncShellTheme renforce le contraste et data-contrast-high', async () => {
+    it('syncShellTheme pose data-contrast-high si prefers-contrast', async () => {
         vi.stubGlobal(
             'matchMedia',
             vi.fn((query) => ({
@@ -40,16 +34,15 @@ describe('shellTheme', () => {
                 media: query,
             }))
         );
-        const style = { setProperty: vi.fn() };
         const doc = {
-            documentElement: { style, dataset: {} },
-            body: { style: {} },
+            documentElement: { dataset: {} },
+            body: {},
             querySelector: vi.fn(() => ({ setAttribute: vi.fn() })),
+            querySelectorAll: vi.fn(() => []),
         };
         const { syncShellTheme } = await import('../src/shellTheme.js');
         syncShellTheme(doc);
 
-        expect(style.setProperty).toHaveBeenCalledWith('--couleur-accent', '#ffeb3b');
         expect(doc.documentElement.dataset.contrastHigh).toBe('true');
     });
 });

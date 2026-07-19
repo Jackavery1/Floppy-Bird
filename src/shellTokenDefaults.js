@@ -18,7 +18,7 @@ export const SHELL_TOKEN_CSS_FALLBACKS = Object.freeze({
     '--spacing-xl': `${SPACING.xl}px`,
 });
 
-/** Overrides `prefers-contrast: more` — alignés avec shellTheme.js */
+/** Overrides `prefers-contrast: more` — aussi appliqués via CSS `html[data-contrast-high]` / media query */
 export const SHELL_HIGH_CONTRAST_CSS_VARS = Object.freeze({
     '--couleur-texte-chargement': DESIGN_TOKENS.texteChargementContraste,
     '--couleur-texte-hint': DESIGN_TOKENS.texteHint,

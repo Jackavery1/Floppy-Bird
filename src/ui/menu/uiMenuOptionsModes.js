@@ -56,8 +56,14 @@ export function buildModeControls(ui, add, panel) {
     ui._trainingHit.setInteractive({ useHandCursor: true });
     bindUnifiedInteractiveFocus(
         'menuTraining',
-        () => ui._trainingLabel.setAlpha(1),
-        () => ui._trainingLabel.setAlpha(0.92)
+        () => {
+            ui._trainingLabel.setAlpha(1);
+            ui._trainingLabel.setScale(1.06);
+        },
+        () => {
+            ui._trainingLabel.setAlpha(1);
+            ui._trainingLabel.setScale(1);
+        }
     ).attachHit(ui._trainingHit);
     ui._trainingHit.on('pointerdown', (_p, _lx, _ly, event) => {
         stopUiEvent(event);
@@ -101,8 +107,14 @@ export function buildModeControls(ui, add, panel) {
         ui._hardcoreHit.setInteractive({ useHandCursor: true });
         bindUnifiedInteractiveFocus(
             'menuHardcore',
-            () => ui._hardcoreLabel.setAlpha(1),
-            () => ui._hardcoreLabel.setAlpha(0.92)
+            () => {
+                ui._hardcoreLabel.setAlpha(1);
+                ui._hardcoreLabel.setScale(1.06);
+            },
+            () => {
+                ui._hardcoreLabel.setAlpha(1);
+                ui._hardcoreLabel.setScale(1);
+            }
         ).attachHit(ui._hardcoreHit);
         ui._hardcoreHit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);

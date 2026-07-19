@@ -31,13 +31,19 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 - Branches : **82 %**
 - Functions : **91 %**
 
-## Dettes volontairement non traitées
+## Dettes résolues (2026-07-19)
 
-| Élément | Raison |
-|---------|--------|
-| Façade UI (`ui/core/ui.js`) | God-object déjà découpé via `uiFacadeBind` ; refactor A5 non prioritaire |
-| Deploy Pages = smoke only | Gate produit documentée : matrice 8 VP bloquante en PR, smoke en deploy |
-| `style-src 'unsafe-inline'` | Nécessaire CSSOM (`shellTheme` / a11y / letterbox) — documenté ARCHITECTURE |
-| Libellé mode « HARDCORE : … » (menu) | Nom de mode produit ; badge HUD / classement utilisent `HC` |
+| Élément | Résolution |
+|---------|------------|
+| Façade UI | Helpers overlay extraits (`uiOverlayHelpers.js`) ; `showGameOver(opts)` objet unique |
+| Deploy Pages | Gate `deploy.needs` = `check` + `lighthouse` + **`e2e`** (matrice 8 VP) |
+| CSP styles | `style-src-elem 'self'` (feuilles via `<link>` — compatible Vite/dev) + `style-src-attr 'unsafe-inline'` (letterbox / a11y) ; thème via `data-theme` sans CSSOM |
+| Libellé HARDCORE menu | Unifié `HC · …` (aligné badge / scores) |
+| Format Prettier WIP | `highScores.js`, `pipeSpawn.js` + tests alignés |
+| Score HUD jour fill AA | `accentTitreJour` `#7A3500` (≥4,5:1 sur `fondJour`) |
+| Jump buffer equity | `jumpBufferFrames` 2 → **3** (~50 ms @ 60 FPS) |
+| Dual buffer saut | `bird.bufferJump` / `_jumpBuffered` retirés — `processJumpBuffer` appelle `bird.jump()` |
+| Façade overlays | `clearOverlay` / `createOverlay` / boutons GO liés via `uiFacadeBind` (plus de pass-through `ui.js`) |
+| Contraste jour × high-contrast | `--couleur-texte-chargement` jour `#0d47a1` sous `data-contrast-high` / `prefers-contrast` |
 
-Dernière mise à jour : 2026-07-17 (v2.0.0 — P0–P2 + dettes audit traitées ; exclusions inchangées).
+Dernière mise à jour : 2026-07-19 (correctifs audit architecture + responsivité).

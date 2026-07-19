@@ -4,6 +4,7 @@ export const STORAGE_KEYS = Object.freeze({
     leaderboard: 'flappy-bird-leaderboard',
     leaderboardPrefix: 'flappy-bird-leaderboard-',
     muted: 'flappy-bird-muted',
+    haptics: 'floppy-bird-haptics',
     volume: 'flappy-bird-volume',
     volumeLegacy: 'flappy-bird-sound-level',
     ghost: 'flappy-bird-ghost',

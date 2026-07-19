@@ -23,8 +23,8 @@ describe('uiDomAccessibilityControlDefs', () => {
         }
     });
 
-    it('expose 26 contrôles a11y', () => {
-        expect(Object.keys(CONTROL_DEFS)).toHaveLength(26);
+    it('expose 27 contrôles a11y', () => {
+        expect(Object.keys(CONTROL_DEFS)).toHaveLength(27);
     });
 
     it('pause resume / menu respectent MIN_CTA_TOUCH', () => {

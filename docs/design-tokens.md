@@ -10,10 +10,10 @@ Référence visuelle pour reprendre l’UI sans parcourir tout le code Phaser.
 | Shell HTML | `public/shell-tokens.css` + `style.css` | Fond, accent, polices, spacing CSS (import partagé) |
 | Source JS shell | `src/shellTokenDefaults.js` | Fallbacks CSS + overrides `prefers-contrast: more` (test `shellTokenSync.test.js`) |
 | Pages statiques | `public/offline-page.css` | Fallback hors-ligne (utilise `shell-tokens.css`) |
-| Runtime | `src/shellTheme.js` | Sync tokens → CSS, `theme-color`, cycle jour/nuit, `prefers-contrast: more` |
+| Runtime | `src/shellTheme.js` | `data-theme` / `data-contrast-high`, `theme-color` (vars CSS via feuilles, pas de CSSOM) |
 | Layout | `src/ui/shared/uiLayoutConstants.js` | Grille 4 px, `MIN_TOUCH = 44`, coordonnées HUD/menu |
 
-Les valeurs `:root` vivent dans `public/shell-tokens.css` (importées par `style.css`), dérivées de `shellTokenDefaults.js`, et sont resynchronisées au chargement via `syncShellTheme()`.
+Les valeurs `:root` vivent dans `public/shell-tokens.css` (importées par `style.css`), dérivées de `shellTokenDefaults.js`. Au runtime, `syncShellTheme()` pose seulement les attributs `data-*` et met à jour `theme-color` — le bascule jour/nuit est porté par les sélecteurs CSS.
 
 Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js` (pas de CSS orphelin dans `style.css`).
 
@@ -24,7 +24,7 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 | `fondNuit` | `#1a1a2e` | Fond shell / nuit |
 | `fondJour` | `#87ceeb` | Ciel jour |
 | `accent` / `accentTitre` | `#fdd835` | Titres, focus, CTA ; score HUD **nuit** |
-| `accentTitreJour` | `#F9A825` | Score HUD **jour** (ambre plus lisible) |
+| `accentTitreJour` | `#7A3500` | Score HUD **jour** (≥4,5:1 fill seul sur ciel) |
 | `texteHud` | `#ffffff` | Hints / badges HUD (contour noir obligatoire en jour) |
 | `texteBoutonJaune` | sombre sur `#fdd835` | REJOUER, pills actives |
 
@@ -65,7 +65,7 @@ Le fond ciel (`fondJour` `#87ceeb`) est clair : le texte HUD blanc seul **ne pas
 2. **Contraste mesuré sur le contour**, pas sur le fill blanc — validé dans `tests/designTokens.test.js`.
 3. **Assombrissement des bannières** en jour via `hudBannerFill()` pour les fonds semi-opaques.
 4. **`prefers-contrast: more`** : épaisseur contour +3 px, accent renforcé (`shellTheme.js` + `style.css`).
-5. **Score HUD** : nuit = `accentTitre` ; jour = `accentTitreJour` + stroke `contourHud` 6 px (`uiHudScore.js`).
+5. **Score HUD** : nuit = `accentTitre` ; jour = `accentTitreJour` `#7A3500` (≥4,5:1 fill seul) + stroke `contourHud` 6 px (`uiHudScore.js`).
 
 Ne pas retirer le contour en mode jour sans recalculer les ratios.
 

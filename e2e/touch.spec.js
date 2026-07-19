@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { TOUCH_TARGETS } from '../src/ui/shared/uiLayout.js';
+import { HARDCORE_UNLOCK_SCORE } from '../src/hardcoreUnlock.js';
 import {
     enterPausedFromPlaying,
     expectGameState,
@@ -174,11 +175,31 @@ test.describe('touch mobile portrait', () => {
         await expect.poll(() => getMenuPanels(page).then((p) => p?.options)).toBe(true);
     });
 
-    test('active hardcore via onglet REGL dans options', async ({ page }, testInfo) => {
+    test('bascule vibration via tap dans options (indépendant du mute)', async ({
+        page,
+    }, testInfo) => {
         test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
         await page.addInitScript(() => {
-            localStorage.setItem('flappy-bird-high-score-normal', '15');
+            localStorage.setItem('flappy-bird-muted', '1');
         });
+        const usesTouch = projectUsesTouch(testInfo);
+        await waitForGameReady(page);
+        const { menuOptions, menuHaptics } = TOUCH_TARGETS;
+        await pointerGameCoord(page, menuOptions.x, menuOptions.y, usesTouch);
+        await expect.poll(() => getMenuPanels(page).then((p) => p?.options)).toBe(true);
+        expect(await getMenuPanels(page).then((p) => p?.hapticsEnabled)).toBe(true);
+        await pointerGameCoord(page, menuHaptics.x, menuHaptics.y, usesTouch);
+        await expect.poll(() => getMenuPanels(page).then((p) => p?.hapticsEnabled)).toBe(false);
+        await expect
+            .poll(() => page.evaluate(() => localStorage.getItem('floppy-bird-haptics')))
+            .toBe('0');
+    });
+
+    test('active hardcore via onglet REGL dans options', async ({ page }, testInfo) => {
+        test.skip(!isMobilePortraitProject(testInfo.project.name), 'mobile portrait uniquement');
+        await page.addInitScript((unlockScore) => {
+            localStorage.setItem('flappy-bird-high-score-normal', String(unlockScore));
+        }, HARDCORE_UNLOCK_SCORE);
         const usesTouch = projectUsesTouch(testInfo);
         await waitForGameReady(page);
         const { menuOptions, menuHardcore, menuOptionsTabPreferences } = TOUCH_TARGETS;

@@ -46,7 +46,7 @@
         <meta name="robots" content="index, follow" />
         <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; media-src 'self'; base-uri 'self'; form-action 'self'"
+            content="default-src 'self'; script-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; media-src 'self'; base-uri 'self'; form-action 'self'"
         />
         <link rel="canonical" href="https://jackavery1.github.io/Floppy-Bird/" />
         <title>Floppy Bird</title>
@@ -78,6 +78,8 @@
         <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
         <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
         <link rel="manifest" href="manifest.webmanifest" />
+        <link rel="stylesheet" href="./style.css" />
+        <link rel="stylesheet" href="./style-pwa.css" />
     </head>
     <body>
         <a href="#game-container" class="skip-link">Aller au jeu</a>

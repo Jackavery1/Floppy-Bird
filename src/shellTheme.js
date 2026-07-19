@@ -1,53 +1,20 @@
 import { getBackgroundPeriod } from './backgroundPeriod.js';
-import { DESIGN_TOKENS, prefersHighContrast } from './designTokens.js';
-import { SPACING } from './ui/shared/uiLayoutConstants.js';
+import { prefersHighContrast } from './designTokens.js';
 import { getBackgroundCanvasColor } from './textures/backgroundTextures.js';
 
-import { SHELL_HIGH_CONTRAST_CSS_VARS } from './shellTokenDefaults.js';
-
-const CONTRAST_CSS_VARS = SHELL_HIGH_CONTRAST_CSS_VARS;
-
-const CSS_VARS = Object.freeze({
-    '--couleur-fond': () => getBackgroundCanvasColor(),
-    '--couleur-texte-chargement': () =>
-        getBackgroundPeriod() === 'day'
-            ? DESIGN_TOKENS.texteChargementJour
-            : DESIGN_TOKENS.texteChargement,
-    '--couleur-texte-hint': () => DESIGN_TOKENS.texteHint,
-    '--couleur-accent': () => DESIGN_TOKENS.accent,
-    '--police-interface': () => DESIGN_TOKENS.policeInterface,
-    '--police-titre': () => DESIGN_TOKENS.policeTitre,
-    '--spacing-xs': () => `${SPACING.xs}px`,
-    '--spacing-sm': () => `${SPACING.sm}px`,
-    '--spacing-md': () => `${SPACING.md}px`,
-    '--spacing-lg': () => `${SPACING.lg}px`,
-    '--spacing-xl': () => `${SPACING.xl}px`,
-});
-
-/** Aligne fond letterbox, theme-color et variables CSS sur la période jour/nuit. */
+/** Aligne data-theme, contraste et theme-color (vars CSS via feuilles — pas de CSSOM). */
 export function syncShellTheme(doc = document) {
     const root = doc.documentElement;
-    if (!root?.style) return;
-
-    for (const [name, resolve] of Object.entries(CSS_VARS)) {
-        root.style.setProperty(name, resolve());
-    }
+    if (!root) return;
 
     const period = getBackgroundPeriod();
     if (root.dataset) {
         root.dataset.theme = period;
-    }
-    root.style.colorScheme = period === 'day' ? 'light' : 'dark';
-
-    if (prefersHighContrast()) {
-        for (const [name, value] of Object.entries(CONTRAST_CSS_VARS)) {
-            root.style.setProperty(name, value);
-        }
-        if (root.dataset) {
+        if (prefersHighContrast()) {
             root.dataset.contrastHigh = 'true';
+        } else {
+            delete root.dataset.contrastHigh;
         }
-    } else if (root.dataset) {
-        delete root.dataset.contrastHigh;
     }
 
     const fond = getBackgroundCanvasColor();
@@ -58,8 +25,5 @@ export function syncShellTheme(doc = document) {
         }
     } else {
         doc.querySelector('meta[name="theme-color"]')?.setAttribute('content', fond);
-    }
-    if (doc.body?.style) {
-        doc.body.style.background = fond;
     }
 }
