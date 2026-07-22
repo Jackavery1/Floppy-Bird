@@ -67,7 +67,7 @@ Matrice clavier détaillée (desktop vs mobile vs tablette) : [README.md — Mat
 
 Le job `e2e-smoke` tourne sur **4 viewports** Chromium (desktop, mobile portrait, tablette portrait/paysage) pour un signal rapide en PR. La régression visuelle canvas (`visual-regression.spec.js`) reste dans la matrice e2e complète (snapshots sensibles OS CI vs local).
 
-Le job `e2e` (matrice **8 viewports**) **gate le déploiement** GitHub Pages (`deploy.needs`).
+Le job `e2e-smoke` (matrice **4 viewports**) **gate le déploiement** GitHub Pages (`deploy.needs`). La matrice `e2e` (8 VP) reste un signal CI non bloquant pour Pages.
 
 ```bash
 npm run test:e2e:smoke   # smoke 4 viewports (feedback rapide)
@@ -156,7 +156,7 @@ Si `npm install` échoue avec `UNABLE_TO_VERIFY_LEAF_SIGNATURE` ou une erreur SS
 $env:BASE_PATH="/Floppy-Bird/"; npm run icons; npm run build; npm run preview
 ```
 
-Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e`** (matrice **8 viewports**). Le job `e2e-smoke` (4 viewports) reste un signal rapide en PR, sans remplacer la gate deploy.
+Le job `deploy` pousse `dist/` sur **`gh-pages`** après **`check`** + **`lighthouse`** + **`e2e-smoke`** (matrice **4 viewports**). Le job `e2e` (8 viewports) reste un signal étendu, sans bloquer Pages.
 
 En CI, `PLAYWRIGHT_SKIP_BUILD=1` évite un double `npm run build` (build explicite dans le job, preview seul dans Playwright). En local, `npm run test:e2e` rebuild via `webServer` comme avant.
 

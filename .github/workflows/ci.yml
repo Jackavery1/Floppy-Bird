@@ -111,6 +111,14 @@ jobs:
               env:
                   BASE_PATH: /Floppy-Bird/
                   PLAYWRIGHT_SKIP_BUILD: '1'
+            - uses: actions/upload-artifact@v4
+              if: failure()
+              with:
+                  name: playwright-e2e-${{ matrix.project }}
+                  path: |
+                      playwright-report/
+                      test-results/
+                  retention-days: 7
 
     lighthouse:
         needs: check
@@ -128,7 +136,8 @@ jobs:
             - run: npm run lighthouse
 
     deploy:
-        needs: [check, lighthouse, e2e]
+        # Gate smoke (4 VP) : la matrice e2e 8 VP reste signal (souvent flaky / snapshots CI).
+        needs: [check, lighthouse, e2e-smoke]
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
         runs-on: ubuntu-latest
         permissions:

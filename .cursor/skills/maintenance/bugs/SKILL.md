@@ -58,7 +58,7 @@ Checklist rapide selon le type :
 - `page.goto` bloqué par SW → `waitUntil: 'domcontentloaded'`
 
 **CI / déploiement**
-- Le job `deploy` dépend de **`check` + `lighthouse` + `e2e`** (matrice 8 viewports) — `e2e-smoke` reste un signal rapide PR
+- Le job `deploy` dépend de **`check` + `lighthouse` + `e2e-smoke`** (4 viewports) — `e2e` (8 VP) reste signal CI
 - Build prod avec le bon `BASE_PATH` (`/Nom-Repo/`) ?
 - Pages : branche **`gh-pages`**, dossier **`/ (root)`** — pas `main`
 

@@ -313,7 +313,7 @@ Détail des specs, viewports et commandes : [CONTRIBUTING.md](CONTRIBUTING.md). 
 
 - **Unitaires** : gameplay, UI, storage, accessibilité
 - **E2E** : navigation, clavier/touch, responsive, PWA offline
-- **CI** : `check` → matrice e2e complète (**8** viewports, job `e2e` — **gate deploy**) + `e2e-smoke` (4 VP, feedback rapide PR) + lighthouse
+- **CI** : `check` → `e2e-smoke` (4 VP — **gate deploy**) + matrice e2e (**8** VP, signal) + lighthouse
 
 ## Implémentation accessibilité
 

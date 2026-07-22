@@ -166,7 +166,7 @@ Documentation complémentaire : [ARCHITECTURE.md](ARCHITECTURE.md) · [CONTRIBUT
 
 #### Responsive et viewports
 
-Letterbox 288×512 ; mobile / tablette / desktop ; CTA primaires 48 px ; safe-area. Détail des projets Playwright (smoke PR vs matrice 8 VP gate deploy) : [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright). Commande smoke : `npm run test:e2e:smoke`.
+Letterbox 288×512 ; mobile / tablette / desktop ; CTA primaires 48 px ; safe-area. Détail des projets Playwright (smoke = gate deploy vs matrice 8 VP signal) : [CONTRIBUTING.md](CONTRIBUTING.md#matrice-viewports-e2e-playwright). Commande smoke : `npm run test:e2e:smoke`.
 
 #### Clavier et entrées
 

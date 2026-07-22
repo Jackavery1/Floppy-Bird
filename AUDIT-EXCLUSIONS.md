@@ -36,7 +36,7 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 | Élément | Résolution |
 |---------|------------|
 | Façade UI | Helpers overlay extraits (`uiOverlayHelpers.js`) ; `showGameOver(opts)` objet unique |
-| Deploy Pages | Gate `deploy.needs` = `check` + `lighthouse` + **`e2e`** (matrice 8 VP) |
+| Deploy Pages | Gate `deploy.needs` = `check` + `lighthouse` + **`e2e-smoke`** (4 VP) ; matrice e2e 8 VP = signal |
 | CSP styles | `style-src-elem 'self'` (feuilles via `<link>` — compatible Vite/dev) + `style-src-attr 'unsafe-inline'` (letterbox / a11y) ; thème via `data-theme` sans CSSOM |
 | Libellé HARDCORE menu | Unifié `HC · …` (aligné badge / scores) |
 | Format Prettier WIP | `highScores.js`, `pipeSpawn.js` + tests alignés |
