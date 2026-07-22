@@ -1,0 +1,16 @@
+/* Tokens shell — généré par scripts/sync-shell-tokens.mjs. Source JS : src/shellTokenDefaults.js */
+:root {
+    --couleur-fond: #1a1a2e;
+    --couleur-texte-chargement: #90caf9;
+    --couleur-texte-hint: #ffffff;
+    --couleur-accent: #fdd835;
+    --couleur-alerte: #C62828;
+    --couleur-alerte-texte: #ffffff;
+    --police-interface: 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+    --police-titre: "Press Start 2P", "Courier New", monospace;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+}

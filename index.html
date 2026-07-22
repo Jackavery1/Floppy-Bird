@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes, viewport-fit=cover, interactive-widget=resizes-content"
+        />
+        <!-- En partie tactile, syncShellViewport() réécrit ce meta (user-scalable=no). -->
+        <meta name="color-scheme" content="dark light" />
+        <meta name="theme-color" content="#1a1a2e" />
+        <meta
+            name="description"
+            content="Floppy Bird — arcade 2D, scores locaux, mode hors-ligne."
+        />
+        <meta property="og:title" content="Floppy Bird" />
+        <meta
+            property="og:description"
+            content="Évite les tuyaux et bats ton record — PWA jouable hors ligne."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://jackavery1.github.io/Floppy-Bird/" />
+        <meta property="og:image" content="https://jackavery1.github.io/Floppy-Bird/icons/icon-512.png" />
+        <meta property="og:image:width" content="512" />
+        <meta property="og:image:height" content="512" />
+        <meta
+            property="og:image:alt"
+            content="Floppy Bird — oiseau jaune style arcade sur fond sombre"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Floppy Bird" />
+        <meta
+            name="twitter:description"
+            content="Évite les tuyaux et bats ton record — PWA jouable hors ligne."
+        />
+        <meta name="twitter:image" content="https://jackavery1.github.io/Floppy-Bird/icons/icon-512.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Floppy Bird" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta
+            name="keywords"
+            content="Floppy Bird, jeu arcade, Phaser, PWA, jeu gratuit, jeu casual"
+        />
+        <meta name="author" content="Joris Martinez" />
+        <meta name="robots" content="index, follow" />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'; style-src-elem 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; manifest-src 'self'; media-src 'self'; base-uri 'self'; form-action 'self'"
+        />
+        <link rel="canonical" href="https://jackavery1.github.io/Floppy-Bird/" />
+        <title>Floppy Bird</title>
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "Floppy Bird",
+                "description": "Jeu arcade 2D avec scores locaux et mode hors-ligne. Évite les tuyaux et bats ton record !",
+                "url": "https://jackavery1.github.io/Floppy-Bird/",
+                "applicationCategory": "Game",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "EUR"
+                },
+                "author": {
+                    "@type": "Person",
+                    "name": "Joris Martinez"
+                },
+                "softwareVersion": "2.0.0"
+            }
+        </script>
+        <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+        <link rel="manifest" href="manifest.webmanifest" />
+    <script src="/Floppy-Bird/vendor/phaser.min.js" integrity="sha384-AvQiDMZAVLda3VtAoU5MCfBz8pzXhteb2CiUJeKBmPlWzpXj1uJ96Km11+YuFNu/" crossorigin="anonymous"></script>
+      <script type="module" crossorigin src="/Floppy-Bird/assets/main-CS3OuRQs.js"></script>
+      <link rel="modulepreload" crossorigin href="/Floppy-Bird/assets/ui-409SvFnB.js">
+      <link rel="modulepreload" crossorigin href="/Floppy-Bird/assets/shellTheme-CvxiKleF.js">
+      <link rel="stylesheet" crossorigin href="/Floppy-Bird/assets/shellTheme-BDCC1l7i.css">
+      <link rel="stylesheet" crossorigin href="/Floppy-Bird/assets/main-DFnVbBSu.css">
+    <link rel="manifest" href="/Floppy-Bird/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/Floppy-Bird/registerSW.js"></script></head>
+    <body>
+        <a href="#game-container" class="skip-link">Aller au jeu</a>
+        <main id="app" aria-label="Floppy Bird">
+            <div id="loading" role="status" aria-live="polite">
+                <span class="loading-inner">
+                    <span class="loading-label">Chargement…</span>
+                    <span class="loading-dots" aria-hidden="true"
+                        ><span></span><span></span><span></span
+                    ></span>
+                </span>
+            </div>
+            <div id="landscape-hint" role="status" aria-live="polite">
+                Tourne ton téléphone en portrait pour jouer
+            </div>
+            <p id="game-description" class="visually-hidden">
+                Jeu arcade Floppy Bird. Tab pour les contrôles clavier ; tap ou espace pour jouer.
+            </p>
+            <div id="game-container"></div>
+            <button
+                type="button"
+                id="pwa-install"
+                class="pwa-install"
+                hidden
+                aria-hidden="true"
+            >
+                Installer l’appli
+            </button>
+        </main>
+        <script src="./boot-offline.js"></script>
+        <script src="./boot-loading-timeout.js"></script>
+    </body>
+</html>
