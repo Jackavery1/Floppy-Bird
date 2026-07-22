@@ -129,10 +129,9 @@ Observé : …
 | Localhost OK, GitHub Pages KO | Correctif non poussé ; ou CI deploy en échec |
 | PWA mobile bloquée après fix | Cache service worker — vider données site / réinstaller PWA |
 | `npm run preview` échoue sous Windows | Préférer `npx vite preview --host 127.0.0.1 --port 4173` |
-| E2E matrice rouge | Bloque le deploy Pages (`e2e` dans `needs`) |
-| E2E matrice rouge | Bloque le deploy Pages (`e2e` dans `needs`) |
-| E2E smoke rouge | Signal PR rapide ; ne remplace pas la gate `e2e` |
-| E2E rouge, site OK | Vérifier si le dernier deploy a tourné avant le rouge ; `deploy.needs` inclut `e2e` |
+| E2E smoke rouge | Bloque le deploy Pages (`e2e-smoke` dans `needs`) |
+| E2E matrice rouge | Signal CI (ne bloque plus Pages) |
+| E2E rouge, site OK | Vérifier si le dernier deploy a tourné ; `deploy.needs` = e2e-smoke |
 
 ## Hors scope
 
