@@ -15,6 +15,7 @@ import { loadSelectedSkin } from './metaStorage.js';
 import { wireSceneBindings } from './sceneBindings.js';
 import { DEPTH } from './ui/shared/uiDepth.js';
 import { FONT_SIZE_CHROME } from './ui/shared/fontSizes.js';
+import { DESIGN_TOKENS } from './designTokens.js';
 
 /** @typedef {import('./sceneTypes.js').SceneContext} SceneContext */
 
@@ -49,7 +50,7 @@ export function setupSceneWorld(scene) {
     if (GAME_CONFIG.debug) {
         scene.fps = scene.add.text(10, 10, '', {
             fontSize: FONT_SIZE_CHROME,
-            fill: '#fff',
+            fill: DESIGN_TOKENS.texteHud,
             fontFamily: 'monospace',
         });
         scene.fps.setDepth(DEPTH.FPS);

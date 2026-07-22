@@ -11,7 +11,7 @@ export const MENU_CONTROL_KEYS = Object.freeze([
     'menuSkins',
 ]);
 
-export const OPTIONS_TAB_CONTROL_KEYS = Object.freeze([
+const OPTIONS_TAB_CONTROL_KEYS = Object.freeze([
     'menuOptionsTabControls',
     'menuOptionsTabPreferences',
 ]);

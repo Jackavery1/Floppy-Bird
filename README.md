@@ -46,7 +46,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 
 | Domaine | Détail |
 | ------- | ------ |
-| **Gameplay** | 60 FPS, coyote time, buffer de saut (2 frames), gaps scriptés puis aléatoires, escalade de difficulté |
+| **Gameplay** | 60 FPS, coyote time, buffer de saut (6 frames), gaps scriptés puis aléatoires, escalade de difficulté |
 | **Modes** | Classique (3 difficultés), entraînement, hardcore, défi du jour |
 | **Meta** | 16 skins déblocables, 8 trophées, records et TOP 5 par difficulté |
 | **Responsive** | Letterbox 288×512, mobile / tablette / desktop, safe-area, CTA primaires 48 px |
@@ -83,7 +83,7 @@ Projet personnel développé avec **Phaser 3** et **Vite**, déployé en **PWA**
 - **Coyote time** (5 frames) : marge à la sortie d'un gap — protège tuyaux **et plafond** (pas le sol) ; teinte oiseau `#FFD54F` (`teinteCoyoteActif`) pendant la protection.
 - **Invincibilité spawn** : ~900 ms (classique), **620 ms** (hardcore) ; 1er tuyau à **1300 ms** (marge ≥400 ms).
 - **Tutoriel** en 3 étapes à la première partie ; auto-skip après 3 parties si non terminé.
-- **Escalade** : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; gaps resserrés au score 25.
+- **Escalade** : +3 % vitesse / 10 pts (plafond +15 % à partir du score 50) ; gaps resserrés à partir du score 25, puis tous les 10 pts (−9 px de gap par palier).
 - **Records** : bannière « NOUVEAU RECORD ! » en jeu ; TOP 5 par difficulté (classique et hardcore séparés).
 - **Mort différenciée** : feedback visuel tuyau / sol / plafond + libellé au game over.
 
@@ -170,7 +170,7 @@ Letterbox 288×512 ; mobile / tablette / desktop ; CTA primaires 48 px ; safe-ar
 
 #### Clavier et entrées
 
-Raccourcis desktop : Espace / `1`–`3` / `T` `H` `D` / `O` `S` `K` / ESC / `M` (voir tableau contrôles ci-dessus). Mobile : tap canvas + overlay `#a11y-*`. Pinch bloqué en partie tactile ; zoom navigateur desktop jusqu’à 200 % (e2e).
+Voir [matrice clavier](#matrice-clavier-et-entrées). Mobile : tap canvas + overlay `#a11y-*`. Pinch bloqué en partie tactile ; zoom navigateur desktop jusqu’à 200 % (e2e).
 
 Paramètre debug gameplay : `?debug` affiche FPS et hitboxes collision ; le **mode entraînement** affiche aussi les hitboxes (sprite vs collision vs tuyaux).
 

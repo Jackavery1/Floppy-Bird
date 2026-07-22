@@ -56,7 +56,7 @@ export function createCelestialTextures(scene) {
 }
 
 /** Position coin haut-droit — hors de la trajectoire de l'oiseau. */
-export const CELESTIAL_ANCHOR = Object.freeze({ x: 238, y: 54 });
+const CELESTIAL_ANCHOR = Object.freeze({ x: 238, y: 54 });
 
 /** @param {import('phaser').Scene} scene */
 export function createCelestialSprite(scene) {

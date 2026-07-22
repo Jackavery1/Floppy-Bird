@@ -33,7 +33,7 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 | Rôle | Police | Taille typique |
 |------|--------|----------------|
 | Titre arcade / chrome | Press Start 2P | 14 px défaut (`panelChromeTextStyle`) ; titres/onglets/REJOUER 13–14 px |
-| Corps menu / HUD | Segoe UI (Phaser) | 12–15 px |
+| Corps menu / HUD | Segoe UI (Phaser) | 13–15 px |
 | Score in-game | Press Start 2P | 28 px + relief ; jour = `accentTitreJour` + contour noir 6 px |
 | Chargement shell | `--police-interface` | 14–16 px clamp |
 
@@ -41,9 +41,16 @@ Classes shell référencées : verrouillées par `tests/cssShellClasses.test.js`
 
 Échelle 4 px : `xs=4`, `sm=8`, `md=12`, `lg=16`, `xl=24` (CSS + `SPACING` JS).
 
+Exceptions layout (figées pour le canvas 288×512, documentées) :
+
+| Constante | Valeur | Raison |
+|-----------|--------|--------|
+| `diffBtn.gap` | 10 | Dérivé des `x` figés `[32, 110, 188]` |
+| `HUD_BANNER_SCORE_GAP` | 18 | Marge lisible sous le score (base 68 → 86) |
+
 Zones tactiles : **minimum 44×44 px** (`MIN_TOUCH`) ; CTA primaires et **pause HUD** **48 px** (`MIN_CTA_TOUCH`).
 
-Échelle typo UI : `FONT_SIZE_HINT/BADGE/COMPACT` = 13 px ; `FONT_SIZE_BODY` = 12 px ; `FONT_SIZE_SMALL` / `FONT_SIZE_TINY` = 11 px ; `FONT_SIZE_CHROME` = 14 px ; `FONT_SIZE_BANNER` = 15 px ; `FONT_SIZE_EMPHASIS` = 16 px.
+Échelle typo UI : `FONT_SIZE_HINT/BADGE/COMPACT/BODY` = 13 px ; `FONT_SIZE_SMALL` / `FONT_SIZE_TINY` = 11 px ; `FONT_SIZE_CHROME` = 14 px ; `FONT_SIZE_BANNER` = 15 px ; `FONT_SIZE_EMPHASIS` = 16 px.
 
 ## Référence visuelle
 

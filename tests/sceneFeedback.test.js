@@ -6,6 +6,7 @@ vi.mock('../src/audio.js', () => ({ playSound: vi.fn() }));
 vi.mock('../src/haptics.js', () => ({
     hapticLight: vi.fn(),
     hapticMedium: vi.fn(),
+    hapticHeavy: vi.fn(),
 }));
 
 const prefersReducedMotion = vi.fn(() => false);
@@ -81,11 +82,11 @@ describe('sceneFeedback', () => {
     it('playScoreFeedback déclenche audio, haptique, popup et juice palier ×10', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
         const { playSound } = await import('../src/audio.js');
-        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
+        const { hapticLight, hapticHeavy } = await import('../src/haptics.js');
         const scene = createScene({ scoreEffects: { show: vi.fn() } });
         playScoreFeedback(10, scene);
         expect(playSound).toHaveBeenCalledWith(SOUND.SCORE, 10);
-        expect(hapticMedium).toHaveBeenCalled();
+        expect(hapticHeavy).toHaveBeenCalled();
         expect(hapticLight).not.toHaveBeenCalled();
         expect(scene.scoreEffects.show).toHaveBeenCalledWith(80, 200);
         expect(spawnScoreJuice).toHaveBeenCalledWith(scene, 80, 200, 10);
@@ -93,11 +94,11 @@ describe('sceneFeedback', () => {
 
     it('playScoreFeedback utilise haptique léger et popup hors palier ×10', async () => {
         const { playScoreFeedback } = await import('../src/sceneFeedback.js');
-        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
+        const { hapticLight, hapticHeavy } = await import('../src/haptics.js');
         const scene = createScene({ scoreEffects: { show: vi.fn() } });
         playScoreFeedback(3, scene);
         expect(hapticLight).toHaveBeenCalled();
-        expect(hapticMedium).not.toHaveBeenCalled();
+        expect(hapticHeavy).not.toHaveBeenCalled();
         expect(scene.scoreEffects.show).toHaveBeenCalledWith(80, 200);
         expect(spawnScoreJuice).not.toHaveBeenCalled();
     });
@@ -113,10 +114,10 @@ describe('sceneFeedback', () => {
 
     it('playDeathImpactFeedback pipe shake, flash et juice', async () => {
         const { playDeathImpactFeedback } = await import('../src/sceneFeedback.js');
-        const { hapticMedium } = await import('../src/haptics.js');
+        const { hapticHeavy } = await import('../src/haptics.js');
         const scene = createScene();
         playDeathImpactFeedback(scene, 'pipe');
-        expect(hapticMedium).toHaveBeenCalled();
+        expect(hapticHeavy).toHaveBeenCalled();
         expect(scene.ui.hideInGameScore).toHaveBeenCalled();
         expect(sceneCameraShake).toHaveBeenCalledWith(scene.cameras.main, 260, 0.022);
         expect(scene.ui.showFlash).toHaveBeenCalled();

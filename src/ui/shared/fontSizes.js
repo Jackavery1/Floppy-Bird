@@ -4,8 +4,8 @@ export const FONT_SIZE_HINT = '13px';
 export const FONT_SIZE_BADGE = FONT_SIZE_HINT;
 /** Petits labels compacts (grille skins). */
 export const FONT_SIZE_COMPACT = FONT_SIZE_HINT;
-/** Corps menu dense (toggles, contrôles, scores). */
-export const FONT_SIZE_BODY = '12px';
+/** Corps menu dense (toggles, contrôles, scores) — plancher 13 px aligné hints. */
+export const FONT_SIZE_BODY = FONT_SIZE_HINT;
 /** Micro-labels (previews HUD, médailles, leaderboard). */
 export const FONT_SIZE_SMALL = '11px';
 /** Légendes très compactes (sous-texte défi du jour) — plancher AA mobile. */

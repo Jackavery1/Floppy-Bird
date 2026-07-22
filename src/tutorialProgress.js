@@ -31,13 +31,15 @@ export function onTutorialJump(scene) {
     scene.ui.showGapTutorial();
 }
 
+export const SCORE_TUTORIAL_HOLD_MS = 2800;
+
 /** @param {SceneContext} scene */
 export function onTutorialFirstScore(scene) {
     if (loadTutorialComplete()) return;
     scene.ui.dismissGameplayTutorial();
     setTutorialProgress(2);
     scene.ui.showScoreTutorial();
-    scene.time.delayedCall(2800, () => {
+    scene.time.delayedCall(SCORE_TUTORIAL_HOLD_MS, () => {
         if (loadTutorialProgress() === 2) {
             scene.ui.dismissGameplayTutorial();
             setTutorialProgress(3);

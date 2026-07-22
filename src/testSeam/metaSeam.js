@@ -1,7 +1,7 @@
 import { setE2eBackgroundFrozen } from '../e2eVisualFreeze.js';
 import { DIFFICULTY, GAME_CONFIG, SOUND } from '../config.js';
 import { isAudioAvailable, playSound } from '../audio.js';
-import { hapticLight, hapticMedium } from '../haptics.js';
+import { hapticLight, hapticMedium, hapticHeavy } from '../haptics.js';
 import {
     loadTutorialComplete,
     loadTutorialProgress,
@@ -128,6 +128,7 @@ export function createMetaSeam(getScene) {
         probeHaptics: () => {
             hapticLight();
             hapticMedium();
+            hapticHeavy();
             return {
                 supported:
                     typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function',

@@ -34,11 +34,6 @@ const skinsPanel = createSecondaryMenuPanel({
     buildTab: buildSkinsTab,
 });
 
-/** @param {import('../core/ui.js').UI} ui */
-export function refreshSkinsButtonLabel(ui) {
-    skinsPanel.refreshButtonLabel(ui);
-}
-
 /** @param {import('../core/ui.js').UI} ui @param {boolean} open @param {{ force?: boolean }} [panelOpts] */
 export function setMenuSkinsOpen(ui, open, panelOpts) {
     skinsPanel.setOpen(ui, open, panelOpts);

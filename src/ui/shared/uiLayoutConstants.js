@@ -62,8 +62,8 @@ function withPanelCloseBtn(panel) {
     return { ...panel, closeBtn: panelCloseBtnY(panel.panelTop, panel.panelH) };
 }
 
-const OPTIONS_TAB_INSET = 10;
-const OPTIONS_TAB_GAP = 6;
+const OPTIONS_TAB_INSET = SPACING.md;
+const OPTIONS_TAB_GAP = SPACING.sm;
 
 /** @param {{ w: number }} panel */
 function withOptionsTabs(panel) {
@@ -107,7 +107,7 @@ export const UI_LAYOUT = {
             tabRow: 112,
             controlsTitle: 156,
             controlsFirst: 190,
-            controlsGap: 23,
+            controlsGap: SPACING.xl,
             settingsMute: 180,
             settingsHaptics: 224,
             training: 268,
@@ -121,9 +121,9 @@ export const UI_LAYOUT = {
         w: 260,
         scoresTitle: 132,
         scoresFirst: 168,
-        scoresGap: 30,
+        scoresGap: SPACING.xl + SPACING.xs,
         scoresHardcoreFirst: 268,
-        scoresHardcoreGap: 28,
+        scoresHardcoreGap: SPACING.xl + SPACING.xs,
         scoresAchievements: 360,
     }),
     skinsPanel: withPanelCloseBtn({
@@ -144,6 +144,7 @@ export const UI_LAYOUT = {
         /** Sous la zone jump a11y (96×96 à centerY) — évite le conflit « TAP : passer ». */
         tutorialSkipY: GAME_CONFIG.centerY + MIN_CTA_TOUCH + MIN_CTA_TOUCH / 2 + SPACING.sm,
     },
+    /** gap documentaire = x[i+1] − x[i] − width (10) ; x figés pour le letterbox 288. */
     diffBtn: { width: 68, height: MIN_TOUCH, gap: 10, radius: 6, x: [32, 110, 188] },
     menuBtn: { width: 100, height: MIN_CTA_TOUCH, radius: 8 },
 };

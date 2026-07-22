@@ -6,6 +6,7 @@ import {
     destroyHudBanner,
     HUD_BANNER_BASE_Y,
     HUD_BANNER_ROW_GAP,
+    HUD_BANNER_SCORE_GAP,
 } from '../src/ui/hud/uiHudBannerStack.js';
 import { UI } from '../src/ui/core/ui.js';
 import { createBaseScene } from './helpers/phaserMock.js';
@@ -23,6 +24,12 @@ describe('uiHudBannerStack', () => {
         expect(a.y).toBe(HUD_BANNER_BASE_Y);
         expect(b.y).toBe(HUD_BANNER_BASE_Y + HUD_BANNER_ROW_GAP);
         expect(a.row).not.toBe(b.row);
+    });
+
+    it('ancre les bannières sous le score HUD dynamique', () => {
+        ui._scoreHudY = 96;
+        const a = acquireHudBannerSlot(ui);
+        expect(a.y).toBe(96 + HUD_BANNER_SCORE_GAP);
     });
 
     it('libère une ligne pour réutilisation', () => {

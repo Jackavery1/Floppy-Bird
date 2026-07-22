@@ -31,9 +31,9 @@ describe('haptics', () => {
     it('vibre fortement à la mort si disponible', async () => {
         const vibrate = vi.fn();
         vi.stubGlobal('navigator', { vibrate });
-        const { hapticMedium } = await import('../src/haptics.js');
-        hapticMedium();
-        expect(vibrate).toHaveBeenCalledWith(28);
+        const { hapticHeavy } = await import('../src/haptics.js');
+        hapticHeavy();
+        expect(vibrate).toHaveBeenCalledWith([40, 24, 40]);
     });
 
     it('ignore les erreurs vibrate', async () => {
@@ -42,9 +42,10 @@ describe('haptics', () => {
                 throw new Error('blocked');
             },
         });
-        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
+        const { hapticLight, hapticMedium, hapticHeavy } = await import('../src/haptics.js');
         expect(() => hapticLight()).not.toThrow();
         expect(() => hapticMedium()).not.toThrow();
+        expect(() => hapticHeavy()).not.toThrow();
     });
 
     it('vibre même si le son est muet', async () => {
@@ -54,11 +55,13 @@ describe('haptics', () => {
             getItem: (key) => (String(key).includes('muted') ? '1' : null),
             setItem: () => {},
         });
-        const { hapticLight, hapticMedium } = await import('../src/haptics.js');
+        const { hapticLight, hapticMedium, hapticHeavy } = await import('../src/haptics.js');
         hapticLight();
         hapticMedium();
+        hapticHeavy();
         expect(vibrate).toHaveBeenCalledWith(12);
         expect(vibrate).toHaveBeenCalledWith(28);
+        expect(vibrate).toHaveBeenCalledWith([40, 24, 40]);
     });
 
     it('ne vibre pas si prefers-reduced-motion', async () => {

@@ -6,7 +6,7 @@
  * | Rôle              | Taille   | Police              | Style helper           |
  * |-------------------|----------|---------------------|------------------------|
  * | Titre jeu / chrome| 14 px    | Press Start 2P      | panelChromeTextStyle / FONT_SIZE_CHROME |
- * | HUD / menu corps  | 12 px    | Segoe UI (shell)    | menuHomeTextStyle / FONT_SIZE_BODY |
+ * | HUD / menu corps  | 13 px    | Segoe UI (shell)    | menuHomeTextStyle / FONT_SIZE_BODY |
  * | Hints gameplay    | 13–14 px | Segoe UI            | hudTextStyle / FONT_SIZE_HINT–CHROME |
  * | Bannières HUD     | 14–16 px | Segoe UI            | FONT_SIZE_CHROME / BANNER / EMPHASIS |
  * | Grille skins      | 11–13 px | Segoe UI            | FONT_SIZE_TINY–COMPACT |

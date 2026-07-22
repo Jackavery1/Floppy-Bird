@@ -22,6 +22,7 @@ import {
     FONT_SIZE_COMPACT,
     FONT_SIZE_HINT,
     MIN_TOUCH,
+    SPACING,
     stopUiEvent,
     UI_LAYOUT,
 } from '../shared/uiLayout.js';
@@ -37,7 +38,7 @@ const SKINS_BTN_STROKE = hexVersPhaser(DESIGN_TOKENS.boutonSkinsStroke);
 const SKIN_COLS = 4;
 const SKIN_CELL_W = 54;
 const SKIN_CELL_H = 56;
-const SKIN_ROW_GAP = 10;
+const SKIN_ROW_GAP = SPACING.md;
 
 /**
  * @param {import('../core/ui.js').UI} ui
@@ -152,6 +153,14 @@ export function buildSkinsTab(ui, elements, panelElements) {
         const hit = scene.add.rectangle(cx, cy, MIN_TOUCH, MIN_TOUCH, 0x000000, 0);
         hit.setDepth(DEPTH.PANEL_TOP);
         hit.setInteractive({ useHandCursor: true });
+        hit.on('pointerover', () => {
+            const ctx = buildMetaContext(scene);
+            if (!listUnlockedSkins(ctx).includes(skinId)) return;
+            frame.setStrokeStyle(3, hexVersPhaser(DESIGN_TOKENS.accentHover));
+        });
+        hit.on('pointerout', () => {
+            refreshSkinsTab(ui);
+        });
         hit.on('pointerdown', (_p, _lx, _ly, event) => {
             stopUiEvent(event);
             const ctx = buildMetaContext(scene);

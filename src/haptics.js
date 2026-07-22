@@ -44,3 +44,12 @@ export function hapticMedium() {
         /* non pris en charge */
     }
 }
+
+export function hapticHeavy() {
+    if (!hapticsAllowed()) return;
+    try {
+        navigator.vibrate?.([40, 24, 40]);
+    } catch {
+        /* non pris en charge */
+    }
+}

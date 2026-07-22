@@ -16,7 +16,7 @@ function isMenuSecondaryRowPointer(pointer) {
 }
 
 /** @param {SceneContext} scene */
-export function handleEscapeKey(scene) {
+function handleEscapeKey(scene) {
     if (scene.state === GAME_STATE.MENU) {
         const panelOpen = scene.ui?._optionsOpen || scene.ui?._scoresOpen || scene.ui?._skinsOpen;
         if (panelOpen) {

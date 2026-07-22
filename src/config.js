@@ -39,8 +39,8 @@ export const GAME_CONFIG = {
         gravity: 0.4,
         jumpPower: -6,
         maxFallSpeed: 10.5,
-        /** Report du flap sur les prochains ticks physiques (3 frames ≈ 50 ms @ 60 FPS). */
-        jumpBufferFrames: 3,
+        /** Report du flap sur les prochains ticks physiques (6 frames ≈ 100 ms @ 60 FPS). */
+        jumpBufferFrames: 6,
         /** Grâce après sortie de gap : protège tuyaux + plafond, pas le sol (choix design). */
         coyoteTimeFrames: 5,
     },

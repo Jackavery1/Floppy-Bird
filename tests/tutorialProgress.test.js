@@ -74,4 +74,19 @@ describe('tutorialProgress', () => {
         const { loadTutorialComplete } = await import('../src/tutorialStorage.js');
         expect(loadTutorialComplete()).toBe(true);
     });
+
+    it('onTutorialFirstScore programme le dismiss via SCORE_TUTORIAL_HOLD_MS', async () => {
+        const { onTutorialFirstScore, SCORE_TUTORIAL_HOLD_MS } =
+            await import('../src/tutorialProgress.js');
+        const delayedCall = vi.fn();
+        const showScoreTutorial = vi.fn();
+        const dismissGameplayTutorial = vi.fn();
+        onTutorialFirstScore({
+            time: { delayedCall },
+            ui: { showScoreTutorial, dismissGameplayTutorial },
+        });
+        expect(showScoreTutorial).toHaveBeenCalled();
+        expect(delayedCall).toHaveBeenCalledWith(SCORE_TUTORIAL_HOLD_MS, expect.any(Function));
+        expect(SCORE_TUTORIAL_HOLD_MS).toBe(2800);
+    });
 });

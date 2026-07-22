@@ -25,6 +25,7 @@ import {
     PAUSE_BTN_COLOR,
     PAUSE_BTN_HOVER,
     PAUSE_BTN_VISUAL,
+    SPACING,
     stopUiEvent,
     UI_LAYOUT,
 } from '../shared/uiLayout.js';
@@ -72,7 +73,7 @@ export function createInGameControls(
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyBadge);
-        badgeY += 14;
+        badgeY += SPACING.md;
         ui._dailyPatternBadge = addCenteredText(
             ui.scene,
             GAME_CONFIG.centerX,
@@ -85,7 +86,7 @@ export function createInGameControls(
             DEPTH.HUD_BADGE
         );
         elements.push(ui._dailyPatternBadge);
-        badgeY += 14;
+        badgeY += SPACING.md;
     }
 
     if (trainingMode) {
@@ -102,7 +103,7 @@ export function createInGameControls(
             DEPTH.HUD_BADGE
         );
         elements.push(ui._trainingBadge);
-        badgeY += 14;
+        badgeY += SPACING.md;
     }
 
     if (hardcoreMode) {
@@ -119,10 +120,10 @@ export function createInGameControls(
             DEPTH.HUD_BADGE
         );
         elements.push(ui._hardcoreBadge);
-        badgeY += 14;
+        badgeY += SPACING.md;
     }
 
-    const scoreY = badgeY > playing.trainingBadgeY ? badgeY + 10 : UI_LAYOUT.scoreHud;
+    const scoreY = badgeY > playing.trainingBadgeY ? badgeY + SPACING.md : UI_LAYOUT.scoreHud;
     ui._scoreHudY = scoreY;
     showInGameScore(ui, scoreY);
 

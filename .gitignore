@@ -19,3 +19,7 @@ Desktop.ini
 *.log
 .env
 .env.*
+
+# IDE local
+.vscode/
+

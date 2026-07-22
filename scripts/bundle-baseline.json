@@ -1,9 +1,9 @@
 {
-    "generated": "2026-07-17",
-    "distKo": 1406.2,
+    "generated": "2026-07-22",
+    "distKo": 1406.6,
     "iconsKo": 23.2,
     "vendorPhaserKo": 1168.1,
-    "appJsGzipKo": 53.5,
+    "appJsGzipKo": 53.3,
     "precacheEntries": 28,
-    "note": "Police unique public/fonts (plus de doublon assets/). Régénérer : npm run build && npm run measure"
+    "note": "Post nettoyage exports morts + audits UI/GP. Régénérer : npm run build && npm run measure"
 }

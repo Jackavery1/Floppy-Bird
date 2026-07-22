@@ -2,7 +2,7 @@ import { SOUND, GAME_CONFIG } from './config.js';
 import { DESIGN_TOKENS, hexVersPhaser } from './designTokens.js';
 import { GAME_STATE } from './gameState.js';
 import { playSound } from './audio.js';
-import { hapticLight, hapticMedium } from './haptics.js';
+import { hapticLight, hapticHeavy } from './haptics.js';
 import { applyTrainingTimeScale } from './sceneBootstrap.js';
 import { spawnDeathJuice, spawnScoreJuice } from './sceneJuice.js';
 import { prefersReducedMotion, sceneCameraShake } from './motion.js';
@@ -18,7 +18,7 @@ export function playJumpFeedback() {
 export function playScoreFeedback(score, scene = null) {
     playSound(SOUND.SCORE, score);
     if (score > 0 && score % 10 === 0) {
-        hapticMedium();
+        hapticHeavy();
     } else {
         hapticLight();
     }
@@ -32,7 +32,7 @@ export function playScoreFeedback(score, scene = null) {
 /** @param {SceneContext} scene @param {'pipe' | 'ground' | 'ceiling'} [cause] */
 export function playDeathImpactFeedback(scene, cause = 'pipe') {
     playSound(SOUND.GAME_OVER);
-    hapticMedium();
+    hapticHeavy();
     scene.ui.hideInGameScore();
     const reducedMotion = prefersReducedMotion();
     if (cause === 'pipe') {

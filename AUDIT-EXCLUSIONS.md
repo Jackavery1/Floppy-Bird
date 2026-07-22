@@ -45,5 +45,14 @@ Les agents d’audit **ne doivent pas** les signaler comme points faibles, dette
 | Dual buffer saut | `bird.bufferJump` / `_jumpBuffered` retirés — `processJumpBuffer` appelle `bird.jump()` |
 | Façade overlays | `clearOverlay` / `createOverlay` / boutons GO liés via `uiFacadeBind` (plus de pass-through `ui.js`) |
 | Contraste jour × high-contrast | `--couleur-texte-chargement` jour `#0d47a1` sous `data-contrast-high` / `prefers-contrast` |
+| Jump buffer equity (v2) | `jumpBufferFrames` 3 → **6** (~100 ms @ 60 FPS, guideline equity) |
+| Feedback mort / paliers | `hapticHeavy` pattern `[40,24,40]` (mort + score ×10) |
+| Typo corps menu | `FONT_SIZE_BODY` aligné 13 px (`FONT_SIZE_HINT`) |
+| Bannières HUD | Ancrage sous `_scoreHudY` (plus de chevauchement badges) |
+| Spacing options/scores | `controlsGap` / tabs / `scoresGap` alignés `SPACING` |
+| Hover cellules skins | `pointerover` stroke `accentHover` |
+| Tutoriel score | `SCORE_TUTORIAL_HOLD_MS` (plus de magique 2800) |
+| FPS debug | `DESIGN_TOKENS.texteHud` |
+| Docs escalade | README : gap tighten tous les 10 pts après 25 |
 
-Dernière mise à jour : 2026-07-19 (correctifs audit architecture + responsivité).
+Dernière mise à jour : 2026-07-22 (dettes soft post-audit 20/20).
